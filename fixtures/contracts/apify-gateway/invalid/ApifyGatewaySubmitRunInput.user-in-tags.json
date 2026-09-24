@@ -1,0 +1,12 @@
+{
+  "shape": "newest-check",
+  "input": { "searchTerms": ["rtx3090"] },
+  "memoryMb": 1024,
+  "timeoutSecs": 180,
+  "tags": {
+    "module": "check-scheduler",
+    "region": "chichester",
+    "purpose": "hunt",
+    "userId": "0192f6a8-0000-7000-8000-000000000000"
+  }
+}
