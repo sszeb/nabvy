@@ -295,7 +295,7 @@ Said by the owner to the 4.3t threat-model session and relayed to the coordinato
 
 What this means for the build (PR #39, `docs/design/abuse-threat-model.md`):
 - **Only the free tier is limited.** Paid sign-ups and upgrades from free to paid are never queued, throttled or held, at any time.
-- **£2 a day per account**, counting every paid action (checks, scans, pasted links, model calls), as a policy row per tier editable from the admin panel; whether paid tiers get a higher row is open (`docs/questions.md`, from `docs/questions/abuse-threat-model.md`).
+- **£2 a day per free account**, counting every paid action (checks, scans, pasted links, model calls), as a policy row editable from the admin panel. The owner clarified at 18:24: "Free tier only. Obviously". Paid accounts have no daily cap; they are bounded by their credits and by the global daily, weekly and monthly caps.
 - **The pool drains gracefully.** As a daily pool (the example: £20) runs down, the remaining accounts slow rather than stop at once.
 - **The admin panel is hardened and adversarially audited** before it is exposed (`docs/design/admin-hardening.md`; backlog 4.3af to 4.3ah; the admin gate 4.3af blocks the web deploy 0.5a).
 
