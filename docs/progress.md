@@ -74,10 +74,11 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 
 | Module | Round | Status | Session | Model |
 | --- | --- | --- | --- | --- |
-| audit-log | 0 | PR #15 open, changes needed | `session_01SUaJRBg87fChhAHgCmYrGb` | top |
+| audit-log | 0 | done: PR #15 merged; both migrations applied 14:00 (ledger checked) | `session_01SUaJRBg87fChhAHgCmYrGb` | top |
 | cost-meter | 0 | done: PR #16 merged 13:00; both migrations applied 13:05 (ledger checked) | `session_01P7EwgNXQxqDq16uiLsSEVg` | top |
 | incidents | 0 | PR #19 open | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
 | quote-redaction | 0 | PR #17 open, changes needed; mask wording approved by the owner | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
+| switches | 1 | in progress | `session_01CtxXRGTqrS7tCXgFaNfw2J` | top |
 
 ## Work outside the backlog
 
