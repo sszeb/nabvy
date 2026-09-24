@@ -360,6 +360,7 @@
       "copy-advert",
       "noise-filter",
       "city-pages",
+      "product-catalogue",
       "listing-suppression"
     ],
     "softDependsOn": ["seller-key", "seller-boosts"]
@@ -414,9 +415,14 @@
       "noise-filter",
       "detail-evidence",
       "listing-suppression",
-      "audit-log"
+      "audit-log",
+      "pickup-location",
+      "listing-location",
+      "seller-reply-reports",
+      "asking-price-index",
+      "asking-price-position"
     ],
-    "softDependsOn": ["pickup-location", "seller-reply-reports"]
+    "softDependsOn": ["listing-assessment", "parts-record"]
   },
   {
     "name": "demand-signals",
@@ -447,6 +453,7 @@
     "scope": "MVP",
     "dependsOn": [
       "switches",
+      "audit-log",
       "listing-ingest",
       "detail-evidence",
       "city-pages",
@@ -454,6 +461,27 @@
       "quote-redaction",
       "spend-governor",
       "cost-meter",
+      "listing-suppression"
+    ],
+    "softDependsOn": ["parts-rules", "product-catalogue"]
+  },
+  {
+    "name": "gem-finder",
+    "group": "Listing intelligence",
+    "job": "Decide which positioned listings from the pool are gems, badged \"Top pick\"",
+    "priority": "MVP; ships and stays in shadow with \"Too good to be true\"",
+    "round": 12,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "asking-price-index",
+      "asking-price-position",
+      "noise-filter",
+      "warning-signs",
+      "suspected-labels",
+      "listing-lifecycle",
+      "details-queue",
+      "spend-governor",
       "listing-suppression"
     ],
     "softDependsOn": []
@@ -465,7 +493,15 @@
     "priority": "First, with spec search (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:145`)",
     "round": 7,
     "scope": "MVP",
-    "dependsOn": ["switches", "location", "product-catalogue", "auth", "subscriptions", "account"],
+    "dependsOn": [
+      "listing-search",
+      "switches",
+      "location",
+      "product-catalogue",
+      "auth",
+      "subscriptions",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -578,7 +614,8 @@
       "prepared-message",
       "quote-redaction",
       "listing-suppression",
-      "location"
+      "location",
+      "account-integrity"
     ],
     "softDependsOn": ["pickup-location"]
   },
@@ -612,12 +649,99 @@
   {
     "name": "pickup-routes",
     "group": "User features and delivery",
-    "job": "Plan a one-day route through the pickups a user has arranged",
-    "priority": "MVP (`nabvy/docs/decisions.md:174`)",
+    "job": "Hold a user's arranged pickups and plan a one-day route through them",
+    "priority": "MVP; task 4.1e (`nabvy/docs/decisions.md:174`)",
     "round": 7,
     "scope": "MVP",
     "dependsOn": ["switches", "auth", "account", "location"],
+    "softDependsOn": ["router-gateway", "travel-cost"]
+  },
+  {
+    "name": "listing-search",
+    "group": "User features and delivery",
+    "job": "Keep a searchable row per live listing version; answer feed, map and hint-candidate queries",
+    "priority": "MVP; task 4.1e",
+    "round": 9,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "location",
+      "listing-card",
+      "listing-suppression",
+      "pickup-location",
+      "parts-record",
+      "noise-filter",
+      "copy-advert",
+      "want-manager"
+    ],
+    "softDependsOn": ["asking-price-position", "price-drop-watch", "suspected-labels"]
+  },
+  {
+    "name": "travel-cost",
+    "group": "User features and delivery",
+    "job": "What a trip costs a user: dated rate tables and travel settings",
+    "priority": "MVP; task 4.1g",
+    "round": 3,
+    "scope": "MVP",
+    "dependsOn": ["switches", "auth", "account"],
     "softDependsOn": []
+  },
+  {
+    "name": "router-gateway",
+    "group": "User features and delivery",
+    "job": "The only HTTP client for the self-hosted router VM (OSRM)",
+    "priority": "After MVP; router host not approved (owner question); task 4.1h",
+    "round": 2,
+    "scope": "After MVP",
+    "dependsOn": ["switches"],
+    "softDependsOn": []
+  },
+  {
+    "name": "travel-time",
+    "group": "User features and delivery",
+    "job": "Road distance and time from an origin cell to places",
+    "priority": "After MVP; task 4.1i",
+    "round": 7,
+    "scope": "After MVP",
+    "dependsOn": ["switches", "router-gateway", "location"],
+    "softDependsOn": []
+  },
+  {
+    "name": "deal-hints",
+    "group": "User features and delivery",
+    "job": "Choose at most 3 listings just beyond a user's radius where the gap outweighs the trip",
+    "priority": "MVP, shadow-first (decisions question 54: no hint shown); task 4.1j",
+    "round": 12,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "listing-search",
+      "asking-price-position",
+      "suspected-labels",
+      "travel-cost",
+      "location",
+      "product-events"
+    ],
+    "softDependsOn": ["travel-time"]
+  },
+  {
+    "name": "similar-picks",
+    "group": "User features and delivery",
+    "job": "Curate cross-hunt alternatives from the shared pool: variants, tiers and PCs",
+    "priority": "MVP",
+    "round": 15,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "product-catalogue",
+      "want-manager",
+      "spec-match",
+      "alert-router",
+      "review-console",
+      "listing-suppression",
+      "output-guard"
+    ],
+    "softDependsOn": ["gem-finder", "asking-price-position"]
   },
   {
     "name": "seller-reply-reports",
@@ -626,8 +750,27 @@
     "priority": "MVP (`nabvy/docs/decisions.md:154-158`)",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account", "listing-ingest"],
-    "softDependsOn": []
+    "dependsOn": [
+      "switches",
+      "audit-log",
+      "auth",
+      "account",
+      "listing-ingest",
+      "detail-evidence",
+      "pickup-location",
+      "location",
+      "noise-filter",
+      "listing-suppression",
+      "notifier"
+    ],
+    "softDependsOn": [
+      "copy-advert",
+      "relist-merge",
+      "warning-signs",
+      "parts-record",
+      "listing-feedback",
+      "account-integrity"
+    ]
   },
   {
     "name": "listing-suppression",
@@ -792,6 +935,7 @@
       "parts-record",
       "listing-assessment",
       "suspected-labels",
+      "seller-reply-reports",
       "copy-advert",
       "notifier",
       "audit-log",
@@ -958,8 +1102,8 @@
     "priority": "BP4 (`nabvy/docs/backlog.md:57`)",
     "round": 0,
     "scope": "MVP",
-    "dependsOn": [],
-    "softDependsOn": []
+    "dependsOn": ["allow"],
+    "softDependsOn": ["account-integrity"]
   },
   {
     "name": "account",
@@ -968,7 +1112,7 @@
     "priority": "MVP; BP4 (`nabvy/docs/backlog.md:62`); standing (`nabvy/docs/decisions.md:110-129`)",
     "round": 2,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "audit-log"],
+    "dependsOn": ["switches", "auth", "audit-log", "account-integrity"],
     "softDependsOn": []
   },
   {
@@ -978,7 +1122,7 @@
     "priority": "MVP: live at launch, the owner's override (`nabvy/docs/decisions.md:93,96-109`); BP4",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account", "audit-log", "usage-ledger"],
+    "dependsOn": ["switches", "auth", "account", "audit-log", "usage-ledger", "account-integrity"],
     "softDependsOn": []
   },
   {
@@ -1021,7 +1165,7 @@
       "pasted-link-lookup",
       "notifier"
     ],
-    "softDependsOn": []
+    "softDependsOn": ["seller-reply-reports"]
   },
   {
     "name": "pricing-console",

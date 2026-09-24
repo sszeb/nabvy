@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { execSync } from 'node:child_process'
 // Split the module catalogue draft into one card per module, so a build
 // session reads only its own card. Also writes index.json (job, group,
 // round, dependencies, scope) for the catalogue page.
@@ -82,3 +83,11 @@ writeFileSync(
 )
 writeFileSync(join(outDir, 'index.json'), `${JSON.stringify(index, null, 2)}\n`)
 console.log(`${index.length} cards -> ${outDir}`)
+// Biome's JSON style (short arrays on one line) is what CI checks; format the index the same way.
+try {
+  execSync(`pnpm exec biome format --write ${join(outDir, 'index.json')}`, { stdio: 'ignore' })
+} catch {
+  console.warn(
+    'index.json written but not formatted: run `pnpm exec biome format --write docs/design/modules/index.json`',
+  )
+}
