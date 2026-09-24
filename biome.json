@@ -6,7 +6,8 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": true
+    "ignoreUnknown": true,
+    "includes": ["**", "!packages/packs/gpu-pc/data/part-patterns.json"]
   },
   "formatter": {
     "enabled": true,
