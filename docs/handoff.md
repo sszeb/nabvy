@@ -4,6 +4,8 @@
 
 **Coordinator 3 (from 12:50 UTC).** Coordinator 2 (`session_01XSTcLZmm35nVGEa6LhMoUj`) handed off at 434k tokens. Start here: (1) `git fetch origin claude/coordinator-2` and base your branch `claude/coordinator-3` on it (PR #12 is still open from `claude/coordinator-2`; keep pushing docs there until it merges, then use your own branch); (2) re-create the two-hour sweep with `send_later` for about 14:40 UTC, prompt as in "Next steps" step 1; (3) subscribe to PR #12 and to each wave-1 PR as it opens; (4) follow "Wave 1" below. The PR watchdog Routine `trig_011fjd2grZBEWR3FqfDzTWJR` is fresh-session and stays as is. Coordinator 3 is `session_01MDEFeMG2eAjgFNVvtDQcFi`; its next sweep is `trig_01NZbY3KYGnPZp8geppX9eHN` (14:40 UTC). At 12:50 it merged `main` into `claude/coordinator-2` (PR #12 conflicted in `docs/questions.md`; both sides kept). At 13:00, on coordinator 1's note, it merged `origin/claude/hopeful-wright-r5ygps` (the final audited catalogue and five drafts), regenerated the cards (89 modules, rounds 0 to 14) and republished the catalogue page (version 2). Brief round 1 onwards only from these cards; tiers are in the page (top for 41 modules, including the new `pickup-location`).
 
+**Coordinator 4 (owner, 14:35).** Start the next coordinator on Fable (`claude-fable-5-1`); the owner turns ultracode on for it (`create_session` cannot set effort or flags). Build sessions may use Haiku for small mechanical tasks (trial: 0.9b); report how it went before widening it.
+
 **For the next coordinator.** The rest of this note is for you. Update it when you hand off in turn.
 
 ## Your role
