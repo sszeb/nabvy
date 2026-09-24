@@ -50,6 +50,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 4.3a | Account and channels | done: PR #33 merged 16:54; 24-hour purge sweep `purgeDueDeletions` shipped (see the account row in the module table) | 2026-09-24 | `session_019z1ZHft2YbdK31o3y4i7i3` then fix round `session_01JaYi4X3zUDVQy1jZrxN9cG`, Sonnet |
 | 0.11 | Replace the switch stubs | done: PR #34 merged 16:36 (`19f68e6`); both migrations applied 16:43 (ledger checked); cost-meter is seeded off, so `v_costs` is empty until an admin switches it on | 2026-09-24 | `session_01Lb6LJFC25YwtRsFqvxXgff`, Sonnet |
 | 1.1d | Actor app integration guide condensed | done: PR #38 merged 17:02 (`4a856cf`), `docs/design/actor-app-guide.md`; third off-limits actor added to `CLAUDE.md` | 2026-09-24 | `session_012jNJ1yAmFo3qjybDMsQYg9`, Sonnet |
+| 4.3t | Abuse and cost-exploit threat model | started 17:05 | 2026-09-24 | `session_01Y4xYvmajeh5wX2ghYYWfyM`, top |
 | 4.3b | Security hardening | not started | | |
 | 4.4 | Crawl planner v1 | not started | | |
 | 4.5 | Review console | not started | | |
