@@ -50,6 +50,12 @@ export interface AddReport {
    * once they are ingested adds the look-alikes.
    */
   withoutLookalike: ListingSuppressionNamedListing[]
+  /**
+   * Seller keys of this call that are recorded but hide nothing yet: `seller-key` does not publish
+   * `restricted_listing_keys`, so no listing is matched to a key (README.md, "Inputs"). While this
+   * is above 0, `seller-rights` must not report the seller-key part of the request as honoured.
+   */
+  unenforcedSellerKeys: number
   /** `changed` envelopes for the caller to publish after commit. */
   events: EventEnvelope[]
 }
@@ -95,6 +101,7 @@ export async function add(
     written,
     entryIds,
     withoutLookalike: listings.filter((l) => !listingIdOf.has(`${l.source}:${l.sourceListingId}`)),
+    unenforcedSellerKeys: new Set(sellerKeys).size,
     events: chunk(entryIds, LISTING_SUPPRESSION_EVENT_BATCH_SIZE).map((ids, i) =>
       createEvent(
         events,

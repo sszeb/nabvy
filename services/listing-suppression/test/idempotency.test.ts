@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { add, listingHash } from '../src'
 import {
@@ -49,6 +50,7 @@ describe('idempotency', () => {
     if (!early.ok || !retry.ok) throw new Error('add failed')
     expect(early.value.written).toBe(1)
     expect(early.value.withoutLookalike).toEqual([ROW0])
+    expect(early.value.unenforcedSellerKeys).toBe(0)
     expect(retry.value.written).toBe(2)
     expect(retry.value.withoutLookalike).toEqual([])
     expect(retry.value.entryIds.slice(0, 1)).toEqual(early.value.entryIds)
@@ -89,6 +91,12 @@ describe('idempotency', () => {
       })
     }
     expect(await count()).toBe(0)
+  })
+
+  it('counts the seller keys that hide nothing yet', async () => {
+    const key = createHash('sha256').update('seller-a').digest('hex')
+    const result = await add(t.db, { requestId: REQUEST, sellerKeys: [key, key] })
+    expect(result).toMatchObject({ ok: true, value: { written: 1, unenforcedSellerKeys: 1 } })
   })
 
   it('hashes a listing the same way in TypeScript and in SQL', async () => {

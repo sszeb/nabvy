@@ -1,0 +1,21 @@
+{
+  "synthetic": true,
+  "source": "docs/design/pricing-model.md, Rules, Order: allowance, taste and referral credit, top-ups oldest first",
+  "steps": [
+    { "grant": { "kind": "topup", "credits": 100, "refId": "pi_old", "cashMinor": 500 } },
+    { "grant": { "kind": "topup", "credits": 100, "refId": "pi_new", "cashMinor": 500 } },
+    { "grant": { "kind": "referral", "credits": 50, "refId": "referral:pair-1" } },
+    { "grant": { "kind": "taste", "credits": 30, "refId": "taste:1", "expiresInHours": 72 } },
+    {
+      "grant": {
+        "kind": "allowance",
+        "credits": 40,
+        "refId": "allowance:2026-09",
+        "cashMinor": 700,
+        "expiresInHours": 720
+      }
+    },
+    { "charge": { "action": "scan_live", "credits": 120, "refId": "scan:1" } },
+    { "charge": { "action": "scan_live", "credits": 50, "refId": "scan:2" } }
+  ]
+}

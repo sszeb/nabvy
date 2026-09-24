@@ -178,6 +178,62 @@ select pg_temp.check((select count(*) from app.v_listing_card_probe) = 0,
 reset role;
 update switches.switches set state = 'on' where name = 'listing-ingest';
 
+-- Description look-alike: C's current description also appears on D, a new listing with another
+-- title and price. A request names C; its description look-alike hides D too.
+insert into listing_ingest.listings (id, source, source_listing_id, card_hash, price_minor,
+  currency, title, first_fetched_at, last_seen_at, city_page_id, availability, item_job_id, item_seq)
+values ('01920000-0000-7000-8000-00000000000d', 'facebook', '9000000000000002', repeat('d', 64),
+  15000, 'GBP', 'Another title', now(), now(), '110843418940484', 'live', 3, 0);
+insert into detail_evidence.evidence (source, source_listing_id, listing_id, evidence_hash,
+  first_seen_at, last_seen_at, item_job_id, item_seq, title, description, description_status)
+values
+  ('facebook', '1756692548940192', '01920000-0000-7000-8000-00000000000c', repeat('c', 64), now(),
+   now(), 1, 1, 'Other PC', 'Ryzen 5, RTX 3060', 'full_verified'),
+  ('facebook', '9000000000000002', '01920000-0000-7000-8000-00000000000d', repeat('d', 64), now(),
+   now(), 3, 0, 'Another title', 'ryzen 5,  RTX 3060', 'full_verified');
+insert into detail_evidence.fetches (source, source_listing_id, listing_id, job_id, seq,
+  fetched_at, detail_outcome, description_status, evidence_hash)
+values
+  ('facebook', '1756692548940192', '01920000-0000-7000-8000-00000000000c', 1, 1, now(),
+   'collected', 'full_verified', repeat('c', 64)),
+  ('facebook', '9000000000000002', '01920000-0000-7000-8000-00000000000d', 3, 0, now(),
+   'collected', 'full_verified', repeat('d', 64));
+set local role nabvy_pipeline;
+insert into listing_suppression.entries (kind, basis, value, expires_at, request_id)
+select 'lookalike', 'description', f.fingerprint, now() + interval '90 days',
+  '01920000-0000-7000-8000-0000000000f3'::uuid
+from detail_evidence.v_fingerprints f where f.listing_id = '01920000-0000-7000-8000-00000000000c';
+select pg_temp.check((select count(*) from listing_suppression.entries where basis = 'description') = 1,
+  'one description look-alike');
+select pg_temp.check(
+  (select array_agg(listing_id::text order by listing_id) from listing_suppression.v_suppressed
+   where reason = 'lookalike')
+  = array['01920000-0000-7000-8000-00000000000a', '01920000-0000-7000-8000-00000000000b',
+          '01920000-0000-7000-8000-00000000000c', '01920000-0000-7000-8000-00000000000d'],
+  'the description look-alike hides C and D');
+reset role;
+set local role nabvy_app;
+select pg_temp.check((select count(*) from app.v_listing_card_probe) = 0,
+  'every probe listing is now hidden');
+reset role;
+
+-- Fail closed: with detail-evidence off its views are empty, so while a description look-alike is
+-- active every listing reads as suppressed, including one no entry matches.
+insert into listing_ingest.listings (id, source, source_listing_id, card_hash, price_minor,
+  currency, title, first_fetched_at, last_seen_at, city_page_id, availability, item_job_id, item_seq)
+values ('01920000-0000-7000-8000-00000000000e', 'facebook', '9000000000000003', repeat('e', 64),
+  5000, 'GBP', 'Unrelated', now(), now(), '110843418940484', 'live', 4, 0);
+set local role nabvy_app;
+select pg_temp.check(not listing_suppression.is_suppressed('01920000-0000-7000-8000-00000000000e'),
+  'an unmatched listing is shown');
+reset role;
+update switches.switches set state = 'off' where name = 'detail-evidence';
+set local role nabvy_app;
+select pg_temp.check(listing_suppression.is_suppressed('01920000-0000-7000-8000-00000000000e'),
+  'detail-evidence off: every listing reads as suppressed');
+reset role;
+update switches.switches set state = 'on' where name = 'detail-evidence';
+
 -- The foundation's view check passes for this schema.
 select pg_temp.check(not exists (
   select 1 from nabvy_core.view_violations() v where v::text like '%listing_suppression%'),

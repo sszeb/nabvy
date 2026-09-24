@@ -1,0 +1,39 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "steps": [
+    {
+      "search": {
+        "url": "https://www.facebook.com/marketplace/115935195086622/search/?query=gaming+pc",
+        "searchControls": {
+          "latitude": 50.836,
+          "radiusKm": 65,
+          "longitude": -0.775
+        },
+        "stopReason": "page-cap",
+        "pages": 100,
+        "listings": 2400
+      },
+      "summary": {
+        "searchSort": "default"
+      }
+    },
+    {
+      "search": {
+        "url": "https://www.facebook.com/marketplace/115935195086622/search/?query=gaming+pc",
+        "searchControls": {
+          "latitude": 50.836,
+          "radiusKm": 65,
+          "longitude": -0.775
+        },
+        "stopReason": "source-no-new-listings",
+        "status": "complete",
+        "httpStopReason": null,
+        "pages": 40,
+        "listings": 1000
+      },
+      "summary": {
+        "searchSort": "default"
+      }
+    }
+  ]
+}

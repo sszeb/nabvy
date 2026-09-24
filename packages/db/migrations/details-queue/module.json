@@ -1,0 +1,5 @@
+{
+  "module": "details-queue",
+  "schema": "details_queue",
+  "dependsOn": ["core", "switches"]
+}

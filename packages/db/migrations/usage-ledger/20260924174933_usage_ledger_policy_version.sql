@@ -1,0 +1,2 @@
+ALTER TABLE "usage_ledger"."entries" ADD COLUMN "policy_version" text;--> statement-breakpoint
+ALTER TABLE "usage_ledger"."entries" ADD CONSTRAINT "entries_policy_version" CHECK ("usage_ledger"."entries"."policy_version" is null or "usage_ledger"."entries"."kind" in ('allowance', 'topup'));
