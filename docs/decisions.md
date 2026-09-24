@@ -67,6 +67,17 @@ What these files teach informs the whole app, not only the calls to the actor. T
 
 The build pack's larger modules (`docs/modules.md`) are split to match; the module catalogue that does this is in progress (`docs/progress.md`).
 
+**How modules are built** (owner, 2026-09-24): foundation first, then parallel waves.
+1. **Foundation, one session.** After the owner approves the module catalogue, one session lays what every module builds on:
+   - per-module contract files and database-schema namespaces in `packages/contracts` and `packages/db`;
+   - an event registry with one file per module;
+   - a scaffold script for the module shape;
+   - the rule that a module session touches only its own folder, contract file and migration file.
+2. **Waves.** Every module whose inputs and owner decisions are ready starts at the same time, each in its own session, on its own branch `task/<id>-<module>`, with one pull request per module. Each module is built and tested against fixtures. Migrations are tested only on a local throwaway Postgres (`pnpm db:dry-run`); one session applies them to Supabase after the owner merges. A module waiting on an owner decision or a legal gate waits for a later wave.
+3. **One coordinator session.** It writes each module session's brief, reviews each pull request for consistency with the contracts, keeps `docs/progress.md` itself so branches do not conflict over it, and suggests a merge order. The owner merges.
+
+For module work this replaces `CLAUDE.md`'s "one task at a time".
+
 ## Product
 
 - **Audience and first category:** Nabvy is for anyone in the UK who buys second-hand to resell or to get a good deal; it is not limited to tech flippers. The first category pack is GPUs and gaming PCs, chosen for clean product keys and strong price data; the first design partners are tech flippers. Other categories arrive as category packs (data, not code), in this order of intent: consoles and controllers, phones, laptops and PC parts, collectables, then cars. DVDs are out: CeX pays a penny for them and demand is falling.

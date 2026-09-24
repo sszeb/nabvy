@@ -18,7 +18,7 @@ You are building Nabvy, a UK deal-finding engine. Before any task read `README.m
 
 ## How to work
 
-- **One task at a time** from `docs/backlog.md`, in order, unless a human says otherwise. Do not start the next task in the same session without a check-in.
+- **One task at a time** from `docs/backlog.md`, in order, unless a human says otherwise. Do not start the next task in the same session without a check-in. *(Exception, owner 2026-09-24: atomic modules are built in parallel waves, one session and one pull request per module, under a coordinator session; see "Atomic modules" in `docs/decisions.md`.)*
 - **Definition of done** is stated per task. It always includes: types in contracts or schema in db, a fixture-based test, lint and typecheck clean, a short note in the module's `README.md` on anything decided, and an updated row in `docs/progress.md`. Work on a branch `task/<id>-<slug>` and open one pull request per task; a human merges.
 - **Fixture-first.** Every extraction, valuation or risk change must run against `fixtures/` and keep the pass rate at or above the previous run. Add a fixture when you find a case the tests miss.
 - **Batches, not items.** Pipeline tasks process arrays of listings (100–500). Never write a task that handles one listing per run.
