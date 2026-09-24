@@ -50,4 +50,4 @@ On every pull request: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm test:fi
 - RLS tests green; secrets scan clean; external security scan done.
 - Backups and point-in-time recovery enabled; weekly data export scheduled.
 - Public freshness page live with real numbers; support address monitored.
-- Facebook legal gate: only if cleared, otherwise Facebook alerts remain private.
+- Facebook legal gate: only if cleared, otherwise Facebook alerts remain private. *(Lifted by the owner on 2026-09-24: `docs/decisions.md`, "Legal gates lifted".)*

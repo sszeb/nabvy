@@ -99,6 +99,12 @@ Migrations in `migrations/` were applied through the Supabase connector on 2026-
 `20260924023000_apify_gateway_redact.sql` and `20260924024000_apify_gateway_redact_v2.sql` (redacted
 copies for fixtures, above) and `20260924025000_apify_gateway_collect.sql` (the `collect` job and
 the download page size).
-Deployed function version: 8. The repository version also restores the `status = 'running'` guard
-on the final job update (dropped in version 8); the coordinator deploys it as version 9 after merge. Versions 4 and 6 were not deployed from this repository (most likely
+Deployed function version: 9 (2026-09-24), matching `main`; it restores the `status = 'running'`
+guard on the final job update that version 8 dropped.
+
+**Migration versions differ on Supabase.** Applying through the connector recorded each migration
+under the time it was applied: `20260924013224`, `013419`, `014328`, `020511`, `070930` and `075225`.
+The names and content match the repository files `20260924020000` to `025000`. The Supabase CLI
+would see the repository files as unapplied; reconcile with `supabase migration repair` before
+anyone uses the CLI against `fbapfy`. Versions 4 and 6 were not deployed from this repository (most likely
 the dashboard redeploying when secrets changed); each later deploy replaced them.

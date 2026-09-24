@@ -63,7 +63,7 @@ nabvy/
 | `docs/valuation.md` | Valuation, risk and days-to-sell rules |
 | `docs/scan-mode.md` | Scan mode: recognition, on-demand lookup, similar-item search, actions |
 | `docs/packs/gpu-pc.md` | The first category pack |
-| `docs/billing.md` | Stripe catalogue, usage balance, entitlements, trials, tax, refunds, referrals |
+| `docs/billing.md` | Stripe catalogue, usage balance, entitlements, trials, tax, no-refunds policy, referrals |
 | `docs/affiliates.md` | Creator and affiliate programme: terms, Dub Partners wiring, economics |
 | `docs/web-app.md` | Screens, deal card, onboarding, channel linking, analytics events |
 | `docs/dashboards.md` | User and admin dashboards, database stance (Postgres only, graph trigger), agent access |

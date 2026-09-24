@@ -8,7 +8,7 @@ These are standing rules. Change them only with a human decision recorded here.
 
 | Topic | Build pack says | Brief says (wins) |
 | --- | --- | --- |
-| Seller data | Never store seller names or profile links; hash public seller IDs before storage (`CLAUDE.md`). Raw provider responses kept 30 days as snapshots (`CLAUDE.md`, `docs/modules.md`) | Keep seller data for internal use only, in a restricted private schema the Data API cannot reach. Never show seller identity (names, IDs, pictures, account links) or anything derived that identifies a seller. The internal seller key would be an HMAC of the ID with a secret held outside the database, built only after the DPIA (`SELLER_DATA.md` §3.2). Raw snapshots hold the actor's seller fields, so they count as part of that restricted store. Minimisation still applies: no measured use needs names or pictures (`SELLER_DATA.md` §5) |
+| Seller data | Never store seller names or profile links; hash public seller IDs before storage (`CLAUDE.md`). Raw provider responses kept 30 days as snapshots (`CLAUDE.md`, `docs/modules.md`) | Keep seller data for internal use only, in a restricted private schema the Data API cannot reach. Never show seller identity (names, IDs, pictures, account links) or anything derived that identifies a seller. The internal seller key would be an HMAC of the ID with a secret held outside the database, built only after the DPIA (`SELLER_DATA.md` §3.2). Raw snapshots hold the actor's seller fields, so they count as part of that restricted store. Minimisation still applies: no measured use needs names or pictures (`SELLER_DATA.md` §5). *Superseded for storage by "Actor data kept in full" below: everything is kept; only what users see is restricted.* |
 | Seller-derived flags | Risk flags `new_seller`, `reused_photos` and `stock_photo` are computed from seller hashes (`docs/packs/gpu-pc.md`, `docs/modules.md`) | Public tables never hold a seller key or any flag derived from seller keys; fraud signals are listing-level only (`SELLER_DATA.md` §3.7, §5) |
 | Labels and scores | Risk flags are signals, never accusations; wording avoids calling a seller a scammer (`docs/compliance.md`). A numeric risk score (0..1) reduces the deal score (`docs/contracts.md`, `docs/valuation.md`) | "Suspected scam", "suspected trade seller", "suspected flipper" and similar are allowed, each worded as a suspicion, shown with its evidence, from a documented rule with calibrated thresholds, with a report and correction route, never revealing seller identity. Scam labels run in shadow mode first; wording gets legal review before launch. Other warning signs are neutral facts. "No scam scores"; never show an unexplained score (`HANDOFF.md`) |
 | Price-drop watch | Not in version 1 (`docs/decisions.md`, Product) | Build first: price history within one listing ID only. Relists are merged silently; never show history across listing IDs, "relisted" or "seen before" |
@@ -16,13 +16,13 @@ These are standing rules. Change them only with a human decision recorded here.
 | Sale signals | Vanished listings are sale signals; lifecycle feeds sell-through and days-to-sell (`docs/architecture.md`, `docs/valuation.md`) | A listing that disappears may not have sold. Opt-in sold prices reported by users are the only route to sale prices (`PARTS_INTELLIGENCE.md` §3, §4) |
 | Part-out maths | Part-out maths is a version-1 feature (`docs/decisions.md`, Product) | A part-out or flip calculator comes later, once standalone part prices exist; an asks-based sum is not a part-out margin (`HANDOFF.md`, `PARTS_INTELLIGENCE.md` §2, §3) |
 | Cadence and tiers | Tiers are sold by cadence: Standard 5-minute, Pro and Business 1-minute (`docs/decisions.md`, Pricing) | T2 sets the cadence; no faster checks or "instant" tier are sold until T2 reports (`HANDOFF.md`, `PARTS_INTELLIGENCE.md` §3) |
-| Region and currency | UK; GBP only (`docs/operations.md`) | UK and Ireland. Irish asks form their own EUR groups, never converted into GBP ones |
+| Region and currency | UK; GBP only (`docs/operations.md`) | UK and Ireland. Irish asks form their own EUR groups, never converted into GBP ones *For the beta: UK only, Ireland skipped (owner, 2026-09-24; "Beta coverage and Apify budget" below).* |
 | Location precision | Coordinates stored to 100 m; a deals map with pins (`docs/compliance.md`, `docs/dashboards.md`) | Show locations no finer than town or distance (`SELLER_DATA.md` §5) |
 | Per-user work | Scan mode's on-demand fetch includes Facebook asks via Apify per scan (`docs/scan-mode.md`) | Never run Facebook fetches or AI per user. Pasted links join the shared, deduplicated details queue |
 | Search planning | One watch per marketplace, category and 40 km cell, H3 resolution 4 (`docs/architecture.md`, `docs/engineering.md`) | Per region: a verified centre `cityId` × a few terms, never per user (seed: `city-pages.seed.json`, 771 city IDs, 5 verified centres). Newest-first checks, default-order catch-up, daily sweeps; the app chooses which IDs get details and sends them as `listingIds` batches; the actor never filters or judges |
 | Photos | Photo fingerprint and embedding per listing; Storage for listing photos (`docs/engineering.md`, `docs/architecture.md`) | Photo review only when the text is silent; photos fetched through Apify; bytes deleted after review; never serve photos from our own storage |
-| Resale of listing data | Business tier: export, channel feeds and a public deals API (`docs/decisions.md`, Pricing; backlog 5.3, 5.4a) | Avoid any resale of listings, descriptions or photos; sale or sharing with third parties waits for legal advice (`PARTS_INTELLIGENCE.md` §3, §6) |
-| Legal gates | Facebook alerts reach paying users only after a UK legal review (`docs/compliance.md`) | Do not charge before legal advice (Meta's terms, database right, copyright, UK GDPR). An LIA and a DPIA come before further collection, not only before launch; get the legal view before collecting seller data at scale (`PARTS_INTELLIGENCE.md` §6, `SELLER_DATA.md` §5) |
+| Resale of listing data | Business tier: export, channel feeds and a public deals API (`docs/decisions.md`, Pricing; backlog 5.3, 5.4a) | Avoid any resale of listings, descriptions or photos; sale or sharing with third parties waits for legal advice (`PARTS_INTELLIGENCE.md` §3, §6) *The legal-advice gate was lifted by the owner on 2026-09-24 ("Legal gates lifted" below).* |
+| Legal gates | Facebook alerts reach paying users only after a UK legal review (`docs/compliance.md`) | Do not charge before legal advice (Meta's terms, database right, copyright, UK GDPR). An LIA and a DPIA come before further collection, not only before launch; get the legal view before collecting seller data at scale (`PARTS_INTELLIGENCE.md` §6, `SELLER_DATA.md` §5) *Lifted by the owner on 2026-09-24 ("Legal gates lifted" below); the points stay listed in `docs/legal-review.md`.* |
 | Apify token | `APIFY_TOKEN` in the pipeline's platform vault (`docs/secrets.md`) | A Supabase Edge Function secret; never in code or chat. Only actor `YfdUav3sZ2BgEf8rh`, never `JR2fdK8Nj6OLCwKkP`. It is the Edge Function secret `APIFY_TOKEN` on `fbapfy`, read only by the `apify-gateway` Edge Function (`supabase/README.md`) |
 
 ## Actor data kept in full
@@ -68,7 +68,7 @@ What these files teach informs the whole app, not only the calls to the actor. T
 The build pack's larger modules (`docs/modules.md`) are split to match; the module catalogue that does this is in progress (`docs/progress.md`).
 
 **How modules are built** (owner, 2026-09-24): foundation first, then parallel waves.
-1. **Foundation, one session.** After the owner approves the module catalogue, one session lays what every module builds on:
+1. **Foundation, one session.** One session lays what every module builds on. It started on 2026-09-24 before the catalogue was approved, on the owner's instruction to run wave 0 in parallel ("start as many sessions as needed"). It builds only shared machinery that does not depend on the module list:
    - per-module contract files and database-schema namespaces in `packages/contracts` and `packages/db`;
    - an event registry with one file per module;
    - a scaffold script for the module shape;
@@ -79,45 +79,154 @@ The build pack's larger modules (`docs/modules.md`) are split to match; the modu
 
 For module work this replaces `CLAUDE.md`'s "one task at a time".
 
+## MVP scope and pipeline runtime
+
+**Owner's decisions, 2026-09-24.**
+- **Scope.** The production MVP for this push is a **public beta with full functionality and one source: Facebook Marketplace through Nabvy's actor**. eBay, CeX, Gumtree and the other sources come later. Features that the build pack fed from other sources work from Facebook data alone. For example, price information is the asking-price position from Facebook asks (the Precedence row "Price wording"), with no eBay sold prices or CeX prices. The legal gates are lifted ("Legal gates lifted" below): the operational instruction is a fully working production app.
+- **Frontend.** A modern, professional design, in the spirit of the Apify console, eBay and ChatGPT:
+  - an app shell with a left sidebar;
+  - clean listing cards with the price up front;
+  - a calm, spacious layout with a prominent search box;
+  - light and dark themes.
+
+  Built on the build pack's stack (Next.js, Tailwind, shadcn/ui); the owner lets the build choose the look.
+- **Charging from launch** (owner's explicit override, 2026-09-24). Billing is built and live at the public beta launch. This overrides the brief's "do not charge before legal advice" (Precedence row "Legal gates") on the owner's instruction. The rest of that row was lifted too ("Legal gates lifted" below). Plans and prices are those under "Pricing and cadence" below. What each tier promises in cadence stays open until T2 reports (Precedence row "Cadence and tiers"), so plans are not sold on speed meanwhile.
+- **Listing photos.** Not shown in the web app until legal advice says they may be (owner, 2026-09-24). This is the owner's own product decision, not one of the lifted legal gates. Cards show a neutral placeholder and an "Open on Facebook" link; a feature flag, off by default, lets photos be switched on later without a redesign.
+- **Scan mode uses vision AI per scan** (owner's explicit override, 2026-09-24). Photo recognition runs a model call per scan, capped per user by `SCAN_SPEND_CAP_MINOR`. This overrides the brief's "never run AI per user" (Precedence row "Per-user work") for scan recognition only. Facebook fetches are still never run per user: pasted links join the shared, deduplicated details queue.
+- **No refunds** (owner, 2026-09-24). A strict no-refunds policy replaces the 14-day money-back. Nothing is refunded at the customer's request:
+  - subscriptions, including a trial that has converted, annual plans and extra areas;
+  - usage top-ups, boosts and exports.
+
+  How it is built:
+  - **Cancellation.** Customers can cancel at any time in the billing portal. It takes effect at the end of the paid period, and access continues until then.
+  - **Plan changes.** Downgrades are scheduled for the period end, so no credit arises. Upgrades take effect at once and charge the difference.
+  - **Disclosure.** The pricing page, Checkout and the terms state "Payments are non-refundable" before purchase.
+  - **Start now at Checkout** (owner, 2026-09-24, as big tech does). Checkout has one required tick, "Start my plan now", for subscriptions, trials and top-ups. It is stored with the payment.
+  - **No refund button** anywhere, for users or admins.
+  - **Chargebacks** are recorded, and they reverse any affiliate commission.
+  - **Failed actions.** A metered action that fails returns its usage credits (a ledger reversal, not a refund of money).
+
+  Worded and paired as big tech does ("Policies and conduct match big tech" below). Points a lawyer may want to look at are listed in `docs/legal-review.md`.
+- **Fair use, suspension and bans** (owner, 2026-09-24). Nabvy publishes a Fair Use Policy alongside its terms and acceptable use policy. At its discretion, Nabvy may suspend an account temporarily or ban it permanently when it notices abuse, including:
+  - a breach of the terms, the acceptable use policy or the fair use policy;
+  - fraud or chargeback abuse;
+  - a risk to other users, to sellers or to the service.
+
+  Paid amounts are not refunded on a ban, under "No refunds". A banned person may not open a new account.
+
+  **Automatic, autonomous and internal** (owner, 2026-09-24). Enforcement is automatic: the system applies throttles, limits, suspensions and bans itself from its rules, with no human needed to act. Everything behind a decision stays internal and is never shown or told to any user, in any form:
+  - no reasons, evidence, rule names, signals or scores;
+  - nothing in the app, email, notifications, API, exports or support replies.
+
+  The user receives only a short notice that names the policy the step was taken under and nothing more (owner, 2026-09-24, as big tech does), for example "Your account has been suspended under our Fair Use Policy." The notice offers a review route: the user may ask for a review within **30 days**, a person looks internally, and the reply says only whether the decision stands, changed or was lifted. Developers and admins see everything. Points a lawyer may want to look at are listed in `docs/legal-review.md`.
+
+  The product enforces it:
+  - an account status (active, suspended until a date, banned) checked on every signed-in request and by every job that acts for a user;
+  - automatic enforcement by the account-integrity module, each action with an internal reason, evidence and audit row;
+  - internal admin tools to review, override and lift, also audited;
+  - throttling and hunt or alert limits as fair-use steps short of suspension;
+  - checks against ban evasion (the same email or payment card; listed in `docs/legal-review.md`);
+  - a CI test that fails if any user-facing output carries an enforcement reason, rule, signal or score.
+- **Beta coverage and Apify budget** (owner, 2026-09-24).
+  - **Nothing runs unless a user asks** (owner, 2026-09-24): "we are not running anything unless requested by the actual user." Collection is driven only by users' active hunts.
+    - A hunt (product and area) maps to the nearest search centre on a national UK grid, with Ireland skipped for now.
+    - While at least one active hunt needs a centre and term, the system runs that shared search. When no hunt needs it, nothing runs.
+    - Searches stay per region, never per user (Precedence row "Per-user work"): one search for a centre and term serves every hunt that maps to it.
+    - Areas and products nobody hunts cost nothing.
+  - **The one exception: our own test hunt.** The owner's team tests the app on a real hunt for **"rtx3090"**. Its area is Chichester, the verified centre the actor's own tests used (confirmed by the owner, 2026-09-24). This hunt is the first end-to-end acceptance test of the pipeline: search, ingest, parts and noise filtering, copy-advert detection, asking-price position, and an alert delivered.
+  - **The grid.** Centres are Facebook city pages about 80–100 km apart covering Great Britain and Northern Ireland, taken from `city-pages.seed.json`. A centre is confirmed by a cheap verification run the first time a hunt needs it. Prices are GBP only.
+  - **Budget.** The gateway enforces an Apify spend cap of **$150 a month**, as a ceiling. The gateway's cap today is a lifetime total ($5.50 for testing), so it becomes a monthly cap, reset each calendar month, with the same worst-case reservations.
+  - **Cadence within the budget.** The spend governor shares the monthly budget among the centres and terms that active hunts need, favouring paying subscribers. On the actor's evidence, about $3.20 a month per term per centre buys a newest-first check every 30 minutes ($0.0022 a check × 48 a day × 30 days, computed from fb-scrap-engine/docs/EVIDENCE_LEDGER.md:319; `docs/fb-actor-reference.md` §12). This is an estimate, refined once the actor's T2 results and measured spend are in.
+- **Search, map and pickup features** (owner, 2026-09-24). Design in progress; each is an atomic module or a web feature.
+  - **Filters and sorting like eBay:** nearest distance, cheapest, newest, best asking-price position and the other eBay equivalents, plus price range, condition, collection or delivery, and radius.
+  - **A map view like Airbnb's:** listings as price markers on a map beside the list, panning and zooming to search. Markers show approximate location only, at town or area level, clustered where dense. A marker is placed at the town or area's centroid, never at the listing's own coordinates and never at jittered real coordinates. A CI test enforces this. This follows the Precedence row "Location precision" and Airbnb's own practice of an approximate area.
+  - **A distance limit with "worth the trip" hints:** users see only items within the distance they choose. The app may also hint at good deals slightly further away, when the saving outweighs the extra travel.
+  - **Where an item really is** (owner, 2026-09-24). A listing's location field is not trusted on its own:
+    - the location may be missing, with the real one only in the description (for example "collection from Bognor");
+    - the seller may have picked the wrong one, for example an autofilled postcode typed earlier that day.
+
+    Nabvy resolves each listing's pickup location from every signal it has, in the same way it finds an "RTX 3090" in the description of a listing titled "gaming PC":
+    - the location field;
+    - place names and postcodes in the title and description;
+    - conflicts between them.
+
+    Rules come first; AI runs at most once per listing version, shared by all users, only where rules cannot decide. What users see stays at town or area level, marked as approximate when it is uncertain. A full postcode or street in a description may be used internally, but only the town or area derived from it may reach a `v_` view or user-facing output; the location-precision CI test covers this. Model output is validated against a Zod schema before use. Distance filters, the map and hints use the resolved location.
+  - **"Too good to be true"** (owner, 2026-09-24). Listings that look like scams are marked "too good to be true". The owner's examples: a listing placed on the Isle of Wight whose seller then says collection is in Manchester, and a listing in Chichester whose seller then says postage only. Nabvy never sees conversations with sellers, so the mark comes from two sources:
+    - **Listing signals:** a price far below comparable asks (at n>=10); the listing's location conflicting with the location in its text (the "Where an item really is" resolution); "postage only", "courier only" or "delivery only" in a listing offered for collection; risky payment requests; and copies of the same advert across distant places (copy-advert).
+    - **User reports:** after messaging a seller, a user can report in one tap what the seller said, for example that collection was elsewhere, that it was postage only, or that they asked for a bank transfer or deposit. The report counts towards the mark that other users see on that listing and on its copies.
+
+    The label reads "Suspected too good to be true:" followed by the facts. This joins the owner's phrase with the brief's "Suspected ...:" rule; the owner confirms the final text. Reports count only from distinct, established accounts, are rate-limited, need a threshold before a report-based mark shows, and never reveal who reported. The mark attaches to the listing, never to the seller.
+
+    It follows the Precedence row "Labels and scores":
+    - worded as a suspicion and shown with its evidence;
+    - from documented rules with thresholds calibrated on real data;
+    - with a way to report a mistake;
+    - no numeric score shown.
+
+    Seller-level signals stay internal (Precedence row "Seller-derived flags"). It runs in shadow mode during the rtx3090 test hunt to set its thresholds, then goes live.
+  - **Every listing is reused** (owner, 2026-09-24). A run returns far more than the product it searched for. For example, an "rtx3090" search also returns RTX 2080s, 3070s and whole PCs. All of it goes into one shared pool:
+    - each listing is stored once and identified from its title and description (the parts record), whichever hunt triggered the run;
+    - every listing adds to the asking-price picture for its own product;
+    - every listing is matched against every user's hunts, not only the hunt that triggered the run;
+    - a listing far below its own product's comparable asks (asking-price position, n>=10) is a gem candidate. It is checked against the "Too good to be true" rules, and may be given a detail fetch to confirm it, before it is shown as a top pick, to users hunting that product, or as a similar alternative ("while hunting your RTX 3090 we also found ...").
+
+    Reuse costs no extra Apify spend: no search runs for by-catch alone.
+  - **Pickup route planning:** the user records each pickup they have arranged with a seller (where, and the agreed time or window). The app plans an optimal route to collect the whole haul in one day. The addresses and times come from the user, stay private to that user, and are never taken from listing data or shown to anyone else. They are stored under row-level security in the owning module's schema, appear in no `v_` view, and fall under the retention question.
+- **Legal gates lifted** (owner, 2026-09-24): "Lift the gates. The operational instruction is to have the production app fully working as intended." The gates are:
+  - further data collection through Apify no longer waits for an LIA and a DPIA. Nabvy never deals with Facebook directly: it uses third-party data that comes from Apify runs (owner, 2026-09-24);
+  - sharing or reselling listing data no longer waits for legal advice, so the build pack's Business features (export, channel feeds, public API) are back in the plan;
+  - alerts built from that data go to every user, paying or not.
+
+  Collection runs as the product needs, within the Apify spend cap the owner sets. The points stay listed in `docs/legal-review.md`. The owner's own product decisions are unchanged, for example listing photos stay off until the owner decides otherwise.
+- **Policies and conduct match big tech** (owner, 2026-09-24): "Any and all policies and conduct just match to the big tech. I'm sure their policies and terms were vetted by legal professionals already." For every policy and every piece of conduct toward users, Nabvy takes the position that leading consumer tech companies share in their UK-facing terms and practice, written in Nabvy's own words. Examples:
+  - terms, refunds, cancellation and trials;
+  - fair use, acceptable use and account sharing;
+  - suspension, bans, notices and appeals;
+  - privacy and cookie notices.
+
+  The benchmark is Netflix, Spotify, Disney+ and YouTube for subscriptions; Google, Apple, Microsoft and Meta for accounts and enforcement; OpenAI, Anthropic, Canva, Midjourney and Adobe for SaaS and AI; and Apify and Supabase for platform-style clauses. The owner's specific decisions above hold. Where big tech pairs them with a standard element, Nabvy includes it too, for example "except where required by law" on refunds, a generic appeal or contact route that reveals nothing, and trial-end reminders.
+- **Legal review on request only** (owner, 2026-09-24): "Run everything as instructed and only write to a document what needs a legal review but do not run any legal reviews or checks until requested." Nabvy is built as the owner instructs. Points that may need a lawyer are listed, without analysis, in `docs/legal-review.md`. No legal research, review or check is run until the owner asks for one.
+- **Pipeline runtime.** **Trigger.dev** runs the pipeline modules, as the build pack planned. Apify is still called only through the Supabase `apify-gateway` Edge Function: pipeline tasks queue gateway jobs in the database and read the collected rows back. This answers the runtime question in `docs/questions.md`.
+
 ## Product
 
 - **Audience and first category:** Nabvy is for anyone in the UK who buys second-hand to resell or to get a good deal; it is not limited to tech flippers. The first category pack is GPUs and gaming PCs, chosen for clean product keys and strong price data; the first design partners are tech flippers. Other categories arrive as category packs (data, not code), in this order of intent: consoles and controllers, phones, laptops and PC parts, collectables, then cars. DVDs are out: CeX pays a penny for them and demand is falling.
 - **Two entry points:** alerts on new online listings, and scan mode for items in front of the user.
-- **Five version-1 features:** checked deal alerts with part-out maths; speed at parity with an honest freshness stamp; risk screening on every alert; hunts by postcode and radius with sensible defaults; one-tap action (open listing, prepared message, checklist, then "bought for" and "sold for" capture).
-- **Not in version 1:** listing to any marketplace other than eBay; price-drop tracking; CRM; AI negotiation; auto-messaging sellers; native apps; DVDs.
+- **Five version-1 features:** checked deal alerts with part-out maths; speed at parity with an honest freshness stamp; risk screening on every alert; hunts by postcode and radius with sensible defaults; one-tap action (open listing, prepared message, checklist, then "bought for" and "sold for" capture). *(Part-out maths is superseded by the Precedence row "Part-out maths"; for this push, the scope is "MVP scope and pipeline runtime" above.)*
+- **Not in version 1:** listing to any marketplace other than eBay; price-drop tracking; CRM; AI negotiation; auto-messaging sellers; native apps; DVDs. *(Price-drop tracking is superseded: the Precedence row "Price-drop watch" makes it build-first.)*
 - **Brand:** Nabvy. Domains: nabvy.com (marketing site, canonical), nabvy.co.uk (redirect), nabvy.app (the PWA); dibvy.com, dibvy.co.uk, dibvy.app redirect to Nabvy. DNS on Cloudflare; email hello@nabvy.com on Google Workspace.
 
 ## Data access
 
-- **APIs first, Apify for the rest, no scrapers of our own.** eBay through its official APIs (Browse for live listings and image search; Marketplace Insights for sold prices when approved; Sell APIs for listing drafts with the user's OAuth consent). CeX through its web API at low volume, cached and capped, with a licensing request to CeX and CeXDB in progress. Facebook Marketplace, Gumtree and later Vinted through third-party Apify actors behind the provider adapter contract, two actors per marketplace with fail-over and spend caps; managed APIs such as ScrapeCreators only as a fallback.
-- **Facebook go-live gate:** Facebook alerts are not exposed to paying users until a UK legal review of using provider-collected data (database right, UK GDPR) is complete. A per-provider kill switch exists from day one.
+- **APIs first, Apify for the rest, no scrapers of our own.** eBay through its official APIs (Browse for live listings and image search; Marketplace Insights for sold prices when approved; Sell APIs for listing drafts with the user's OAuth consent). CeX through its web API at low volume, cached and capped, with a licensing request to CeX and CeXDB in progress. Facebook Marketplace, Gumtree and later Vinted through third-party Apify actors behind the provider adapter contract, two actors per marketplace with fail-over and spend caps; managed APIs such as ScrapeCreators only as a fallback. *(Superseded for Facebook: one actor only, `YfdUav3sZ2BgEf8rh`, no fallback, CLAUDE.md and the Precedence row "Apify token". For this push Facebook is the only source.)*
+- **Facebook go-live gate:** Facebook alerts are not exposed to paying users until a UK legal review of using provider-collected data (database right, UK GDPR) is complete. A per-provider kill switch exists from day one. *(Lifted by the owner on 2026-09-24: "Legal gates lifted" above.)*
 - **eBay Partner Network:** eBay alert clicks carry the EPN campaign ID; affiliate links are disclosed in the app.
 
 ## Platform
 
 - **Database:** Supabase (existing project `fbapfy`, eu-west-1, Postgres 17), used as managed Postgres plus Storage, Queues and pg_cron. One database for every shape of data (relational, time series by partition, PostGIS, pgvector, pg_trgm, shallow graphs by recursive CTE). No graph database now; revisit only if fraud-ring or similar-item queries need more than three hops or exceed 500 ms p95 (then Apache AGE or Kuzu, Postgres staying the source of truth). Dashboards read from views and materialised views only. Switch only if the database line passes about $400 a month and a rival is materially cheaper for the same load.
-- **Pipeline runtime:** Trigger.dev, with Supabase Queues plus Edge Functions as the fallback.
+- **Pipeline runtime:** Trigger.dev, with Supabase Queues plus Edge Functions as the fallback. *(Confirmed by the owner on 2026-09-24: "MVP scope and pipeline runtime" above.)*
 - **Authentication and authorisation:** Better Auth (MIT) with its Drizzle adapter on the Supabase Postgres database: magic-link email, Google sign-in, admin plugin for roles, captcha plugin with Cloudflare Turnstile, Stripe plugin for subscriptions. Supabase Auth, PostgREST and supabase-js are not used for application data; the browser never talks to the database. All data access runs server-side through Drizzle inside a transaction that sets the current user, and row-level security policies read that setting as a second layer.
 - **How parts talk to each other:** three boundaries, three mechanisms. *Module to module* is in-process: modules are packages in one deployable that call each other's exported functions and publish thin events through Trigger.dev and Supabase Queues; there is no HTTP between modules. *Browser to server* is one typed procedure layer built with oRPC (MIT): every procedure validates input with the contracts schemas, checks the session, and calls a module function inside `withUser`; server actions are allowed only for plain form submits and must call the same procedures. *Outside world* is HTTP: webhooks in (Stripe, Telegram, Dub) as route handlers, and a versioned public REST API generated from the same oRPC router with OpenAPI for Business-tier customers, bots and AI tools. Microservices are ruled out until a module needs to scale or deploy independently, which the contracts make possible without a rewrite.
 - **Language:** TypeScript end to end. Python only if valuation later needs libraries TypeScript lacks.
 - **Models:** Vercel AI SDK with Zod structured outputs. Claude Haiku 4.5 by default; Claude Sonnet 5 for listings above a value threshold or below a confidence threshold (thresholds set from measured data, see `docs/valuation.md`); a vision-capable model for photos in scan mode. Batch pricing for backfills; prompt caching for pack instructions.
-- **Snapshots:** raw provider responses in Supabase Storage for 30 days.
+- **Snapshots:** raw provider responses in Supabase Storage for 30 days. *(Superseded: raw actor data is kept in full and its retention is not yet set, "Actor data kept in full" above.)*
 
 ## Pricing and cadence
 
 - **Pricing model ("watch and check"):** two kinds of value, priced two ways. *Watching* (live alerts on areas at a cadence) is a flat subscription entitlement because its cost is shared across everyone in a cell. *Checking* (scans, live on-demand lookups across all sources, similar-item searches, boosts, exports) is metered usage in pounds, like Apify's prepaid usage: every plan includes a monthly usage allowance, then pay-as-you-go top-ups, with a lower unit price on higher plans. Every feature is available on every tier, including Free; tiers differ only in areas, cadence and usage allowance.
-- **Tiers:** Free (£0.50 usage a month with full data enrichment, live eBay alerts funded by affiliate commission, Nabvy Daily as the delivery of other sources, no live paid-source areas); Standard £9/month or £90/year (one 40 km area at 5-minute cadence, £10 usage included, top-ups at list price); Pro £29/month or £290/year (three areas, 1-minute cadence, £35 usage included, top-ups 10% below list); Business £99/month or £990/year (ten areas, 1-minute cadence, export and channel feeds, £120 usage included, top-ups 20% below list). Extra area £4/month on any paid plan. Top-up packs £5, £10, £25; unused included usage expires monthly, purchased usage does not.
+- **Tiers:** Free (£0.50 usage a month with full data enrichment, live eBay alerts funded by affiliate commission, Nabvy Daily as the delivery of other sources, no live paid-source areas); Standard £9/month or £90/year (one 40 km area at 5-minute cadence, £10 usage included, top-ups at list price); Pro £29/month or £290/year (three areas, 1-minute cadence, £35 usage included, top-ups 10% below list); Business £99/month or £990/year (ten areas, 1-minute cadence, export and channel feeds, £120 usage included, top-ups 20% below list). Extra area £4/month on any paid plan. Top-up packs £5, £10, £25; unused included usage expires monthly, purchased usage does not. *(What each tier promises in cadence waits for T2, Precedence row "Cadence and tiers"; for this push Facebook is the only source, so eBay items do not apply.)*
 - **Trial:** when a Free user reaches the cap the app offers a 7-day Standard trial with a card and £3 of bonus usage valid for the trial; one trial per account; converts to Standard unless cancelled. An Apify-style entry plan (£1 a month billed £6 for six months with a bonus usage balance) is a later experiment, not a launch feature.
 - **Usage list prices (pence, set at roughly two to three times measured cost; reviewed after week one):** scan with cached data 2; scan or lookup with a live check across all sources 15; similar-item search 10; 24-hour product boost 149; 7-day boost 499; export 50. Prices are shown before every metered action.
 - **Cadence rule:** a cell runs at the fastest cadence whose monthly provider cost stays under 60% of that cell's subscription revenue, checked daily; 5 minutes is the default; an hourly nationwide sweep is the floor. Everyone in a cell gets the cell's cadence, and the app says so. Speed is a property of the cell, never an artificial delay.
-- **Revenue rules:** annual plans at ten months' price; design partners on lifetime Pro; £5 usage credit to both sides per paying referral; 14-day money-back on a first subscription payment; usage top-ups and boosts non-refundable once used. Prices include UK VAT (Stripe Tax).
+- **Revenue rules:** annual plans at ten months' price; design partners on lifetime Pro; £5 usage credit to both sides per paying referral; no refunds (owner, 2026-09-24; "No refunds" under "MVP scope and pipeline runtime"). Prices include UK VAT (Stripe Tax).
 - **Free-tier limits:** 3 active hunts, £0.50 usage a month, eBay alerts live, other sources as a daily digest.
 - **Marketing machinery from day one:** lifecycle messaging on PostHog Workflows triggered by first-party events (abandoned checkout and onboarding, activation, cap reached, trial, failed payment, win-back, weekly review); Nabvy Daily, a daily brief with local hot deals, the user's product price moves and a UK market recap (plus regional CeX comparisons where we hold data), sent by email and channel post with a public indexable web version; transactional email on Resend with templates in the repository; SEO price pages generated from the Price Book; waitlist before launch; marketing consent by unticked box or soft opt-in with one-click unsubscribe and a preference centre. No separate marketing suite. Details in `docs/marketing.md`.
-- **Affiliate and creator programme from day one of the public beta,** run on Dub Partners (open source): 30% of net subscription revenue for 12 months, 10% on usage top-ups, tiers to 35% and 40% by active referred subscribers, 90-day last-click cookie, codes attribute without a click, £5 usage credit to the referred user, 30-day hold with refund clawback, monthly payouts with a £20 minimum, mandatory ad disclosure. Details in `docs/affiliates.md`.
+- **Affiliate and creator programme from day one of the public beta,** run on Dub Partners (open source): 30% of net subscription revenue for 12 months, 10% on usage top-ups, tiers to 35% and 40% by active referred subscribers, 90-day last-click cookie, codes attribute without a click, £5 usage credit to the referred user, 30-day hold with chargeback clawback, monthly payouts with a £20 minimum, mandatory ad disclosure. Details in `docs/affiliates.md`.
 
 ## Build order
 
-- **Build order:** Facebook Marketplace first, using the existing Nabvy Apify actor as the provider (it is ready); then eBay through the official API; then scan mode; then Gumtree; then the web app, billing and public beta. Facebook alerts stay private (the founder and design partners only) until the legal gate clears.
+- **Build order:** Facebook Marketplace first, using the existing Nabvy Apify actor as the provider (it is ready); then eBay through the official API; then scan mode; then Gumtree; then the web app, billing and public beta. Facebook alerts stay private (the founder and design partners only) until the legal gate clears; the gate was lifted by the owner on 2026-09-24 ("Legal gates lifted"). *(Superseded for this push by "MVP scope and pipeline runtime" above: a full-featured public beta on Facebook only.)*
 
 ## Success metrics
 
