@@ -43,9 +43,29 @@ New work from the brief, to be placed in the backlog with Nabvy's own integratio
 
 ## The actor is a tool; Nabvy owns the rest
 
-**Owner's decision, 2026-09-24.** The Facebook actor is a plain fetch tool: it runs searches and fetches listing details, and nothing more (its ADR 0002). Everything else is Nabvy's to design and build: copy-advert spam detection, the parts record, noise filtering, suspected-behaviour labels, asking-price position, the price-drop watch, scam signals, alerts and the rest. The actor repo's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` will not be written there; Nabvy writes its own integration plan and copy-advert spam design (in progress, `docs/progress.md`).
+**Owner's decision, 2026-09-24.** The Facebook actor is a plain fetch tool: it runs searches and fetches listing details, and nothing more. Everything else is Nabvy's to design and build: copy-advert spam detection, the parts record, noise filtering, suspected-behaviour labels, asking-price position, the price-drop watch, scam signals, alerts and the rest. The actor repo's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` will not be written there; Nabvy writes its own integration plan and copy-advert spam design (in progress, `docs/progress.md`).
 
-**The actor repo's documents are knowledge for the whole app** (owner, 2026-09-24): "Use the documents as knowledge to help you in developing the app as a whole." Its brief, product requirements, monetisation inputs, designs, evidence ledger, validation reports, reviews, test plans and logs inform every part of Nabvy, not only the calls to the actor. They are being distilled, with citations to the actor repo, into one knowledge file per area of the app (in progress, `docs/progress.md`). `docs/fb-actor-reference.md` stays the reference for the actor's input and output. The Precedence table above still decides conflicts; knowledge that points at a product decision (pricing, tiers, categories, user-facing wording) goes to `docs/questions.md` rather than being decided.
+**Only the listed actor files are read** (owner, 2026-09-24). The owner asked for the actor's documents to be used "as knowledge to help you in developing the app as a whole", and then limited that to the files in the owner's reading list, `docs/fb-actor-sources.md`; the actor repository is a separate project and the rest of it is not scanned. In scope:
+- `HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows" only;
+- the designs `PARTS_INTELLIGENCE.md`, `CONTAINER_LISTINGS.md` and `SELLER_DATA.md`;
+- the data files `city-pages.seed.json` and `part-patterns.json`;
+- `app/route-health.js` and `test/route-health.test.js`;
+- `.actor/input_schema.json`;
+- the optional references `SCALE_PLAN.md`, `MONETISATION_INPUTS.md`, `EVIDENCE_LEDGER.md` and `README.md`.
+
+What these files teach informs the whole app, not only the calls to the actor. The Precedence table above still decides conflicts; knowledge that points at a product decision (pricing, tiers, categories, user-facing wording) goes to `docs/questions.md` rather than being decided.
+
+## Atomic modules
+
+**Owner's decision, 2026-09-24.** Each function of the app is a stand-alone atomic module, starting with copy-advert spam detection; the other functions (the parts record, the noise filter, suspected-behaviour labels, asking-price position, the price-drop watch and the rest) are treated the same way. Working definition, until the owner amends it:
+
+- **One job.** A module does one function, lives in `services/<module>/` with the shape in `CLAUDE.md`, and has its own `README.md`, fixtures and tests.
+- **Own data.** It owns its tables; no other module writes them. Others read its output only through its `v_` views or its exported functions.
+- **Contracts only.** Its types live in `packages/contracts` under its own name. It talks to other modules only through those contracts and thin events; it never imports another module's internals and never calls another module over HTTP.
+- **Stands alone.** It can be built, tested, switched off and replaced on its own. When it is off, the modules that read its output carry on without it.
+- **Pipeline rules.** Handlers take batches, are idempotent (key `source + sourceListingId + contentHash`) and stamp their T-timestamps.
+
+The build pack's larger modules (`docs/modules.md`) are split to match; the module catalogue that does this is in progress (`docs/progress.md`).
 
 ## Product
 

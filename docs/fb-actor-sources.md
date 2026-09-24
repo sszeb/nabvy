@@ -6,9 +6,9 @@ read it through the session's GitHub access, never by fetching Facebook.
 
 Repository: https://github.com/sebtimize/fb-scrap-engine (private, branch main)
 
-**Knowledge for the whole app** (owner, 2026-09-24): every document in the actor repository, not only
-this list, is knowledge for developing the app as a whole: product, pricing, trust, testing and
-operations as well as calling the actor. See `docs/decisions.md`, "The actor is a tool".
+**Scope** (owner, 2026-09-24): only the files in this list are read from the actor repository. It is a
+separate project and the rest of it is not scanned. What these files teach informs the whole app, not
+only calling the actor. See `docs/decisions.md`, "The actor is a tool".
 
 ## Start here
 
