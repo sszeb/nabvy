@@ -35,7 +35,8 @@ export const envGroups = {
   authDatabase: z.object({ DATABASE_URL_AUTH: postgresUrl() }),
   storage: z.object({ SUPABASE_URL: appUrl(), SUPABASE_SERVICE_ROLE_KEY: required() }),
   auth: z.object({
-    BETTER_AUTH_SECRET: required(),
+    // Signs cookies and tokens: at least 32 characters, as Better Auth recommends.
+    BETTER_AUTH_SECRET: z.string().min(32, 'must be at least 32 characters'),
     BETTER_AUTH_URL: appUrl(),
     ADMIN_EMAILS: emailList(),
   }),
