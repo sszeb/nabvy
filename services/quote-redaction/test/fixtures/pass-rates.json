@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "redact": {
+      "passed": 32,
+      "total": 32
+    }
+  }
+}

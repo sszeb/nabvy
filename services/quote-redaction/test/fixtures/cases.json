@@ -1,0 +1,253 @@
+{
+  "note": "Shared by the TypeScript redact() (test/domain.test.ts) and the SQL quote_redaction.redact_result (packages/db/tests/quote-redaction.test.sql). masked lists only non-zero counts.",
+  "cases": [
+    {
+      "id": "plain-title",
+      "input": "Gaming PC RTX 3080 i7 9th gen 32GB DDR4",
+      "text": "Gaming PC RTX 3080 i7 9th gen 32GB DDR4",
+      "masked": {}
+    },
+    {
+      "id": "empty",
+      "input": "",
+      "text": "",
+      "masked": {}
+    },
+    {
+      "id": "price-and-specs",
+      "input": "£450 ono, 1TB NVMe M.2, 750W PSU, Windows 11",
+      "text": "£450 ono, 1TB NVMe M.2, 750W PSU, Windows 11",
+      "masked": {}
+    },
+    {
+      "id": "not-a-postcode-cache",
+      "input": "i5 4th gen, L2 5MB, L3 8MB cache, GTX 1650 4GB",
+      "text": "i5 4th gen, L2 5MB, L3 8MB cache, GTX 1650 4GB",
+      "masked": {}
+    },
+    {
+      "id": "mobile-spaced",
+      "input": "Call 07700 900123 after 5",
+      "text": "Call [phone redacted] after 5",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "mobile-plain",
+      "input": "text me on 07700900123.",
+      "text": "text me on [phone redacted].",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "mobile-plus44",
+      "input": "WhatsApp +44 7700 900123",
+      "text": "WhatsApp [phone redacted]",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "mobile-plus44-zero",
+      "input": "ring +44 (0)7700-900-123",
+      "text": "ring [phone redacted]",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "mobile-0044-dots",
+      "input": "0044.7700.900.123",
+      "text": "[phone redacted]",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "landline-brackets",
+      "input": "Shop (01243) 555 0199, open 9-5",
+      "text": "Shop [phone redacted], open 9-5",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "two-phones",
+      "input": "07700 900123 or 07700 900456",
+      "text": "[phone redacted] or [phone redacted]",
+      "masked": {
+        "phone": 2
+      }
+    },
+    {
+      "id": "not-a-phone-date",
+      "input": "Bought 01.02.2024, receipt 0123",
+      "text": "Bought 01.02.2024, receipt 0123",
+      "masked": {}
+    },
+    {
+      "id": "not-a-phone-model",
+      "input": "Ryzen 5 5600X, RTX 2070 Super 8GB",
+      "text": "Ryzen 5 5600X, RTX 2070 Super 8GB",
+      "masked": {}
+    },
+    {
+      "id": "email",
+      "input": "email me: jo.smith+pc@example.co.uk thanks",
+      "text": "email me: [email redacted] thanks",
+      "masked": {
+        "email": 1
+      }
+    },
+    {
+      "id": "email-upper",
+      "input": "JO@EXAMPLE.COM",
+      "text": "[email redacted]",
+      "masked": {
+        "email": 1
+      }
+    },
+    {
+      "id": "handle-at",
+      "input": "Follow @pc_builds.uk for more",
+      "text": "Follow [handle redacted] for more",
+      "masked": {
+        "handle": 1
+      }
+    },
+    {
+      "id": "handle-at-sentence-end",
+      "input": "dm @jo.",
+      "text": "dm [handle redacted].",
+      "masked": {
+        "handle": 1
+      }
+    },
+    {
+      "id": "handle-label",
+      "input": "insta: pcbuilds_uk, snapchat : jo.s",
+      "text": "insta: [handle redacted], snapchat : [handle redacted]",
+      "masked": {
+        "handle": 2
+      }
+    },
+    {
+      "id": "not-a-handle",
+      "input": "2 @ £50 each, collection @ 5pm",
+      "text": "2 @ £50 each, collection @ 5pm",
+      "masked": {}
+    },
+    {
+      "id": "link-https",
+      "input": "see https://www.example.com/listing?id=1.",
+      "text": "see [link redacted].",
+      "masked": {
+        "link": 1
+      }
+    },
+    {
+      "id": "link-www",
+      "input": "More at www.pcshop.co.uk/builds, cheers",
+      "text": "More at [link redacted], cheers",
+      "masked": {
+        "link": 1
+      }
+    },
+    {
+      "id": "link-facebook",
+      "input": "https://facebook.com/profile.php?id=100000000000001",
+      "text": "[link redacted]",
+      "masked": {
+        "link": 1
+      }
+    },
+    {
+      "id": "link-bare-social",
+      "input": "msg wa.me/447700900123 or instagram.com/pcbuilds",
+      "text": "msg [link redacted] or [link redacted]",
+      "masked": {
+        "link": 2
+      }
+    },
+    {
+      "id": "link-bare-domain",
+      "input": "Listed on ebay.co.uk too",
+      "text": "Listed on [link redacted] too",
+      "masked": {
+        "link": 1
+      }
+    },
+    {
+      "id": "postcode-recorded-run",
+      "synthetic": true,
+      "source": "fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/README.md:35-37 (the business postcode, masked at export; inward half made up)",
+      "input": "Collection from BH16 6FA, Local delivery available for a small fee",
+      "text": "Collection from BH16 [redacted], Local delivery available for a small fee",
+      "masked": {
+        "postcode": 1
+      }
+    },
+    {
+      "id": "postcode-no-space",
+      "input": "PO191AB",
+      "text": "PO19 [redacted]",
+      "masked": {
+        "postcode": 1
+      }
+    },
+    {
+      "id": "postcode-london",
+      "input": "near W1A 1AA and EC1A 1BB",
+      "text": "near W1A [redacted] and EC1A [redacted]",
+      "masked": {
+        "postcode": 2
+      }
+    },
+    {
+      "id": "postcode-outward-only",
+      "input": "Chichester PO19 area",
+      "text": "Chichester PO19 area",
+      "masked": {}
+    },
+    {
+      "id": "postcode-lower-case",
+      "input": "po19 1ab",
+      "text": "po19 [redacted]",
+      "masked": {
+        "postcode": 1
+      }
+    },
+    {
+      "id": "postcode-false-positive",
+      "note": "Known false positive: a real postcode shape. Masking too much is the safe side.",
+      "input": "M2 2TB SSD",
+      "text": "M2 [redacted] SSD",
+      "masked": {
+        "postcode": 1
+      }
+    },
+    {
+      "id": "mixed",
+      "input": "Call 07700 900123 or jo@example.com, @jo_pcs, www.jo.com, PO19 1AB",
+      "text": "Call [phone redacted] or [email redacted], [handle redacted], [link redacted], PO19 [redacted]",
+      "masked": {
+        "email": 1,
+        "link": 1,
+        "handle": 1,
+        "phone": 1,
+        "postcode": 1
+      }
+    },
+    {
+      "id": "multiline",
+      "input": "Line one\n07700 900123\nPO19 1AB",
+      "text": "Line one\n[phone redacted]\nPO19 [redacted]",
+      "masked": {
+        "phone": 1,
+        "postcode": 1
+      }
+    }
+  ]
+}
