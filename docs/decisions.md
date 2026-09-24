@@ -108,6 +108,18 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - **Failed actions.** A metered action that fails returns its usage credits (a ledger reversal, not a refund of money).
 
   The wording shown to customers needs legal review before launch (`docs/questions.md`).
+- **Fair use, suspension and bans** (owner, 2026-09-24). Nabvy publishes a Fair Use Policy alongside its terms and acceptable use policy. At its discretion, Nabvy may suspend an account temporarily or ban it permanently when it notices abuse, including:
+  - a breach of the terms, the acceptable use policy or the fair use policy;
+  - fraud or chargeback abuse;
+  - a risk to other users, to sellers or to the service.
+
+  Paid amounts are not refunded on a ban, under "No refunds", except where the law requires. A banned person may not open a new account. The legal texts keep this discretion as strongly as UK consumer law allows, with the lawyer's points marked `TODO-LEGAL`, for example reasons where lawful and safe, and an appeal route by email.
+
+  The product enforces it:
+  - an account status (active, suspended until a date, banned) checked on every signed-in request and by every job that acts for a user;
+  - admin actions to suspend, ban and lift, each with a reason and an audit row;
+  - throttling and hunt or alert limits as fair-use steps short of suspension;
+  - checks against ban evasion (the same email or payment card).
 - **Pipeline runtime.** **Trigger.dev** runs the pipeline modules, as the build pack planned. Apify is still called only through the Supabase `apify-gateway` Edge Function: pipeline tasks queue gateway jobs in the database and read the collected rows back. This answers the runtime question in `docs/questions.md`.
 
 ## Product
