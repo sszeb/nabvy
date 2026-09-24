@@ -1,0 +1,9 @@
+{
+  "status": "identified",
+  "method": "vision",
+  "identified": "gpu:nvidia:rtx-3080-ti:12gb",
+  "candidates": ["gpu:nvidia:rtx-3080-ti:12gb", "gpu:nvidia:rtx-3080:10gb"],
+  "confidence": 0.92,
+  "modelCalled": true,
+  "event": true
+}

@@ -241,18 +241,21 @@ export function feedTypeOf(search: SearchReport): RunCoverageFeedType | null {
 }
 
 /**
- * The baseline a judged search may set: a complete scan sets `complete`, a healthy capped read
+ * The baseline a stored judgement may set: a complete scan sets `complete`, a healthy capped read
  * `bounded`. Degraded reads, unverified bindings and scopes without a centre, term or known kind
  * set none (actor-integration.md 2.9).
  */
-export function baselineBasis(
-  search: SearchReport,
-  judgement: Judgement,
-): RunCoverageBaselineBasis | null {
-  if (judgement.status === 'degraded') return null
-  if (search.binding !== 'verified') return null
-  if (!search.centreId || !search.term || search.kind === 'unknown') return null
-  return judgement.status === 'complete' ? 'complete' : 'bounded'
+export function baselineBasis(judged: {
+  status: string
+  binding: string | null
+  centreId: string | null
+  term: string | null
+  kind: string
+}): RunCoverageBaselineBasis | null {
+  if (judged.status !== 'complete' && judged.status !== 'capped') return null
+  if (judged.binding !== 'verified') return null
+  if (!judged.centreId || !judged.term || judged.kind === 'unknown') return null
+  return judged.status === 'complete' ? 'complete' : 'bounded'
 }
 
 /** Splits a list into batches of at most `size`. */

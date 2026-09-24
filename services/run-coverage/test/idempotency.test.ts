@@ -87,6 +87,14 @@ describe('idempotency', () => {
     expect((await assess(t.db, { jobId, kind: 'search' })).ok).toBe(true)
   })
 
+  it('on the last attempt, a run listing-ingest never stored is judged without the gap check', async () => {
+    const jobId = await t.collected(recorded)
+    const result = await assess(t.db, { jobId, kind: 'search', lastAttempt: true })
+    expect(result.ok && result.value.statuses).toEqual([{ searchIndex: 0, status: 'capped' }])
+    const [row] = await t.asPipeline('select reasons from run_coverage.v_search_coverage')
+    expect(row?.reasons).toEqual(['overlap-unchecked'])
+  })
+
   it('a details run is acknowledged and skipped', async () => {
     const jobId = await t.collected(recorded)
     const result = await assess(t.db, { jobId, kind: 'details' })

@@ -62,7 +62,15 @@ const scoped = (s: SearchReport): s is Scoped => s.centreId !== null && s.term !
  */
 export async function assess(
   q: Queryable,
-  input: { jobId: number; kind?: ApifyGatewayRunKind },
+  input: {
+    jobId: number
+    kind?: ApifyGatewayRunKind
+    /**
+     * The last delivery attempt: judge without the gap check rather than fail when listing-ingest
+     * has stored no sightings, so no run ends with no judgement at all.
+     */
+    lastAttempt?: boolean
+  },
 ): Promise<Result<AssessReport, AppError>> {
   const report: AssessReport = {
     open: false,
@@ -99,7 +107,7 @@ export async function assess(
   const returned = searches.reduce((n, s) => n + s.listings, 0)
   let ingestOff = false
   if (!runFailed && returned > 0 && (await countSearchSightings(q, job.id)) === 0) {
-    if ((await state(q, 'listing-ingest')) !== 'off') {
+    if (!input.lastAttempt && (await state(q, 'listing-ingest')) !== 'off') {
       return err({
         code: 'run-coverage.not_ingested',
         message: `Job ${job.id}: listing-ingest has not stored this run's sightings yet.`,
@@ -113,7 +121,7 @@ export async function assess(
     let overlap: Overlap = { checked: false, skipped: false }
     let previousJobId: number | null = null
     if (ingestOff) overlap = { checked: false, skipped: true }
-    else if (!runFailed && scoped(search) && search.listings > 0) {
+    else if (!runFailed && scoped(search) && search.kind !== 'unknown' && search.listings > 0) {
       previousJobId = await selectPreviousRead(q, search, job.id, collectedAt)
       if (previousJobId !== null) {
         const before = new Set(await scopeListingIds(q, previousJobId, search))
@@ -134,22 +142,22 @@ export async function assess(
   }
   report.written = await insertOutcomes(q, job.id, collectedAt, rows)
 
-  for (const { search, judgement } of rows) {
-    const basis = baselineBasis(search, judgement)
-    if (!basis || !scoped(search)) continue
+  // Read back from the stored rows, so a replay announces exactly what the first run did.
+  const stored = await selectOutcomes(q, job.id)
+  // Baselines follow the stored judgements, so a replay never re-derives a different one.
+  for (const row of stored) {
+    const basis = baselineBasis(row)
+    if (!basis || !row.centreId || !row.term) continue
     await upsertBaseline(q, {
-      centreId: search.centreId,
-      term: search.term,
-      kind: search.kind,
+      centreId: row.centreId,
+      term: row.term,
+      kind: row.kind,
       basis,
       at: collectedAt,
       jobId: job.id,
-      searchIndex: search.searchIndex,
+      searchIndex: row.searchIndex,
     })
   }
-
-  // Read back from the stored rows, so a replay announces exactly what the first run did.
-  const stored = await selectOutcomes(q, job.id)
   report.statuses = stored.map((row) => ({
     searchIndex: row.searchIndex,
     status: row.status as RunCoverageStatus,

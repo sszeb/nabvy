@@ -120,17 +120,13 @@ describe('judging', () => {
     expect(feedTypeOf(search({ kind: 'newest', pages: 1, listings: 20 }))).toBeNull()
   })
 
-  it('only healthy, verified, scoped reads set a baseline', () => {
-    expect(baselineBasis(base, judge(base, false, none))).toBe('bounded')
-    const complete = search({ stopReason: 'source-no-new-listings' })
-    expect(baselineBasis(complete, judge(complete, false, none))).toBe('complete')
-    const bad = search({ route: 'browser-fallback' })
-    expect(baselineBasis(bad, judge(bad, false, none))).toBeNull()
-    const unverified = search({ binding: 'unverified' })
-    expect(baselineBasis(unverified, judge(unverified, false, none))).toBeNull()
-    const unscoped = search({ centreId: null })
-    expect(baselineBasis(unscoped, judge(unscoped, false, none))).toBeNull()
-    const unknownKind = search({ kind: 'unknown' })
-    expect(baselineBasis(unknownKind, judge(unknownKind, false, none))).toBeNull()
+  it('only healthy, verified, scoped judgements set a baseline', () => {
+    const row = { status: 'capped', binding: 'verified', centreId: 'c', term: 't', kind: 'newest' }
+    expect(baselineBasis(row)).toBe('bounded')
+    expect(baselineBasis({ ...row, status: 'complete' })).toBe('complete')
+    expect(baselineBasis({ ...row, status: 'degraded' })).toBeNull()
+    expect(baselineBasis({ ...row, binding: 'unverified' })).toBeNull()
+    expect(baselineBasis({ ...row, centreId: null })).toBeNull()
+    expect(baselineBasis({ ...row, kind: 'unknown' })).toBeNull()
   })
 })

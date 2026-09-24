@@ -9,6 +9,21 @@ Coordinator-proposed conventions under `CLAUDE.md`, "Working economy"; not owner
 - **Hand-off.** At the start of a wake that brings new work, call `get_session` on yourself; over 300,000 used tokens, hand off before starting it.
 - **Names.** Name tools by bare name (`execute_sql`, `get_session`), never with the connector prefix, which can change mid-session. Record model tiers as "top" or "Sonnet", never as model IDs.
 - **Local migration dry-run.** `pnpm db:dry-run` needs the Postgres extensions: `apt-get install postgresql-16-pgvector postgresql-16-postgis-3`.
-- **Notes for the coordinator.** Send them to the coordinator session named at the top of `docs/handoff.md` (coordinator 4 is `session_01J54KB3jMEbsKWFKDWZG4aB`), never to a session that has handed off.
+- **Notes for the coordinator.** Send them to the coordinator session named at the top of `docs/handoff.md` (coordinator 6 is `session_01EhA1Fb9CS8xPLGqFcY2Vy1`; coordinator 5 was `session_01MarM2efLcMPfNeb48TbGoM`), never to a session that has handed off.
 - **Reviews look like your own.** The reviewer posts from the same GitHub account as build sessions. Never skip a `pull_request_review.submitted` event as an echo: read its verdict line, and treat "Changes needed" as work now.
-- **Questions from a build session.** Write them to `docs/questions/<module>.md` (same entry format as `docs/questions.md`), never to `docs/questions.md` itself: every module PR appending to that file re-conflicts every other open PR. The coordinator folds the per-module files into `docs/questions.md` at its batched pushes and deletes them.
+- **Questions from a build session.** Write them to `docs/questions/<module>.md` (same entry format as `docs/questions.md`), never to `docs/questions.md` itself: every module PR appending to that file re-conflicts every other open PR. The coordinator folds the per-module files into `docs/questions.md` at its batched pushes and deletes them. For the same reason a build session never edits `docs/progress.md` or `docs/backlog.md`; the coordinator records each pull request there (coordinator 5, 16:15).
+
+## Token economy (coordinator 5, 16:20 UTC)
+
+Measured at 16:15: the day's spend is about $3,900, of which coordinator 1 is $2,375; the rest is 35 sessions at $20 to $170 each. Cost tracks calls times context, so the levers are fewer wakes and smaller contexts.
+
+- **Fresh session for a big fix round.** When a build session is over 300k tokens and a review asks for more than a few edits, the coordinator starts a fresh session on the PR branch, briefed from the review, and tells the old one to unsubscribe and stand down. A fresh 80k context beats waking a 400k one twenty times.
+- **The reviewer reads CI, it does not re-run it.** `ci.yml` runs install, typecheck, lint, tests, fixtures, the audit, gitleaks, the migration dry-run and the db and auth tests. The reviewer reads the check runs and the diff; it runs a check locally only when CI could not run on the head (a merge conflict) or a job's log is not enough to judge a failure.
+- **Small mechanical fixes on someone else's PR** (a merge of main, moving a file) the coordinator does itself with a plain merge commit, then wakes the reviewer, instead of waking the build session.
+- **One wake per message.** Batch what a session needs into one trigger; never send two triggers to the same session minutes apart. A trigger to a session that has handed off is wasted: check `docs/handoff.md` for the current IDs first.
+- **Model by job** stays as in `CLAUDE.md`: Sonnet by default, the top model for money, security and the pipeline core, Haiku for mechanical tasks (the 0.9b trial passed review in one round at $0.60).
+- **Archiving** releases containers but saves no tokens; idle sessions cost nothing. What costs is a stale check-in firing into a large context, so a session deletes its own check-ins when its PR merges.
+
+## Usage pause (owner, 2026-09-24, 17:30 UTC)
+
+The owner: "Pause all work when we reach 99% of our usage session and resume when we have new allowance" (the five-hour window; that day's reset was 19:30 UTC, 20:30 BST). No session can read the percentage; `get_session` shows only a coarse `rate_limit_info` (`allowed_warning` and the seven-day reset). So the rule is applied by hand: when the owner says the allowance is near its cap, the coordinator starts no new sessions, sends no wakes that are not needed to unblock a pull request, and moves its own sweep past the reset. Sessions already running keep going until the platform refuses them; they are not interrupted mid-edit. After the reset the coordinator's sweep re-arms any one-shot trigger that failed to deliver during the pause (`list_triggers` shows a non-succeeded `last_run`).

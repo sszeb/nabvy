@@ -91,7 +91,8 @@ export async function scopeListingIds(
 
 /**
  * The previous healthy read of the scope: the latest earlier outcome (by collection time, then
- * job) on the HTTP route, in a run that did not fail, that returned listings.
+ * job) that is not degraded, on the HTTP route, in a run that did not fail, that returned
+ * listings and whose sightings listing-ingest stored (a read made while it was off has none).
  */
 export async function selectPreviousRead(
   q: Queryable,
@@ -108,9 +109,11 @@ export async function selectPreviousRead(
         eq(searchOutcomes.term, search.term),
         eq(searchOutcomes.kind, search.kind),
         eq(searchOutcomes.route, 'http'),
+        sql`${searchOutcomes.status} <> 'degraded'`,
         sql`${searchOutcomes.listings} > 0`,
         sql`not ('run-failed' = any(${searchOutcomes.reasons}))`,
         sql`(${searchOutcomes.collectedAt}, ${searchOutcomes.jobId}) < (${collectedAt}::timestamptz, ${jobId})`,
+        sql`exists (select 1 from ${vSightings} s where s.job_id = ${searchOutcomes.jobId} and s.kind = 'search')`,
       ),
     )
     .orderBy(sql`${searchOutcomes.collectedAt} desc, ${searchOutcomes.jobId} desc`)
@@ -173,6 +176,10 @@ export function selectOutcomes(q: Queryable, jobId: number) {
       id: searchOutcomes.id,
       searchIndex: searchOutcomes.searchIndex,
       status: searchOutcomes.status,
+      binding: searchOutcomes.binding,
+      centreId: searchOutcomes.centreId,
+      term: searchOutcomes.term,
+      kind: searchOutcomes.kind,
     })
     .from(searchOutcomes)
     .where(eq(searchOutcomes.jobId, jobId))
