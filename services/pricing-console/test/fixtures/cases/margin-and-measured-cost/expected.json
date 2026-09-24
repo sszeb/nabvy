@@ -1,0 +1,23 @@
+{
+  "outcomes": [
+    {
+      "refused": "pricing-console.below_floor"
+    },
+    {
+      "amount": 22,
+      "offer": null,
+      "floored": true
+    },
+    {
+      "refused": "pricing-console.below_floor"
+    },
+    {
+      "changed": true
+    },
+    {
+      "amount": 22,
+      "offer": null,
+      "floored": false
+    }
+  ]
+}
