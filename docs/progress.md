@@ -11,6 +11,8 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 0.5 | CI pipeline | in progress | 2026-09-24 | `.github/workflows/ci.yml` on every pull request and push to `main`: typecheck, lint, test; `pnpm audit --audit-level=high`; gitleaks 8.30.1 (checksum-verified) over the full history with `.gitleaks.toml` (adds Apify and Supabase secret-key rules); migration dry-run of `supabase/migrations` on a Postgres 17 service with the gateway behaviour tests (`pnpm db:dry-run`). Merged in PR #2 (`d4cd720`). Pending, each with its enabling task: fixture pass rate (0.6, PR #3), Vercel preview (0.5a), dry-run against a real Supabase branch (needs a `SUPABASE_ACCESS_TOKEN` repository secret), deploys on merge (0.3, 1.2, 0.5a), a `deno check` step for the Edge Function, a committed test for the custom gitleaks rules, Dependabot or Renovate, and SHA-pinned actions |
 | 0.5a | Waitlist and marketing site skeleton | blocked | 2026-09-24 | Needs 0.3 and the owner's accounts: Cloudflare DNS, Vercel, Resend. The page designs come with 4.1a |
 | 0.6 | Fixtures harness | done | 2026-09-24 | Merged in PR #3 (`688c66d`): per-module stage discovery, pass-rate report and a CI check that fails on a drop (`fixtures/README.md`) |
+| 0.8 | Config per module | not started | 2026-09-24 | Raised by cost-meter (PR #16); see backlog. |
+| 0.9 | Event transport | not started | 2026-09-24 | Raised by incidents (PR #19); see backlog. |
 | 1.0 | Document the Facebook actor | blocked | 2026-09-24 | Started ahead of 0.2–0.6 at the owner's request, while Nabvy's own integration plan is written. Done: run by hand through the gateway (run `VkryjpwS6U2GBDh3k`, $0.0177); real input schema, output fields and the mapping to the `docs/providers.md` target in `services/source-adapters/README.md`; the reference in `docs/fb-actor-reference.md`, rebuilt from the owner's listed files only (`docs/fb-actor-scope-report.md` records what was dropped); the redacted run saved under `fixtures/listings/facebook/runs/`, verified against the database and checked by a fixture test; differences listed in `docs/questions.md`; the gateway collects losslessly (version 9 live, matching `main`: every dataset page, no `clean`, raw text to Postgres, whole run object; a free `collect` job re-read the recorded run and matched all 21 rows, `supabase/README.md`). Blocked on: the owner's home area and the region model (verified city-page centres replace `cell_provider_locations`, Precedence row "Search planning"), and 0.3 |
 | 1.1 | Apify Facebook adapter | in progress | 2026-09-24 | Groundwork only, while Nabvy's own integration plan is written: the route-health helper ported from the actor with its tests, plus a pinned test for the description-missing caveat; the actor-input validation and run presets were withdrawn on review (derived from an actor file outside the owner's list) and return re-derived from the listed files after the reference rebuild (`services/source-adapters/README.md`). The adapter itself waits for that plan and task 0.2 |
 | 1.1a | Actor scope clean-up and gateway input hardening | done | 2026-09-24 | Merged in PR #11 (`8956505`). Its gateway migration `20260924030000_apify_gateway_input_hardening.sql` was applied by the coordinator at 12:32 UTC (live version `20260924123259`, see `supabase/README.md`) |
@@ -72,10 +74,10 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 
 | Module | Round | Status | Session | Model |
 | --- | --- | --- | --- | --- |
-| audit-log | 0 | in progress | `session_01SUaJRBg87fChhAHgCmYrGb` | top |
+| audit-log | 0 | PR #15 open, changes needed | `session_01SUaJRBg87fChhAHgCmYrGb` | top |
 | cost-meter | 0 | done: PR #16 merged 13:00; both migrations applied 13:05 (ledger checked) | `session_01P7EwgNXQxqDq16uiLsSEVg` | top |
-| incidents | 0 | in progress | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
-| quote-redaction | 0 | in progress | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
+| incidents | 0 | PR #19 open | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
+| quote-redaction | 0 | PR #17 open, changes needed; mask wording waits on the owner | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
 
 ## Work outside the backlog
 

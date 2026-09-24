@@ -18,6 +18,7 @@ Check-in points are marked **[CHECK-IN]**: stop and wait for a human before cont
 **[CHECK-IN]**
 
 - **0.8 Config per module.** Give `@nabvy/config` a `./modules/*` export (rule 14) and a module file per module; move `USD_GBP_RATE` out of the `apify` group into its own group; then move cost-meter's settle delay and price table from `services/cost-meter/src/config.ts` into `packages/config/src/modules/cost-meter.ts`. Raised by the cost-meter build and review (PR #16).
+- **0.9 Event transport.** No layer publishes or delivers module events yet (no task wrapper, no Trigger.dev publisher), so modules such as `incidents` return the event envelope instead of emitting it. Build the thin-event publisher and the handler wrapper (idempotency key `source + sourceListingId + contentHash`, T-timestamps per `docs/contracts.md`, failed events to `incidents`), then replace the stubs. Top model; needed before any pipeline module runs end to end. Raised by incidents (PR #19).
 
 ## Phase 1 — Walking skeleton on Facebook (our actor)
 
