@@ -1,0 +1,106 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "source": "the recorded run's 20 listing rows as a details batch",
+  "items": [
+    {
+      "id": "1816901372840238",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1756692548940192",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1716871313386322",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1123980543398026",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1072745435569624",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1352645884594841",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1783301919382894",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1775698700306989",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "28242423458759790",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "2264485254402498",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "2126837844711748",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1154042653756525",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1639721697586478",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1403975981250476",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1073353648648306",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1083674317719227",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1380502417485603",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1397200465308431",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "2005582460147017",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "2537899006714740",
+      "attempts": 0,
+      "requeues": 0
+    }
+  ]
+}
