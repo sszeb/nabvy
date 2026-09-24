@@ -1,0 +1,8 @@
+{
+  "facts": { "gpuModel": "RTX 3070", "vramGb": 8, "boxed": true },
+  "productKey": null,
+  "riskFlags": [],
+  "valuationState": "unvalued",
+  "gateExpected": "in",
+  "notes": "Synthetic placeholder, not a real listing: it proves the layout and the runner. productKey stays null until the gpu-pc pack dictionary exists."
+}
