@@ -1,0 +1,5 @@
+{
+  "module": "apify-gateway",
+  "schema": "apify_gateway",
+  "dependsOn": ["core", "switches"]
+}

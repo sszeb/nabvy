@@ -1,0 +1,8 @@
+{
+  "reserveUsd": "0.3363",
+  "events": [],
+  "rows": { "total": 0, "listings": 0, "withSellerKey": 0 },
+  "sellerPresent": 0,
+  "costs": [],
+  "replay": { "metered": [], "collected": [], "settled": [] }
+}
