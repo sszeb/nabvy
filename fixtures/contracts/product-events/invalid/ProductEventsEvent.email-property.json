@@ -1,0 +1,11 @@
+{
+  "event": "alert_delivered",
+  "properties": {
+    "source": "facebook",
+    "channel": "telegram",
+    "dealScore": 82,
+    "freshnessSeconds": 45,
+    "valuationState": "valued",
+    "email": "buyer@example.com"
+  }
+}

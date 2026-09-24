@@ -1,0 +1,9 @@
+{
+  "event": "onboarding_completed",
+  "properties": {
+    "pack": "gpu-pc",
+    "radius": 40,
+    "channel": "telegram",
+    "postcode": "PO19 1SY"
+  }
+}
