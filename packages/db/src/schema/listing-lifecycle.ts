@@ -51,6 +51,7 @@ export const status = schema.table(
     primaryKey({ name: 'status_pkey', columns: [t.listingId] }),
     uniqueIndex('status_source_listing_key').on(t.source, t.sourceListingId),
     index('status_status_idx').on(t.status, t.lastSeenAt),
+    index('status_changed_by_idx').on(t.changedBy),
     check('status_source_check', sql`${t.source} in ${SOURCES}`),
     check(
       'status_status_check',

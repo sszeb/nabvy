@@ -13,8 +13,8 @@ import {
 } from '../support/database'
 
 // Stage "recheck": listings from the recorded run, rechecks asked for by other modules through
-// `requestRecheck`, and ticks at hours after the case starts (due times are the database's clock,
-// so tick times are relative to it). Each case checks what every request and tick did and what
+// `requestRecheck`, and ticks at hours (plus a minute) after the latest request (due times are the
+// database's clock, so tick times are relative to it). Each case checks what every request and tick did and what
 // details-queue received.
 
 interface Step {
@@ -64,8 +64,9 @@ describe('recheck', () => {
     const input = read(new URL(`${id}/input.json`, CASES)) as Input
     const expected = read(new URL(`${id}/expected.json`, CASES)) as Expected
     const recorded = loadRun(input.run)
-    const [clock] = await t.sql('select now() as now')
-    const start = new Date(clock?.now as string).getTime()
+    const clock = async () =>
+      new Date((await t.sql('select now() as now'))[0]?.now as string).getTime()
+    let start = await clock()
     const order = recorded.dataset
       .filter((row) => row.recordType === 'listing')
       .map((row) => String(row.listingId))
@@ -75,6 +76,7 @@ describe('recheck', () => {
     for (const step of input.steps) {
       if (step.job) await runJob(t, recorded, step.job)
       if (step.request) {
+        start = await clock()
         const bySource = await listingIdsBySource(t)
         const skip = step.request.skip ?? 0
         const sourceIds =
@@ -93,7 +95,7 @@ describe('recheck', () => {
       }
       if (step.tickAfterHours !== undefined) {
         const report = await tick(t.db, {
-          now: new Date(start + step.tickAfterHours * 3_600_000 + 1_000),
+          now: new Date(start + step.tickAfterHours * 3_600_000 + 60_000),
         })
         ticks.push({
           queued: report.rechecksQueued,

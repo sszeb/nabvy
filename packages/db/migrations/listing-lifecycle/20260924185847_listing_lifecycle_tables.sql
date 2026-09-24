@@ -49,4 +49,5 @@ CREATE UNIQUE INDEX "rechecks_pending_key" ON "listing_lifecycle"."rechecks" USI
 CREATE INDEX "rechecks_due_idx" ON "listing_lifecycle"."rechecks" USING btree ("due_at") WHERE "listing_lifecycle"."rechecks"."sent_at" is null;--> statement-breakpoint
 CREATE INDEX "rechecks_listing_idx" ON "listing_lifecycle"."rechecks" USING btree ("listing_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "status_source_listing_key" ON "listing_lifecycle"."status" USING btree ("source","source_listing_id");--> statement-breakpoint
-CREATE INDEX "status_status_idx" ON "listing_lifecycle"."status" USING btree ("status","last_seen_at");
+CREATE INDEX "status_status_idx" ON "listing_lifecycle"."status" USING btree ("status","last_seen_at");--> statement-breakpoint
+CREATE INDEX "status_changed_by_idx" ON "listing_lifecycle"."status" USING btree ("changed_by");

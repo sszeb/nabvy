@@ -119,9 +119,12 @@ async function reconcile(
     return { ...l, derived, hash: statusHash(l.listingId, derived) }
   })
   const written = await upsertStatuses(q, writes, id, opts.tick ? opts.now : null)
-  const changedRows = await selectChangedBy(q, [...known], id)
-  const notSeen = located.filter((l) =>
-    changedRows.some((c) => c.listingId === l.listingId && c.status === 'not-seen-recently'),
+  const changedRows = await selectChangedBy(q, opts.tick ? null : [...known], id)
+  const notSeenIds = new Set(
+    changedRows.filter((c) => c.status === 'not-seen-recently').map((c) => c.listingId),
+  )
+  const notSeen = (opts.tick ? await selectListings(q, [...notSeenIds]) : located).filter((l) =>
+    notSeenIds.has(l.listingId),
   )
   const scheduled = await insertSchedules(
     q,

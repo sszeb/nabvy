@@ -185,17 +185,22 @@ export async function upsertStatuses(
   return written.length
 }
 
-/** The listings among these whose status this trigger changed, from the stored rows. */
+/**
+ * The listings whose status this trigger changed, from the stored rows: among `listingIds`, or
+ * every listing when null (a replayed tick re-reads what it changed although nothing is a
+ * candidate any more).
+ */
 export async function selectChangedBy(
   q: Queryable,
-  listingIds: string[],
+  listingIds: string[] | null,
   trigger: string,
 ): Promise<{ listingId: string; status: string }[]> {
-  if (listingIds.length === 0) return []
+  if (listingIds?.length === 0) return []
+  const among = listingIds ? sql`and s.listing_id in (select id from ${ids(listingIds)})` : sql``
   const rows = rowsOf<{ listing_id: string; status: string }>(
     await q.execute(sql`
       select s.listing_id, s.status from listing_lifecycle.status s
-      where s.listing_id in (select id from ${ids(listingIds)}) and s.changed_by = ${trigger}
+      where s.changed_by = ${trigger} ${among}
       order by s.listing_id`),
   )
   return rows.map((r) => ({ listingId: r.listing_id, status: r.status }))

@@ -1,6 +1,6 @@
 {
-  "id": "8a00c564-9e99-458a-a95c-5ce19bf70839",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "157264a0-5d08-423c-b283-6530abf04c69",
+  "prevId": "f6699ce0-cf57-414d-ac14-e41781c94d07",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -108,10 +108,10 @@
             }
           ],
           "isUnique": true,
-          "where": "\"listing_lifecycle\".\"rechecks\".\"sent_at\" is null",
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "where": "\"listing_lifecycle\".\"rechecks\".\"sent_at\" is null",
+          "concurrently": false
         },
         "rechecks_due_idx": {
           "name": "rechecks_due_idx",
@@ -124,10 +124,10 @@
             }
           ],
           "isUnique": false,
-          "where": "\"listing_lifecycle\".\"rechecks\".\"sent_at\" is null",
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "where": "\"listing_lifecycle\".\"rechecks\".\"sent_at\" is null",
+          "concurrently": false
         },
         "rechecks_listing_idx": {
           "name": "rechecks_listing_idx",
@@ -140,9 +140,9 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         }
       },
       "foreignKeys": {},
@@ -288,9 +288,9 @@
             }
           ],
           "isUnique": true,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
         },
         "status_status_idx": {
           "name": "status_status_idx",
@@ -309,9 +309,24 @@
             }
           ],
           "isUnique": false,
-          "concurrently": false,
+          "with": {},
           "method": "btree",
-          "with": {}
+          "concurrently": false
+        },
+        "status_changed_by_idx": {
+          "name": "status_changed_by_idx",
+          "columns": [
+            {
+              "expression": "changed_by",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {},
@@ -358,11 +373,10 @@
   "schemas": {
     "listing_lifecycle": "listing_lifecycle"
   },
-  "sequences": {},
-  "roles": {},
-  "policies": {},
   "views": {
     "listing_lifecycle.v_status": {
+      "name": "v_status",
+      "schema": "listing_lifecycle",
       "columns": {
         "listing_id": {
           "name": "listing_id",
@@ -419,12 +433,13 @@
           "notNull": true
         }
       },
-      "name": "v_status",
-      "schema": "listing_lifecycle",
-      "isExisting": true,
-      "materialized": false
+      "materialized": false,
+      "isExisting": true
     }
   },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
   "_meta": {
     "columns": {},
     "schemas": {},
