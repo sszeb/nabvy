@@ -158,3 +158,4 @@ The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable u
 | LR-33 | acceptable-use.md 5.3; fair-use.md 3.2 | Linked accounts, devices, VPNs and proxies | Is treating linked accounts as one, and the rule against using devices, VPNs or proxies to hide activity, suitable? |
 | LR-34 | fb-scrap-engine `docs/HANDOFF.md` (`d7be0a4`) | UK GDPR basics for the app's own data | Do Nabvy's privacy notice and its deletion and objection request routes cover what the brief now lists? |
 - Per-user dynamic prices and targeted offers (`pricing-console`, 2026-09-24).
+- 2026-09-24, free tier: a card check that is never charged before the second and third free windows; one card per account; free-tier terms (lifetime cost cap, bursts, reset) shown before sign-up.

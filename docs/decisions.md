@@ -259,6 +259,17 @@ The owner, after missing a £350 RTX 3090 Ti in Redhill that sold within hours:
 - **Dynamic pricing.** An admin page (`pricing-console`) with sliders for margins, bundles and discounts, and per-user or per-segment offers and promotions.
 - **Precedence.** How fast Facebook can actually be checked still follows the actor brief and test T2; the price of a faster interval follows from its measured cost.
 
+## Free tier: bursts under a lifetime cap (owner, 2026-09-24, 16:50)
+
+The owner, on the free tier ("hook them right away, blown away, then a couple more tries"):
+- **One keyword.** A free account has one want (keyword and area) at a time. It can be changed only when the next window opens, after the 72-hour reset.
+- **Bursts, not a steady trickle.** Up to three 8-hour windows, each starting fast and slowing down, with 72 hours between windows. Once the windows are used the account stays on the daily digest and "Missed deals". The exact shape of each burst is the coordinator's to trim (owner: "you do trim it how you find best"), inside the cap below.
+- **Hard cap: £2 per free account, lifetime,** measured in attributed provider and model cost (the account's share of each check it caused, lone cost where no one else funds the area). At the cap the burst stops mid-window and the account falls to the digest; nothing runs at a loss.
+- **Guardrails against burner accounts** (the owner's example: 20,000 bots opening accounts): a global free-burst pool per day, week and month, revenue-linked with a floor, beyond which new bursts wait for the next period or run only where a paid watcher already funds the area; sign-up limits per IP, device and email domain; a card check (never charged, one card per account) before windows two and three; a per-area anomaly stop; and a kill switch for free bursts. All in `account-integrity`, `spend-governor` and `switches`.
+- **Everything adjustable at run time.** Every number above (window count, window length, reset hours, burst shape, per-account lifetime cap, per-user, per-week and per-month caps, the pools, the sign-up limits) is a versioned policy row the owner edits from the admin console, audited, applied within a minute, never a constant in code. Usage is recorded per account so the owner can run the numbers and change the policy at any time.
+
+Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): window one runs 1 minute for 20 minutes, 5 minutes for 100 minutes, 15 minutes for 2 hours, then hourly (52 checks, 68p lone); windows two and three run 1 minute for 10 minutes, 5 minutes for 50 minutes, 15 minutes for 2 hours, then hourly (33 checks, 43p each). Three windows cost £1.54 lone plus about 10p of model calls, under the £2 cap with room for retries; where a paid watcher already funds the area the burst costs nothing extra. The free-burst pool starts at £20 a day and 5% of the previous month's net revenue, whichever is higher. These are the initial policy values, not owner decisions.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
