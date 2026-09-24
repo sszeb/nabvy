@@ -39,6 +39,8 @@ importers:
 
   packages/packs: {}
 
+  services/source-adapters: {}
+
 packages:
 
   '@biomejs/biome@2.5.14':
