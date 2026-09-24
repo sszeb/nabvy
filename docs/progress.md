@@ -84,7 +84,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | product-catalogue | 2 | PR #32 open 15:43; after merge apply `product-catalogue/20260924151843_product_catalogue_tables.sql`, `20260924151851_product_catalogue_access.sql` and `20260924151942_product_catalogue_seed.sql` (depend on core, switches, audit-log) | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
 | apify-gateway | 2 | done: PR #29 merged 15:58 (`b060a99`); migration applied and Edge Function version 10 deployed 16:05 (ledger checked; cap $150 a month, build 1.0.82); inert until an admin switches on `apify` and `apify-gateway` | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
 | waitlist | 2 | PR #31 open 15:42; after merge apply `waitlist/20260924152710_waitlist_tables.sql` and `waitlist/20260924152712_waitlist_access.sql` (depend on core and switches); email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
-| account | 2 | in progress, started 15:35 from the amended card on `claude/coordinator-4` | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
+| account | 2 | PR #33 open 16:09; after merge apply `account/20260924155208_account_tables.sql` and `account/20260924155222_account_access.sql` (depend on core); standing ownership resolved by delegating to auth (README, "Standing: which function owns what") | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
 
 ## Work outside the backlog
 
