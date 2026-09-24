@@ -1,7 +1,7 @@
 import { AuditLogRefused } from '@nabvy/audit-log'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { liftRestriction, restrictAccount, revokeSessions, setRole } from '../src/admin'
-import { UnknownAccountError } from '../src/domain'
+import { ForbiddenError, UnknownAccountError } from '../src/domain'
 import { createHarness, FOUNDER, type Harness, signInByMagicLink } from './support/harness'
 
 // Every admin action writes exactly one audit_log row in the transaction that makes the change,
@@ -200,13 +200,20 @@ describe('an action rolls back when its audit row cannot be written', () => {
     expect(await auditRows(id)).toHaveLength(0)
   })
 
-  it('an actor that is not an account is refused by the insert policy, and nothing changes', async () => {
+  it('an actor that is not an account, or not an admin, is refused, and nothing changes', async () => {
     const id = await member('forged.actor@example.com')
-    const ghost = '00000000-0000-4000-8000-000000000002'
-    await expect(
-      setRole({ actorUserId: ghost, userId: id, role: 'admin' }, harness.auth),
-    ).rejects.toBeInstanceOf(AuditLogRefused)
-    expect((await account(id))?.role).toBe('user')
+    const plain = await member('plain.actor@example.com')
+    for (const actorUserId of ['00000000-0000-4000-8000-000000000002', plain, id]) {
+      await expect(
+        setRole({ actorUserId, userId: id, role: 'admin' }, harness.auth),
+      ).rejects.toBeInstanceOf(ForbiddenError)
+      await expect(
+        restrictAccount({ actorUserId, userId: plain, policy: 'terms', reason: 'x' }, harness.auth),
+      ).rejects.toBeInstanceOf(ForbiddenError)
+    }
+    expect(await account(id)).toMatchObject({ role: 'user', banned: false })
+    expect(await account(plain)).toMatchObject({ role: 'user', banned: false })
     expect(await auditRows(id)).toHaveLength(0)
+    expect(await auditRows(plain)).toHaveLength(0)
   })
 })

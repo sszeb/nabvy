@@ -138,7 +138,8 @@ Nothing leaves the machine.
     Postgres counter, and captcha on Google sign-in.
 - `test/admin.test.ts` (task 4.0b): `setRole`, `restrictAccount`, `liftRestriction`,
   `revokeSessions` and founder bootstrap each write exactly one audit row with the actor, target,
-  before and after; with audit writes failing (a trigger on `audit_log.entries`), each action rolls
+  before and after; an actor that is not an admin (or not an account) is refused; with audit
+  writes failing (a trigger on `audit_log.entries`), each action rolls
   back and a founder gets neither the role nor a session; an unknown account and an actor that is
   not an account change nothing.
 - `test/verification.test.ts`: no session for an unverified address; the session guard (restricted,
@@ -209,8 +210,13 @@ Nothing leaves the machine.
   Better Auth's endpoints cannot write the row in their own transaction, so through
   `/api/auth/admin/*` an admin may now only list and read users and list sessions; ban, unban,
   session revokes, role changes, impersonation, user creation or removal, and password or email
-  changes are refused there. The caller checks the actor first (`requireAdmin`); the functions do
-  not. Admin reads (list, get) are not audited (`docs/questions.md`).
+  changes are refused there. The caller checks the actor first (`requireAdmin`); as defence in
+  depth each function also refuses (`ForbiddenError`) unless the actor's account has the admin
+  role, except founder bootstrap (actor = target, matched against `ADMIN_EMAILS`). Admin reads
+  (list, get) are not audited (`docs/questions.md`).
+- **Demotions.** Demoting an address listed in `ADMIN_EMAILS` is undone at its next sign-in, so a
+  founder is removed from the list, not demoted. Nothing stops an admin demoting the last admin;
+  `ADMIN_EMAILS` is the way back.
 - **`nabvy_auth` inserts audit rows** (`20260924143843_better_auth_audit_access.sql`): usage on
   `audit_log` and insert on `audit_log.entries`, nothing else, under a policy that the actor is an
   existing account. `better-auth` now depends on `audit-log` in `module.json`.

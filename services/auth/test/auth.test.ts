@@ -392,6 +392,8 @@ describe('Better Auth admin endpoints: reads only, every change goes through the
     ['ban-user', (id: string) => ({ userId: id, banReason: 'unaudited' })],
     ['unban-user', (id: string) => ({ userId: id })],
     ['revoke-user-sessions', (id: string) => ({ userId: id })],
+    ['revoke-user-session', () => ({ sessionToken: 'any' })],
+    ['set-user-password', (id: string) => ({ userId: id, newPassword: 'x'.repeat(12) })],
     ['update-user', (id: string) => ({ userId: id, data: { role: 'admin' } })],
   ])('an admin cannot %s', async (endpoint, body) => {
     adminCookie ??= await signInByMagicLink(harness, FOUNDER)

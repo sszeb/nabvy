@@ -28,6 +28,12 @@ export async function lockAccount(q: Queryable, userId: string): Promise<Account
   return row ? { ...row, banned: row.banned === true } : null
 }
 
+/** An account's role, or `null` for an unknown account. */
+export async function roleOf(q: Queryable, userId: string): Promise<string | null> {
+  const [row] = await q.select({ role: user.role }).from(user).where(eq(user.id, userId))
+  return row?.role ?? null
+}
+
 export async function updateAccount(
   q: Queryable,
   userId: string,

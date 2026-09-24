@@ -2,8 +2,8 @@ import { record } from '@nabvy/audit-log'
 import { Uuid } from '@nabvy/contracts'
 import type { Queryable } from '@nabvy/db'
 import type { Auth, AuthDatabase } from './auth'
-import { UnknownAccountError } from './domain'
-import { type AccountState, lockAccount, updateAccount } from './repo/admin'
+import { ForbiddenError, UnknownAccountError } from './domain'
+import { type AccountState, lockAccount, roleOf, updateAccount } from './repo/admin'
 
 // The transaction every admin action runs in (admin.ts). Kept apart from admin.ts so that
 // auth.ts can use it for founder bootstrap without importing the instance.
@@ -26,17 +26,28 @@ const target = (userId: string) => `user:${userId}`
 /**
  * Locks the account, runs `change`, and records one audit row in the same transaction. `change`
  * returns the state after the action, or `null` when there was nothing to do (nothing is
- * recorded then; only founder bootstrap uses this). Throws `UnknownAccountError` (nothing written) for an
- * unknown account and `AuditLogRefused` (the change rolled back) if the row cannot be written.
+ * recorded then; only founder bootstrap uses this). Throws `ForbiddenError` unless the actor has
+ * the admin role (defence in depth behind the caller's `requireAdmin`; founder bootstrap, where
+ * the session guard has matched ADMIN_EMAILS and the actor is the target, is the one exception),
+ * `UnknownAccountError` (nothing written) for an unknown account, and `AuditLogRefused` (the
+ * change rolled back) if the row cannot be written.
  */
 export async function audited(
   db: Queryable,
-  input: { actorUserId: string; userId: string; action: string; reason?: string | undefined },
+  input: {
+    actorUserId: string
+    userId: string
+    action: string
+    reason?: string | undefined
+    founderBootstrap?: boolean
+  },
   change: (tx: Queryable, before: AccountState) => Promise<AccountState | null>,
 ): Promise<void> {
   const actorUserId = Uuid.parse(input.actorUserId)
   const userId = Uuid.parse(input.userId)
+  const selfPromotion = input.founderBootstrap === true && actorUserId === userId
   await db.transaction(async (tx) => {
+    if (!selfPromotion && (await roleOf(tx, actorUserId)) !== 'admin') throw new ForbiddenError()
     const before = await lockAccount(tx, userId)
     if (!before) throw new UnknownAccountError(userId)
     const after = await change(tx, before)
@@ -69,6 +80,7 @@ export async function promoteFounder(db: AuthDatabase, userId: string): Promise<
       userId,
       action: 'auth.role-changed',
       reason: 'Founder address in ADMIN_EMAILS',
+      founderBootstrap: true,
     },
     async (tx, before) => {
       if (before.role === 'admin') return null

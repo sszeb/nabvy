@@ -11,9 +11,10 @@ import { deleteSessions, updateAccount } from './repo/admin'
 // rolls back with it. Better Auth's own admin endpoints that change anything stay refused
 // (auth.ts, `roles`), so these functions are the only way to take an admin action.
 //
-// The caller has already checked that `actorUserId` may act: `requireAdmin` in an admin
-// procedure, or the account-integrity module's own rules. The actor must be an existing account
-// (the insert policy on audit_log.entries for nabvy_auth checks it).
+// The caller checks the actor first (`requireAdmin` in an admin procedure). As defence in depth,
+// each function also refuses (`ForbiddenError`) unless the actor's account has the admin role,
+// read in the same transaction; the insert policy on audit_log.entries also requires the actor
+// to be an existing account.
 
 /** Gives an account the `user` or `admin` role. Records `auth.role-changed`. */
 export async function setRole(
