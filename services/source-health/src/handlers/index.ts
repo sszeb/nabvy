@@ -15,25 +15,27 @@ import { withPipeline } from '@nabvy/db'
 import { state } from '@nabvy/switches'
 import { defineHandler } from '@nabvy/transport'
 import {
+  dayBefore,
   decideRampAdvance,
+  emptyHealthDay,
   evaluateAlert,
   londonDay,
   mergeHealthDay,
   type SearchOutcome,
 } from '../domain'
 import {
+  addJobToDay,
+  type CollectedJob,
+  claimAlerts,
   insertRampStage,
   type RegionDecision,
   seedRampIfMissing,
   selectCurrentRamp,
-  selectHealthDay,
-  selectJobExists,
-  selectJobRegion,
-  selectPctDegraded,
+  selectJob,
+  selectRampDayRead,
   selectRegionDecision,
   selectSearchRoutes,
   selectSellerPresence,
-  upsertHealthDay,
 } from '../repo'
 
 const MODULE = 'source-health'
@@ -49,34 +51,36 @@ export interface RunCollectedResult {
 }
 
 /**
- * What `handleRunCollected` needs to know about one collected job: whether it exists, its region,
- * its judged searches, its seller-presence flags and its region's route-health decision. The
- * default (`realRunCollectedReader`) is the real reads (`../repo`); tests inject a fake one
- * instead of writing `apify_gateway.jobs` directly, which only the apify-gateway module may do
- * (`services/apify-gateway/test/conventions.test.ts`) — the same split route-health's
- * `RunCollectedReader` uses (`services/route-health/src/handlers/index.ts`).
+ * What `handleRunCollected` needs to know about one collected job: its `v_jobs` row (region and
+ * its own server-side time), its judged searches, its seller-presence flags and its region's
+ * route-health decision. The default (`realRunCollectedReader`) is the real reads (`../repo`);
+ * tests inject a fake one instead of writing `apify_gateway.jobs` directly, which only the
+ * apify-gateway module may do (`services/apify-gateway/test/conventions.test.ts`) — the same
+ * split route-health's `RunCollectedReader` uses (`services/route-health/src/handlers/index.ts`).
  */
 export interface RunCollectedReader {
-  jobExists(db: Queryable, jobId: number): Promise<boolean>
-  jobRegion(db: Queryable, jobId: number): Promise<string | undefined>
+  job(db: Queryable, jobId: number): Promise<CollectedJob | undefined>
   searchRoutes(db: Queryable, jobId: number): Promise<SearchOutcome[]>
   sellerPresence(db: Queryable, jobId: number): Promise<boolean[]>
   regionDecision(db: Queryable, regionId: string): Promise<RegionDecision | undefined>
 }
 
 export const realRunCollectedReader: RunCollectedReader = {
-  jobExists: selectJobExists,
-  jobRegion: selectJobRegion,
+  job: selectJob,
   searchRoutes: selectSearchRoutes,
   sellerPresence: selectSellerPresence,
   regionDecision: selectRegionDecision,
 }
 
 /**
- * Folds one collected apify-gateway job into its Europe/London day's tally and evaluates the
- * alert (card: "Starting alert value" and "Tests and fixtures"). Rule 11: while `source-health`
- * is off, acknowledges and writes nothing. Idempotent (rule 8): a replayed job (same `jobId`)
- * changes nothing (`mergeHealthDay`), so a replayed event returns the same result.
+ * Folds one collected apify-gateway search job into its Europe/London day's tally and evaluates
+ * the alert (card: "Starting alert value" and "Tests and fixtures"). The day is the job's own
+ * time from `v_jobs` (`CollectedJob.occurredAt`), never the delivery time `at`, which only
+ * stamps `updated_at`. Rule 11: while `source-health` is off, acknowledges and writes nothing.
+ * Details jobs are acknowledged and not counted: their rows are not search pages and their
+ * searches are none (route-health filters by kind the same way). Idempotent (rule 8): the repo
+ * claims the job ID in `processed_jobs` before adding anything, so a replay (same day or after
+ * midnight) adds nothing and alerts nothing; it returns the same day with no new reasons.
  */
 export async function handleRunCollected(
   db: Queryable,
@@ -87,15 +91,16 @@ export async function handleRunCollected(
   Result<RunCollectedResult | undefined, { code: SourceHealthErrorCode; message: string }>
 > {
   if ((await state(db, MODULE)) === 'off') return ok(undefined)
+  if (payload.kind !== 'search') return ok(undefined)
 
-  if (!(await reader.jobExists(db, payload.jobId))) {
+  const job = await reader.job(db, payload.jobId)
+  if (!job) {
     return err({
       code: 'source-health.job_not_found',
       message: `apify-gateway job ${payload.jobId} has no v_jobs row yet`,
     })
   }
-  const regionId = await reader.jobRegion(db, payload.jobId)
-  if (regionId === undefined) {
+  if (job.regionId === undefined) {
     return err({
       code: 'source-health.job_not_found',
       message: `apify-gateway job ${payload.jobId} has no region tag`,
@@ -105,23 +110,22 @@ export async function handleRunCollected(
   const [searches, sellerPresence, decision] = await Promise.all([
     reader.searchRoutes(db, payload.jobId),
     reader.sellerPresence(db, payload.jobId),
-    reader.regionDecision(db, regionId),
+    reader.regionDecision(db, job.regionId),
   ])
 
-  const day = londonDay(at)
-  const existing = await selectHealthDay(db, day)
-  const merged = mergeHealthDay(existing, {
+  const day = londonDay(job.occurredAt)
+  const contribution = mergeHealthDay(emptyHealthDay(), {
     jobId: payload.jobId,
     searches,
     breakerTripped: decision?.reason === 'circuit-open',
     newOperationIds: decision?.newQueryIds ?? [],
     sellerPresence,
   })
-  const newReasons = evaluateAlert(merged)
-  const final = { ...merged, alerted: [...merged.alerted, ...newReasons] }
-  await upsertHealthDay(db, day, final, new Date(at))
+  const totals = await addJobToDay(db, day, payload.jobId, contribution, new Date(at))
+  if (!totals) return ok({ day, alerted: [] })
 
-  return ok({ day, alerted: newReasons })
+  const alerted = await claimAlerts(db, day, evaluateAlert(totals))
+  return ok({ day, alerted })
 }
 
 /** Consumes `apify-gateway.run-collected`; a Trigger.dev task file calls only `run` (trigger/README.md). */
@@ -156,12 +160,14 @@ export interface RampAssessment {
 }
 
 /**
- * Judges whether the ramp may move to its next stage, from the two most recent complete days'
- * degraded share (card: "volume rises in steps of 24-48 hours, and only while 302s and fallbacks
- * do not rise"). Not wired to an event: like apify-gateway's watcher before Trigger.dev's account
- * existed (`services/apify-gateway/README.md`, "the watcher task is not in trigger/ yet"), this is
- * called by a scheduled task once built (README.md, "Decisions"). Seeds the ramp at its lowest
- * stage on the first call. Returns `undefined` while `source-health` is off.
+ * Judges whether the ramp may move to its next stage, from the two most recent complete
+ * Europe/London days (yesterday and the day before, by calendar day, not by `now - 24h`): their
+ * degraded share and alerts (card: "volume rises in steps of 24-48 hours, and only while 302s and
+ * fallbacks do not rise"; `decideRampAdvance` lists the refusals). Not wired to an event: like
+ * apify-gateway's watcher before Trigger.dev's account existed (`services/apify-gateway/README.md`,
+ * "the watcher task is not in trigger/ yet"), this is called by a scheduled task once built
+ * (README.md, "Decisions"). Seeds the ramp at its lowest stage on the first call. Returns
+ * `undefined` while `source-health` is off.
  */
 export async function assessRamp(db: Queryable, now: Date): Promise<RampAssessment | undefined> {
   if ((await state(db, MODULE)) === 'off') return undefined
@@ -169,17 +175,17 @@ export async function assessRamp(db: Queryable, now: Date): Promise<RampAssessme
   const current = await selectCurrentRamp(db)
   if (!current) throw new Error('source-health: ramp was not seeded')
 
-  const yesterday = londonDay(new Date(now.getTime() - 24 * 3_600_000))
-  const dayBefore = londonDay(new Date(now.getTime() - 2 * 24 * 3_600_000))
-  const yesterdayPct = await selectPctDegraded(db, yesterday)
-  if (yesterdayPct === undefined) return { day: yesterday, advanced: false, stage: current.stage }
-  const dayBeforePct = await selectPctDegraded(db, dayBefore)
+  const yesterday = dayBefore(londonDay(now))
+  const [yesterdayRead, baselineRead] = await Promise.all([
+    selectRampDayRead(db, yesterday),
+    selectRampDayRead(db, dayBefore(yesterday)),
+  ])
 
   const decision = decideRampAdvance(
     current,
     now,
-    yesterdayPct,
-    dayBeforePct ?? null,
+    yesterdayRead ?? null,
+    baselineRead ?? null,
     SOURCE_HEALTH_RAMP_STAGES,
   )
   const nextConfig =
@@ -187,6 +193,13 @@ export async function assessRamp(db: Queryable, now: Date): Promise<RampAssessme
   if (!decision.advance || decision.nextStage === undefined || !nextConfig) {
     return { day: yesterday, advanced: false, stage: current.stage }
   }
-  await insertRampStage(db, decision.nextStage, now, nextConfig.maxChecksPerDay, yesterday)
+  const advanced = await insertRampStage(
+    db,
+    decision.nextStage,
+    now,
+    nextConfig.maxChecksPerDay,
+    yesterday,
+  )
+  if (!advanced) return { day: yesterday, advanced: false, stage: current.stage }
   return { day: yesterday, advanced: true, stage: decision.nextStage }
 }

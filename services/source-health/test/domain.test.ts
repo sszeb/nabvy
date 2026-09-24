@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   countDegraded,
+  dayBefore,
   decideRampAdvance,
   emptyHealthDay,
   evaluateAlert,
@@ -70,7 +71,7 @@ describe('pagesOf (docs/questions/source-health.md, "what counts as a seller blo
   })
 })
 
-describe('mergeHealthDay (CLAUDE.md, "Idempotent handlers")', () => {
+describe("mergeHealthDay (the pure form of the repo's SQL increments)", () => {
   it('folds one job into empty totals', () => {
     const merged = mergeHealthDay(emptyHealthDay(), {
       jobId: 1,
@@ -80,7 +81,6 @@ describe('mergeHealthDay (CLAUDE.md, "Idempotent handlers")', () => {
       sellerPresence: [true, true],
     })
     expect(merged).toEqual({
-      processedJobIds: [1],
       totalSearches: 2,
       degradedSearches: 1,
       breakerTrips: 0,
@@ -88,24 +88,6 @@ describe('mergeHealthDay (CLAUDE.md, "Idempotent handlers")', () => {
       blockedPages: [false],
       alerted: [],
     })
-  })
-
-  it('a job already processed leaves the totals unchanged', () => {
-    const once = mergeHealthDay(emptyHealthDay(), {
-      jobId: 1,
-      searches: [{ route: 'http' }],
-      breakerTripped: true,
-      newOperationIds: [],
-      sellerPresence: [],
-    })
-    const twice = mergeHealthDay(once, {
-      jobId: 1,
-      searches: [{ route: 'http' }, { route: 'failed' }],
-      breakerTripped: true,
-      newOperationIds: ['q2'],
-      sellerPresence: [false],
-    })
-    expect(twice).toEqual(once)
   })
 
   it('dedupes new operation IDs across jobs', () => {
@@ -161,35 +143,131 @@ describe('decideRampAdvance (card: "steps of 24-48 hours ... only while 302s and
     { maxChecksPerDay: 100, minHoursAtStage: 48 },
   ]
   const startedAt = new Date('2026-09-20T00:00:00.000Z')
+  const held = new Date('2026-09-22T00:00:00.000Z') // 48h later
+  const quiet = (pctDegraded: number) => ({ pctDegraded, alerted: [] })
 
   it('refuses before the minimum hold time', () => {
     const now = new Date('2026-09-21T00:00:00.000Z') // 24h later
-    const decision = decideRampAdvance({ stage: 0, startedAt }, now, 0.05, 0.05, stages)
+    const decision = decideRampAdvance(
+      { stage: 0, startedAt },
+      now,
+      quiet(0.05),
+      quiet(0.05),
+      stages,
+    )
     expect(decision).toEqual({ advance: false, reason: 'too-soon' })
   })
 
   it('does not advance when the degraded share rose since the previous day, even past the hold time', () => {
-    const now = new Date('2026-09-22T00:00:00.000Z') // 48h later
-    const decision = decideRampAdvance({ stage: 0, startedAt }, now, 0.08, 0.05, stages)
+    const decision = decideRampAdvance(
+      { stage: 0, startedAt },
+      held,
+      quiet(0.08),
+      quiet(0.05),
+      stages,
+    )
     expect(decision).toEqual({ advance: false, reason: 'degraded-rate-rose' })
   })
 
   it('advances once the hold time has passed and the share held or improved', () => {
-    const now = new Date('2026-09-22T00:00:00.000Z')
-    const decision = decideRampAdvance({ stage: 0, startedAt }, now, 0.03, 0.05, stages)
+    const decision = decideRampAdvance(
+      { stage: 0, startedAt },
+      held,
+      quiet(0.03),
+      quiet(0.05),
+      stages,
+    )
     expect(decision).toEqual({ advance: true, reason: 'held-or-improved', nextStage: 1 })
   })
 
-  it('missing previous-day history never blocks the first advance', () => {
-    const now = new Date('2026-09-22T00:00:00.000Z')
-    const decision = decideRampAdvance({ stage: 0, startedAt }, now, 0.05, null, stages)
+  it('an equal share is "not rising" and advances', () => {
+    const decision = decideRampAdvance(
+      { stage: 0, startedAt },
+      held,
+      quiet(0.05),
+      quiet(0.05),
+      stages,
+    )
+    expect(decision).toEqual({ advance: true, reason: 'held-or-improved', nextStage: 1 })
+  })
+
+  it('refuses without a baseline: no row for yesterday, or none for the day before', () => {
+    expect(decideRampAdvance({ stage: 0, startedAt }, held, null, quiet(0.05), stages)).toEqual({
+      advance: false,
+      reason: 'no-baseline',
+    })
+    expect(decideRampAdvance({ stage: 0, startedAt }, held, quiet(0.05), null, stages)).toEqual({
+      advance: false,
+      reason: 'no-baseline',
+    })
+  })
+
+  it('refuses when yesterday alerted, whatever its share did', () => {
+    const decision = decideRampAdvance(
+      { stage: 0, startedAt },
+      held,
+      { pctDegraded: 0.01, alerted: ['new-operation-id'] },
+      quiet(0.05),
+      stages,
+    )
+    expect(decision).toEqual({ advance: false, reason: 'alerted' })
+  })
+
+  it('refuses when yesterday was above the alert threshold, even if lower than the day before', () => {
+    const decision = decideRampAdvance(
+      { stage: 0, startedAt },
+      held,
+      quiet(0.4),
+      quiet(0.5),
+      stages,
+      0.1,
+    )
+    expect(decision).toEqual({ advance: false, reason: 'degraded' })
+  })
+
+  it('exactly at the threshold is not "more than" and does not refuse on that ground', () => {
+    const decision = decideRampAdvance(
+      { stage: 0, startedAt },
+      held,
+      quiet(0.1),
+      quiet(0.1),
+      stages,
+      0.1,
+    )
     expect(decision).toEqual({ advance: true, reason: 'held-or-improved', nextStage: 1 })
   })
 
   it('never advances past the last stage', () => {
-    const now = new Date('2026-09-22T00:00:00.000Z')
-    const decision = decideRampAdvance({ stage: 1, startedAt }, now, 0.01, 0.05, stages)
+    const decision = decideRampAdvance(
+      { stage: 1, startedAt },
+      held,
+      quiet(0.01),
+      quiet(0.05),
+      stages,
+    )
     expect(decision).toEqual({ advance: false, reason: 'max-stage' })
+  })
+})
+
+describe('dayBefore (calendar days, not clock hours)', () => {
+  it('steps back one calendar day, across a month and a year', () => {
+    expect(dayBefore('2026-09-24')).toBe('2026-09-23')
+    expect(dayBefore('2026-10-01')).toBe('2026-09-30')
+    expect(dayBefore('2026-01-01')).toBe('2025-12-31')
+    expect(dayBefore('2026-09-24', 2)).toBe('2026-09-22')
+  })
+
+  it('on the clocks-forward Sunday, yesterday is still the calendar day before', () => {
+    // 2026-03-29 is the BST switch: 00:30 London on the 30th is 23:30Z on the 29th, and
+    // `now - 24h` would land in the 28th for that hour.
+    const now = new Date('2026-03-29T23:30:00.000Z')
+    expect(londonDay(now)).toBe('2026-03-30')
+    expect(dayBefore(londonDay(now))).toBe('2026-03-29')
+    expect(londonDay(new Date(now.getTime() - 24 * 3_600_000))).toBe('2026-03-28')
+  })
+
+  it('rejects anything that is not a calendar day', () => {
+    expect(() => dayBefore('2026-9-24')).toThrow()
   })
 })
 

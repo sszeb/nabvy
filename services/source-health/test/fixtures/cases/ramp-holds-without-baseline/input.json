@@ -7,13 +7,10 @@
   },
   "now": "2026-09-23T00:00:00.000Z",
   "yesterday": {
-    "pctDegraded": 0.08,
-    "alerted": []
-  },
-  "dayBefore": {
     "pctDegraded": 0.05,
     "alerted": []
   },
+  "dayBefore": null,
   "stages": [
     {
       "maxChecksPerDay": 50,

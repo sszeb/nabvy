@@ -11,8 +11,7 @@ import { ALL_ON, createTestDatabase, type TestDatabase } from './support/databas
 // function a reader calls — its "When off" line ("check-scheduler uses the lowest ramp stage").
 
 const fakeReader: RunCollectedReader = {
-  jobExists: async () => true,
-  jobRegion: async () => 'chichester',
+  job: async () => ({ regionId: 'chichester', occurredAt: new Date('2026-09-24T00:00:00.000Z') }),
   searchRoutes: async () => [{ route: 'http' }],
   sellerPresence: async () => [true],
   regionDecision: async () => ({ reason: null, newQueryIds: [] }),

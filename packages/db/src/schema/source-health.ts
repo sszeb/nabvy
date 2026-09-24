@@ -1,4 +1,4 @@
-import { integer, jsonb, numeric, text, timestamp } from 'drizzle-orm/pg-core'
+import { integer, jsonb, numeric, text, timestamp, unique } from 'drizzle-orm/pg-core'
 import { idColumn, moduleSchema } from '../module-schema'
 
 // Tables of the source-health module, all in the Postgres schema 'source_health'
@@ -9,14 +9,13 @@ export const schema = moduleSchema('source-health')
 
 /**
  * One row per Europe/London calendar day (docs/design/modules/source-health.md, "Does / does
- * not": "tracks per day"). `processedJobIds` is bookkeeping, not a card-named metric: it lets the
- * handler recognise a replayed `apify-gateway.run-collected` for a job already folded into the
- * day's tally, so a retried delivery adds nothing twice (CLAUDE.md, "Idempotent handlers").
- * `alerted` lists the alert reasons already fired for the day, so a reason's event fires once.
+ * not": "tracks per day"). The counts are only ever changed by SQL increments keyed on a real
+ * insert into `processedJobs` (below), never by a read-modify-write of the row, so concurrent
+ * jobs on one day compose (CLAUDE.md, "Idempotent handlers"; README, "Decisions"). `alerted`
+ * lists the alert reasons already fired for the day, so a reason's event fires once.
  */
 export const healthDaily = schema.table('health_daily', {
   day: text('day').primaryKey(),
-  processedJobIds: jsonb('processed_job_ids').$type<number[]>().notNull().default([]),
   totalSearches: integer('total_searches').notNull().default(0),
   degradedSearches: integer('degraded_searches').notNull().default(0),
   breakerTrips: integer('breaker_trips').notNull().default(0),
@@ -27,18 +26,36 @@ export const healthDaily = schema.table('health_daily', {
 })
 
 /**
+ * Bookkeeping for idempotency, not a card-named table: one row per apify-gateway job ever folded
+ * into a day, keyed by the job ID across days. The handler inserts here with `on conflict do
+ * nothing` and adds the job's counts to `healthDaily` only on a real insert, so a redelivered
+ * `apify-gateway.run-collected` (same day or after London midnight) changes nothing. `day` is the
+ * job's own day (apify-gateway's `settled_at`, else `finished_at`, else `created_at`).
+ */
+export const processedJobs = schema.table('processed_jobs', {
+  jobId: integer('job_id').primaryKey(),
+  day: text('day').notNull(),
+  processedAt: timestamp('processed_at', { withTimezone: true }).notNull().defaultNow(),
+})
+
+/**
  * The ramp's history: one row per stage ever entered (card: "Holds the ramp stage"). The current
  * stage is the row with the latest `started_at`; the repo never updates a row in place, so
- * `advanced_by` and `started_at` of a past stage are never rewritten.
+ * `advanced_by` and `started_at` of a past stage are never rewritten. `stage` is unique: two
+ * concurrent advances (or a seed racing an advance) cannot both enter the same stage.
  */
-export const ramp = schema.table('ramp', {
-  id: idColumn(),
-  stage: integer('stage').notNull(),
-  startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
-  maxChecksPerDay: integer('max_checks_per_day').notNull(),
-  advancedBy: text('advanced_by'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-})
+export const ramp = schema.table(
+  'ramp',
+  {
+    id: idColumn(),
+    stage: integer('stage').notNull(),
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
+    maxChecksPerDay: integer('max_checks_per_day').notNull(),
+    advancedBy: text('advanced_by'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [unique('ramp_stage_unique').on(table.stage)],
+)
 
 // Published views, created by hand-written SQL (migrations/source-health/*_access.sql). Empty
 // while the module's switch is off (rule 11). Row types: `SourceHealthDay` and
@@ -70,4 +87,5 @@ export const vRampStage = schema
   .existing()
 
 export type HealthDailyRow = typeof healthDaily.$inferSelect
+export type ProcessedJobRow = typeof processedJobs.$inferSelect
 export type RampRow = typeof ramp.$inferSelect

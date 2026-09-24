@@ -36,8 +36,8 @@ begin
 end;
 $$;
 
--- nabvy_pipeline: exactly the intended grants (select/insert/update on health_daily,
--- select/insert on ramp — ramp is append-only, never updated or deleted) ---------------------
+-- nabvy_pipeline: exactly the intended grants (select/insert/update on health_daily;
+-- select/insert on ramp and processed_jobs — both append-only, never updated or deleted) -------
 do $$
 begin
   set local role nabvy_pipeline;
@@ -58,22 +58,74 @@ begin
     raise exception 'nabvy_pipeline updated ramp';
   exception when insufficient_privilege then null;
   end;
+  begin
+    delete from source_health.ramp where stage = 9;
+    raise exception 'nabvy_pipeline deleted from ramp';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    update source_health.processed_jobs set day = 'nope' where job_id = -1;
+    raise exception 'nabvy_pipeline updated processed_jobs';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    delete from source_health.processed_jobs where job_id = -1;
+    raise exception 'nabvy_pipeline deleted from processed_jobs';
+  exception when insufficient_privilege then null;
+  end;
   reset role;
 end;
 $$;
 
 set local role nabvy_pipeline;
 insert into source_health.health_daily (
-  day, processed_job_ids, total_searches, degraded_searches, breaker_trips, new_operation_ids,
-  blocked_pages, alerted
+  day, total_searches, degraded_searches, breaker_trips, new_operation_ids, blocked_pages, alerted
 ) values (
-  'probe-day', '[1,2]'::jsonb, 10, 2, 1, '["q1"]'::jsonb, '[true,false]'::jsonb, '["degraded-spike"]'::jsonb
+  'probe-day', 10, 2, 1, '["q1"]'::jsonb, '[true,false]'::jsonb, '["degraded-spike"]'::jsonb
 );
+insert into source_health.processed_jobs (job_id, day) values (1, 'probe-day'), (2, 'probe-day');
 insert into source_health.ramp (stage, started_at, max_checks_per_day, advanced_by)
 values (0, now() - interval '2 days', 50, null);
 insert into source_health.ramp (stage, started_at, max_checks_per_day, advanced_by)
 values (1, now(), 100, 'probe-day');
 reset role;
+
+-- processed_jobs dedupes on the job ID across days: a second claim of job 1 on another day is a
+-- conflict, and `on conflict do nothing` inserts nothing (the handler's replay guard) ----------
+with claimed as (
+  insert into source_health.processed_jobs (job_id, day) values (1, 'another-day')
+  on conflict (job_id) do nothing returning job_id
+)
+select pg_temp.check(count(*) = 0, 'a replayed job ID on another day was claimed again')
+from claimed;
+select pg_temp.check(
+  (select day from source_health.processed_jobs where job_id = 1) = 'probe-day',
+  'the replay moved job 1 to another day');
+
+-- ramp.stage is unique: a second row for stage 1 is refused, and a racing insert with
+-- `on conflict (stage) do nothing` inserts nothing -----------------------------------------------
+do $$
+begin
+  begin
+    insert into source_health.ramp (stage, started_at, max_checks_per_day, advanced_by)
+    values (1, now(), 100, 'probe-day');
+    raise exception 'ramp accepted a second row for stage 1';
+  exception when unique_violation then null;
+  end;
+end;
+$$;
+with raced as (
+  insert into source_health.ramp (stage, started_at, max_checks_per_day, advanced_by)
+  values (1, now(), 100, 'probe-day') on conflict (stage) do nothing returning stage
+)
+select pg_temp.check(count(*) = 0, 'a racing advance to stage 1 inserted a second row')
+from raced;
+select pg_temp.check(
+  not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'source_health' and table_name = 'health_daily'
+      and column_name = 'processed_job_ids'),
+  'health_daily.processed_job_ids still exists (replaced by processed_jobs)');
 
 -- v_health: security_invoker, its column allowlist, the computed pct_degraded, and rows only
 -- while source-health is on ---------------------------------------------------------------------

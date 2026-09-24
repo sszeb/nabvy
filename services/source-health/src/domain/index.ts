@@ -34,6 +34,18 @@ export function londonDay(at: string | Date): string {
   return LONDON_DAY.format(typeof at === 'string' ? new Date(at) : at)
 }
 
+/**
+ * The calendar day `days` before (or, negative, after) a `YYYY-MM-DD` day. Arithmetic on the
+ * calendar, not on the clock: on the clocks-forward Sunday `now - 24h` is still the day before
+ * yesterday for an hour, whereas a day minus one calendar day is always yesterday.
+ */
+export function dayBefore(day: string, days = 1): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day)
+  if (!match) throw new Error(`source-health: not a calendar day: ${day}`)
+  const noon = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) - days, 12)
+  return new Date(noon).toISOString().slice(0, 10)
+}
+
 export interface SearchOutcome {
   route: string
 }
@@ -76,7 +88,6 @@ export function pagesOf(
 }
 
 export interface HealthDayTotals {
-  processedJobIds: number[]
   totalSearches: number
   degradedSearches: number
   breakerTrips: number
@@ -86,7 +97,6 @@ export interface HealthDayTotals {
 }
 
 export const emptyHealthDay = (): HealthDayTotals => ({
-  processedJobIds: [],
   totalSearches: 0,
   degradedSearches: 0,
   breakerTrips: 0,
@@ -108,15 +118,14 @@ export interface HealthDayBatch {
 }
 
 /**
- * Folds one collected job into a day's running totals. Idempotent (rule 8): a `jobId` already in
- * `processedJobIds` returns `existing` unchanged, so a replayed `apify-gateway.run-collected`
- * event adds nothing twice.
+ * Folds one collected job into a day's running totals: the pure form of the SQL increments the
+ * repo runs (`addJobToDay`), used by the fixtures and the domain tests. Replay protection is not
+ * here: the repo dedupes on the job ID in `processed_jobs` before it increments anything (rule 8;
+ * README, "Decisions"), so a replayed `apify-gateway.run-collected` never reaches these sums.
  */
 export function mergeHealthDay(existing: HealthDayTotals, batch: HealthDayBatch): HealthDayTotals {
-  if (existing.processedJobIds.includes(batch.jobId)) return existing
   const { total, degraded } = countDegraded(batch.searches)
   return {
-    processedJobIds: [...existing.processedJobIds, batch.jobId],
     totalSearches: existing.totalSearches + total,
     degradedSearches: existing.degradedSearches + degraded,
     breakerTrips: existing.breakerTrips + (batch.breakerTripped ? 1 : 0),
@@ -151,7 +160,20 @@ export interface RampState {
   startedAt: Date
 }
 
-export type RampAdvanceReason = 'too-soon' | 'degraded-rate-rose' | 'held-or-improved' | 'max-stage'
+/** What the ramp reads of a complete day (from `v_health`): its degraded share and its alerts. */
+export interface RampDayRead {
+  pctDegraded: number
+  alerted: readonly SourceHealthAlertReason[]
+}
+
+export type RampAdvanceReason =
+  | 'too-soon'
+  | 'max-stage'
+  | 'no-baseline'
+  | 'alerted'
+  | 'degraded'
+  | 'degraded-rate-rose'
+  | 'held-or-improved'
 
 export interface RampAdvanceDecision {
   advance: boolean
@@ -162,16 +184,21 @@ export interface RampAdvanceDecision {
 /**
  * Whether the ramp may move to its next stage now (card: "Holds the ramp stage: volume rises in
  * steps of 24-48 hours, and only while 302s and fallbacks do not rise",
- * `fb-scrap-engine/docs/design/SCALE_PLAN.md:111-113`). `previousPctDegraded` is the prior day's
- * degraded share, or `null` when there is none recorded yet — missing history never blocks the
- * first advance.
+ * `fb-scrap-engine/docs/design/SCALE_PLAN.md:111-113`). `yesterday` and `dayBefore` are the two
+ * most recent complete days, or `null` when that day has no row. The rule refuses, in this order:
+ * at the last stage; before the stage's minimum hold time; without both days (a rise can only be
+ * judged against a baseline, so missing history never advances); when yesterday alerted for any
+ * reason; when yesterday's degraded share is above the alert threshold (a day that is degraded
+ * throughout is not "not rising", it is already bad); when yesterday's share is above the day
+ * before's. Otherwise it advances by one stage.
  */
 export function decideRampAdvance(
   current: RampState,
   now: Date,
-  todayPctDegraded: number,
-  previousPctDegraded: number | null,
+  yesterday: RampDayRead | null,
+  dayBefore: RampDayRead | null,
   stages: readonly SourceHealthRampStageConfig[] = SOURCE_HEALTH_RAMP_STAGES,
+  threshold: number = SOURCE_HEALTH_ALERT_PCT_DEGRADED,
 ): RampAdvanceDecision {
   const config = stages[current.stage]
   if (current.stage >= stages.length - 1 || !config) return { advance: false, reason: 'max-stage' }
@@ -179,7 +206,12 @@ export function decideRampAdvance(
   if (hoursAtStage < config.minHoursAtStage) {
     return { advance: false, reason: 'too-soon' }
   }
-  if (previousPctDegraded !== null && todayPctDegraded > previousPctDegraded) {
+  if (yesterday === null || dayBefore === null) return { advance: false, reason: 'no-baseline' }
+  if (yesterday.alerted.length > 0) return { advance: false, reason: 'alerted' }
+  if (isDegradedSpike(yesterday.pctDegraded, threshold)) {
+    return { advance: false, reason: 'degraded' }
+  }
+  if (yesterday.pctDegraded > dayBefore.pctDegraded) {
     return { advance: false, reason: 'degraded-rate-rose' }
   }
   return { advance: true, reason: 'held-or-improved', nextStage: current.stage + 1 }
