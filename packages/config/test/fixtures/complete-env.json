@@ -3,6 +3,7 @@
   "env": {
     "DATABASE_URL": "postgresql://nabvy_app:placeholder@localhost:5432/postgres",
     "DATABASE_URL_PIPELINE": "postgresql://nabvy_pipeline:placeholder@localhost:5432/postgres",
+    "DATABASE_URL_AUTH": "postgresql://nabvy_auth:placeholder@localhost:5432/postgres",
     "SUPABASE_URL": "https://example.supabase.co",
     "SUPABASE_SERVICE_ROLE_KEY": "placeholder-service-role-key",
     "BETTER_AUTH_SECRET": "placeholder-better-auth-secret",
