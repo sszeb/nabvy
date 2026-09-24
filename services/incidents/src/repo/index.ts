@@ -1,7 +1,7 @@
 // Database access. Own tables from '@nabvy/db/schema/incidents'; other modules only through
 // their v_ views (packages/db/README.md). This module has no user rows, so no withUser scoping.
 import type { AppError, EventEnvelope } from '@nabvy/contracts'
-import type { IncidentRow } from '@nabvy/contracts/modules/incidents'
+import type { IncidentsRow } from '@nabvy/contracts/modules/incidents'
 import type { Queryable } from '@nabvy/db'
 import { incidents } from '@nabvy/db/schema/incidents'
 import { and, eq, isNull, sql } from 'drizzle-orm'
@@ -9,7 +9,7 @@ import type { DeadLetterRow } from '../domain'
 
 type Row = typeof incidents.$inferSelect
 
-function toIncidentRow(row: Row): IncidentRow {
+function toIncidentRow(row: Row): IncidentsRow {
   return {
     id: row.id,
     eventType: row.eventType,
@@ -25,18 +25,19 @@ function toIncidentRow(row: Row): IncidentRow {
 }
 
 /**
- * Upserts on `event_key` (the table's unique key): a first failure inserts a row; a replay of the
- * same call, or a fresh failure after a retry, overwrites it and reopens it (`resolved_at` reset
- * to null). This is what makes `record()` idempotent (CLAUDE.md, "Idempotent handlers").
+ * Upserts on `(event_type, event_key)` (the table's unique key): a first failure inserts a row; a
+ * replay of the same call, or a fresh failure after a retry, overwrites it and reopens it
+ * (`resolved_at` reset to null). This is what makes `record()` idempotent (CLAUDE.md, "Idempotent
+ * handlers"). The key includes `event_type` because `listingKey()` alone does not: two different
+ * event types for the same listing version must never collapse into one incident (PR #19 review).
  */
-export async function upsertOpen(db: Queryable, row: DeadLetterRow): Promise<IncidentRow> {
+export async function upsertOpen(db: Queryable, row: DeadLetterRow): Promise<IncidentsRow> {
   const [saved] = await db
     .insert(incidents)
     .values(row)
     .onConflictDoUpdate({
-      target: incidents.eventKey,
+      target: [incidents.eventType, incidents.eventKey],
       set: {
-        eventType: row.eventType,
         payload: row.payload,
         error: row.error,
         attempts: row.attempts,
@@ -50,7 +51,7 @@ export async function upsertOpen(db: Queryable, row: DeadLetterRow): Promise<Inc
   return toIncidentRow(saved)
 }
 
-export async function findById(db: Queryable, id: string): Promise<IncidentRow | undefined> {
+export async function findById(db: Queryable, id: string): Promise<IncidentsRow | undefined> {
   const [row] = await db.select().from(incidents).where(eq(incidents.id, id))
   return row ? toIncidentRow(row) : undefined
 }
@@ -60,7 +61,7 @@ export async function markResolved(
   db: Queryable,
   id: string,
   resolvedAt: Date,
-): Promise<IncidentRow | undefined> {
+): Promise<IncidentsRow | undefined> {
   const [row] = await db
     .update(incidents)
     .set({ resolvedAt, updatedAt: sql`now()` })

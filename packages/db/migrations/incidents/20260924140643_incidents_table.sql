@@ -11,7 +11,7 @@ CREATE TABLE "incidents"."incidents" (
 	"resolved_at" timestamp with time zone,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "incidents_event_key_key" UNIQUE("event_key")
+	CONSTRAINT "incidents_event_type_event_key_key" UNIQUE("event_type","event_key")
 );
 --> statement-breakpoint
 CREATE INDEX "incidents_open_idx" ON "incidents"."incidents" USING btree ("resolved_at");

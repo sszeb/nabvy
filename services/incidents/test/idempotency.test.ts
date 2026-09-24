@@ -51,6 +51,30 @@ describe('record (CLAUDE.md, "Idempotent handlers")', () => {
     expect(rows[0]?.error).toEqual({ code: 'listing-ingest.timeout', message: 'second failure' })
   })
 
+  it('keeps two incidents when different event types share one key (PR #19 review)', async () => {
+    const key = 'facebook:idempotency-5:abc'
+    const first = envelopeFor(key)
+    const second = { ...envelopeFor(key), type: 'asking-price-position.computed' }
+    const baseInput = {
+      error: { code: 'listing-ingest.timeout', message: 'boom' },
+      attempts: 3,
+      firstFailedAt: '2026-09-24T00:00:00.000Z',
+    }
+
+    const firstResult = await harness.as('nabvy_pipeline', (db) =>
+      record(db, { ...baseInput, envelope: first }),
+    )
+    const secondResult = await harness.as('nabvy_pipeline', (db) =>
+      record(db, { ...baseInput, envelope: second }),
+    )
+
+    expect(secondResult.incident.id).not.toBe(firstResult.incident.id)
+    const rows = await harness.as('postgres', (db) =>
+      db.select().from(incidents).where(eq(incidents.eventKey, key)),
+    )
+    expect(rows).toHaveLength(2)
+  })
+
   it('reopens an incident that fails again after being retried', async () => {
     const envelope = envelopeFor('facebook:idempotency-2:abc')
     const input = {

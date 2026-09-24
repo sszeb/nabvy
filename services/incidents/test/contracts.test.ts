@@ -1,5 +1,10 @@
 import { createEvent, safeParseEvent } from '@nabvy/contracts'
-import { events, IncidentRow, module } from '@nabvy/contracts/modules/incidents'
+import {
+  events,
+  IncidentsDeadLetteredEvent,
+  IncidentsRow,
+  module,
+} from '@nabvy/contracts/modules/incidents'
 import { describe, expect, it } from 'vitest'
 
 const sampleRow = {
@@ -37,24 +42,26 @@ describe('incidents contracts', () => {
       { key: 'facebook:123:abc' },
     )
     expect(safeParseEvent(events, envelope)).toEqual({ success: true, data: envelope })
+    expect(IncidentsDeadLetteredEvent.parse(envelope.payload)).toEqual(envelope.payload)
   })
 
   it('rejects a dead-lettered event with an empty incident list', () => {
     expect(() =>
       createEvent(events, 'incidents.dead-lettered', 1, { incidentIds: [] }, { key: 'x' }),
     ).toThrow()
+    expect(IncidentsDeadLetteredEvent.safeParse({ incidentIds: [] }).success).toBe(false)
   })
 
   it('parses a valid incident row', () => {
-    expect(IncidentRow.parse(sampleRow)).toEqual(sampleRow)
+    expect(IncidentsRow.parse(sampleRow)).toEqual(sampleRow)
   })
 
   it('rejects an incident row missing a required field', () => {
     const { attempts: _attempts, ...rest } = sampleRow
-    expect(IncidentRow.safeParse(rest).success).toBe(false)
+    expect(IncidentsRow.safeParse(rest).success).toBe(false)
   })
 
   it('rejects an incident row with an unknown field', () => {
-    expect(IncidentRow.safeParse({ ...sampleRow, extra: true }).success).toBe(false)
+    expect(IncidentsRow.safeParse({ ...sampleRow, extra: true }).success).toBe(false)
   })
 })

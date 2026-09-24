@@ -1,6 +1,6 @@
 {
-  "id": "29670c24-175d-4ac0-9903-a030ac88ce34",
-  "prevId": "40ca4dbd-5299-42c0-bf2a-3cea41e5aeac",
+  "id": "59bdf7bf-1d75-489f-a7f2-bb273b66a7db",
+  "prevId": "555df4f9-25d2-4ae7-9385-cd9af0a275ad",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -92,9 +92,10 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "incidents_event_key_key": {
-          "name": "incidents_event_key_key",
+        "incidents_event_type_event_key_key": {
+          "name": "incidents_event_type_event_key_key",
           "columns": [
+            "event_type",
             "event_key"
           ],
           "nullsNotDistinct": false

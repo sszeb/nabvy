@@ -13,6 +13,12 @@ export const schema = moduleSchema('incidents')
  * `record()` reopens the same row instead of creating another (docs/design/modules/incidents.md).
  * `payload` holds the whole original event envelope (id, type, v, at, key, payload), not just its
  * payload field, because `retry()` needs it to reconstruct and re-emit the original event.
+ *
+ * The unique key is `(event_type, event_key)`, not `event_key` alone: `listingKey()`
+ * (`packages/contracts/src/core/events.ts`) leaves the event type out, so two different event
+ * types for the same listing version can share a key. A key on `event_key` alone would let the
+ * second type's failure silently overwrite the first's envelope — exactly the loss a dead-letter
+ * store exists to stop (PR #19 review).
  */
 export const incidents = schema.table(
   'incidents',
@@ -28,7 +34,7 @@ export const incidents = schema.table(
     ...timestampColumns(),
   },
   (t) => [
-    unique('incidents_event_key_key').on(t.eventKey),
+    unique('incidents_event_type_event_key_key').on(t.eventType, t.eventKey),
     index('incidents_open_idx').on(t.resolvedAt),
   ],
 )

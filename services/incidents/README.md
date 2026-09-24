@@ -32,12 +32,16 @@ the caller can re-emit it, and marks the incident resolved. incidents never retr
 
 Postgres schema `incidents`.
 
-- `incidents`: one row per dead-lettered event, keyed by its idempotency key (`event_key`,
-  unique). `payload` holds the *whole* original event envelope (`id`, `type`, `v`, `at`, `key`,
-  `payload`), not just its payload field, because `retry()` needs the full envelope to reconstruct
-  and re-emit the original event. `error` is the module's `AppError` (`code`, `message`).
-  `attempts` and `first_failed_at` describe the failed run; `resolved_at` is set by `retry()` and
-  cleared again if the same `event_key` fails once more after being retried (see "Decisions").
+- `incidents`: one row per dead-lettered event, keyed by `(event_type, event_key)` (unique). The
+  key is composite, not `event_key` alone, because `listingKey()`
+  (`packages/contracts/src/core/events.ts`) leaves the event type out: two different event types
+  for the same listing version can share a key, and a key on `event_key` alone would let the
+  second type's failure silently overwrite the first's envelope (PR #19 review). `payload` holds
+  the *whole* original event envelope (`id`, `type`, `v`, `at`, `key`, `payload`), not just its
+  payload field, because `retry()` needs the full envelope to reconstruct and re-emit the original
+  event. `error` is the module's `AppError` (`code`, `message`). `attempts` and `first_failed_at`
+  describe the failed run; `resolved_at` is set by `retry()` and cleared again if the same
+  `(event_type, event_key)` fails once more after being retried (see "Decisions").
 
 ## Views
 
@@ -77,11 +81,13 @@ each checked against the card's "Tests and fixtures" line: one record per envelo
 retry re-emits the same envelope. Latest recorded pass rate: 4/4 (100%).
 
 `packages/db/tests/incidents.test.sql` (run by `pnpm db:dry-run`): only `nabvy_pipeline` can
-insert; neither role can delete; the upsert on `event_key` is idempotent; `nabvy_app` can resolve
-an incident but not create one; `v_open`'s column list and its exact set of readers
-(`nabvy_app`, `nabvy_pipeline`). The global view and Data API checks
-(`security_invoker`, no seller-shaped columns, nothing in `public`, no `anon`/`authenticated`
-access) run once for every module in `tests/core.test.sql`.
+insert; neither role can delete; the upsert on `(event_type, event_key)` is idempotent; two event
+types sharing one `event_key` stay two rows; `nabvy_app` can resolve an incident (its `update`
+grant is column-level: `resolved_at`, `updated_at` only, checked against every other column) but
+not create one; `v_open`'s column list and its exact set of readers (`nabvy_app`,
+`nabvy_pipeline`). The global view and Data API checks (`security_invoker`, no seller-shaped
+columns, nothing in `public`, no `anon`/`authenticated` access) run once for every module in
+`tests/core.test.sql`.
 
 ## Decisions
 
@@ -89,10 +95,10 @@ access) run once for every module in `tests/core.test.sql`.
   card names the column `payload`, but `retry()` must return the *original event* unchanged
   (`id`, `type`, `v`, `at`, `key` included), so the column holds the full `EventEnvelope`. A
   narrower `payload`-only column would lose the information `retry()` needs to reconstruct it.
-- **2026-09-24: `record()` upserts and reopens.** `event_key` is unique. A replay of the exact
-  same failure (a handler retried at the transport level, itself idempotent) overwrites the row
-  with the same values. A fresh failure of the same event after an admin's `retry()` clears
-  `resolved_at`, reopening the incident, rather than creating a second row for the same key.
+- **2026-09-24: `record()` upserts and reopens.** `(event_type, event_key)` is unique. A replay of
+  the exact same failure (a handler retried at the transport level, itself idempotent) overwrites
+  the row with the same values. A fresh failure of the same event after an admin's `retry()`
+  clears `resolved_at`, reopening the incident, rather than creating a second row for the same key.
 - **2026-09-24: no transport wiring in this module.** `record()` and `retry()` build and return
   validated event envelopes but do not call Trigger.dev (or any publisher) to actually emit them:
   no such helper exists anywhere in the repository yet (the task-wrapper and event-transport layer
@@ -104,3 +110,23 @@ access) run once for every module in `tests/core.test.sql`.
 - **2026-09-24: no RLS.** `incidents` carries no `user_id`; it is operational data, not user data,
   so no row-level security policy is attached (`packages/db/README.md`, "Adding tables to a
   module" describes the RLS path for tables that do carry one).
+- **2026-09-24 (PR #19 review): unique on `(event_type, event_key)`, not `event_key` alone.**
+  `listingKey()` omits the event type, so two different event types for the same listing version
+  can share a key. The original `event_key`-only key let the second type's failure silently
+  overwrite the first's envelope — exactly the loss a dead-letter store exists to stop. Fixed
+  before merge, with a test of two event types sharing one key at both the SQL level
+  (`packages/db/tests/incidents.test.sql`) and the module level (`test/idempotency.test.ts`).
+- **2026-09-24 (PR #19 review): contract names carry the module's name.** `RecordDeadLetterInput`,
+  `IncidentRow` and `OpenIncident` are renamed `IncidentsRecordDeadLetterInput`, `IncidentsRow`
+  and `IncidentsOpenIncident` (`docs/design/modules/_rules.md`, rule 3), and the card's
+  `IncidentsDeadLetteredEvent` is exported as the event's payload schema rather than left inline.
+- **2026-09-24 (PR #19 review): `nabvy_app`'s update grant is column-level.** `retry()` only ever
+  sets `resolved_at` (and `updated_at`, via the trigger); the grant is `update (resolved_at,
+  updated_at)`, not table-wide, least privilege for a table with no RLS.
+- **2026-09-24 (PR #19 review): `retry()`'s resolve-then-re-emit ordering is a known gap, not
+  fixed here.** `retry()` marks the incident resolved before its caller has actually re-sent the
+  envelope it returns; a caller that fails to re-emit after `retry()` returns loses the event,
+  since a resolved incident cannot be retried again. There is nothing to send the envelope to yet
+  (see "no transport wiring" above), so there is no transaction to span both steps. Documented on
+  `retry()` itself for whoever wires up the transport layer to either wrap both steps in one
+  transaction or resolve only after the re-emit succeeds.

@@ -1,4 +1,7 @@
-import type { IncidentRow, RecordDeadLetterInput } from '@nabvy/contracts/modules/incidents'
+import type {
+  IncidentsRecordDeadLetterInput,
+  IncidentsRow,
+} from '@nabvy/contracts/modules/incidents'
 import { describe, expect, it } from 'vitest'
 import { checkRetryable, toDeadLetterRow } from '../src/domain'
 
@@ -11,14 +14,14 @@ const envelope = {
   payload: { listingIds: ['00000000-0000-7000-8000-000000000002'] },
 }
 
-const input: RecordDeadLetterInput = {
+const input: IncidentsRecordDeadLetterInput = {
   envelope,
   error: { code: 'listing-ingest.timeout', message: 'the adapter timed out' },
   attempts: 3,
   firstFailedAt: '2026-09-24T00:00:00.000Z',
 }
 
-const baseRow: IncidentRow = {
+const baseRow: IncidentsRow = {
   id: '00000000-0000-7000-8000-000000000003',
   eventType: envelope.type,
   eventKey: envelope.key,

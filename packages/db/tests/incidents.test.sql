@@ -39,7 +39,7 @@ begin
 end;
 $$;
 
--- Idempotent upsert on event_key (what services/incidents' record() relies on) ---------------
+-- Idempotent upsert on (event_type, event_key) (what services/incidents' record() relies on) -
 set local role nabvy_pipeline;
 insert into incidents.incidents (event_type, event_key, payload, error, attempts, first_failed_at)
 values (
@@ -48,7 +48,7 @@ values (
   '{"code": "probe.err", "message": "boom again"}',
   4, '2026-09-24T00:00:00.000Z'
 )
-on conflict (event_key) do update set attempts = excluded.attempts, error = excluded.error;
+on conflict (event_type, event_key) do update set attempts = excluded.attempts, error = excluded.error;
 reset role;
 
 do $$
@@ -60,9 +60,33 @@ begin
 end;
 $$;
 
+-- Two event types sharing one key are two incidents, not one overwriting the other -----------
+-- (event_key alone was the original, broken unique key: listingKey() leaves the type out, so
+-- two different events for the same listing version can share a key; PR #19 review).
+set local role nabvy_pipeline;
+insert into incidents.incidents (event_type, event_key, payload, error, attempts, first_failed_at)
+values (
+  'other.failed', 'probe:one',
+  '{"id": "00000000-0000-7000-8000-000000000099", "type": "other.failed", "v": 1, "at": "2026-09-24T00:00:00.000Z", "key": "probe:one", "payload": {}}',
+  '{"code": "probe.err", "message": "a different event, same key"}',
+  1, '2026-09-24T00:00:00.000Z'
+);
+reset role;
+
+do $$
+declare
+  seen integer;
+begin
+  select count(*) into seen from incidents.incidents where event_key = 'probe:one';
+  if seen <> 2 then
+    raise exception 'two event types sharing event_key collapsed to % row(s)', seen;
+  end if;
+end;
+$$;
+
 -- nabvy_app resolves an incident (update only, no insert) but cannot resolve twice -----------
 set local role nabvy_app;
-update incidents.incidents set resolved_at = now() where event_key = 'probe:one';
+update incidents.incidents set resolved_at = now() where event_key = 'probe:one' and event_type = 'probe.failed';
 reset role;
 
 do $$
@@ -70,8 +94,22 @@ declare
   seen integer;
 begin
   select count(*) into seen
-  from incidents.incidents where event_key = 'probe:one' and resolved_at is null;
+  from incidents.incidents
+  where event_key = 'probe:one' and event_type = 'probe.failed' and resolved_at is null;
   if seen <> 0 then raise exception 'nabvy_app could not resolve the incident'; end if;
+end;
+$$;
+
+-- nabvy_app's update grant is column-level: resolved_at and updated_at only ------------------
+do $$
+begin
+  set local role nabvy_app;
+  begin
+    update incidents.incidents set attempts = 99 where event_key = 'probe:one' and event_type = 'probe.failed';
+    raise exception 'nabvy_app updated a column outside resolved_at/updated_at';
+  exception when insufficient_privilege then null;
+  end;
+  reset role;
 end;
 $$;
 
@@ -95,8 +133,13 @@ begin
   if cols <> 'id,event_type,event_key,payload,error,attempts,first_failed_at,created_at,updated_at'
   then raise exception 'v_open column list changed: %', cols; end if;
 
-  select count(*) into seen from incidents.v_open where event_key = 'probe:one';
+  select count(*) into seen
+  from incidents.v_open where event_key = 'probe:one' and event_type = 'probe.failed';
   if seen <> 0 then raise exception 'v_open shows a resolved incident'; end if;
+
+  select count(*) into seen
+  from incidents.v_open where event_key = 'probe:one' and event_type = 'other.failed';
+  if seen <> 1 then raise exception 'v_open is missing the still-open sibling incident'; end if;
 
   select count(*) into seen from incidents.v_open where event_key = 'probe:two';
   if seen <> 1 then raise exception 'v_open is missing an open incident'; end if;

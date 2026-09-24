@@ -7,7 +7,13 @@
 grant usage on schema incidents to nabvy_app, nabvy_pipeline;
 
 grant select, insert, update on incidents.incidents to nabvy_pipeline;
-grant select, update on incidents.incidents to nabvy_app;
+
+-- nabvy_app only ever calls retry(), which sets resolved_at (and updated_at, via the trigger
+-- below) and touches nothing else; column-level grant, not table-wide (least privilege: PR #19
+-- review).
+grant select on incidents.incidents to nabvy_app;
+grant update (resolved_at, updated_at) on incidents.incidents to nabvy_app;
+
 select nabvy_core.track_updated_at('incidents.incidents');
 
 -- The read interface for other modules and the admin console: security_invoker (a no-op today,
