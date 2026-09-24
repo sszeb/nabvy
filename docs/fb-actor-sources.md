@@ -14,6 +14,8 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
 
 0. `docs/fb-actor-reference.md` in this repository: a checked reference compiled from a full read of the
    actor repository at `f177a44` (inputs, routes, output fields, costs, failure modes, app duties).
+   **Being rebuilt from the listed files only** (owner, 2026-09-24). Until the rebuilt version lands,
+   do not rely on anything in it that the files below do not support.
 
 1. `docs/APP_INTEGRATION_GUIDE.md` (not written yet; checked for until it lands. Nabvy writes its own
    integration plan either way: `docs/decisions.md`, "The actor is a tool")
