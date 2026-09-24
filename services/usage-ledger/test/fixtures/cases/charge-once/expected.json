@@ -1,0 +1,10 @@
+{
+  "outcomes": [
+    { "changed": true },
+    { "changed": true },
+    { "changed": false },
+    { "refused": "usage-ledger.mismatch" }
+  ],
+  "buckets": { "pi_40": 25 },
+  "balance": 25
+}

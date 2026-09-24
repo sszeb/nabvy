@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "source": "Card usage-ledger: refusal at zero; docs/billing.md: refuses when insufficient",
+  "steps": [
+    { "charge": { "action": "scan_live", "credits": 1, "refId": "scan:empty" } },
+    { "grant": { "kind": "topup", "credits": 10, "refId": "pi_10", "cashMinor": 100 } },
+    { "charge": { "action": "scan_live", "credits": 10, "refId": "scan:all" } },
+    { "charge": { "action": "scan_live", "credits": 1, "refId": "scan:one-more" } }
+  ]
+}

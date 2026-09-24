@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "source": "Card usage-ledger: refusal at zero (no partial charge)",
+  "steps": [
+    {
+      "grant": { "kind": "allowance", "credits": 30, "refId": "allowance:1", "expiresInHours": 24 }
+    },
+    { "charge": { "action": "boost_24h", "credits": 31, "refId": "boost:1" } }
+  ]
+}

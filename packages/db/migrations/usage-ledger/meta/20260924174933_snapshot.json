@@ -1,0 +1,465 @@
+{
+  "id": "53dc3970-f940-49bd-a6a9-1508563ac79e",
+  "prevId": "80ec1246-d4e5-48b1-ab3b-adde33294475",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "usage_ledger.allocations": {
+      "name": "allocations",
+      "schema": "usage_ledger",
+      "columns": {
+        "entry_id": {
+          "name": "entry_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bucket_id": {
+          "name": "bucket_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credits": {
+          "name": "credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "allocations_bucket_id_idx": {
+          "name": "allocations_bucket_id_idx",
+          "columns": [
+            {
+              "expression": "bucket_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "allocations_user_id_idx": {
+          "name": "allocations_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "allocations_entry_id_bucket_id_pk": {
+          "name": "allocations_entry_id_bucket_id_pk",
+          "columns": [
+            "entry_id",
+            "bucket_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "allocations_credits": {
+          "name": "allocations_credits",
+          "value": "\"usage_ledger\".\"allocations\".\"credits\" <> 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "usage_ledger.buckets": {
+      "name": "buckets",
+      "schema": "usage_ledger",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rank": {
+          "name": "rank",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credits": {
+          "name": "credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "remaining": {
+          "name": "remaining",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cash_minor": {
+          "name": "cash_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "buckets_user_id_spend_order_idx": {
+          "name": "buckets_user_id_spend_order_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "rank",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "buckets_remaining": {
+          "name": "buckets_remaining",
+          "value": "\"usage_ledger\".\"buckets\".\"remaining\" between 0 and \"usage_ledger\".\"buckets\".\"credits\""
+        },
+        "buckets_rank": {
+          "name": "buckets_rank",
+          "value": "\"usage_ledger\".\"buckets\".\"rank\" = case \"usage_ledger\".\"buckets\".\"kind\" when 'allowance' then 1 when 'topup' then 3 else 2 end"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "usage_ledger.entries": {
+      "name": "entries",
+      "schema": "usage_ledger",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credits": {
+          "name": "credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ref_id": {
+          "name": "ref_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reverses_id": {
+          "name": "reverses_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cash_minor": {
+          "name": "cash_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "cost_gbp_micros": {
+          "name": "cost_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "policy_version": {
+          "name": "policy_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "entries_user_id_kind_ref_id_key": {
+          "name": "entries_user_id_kind_ref_id_key",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "ref_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "entries_reverses_id_key": {
+          "name": "entries_reverses_id_key",
+          "columns": [
+            {
+              "expression": "reverses_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "entries_user_id_at_idx": {
+          "name": "entries_user_id_at_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "entries_kind": {
+          "name": "entries_kind",
+          "value": "\"usage_ledger\".\"entries\".\"kind\" in ('allowance', 'taste', 'referral', 'topup', 'charge', 'reversal', 'expiry')"
+        },
+        "entries_credits_sign": {
+          "name": "entries_credits_sign",
+          "value": "case when \"usage_ledger\".\"entries\".\"kind\" in ('allowance', 'taste', 'referral', 'topup') then \"usage_ledger\".\"entries\".\"credits\" > 0\n               when \"usage_ledger\".\"entries\".\"kind\" = 'charge' then \"usage_ledger\".\"entries\".\"credits\" <= 0\n               when \"usage_ledger\".\"entries\".\"kind\" = 'reversal' then \"usage_ledger\".\"entries\".\"credits\" >= 0\n               else \"usage_ledger\".\"entries\".\"credits\" < 0 end"
+        },
+        "entries_action": {
+          "name": "entries_action",
+          "value": "(\"usage_ledger\".\"entries\".\"kind\" = 'charge') = (\"usage_ledger\".\"entries\".\"action\" is not null)"
+        },
+        "entries_reverses": {
+          "name": "entries_reverses",
+          "value": "(\"usage_ledger\".\"entries\".\"kind\" = 'reversal') = (\"usage_ledger\".\"entries\".\"reverses_id\" is not null)"
+        },
+        "entries_cash": {
+          "name": "entries_cash",
+          "value": "\"usage_ledger\".\"entries\".\"cash_minor\" >= 0 and (\"usage_ledger\".\"entries\".\"cash_minor\" = 0 or \"usage_ledger\".\"entries\".\"kind\" in ('allowance', 'topup'))"
+        },
+        "entries_cost": {
+          "name": "entries_cost",
+          "value": "\"usage_ledger\".\"entries\".\"cost_gbp_micros\" >= 0 and (\"usage_ledger\".\"entries\".\"cost_gbp_micros\" = 0 or \"usage_ledger\".\"entries\".\"kind\" = 'charge')"
+        },
+        "entries_expires": {
+          "name": "entries_expires",
+          "value": "\"usage_ledger\".\"entries\".\"expires_at\" is null or \"usage_ledger\".\"entries\".\"kind\" in ('allowance', 'taste', 'referral', 'topup')"
+        },
+        "entries_policy_version": {
+          "name": "entries_policy_version",
+          "value": "\"usage_ledger\".\"entries\".\"policy_version\" is null or \"usage_ledger\".\"entries\".\"kind\" in ('allowance', 'topup')"
+        },
+        "entries_expiring_kinds": {
+          "name": "entries_expiring_kinds",
+          "value": "\"usage_ledger\".\"entries\".\"kind\" not in ('allowance', 'taste') or \"usage_ledger\".\"entries\".\"expires_at\" is not null"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "usage_ledger": "usage_ledger"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "usage_ledger.v_balances": {
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credits": {
+          "name": "credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "allowance_credits": {
+          "name": "allowance_credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taste_referral_credits": {
+          "name": "taste_referral_credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "topup_credits": {
+          "name": "topup_credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "funding_credits": {
+          "name": "funding_credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "next_expiry_at": {
+          "name": "next_expiry_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attributed_cost_gbp_micros": {
+          "name": "attributed_cost_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_balances",
+      "schema": "usage_ledger",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

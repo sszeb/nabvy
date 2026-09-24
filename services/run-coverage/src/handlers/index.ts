@@ -14,7 +14,7 @@ export interface RunCollectedDeps {
  * `apify-gateway.run-collected` → `assess` for that job, in one transaction; the
  * `search-degraded` event is published by the wrapper once it succeeds. A run whose sightings
  * listing-ingest has not stored yet fails and is retried, so the gap check never reads a run
- * half-ingested. The module stores the T1 of its input (`collected_at`) and its `done_at`
+ * half-ingested; on the last attempt it judges without the gap check instead. The module stores the T1 of its input (`collected_at`) and its `done_at`
  * (rule 10), not envelope stamps.
  */
 export function runCollectedHandler(deps: RunCollectedDeps): EventHandler {
@@ -24,7 +24,11 @@ export function runCollectedHandler(deps: RunCollectedDeps): EventHandler {
     type: 'apify-gateway.run-collected',
     async handle(event, ctx) {
       const result = await deps.transaction((q) =>
-        assess(q, { jobId: event.payload.jobId, kind: event.payload.kind }),
+        assess(q, {
+          jobId: event.payload.jobId,
+          kind: event.payload.kind,
+          lastAttempt: ctx.attempt.attempt >= ctx.attempt.maxAttempts,
+        }),
       )
       if (!result.ok) return result
       ctx.emit(...result.value.events)

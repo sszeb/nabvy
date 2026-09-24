@@ -1,0 +1,1 @@
+The model returned a sticker price field. The output schema is strict and carries no price, so the output fails validation and the scan is quarantined as unidentified; nothing from it is used. The call is still metered.

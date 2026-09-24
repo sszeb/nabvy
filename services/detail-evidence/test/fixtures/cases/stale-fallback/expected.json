@@ -1,0 +1,37 @@
+{
+  "steps": [
+    {
+      "details": 20,
+      "versionsWritten": 20,
+      "fetchesWritten": 20,
+      "changed": 20,
+      "unresolved": 0
+    },
+    {
+      "details": 1,
+      "versionsWritten": 1,
+      "fetchesWritten": 1,
+      "changed": 0,
+      "unresolved": 0
+    }
+  ],
+  "last": {
+    "changed": [],
+    "unresolved": []
+  },
+  "versions": {
+    "versions": 21,
+    "full_verified": 21
+  },
+  "current": 20,
+  "listing": {
+    "sourceListingId": "1716871313386322",
+    "firstSeenAt": "2026-09-24T01:40:43.415Z",
+    "staleFallback": false
+  },
+  "outcome": {
+    "sourceListingId": "1716871313386322",
+    "cacheStatus": "stale-fallback",
+    "staleFallback": true
+  }
+}

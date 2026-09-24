@@ -1,0 +1,33 @@
+{
+  "steps": [
+    {
+      "details": 20,
+      "versionsWritten": 20,
+      "fetchesWritten": 20,
+      "changed": 20,
+      "unresolved": 0
+    },
+    {
+      "details": 20,
+      "versionsWritten": 0,
+      "fetchesWritten": 20,
+      "changed": 0,
+      "unresolved": 0
+    }
+  ],
+  "last": {
+    "changed": [],
+    "unresolved": []
+  },
+  "versions": {
+    "versions": 20,
+    "full_verified": 20
+  },
+  "current": 20,
+  "listing": {
+    "sourceListingId": "1816901372840238",
+    "firstSeenAt": "2026-09-24T01:40:43.415Z",
+    "lastSeenAt": "2026-09-25T01:40:43.415Z",
+    "linksExpireAt": "2026-09-29T09:40:43.415Z"
+  }
+}

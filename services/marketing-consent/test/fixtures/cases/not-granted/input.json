@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "docs/marketing.md: \"Sign-up shows an unticked box\"",
+  "moduleState": "on",
+  "banned": false,
+  "granted": false,
+  "paused": false,
+  "suppressed": false
+}
