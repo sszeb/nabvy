@@ -1,0 +1,7 @@
+{
+  "synthetic": true,
+  "source": "services/travel-cost card: 'picks the dated rate by date' — before any seeded rate's effective_from",
+  "userId": "00000000-0000-4000-8000-0000000000e6",
+  "legs": [{ "roadMiles": 2.6, "minutes": 4.457142857142857 }],
+  "now": "2026-01-01T00:00:00.000Z"
+}

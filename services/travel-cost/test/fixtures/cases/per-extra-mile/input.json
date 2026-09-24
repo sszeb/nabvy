@@ -1,0 +1,7 @@
+{
+  "synthetic": true,
+  "source": "docs/design/drafts/search-map-routes.md §4.2, worked numbers: per extra straight-line mile",
+  "userId": "00000000-0000-4000-8000-0000000000e1",
+  "legs": [{ "roadMiles": 2.6, "minutes": 4.457142857142857 }],
+  "now": "2026-09-24T00:00:00.000Z"
+}

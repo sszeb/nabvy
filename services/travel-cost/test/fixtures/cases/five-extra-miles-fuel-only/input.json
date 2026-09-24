@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "source": "docs/design/drafts/search-map-routes.md §4.2, worked numbers: 5 extra miles, fuel only £1.82",
+  "userId": "00000000-0000-4000-8000-0000000000e3",
+  "legs": [{ "roadMiles": 13, "minutes": 22.285714285714285 }],
+  "now": "2026-09-24T00:00:00.000Z",
+  "settings": { "valueOfTimePenceHour": 0 }
+}

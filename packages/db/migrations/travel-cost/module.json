@@ -1,0 +1,5 @@
+{
+  "module": "travel-cost",
+  "schema": "travel_cost",
+  "dependsOn": ["core", "switches"]
+}

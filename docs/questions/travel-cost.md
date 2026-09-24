@@ -1,0 +1,8 @@
+# Open questions — travel-cost module
+
+Same format as `docs/questions.md` (date, task, question, option taken and why), kept in its own
+file per module so parallel build sessions never conflict appending to the shared one
+(`docs/session-conventions.md`). The coordinator folds these into `docs/questions.md` at a
+check-in.
+
+- **2026-09-24, w1 travel-cost: default rate and value-of-time choice.** `docs/design/drafts/search-map-routes.md` §10 lists two product decisions still open for the owner: row 7, the travel cost per mile default (the HMRC advisory fuel rate at 14p, the HMRC 55p business rate, or no default at all), and row 8, the value-of-time default (£12.71/hour, the National Living Wage, or £0 — "counting time means fewer hints" shown to a user). Both rows already carry a recommended default in the draft. Option taken: this module ships those recommended defaults as the conservative choice — a new user's settings resolve to the `fuel-only` preset (the advisory fuel rate, a dated row, reviewed each quarter) with time counted at the National Living Wage rate unless the user sets £0 ("don't count my time", the card's own escape hatch) — and every figure stays fully user-overridable per the card ("each user's preset ... value of time (including £0)"), so the owner's eventual answer changes only the shipped default, never the mechanism. Needed from the owner: confirm the advisory-fuel-rate default (over the business rate or no default) and the £12.71 value-of-time default (over £0), since row 8 explicitly trades off against how many "slightly further away" hints `deal-hints` will show once it ships.

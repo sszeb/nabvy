@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790270815505,
+      "tag": "20260924172655_travel_cost_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790270821071,
+      "tag": "20260924172701_travel_cost_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790270868618,
+      "tag": "20260924172748_travel_cost_seed",
+      "breakpoints": true
+    }
+  ]
+}
