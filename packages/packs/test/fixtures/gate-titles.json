@@ -1,0 +1,33 @@
+{
+  "about": "Title gate and wanted_post drop fixtures for pack gpu-pc (task 0.4). gate is the expected title-gate result; wantedDrop is whether the destructive wanted_post rule may fire. Sale adverts that merely mention swaps, part exchange, trade-ins or need must never be excluded or dropped.",
+  "cases": [
+    { "title": "RTX 3080 – no swaps", "gate": "in", "wantedDrop": false },
+    { "title": "Gaming PC, px considered", "gate": "in", "wantedDrop": false },
+    { "title": "RTX 4070 trade in welcome", "gate": "in", "wantedDrop": false },
+    { "title": "Need a quick sale: gaming PC", "gate": "in", "wantedDrop": false },
+    { "title": "Want gone ASAP RX 6800 XT", "gate": "in", "wantedDrop": false },
+    { "title": "£££ spent on this gaming pc", "gate": "in", "wantedDrop": false },
+    { "title": "RTX 3060 part exchange possible", "gate": "in", "wantedDrop": false },
+    { "title": "Lenovo Legion T5 tower RTX 3060", "gate": "in", "wantedDrop": false },
+    {
+      "title": "Gaming PC RTX 3070 with monitor, keyboard and mouse",
+      "gate": "in",
+      "wantedDrop": false
+    },
+    { "title": "RTX 2070 Super for parts", "gate": "in", "wantedDrop": false },
+    { "title": "RTX 4070 Super", "gate": "in", "wantedDrop": false },
+    { "title": "3080 ti founders", "gate": "in", "wantedDrop": false },
+    { "title": "Arc B580", "gate": "in", "wantedDrop": false },
+    { "title": "Dell OptiPlex 7070 i7", "gate": "in", "wantedDrop": false },
+    { "title": "Swap my 3080 for a 6800xt", "gate": "in", "wantedDrop": false },
+    { "title": "WTB RTX 3080", "gate": "out", "wantedDrop": true },
+    { "title": "Wanted: RTX 4090", "gate": "out", "wantedDrop": true },
+    { "title": "Looking for a gaming PC", "gate": "out", "wantedDrop": true },
+    { "title": "I buy gaming PCs, cash paid", "gate": "out", "wantedDrop": true },
+    { "title": "We buy graphics cards", "gate": "out", "wantedDrop": true },
+    { "title": "Buying any broken GPU", "gate": "out", "wantedDrop": true },
+    { "title": "Acer Nitro laptop RTX 4060", "gate": "out", "wantedDrop": false },
+    { "title": "RTX 3080 box only", "gate": "out", "wantedDrop": false },
+    { "title": "Office chair", "gate": "out", "wantedDrop": false }
+  ]
+}

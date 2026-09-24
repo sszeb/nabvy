@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { ledgerSql, plan } from '../scripts/migrate.mjs'
+import { guardSql, ledgerSql, plan } from '../scripts/migrate.mjs'
 
 const dirs: string[] = []
 afterEach(() => {
@@ -88,6 +88,9 @@ describe('migration plan', () => {
     const [migration] = plan(layout({ core: { files: ['20260101000000_core.sql'] } }))
     expect(migration?.checksum).toMatch(/^[0-9a-f]{64}$/)
     expect(ledgerSql({ module: "o'brien", name: 'n', checksum: 'c' })).toContain("'o''brien'")
+    const guard = guardSql({ module: "o'brien", name: 'n.sql' })
+    expect(guard).toMatch(/^select pg_advisory_xact_lock\(\d+\);/)
+    expect(guard).toContain("module = 'o''brien' and name = 'n.sql'")
   })
 
   it('plans the committed migrations with core first', () => {

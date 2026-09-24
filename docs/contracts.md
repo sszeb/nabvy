@@ -231,17 +231,31 @@ Per-field confidence 0..1 is returned alongside. Fields the model cannot support
 
 ## Category pack format
 
+Implemented in `packages/contracts/src/modules/packs.ts` (task 0.4); decisions in `packages/packs/README.md`. A pack is data: patterns are regex source strings compiled with the `i` flag, or references into the pack's part patterns.
+
 ```ts
+Pattern = string | { ref: `listingKind.${ListingKindKey}` | `fields.${string}` }
+
 CategoryPack {
   id: string; version: string
+  currency: 'GBP' | 'EUR'                   // every amount below is in minor units of this currency
   factTemplate: ZodSchema                   // e.g. GpuPcFacts
-  gate: { includeTitle: RegExp[]; excludeTitle: RegExp[]; minPriceMinor: int; maxPriceMinor?: int; detailFetchAll: boolean }
-  dictionary: Array<{ productKey: string; name: string; aliases: string[]; eans?: string[] }>
-  valuation: { conditionMultipliers: Record<string, number>; bundleHaircut: number; feePct: number; postageMinor: int; travelPerKmMinor: int }
-  risk: Array<{ flag: RiskFlag; test: string; weight: number }>   // test is a named rule in services/risk
-  explanationTemplate: string
+  gate: { includeTitle: Pattern[]; excludeTitle: Pattern[]; minPriceMinor: int; maxPriceMinor?: int
+          detailFetchAll: boolean | { categories: string[] } }
+  rules: { partPatterns: PartPatterns; partPatternsSource: DataSource }   // the actor's part-patterns.json, verbatim
+  noise: Array<{ rule: NoiseRuleName; test: string; mode: 'shadow' | 'filter'; patterns: Pattern[] }>
+  dictionary: Array<{ productKey: string; name: string; family?: string; vramGb?: int
+                      aliases: string[]; patterns: string[]; eans: string[]; cexBoxIds: string[] }>
+  valuation: { conditionMultipliers: Record<string, number>; bundleHaircut: number; bundleFixedAllowanceMinor: int
+               feePct: number; feeFixedMinor: int; postageMinor: Record<string, int>; travelPerKmMinor: int
+               expectedRepairMinor: Record<string, int> }
+  risk: Array<{ flag: RiskFlag; test: string; patterns: Pattern[]; params: Record<string, number> } &
+              ({ action: 'weight'; weight: number } | { action: 'drop' } | { action: 'internal'; shadowWeight?: number })>
+                                            // test is a named rule in the risk module; seller-derived flags only 'internal'
+  explanation: { template: string; displayable: boolean }
   embeddingModel: string
 }
+NoiseRuleName = 'wanted_advert' | 'swap_advert' | 'i_buy_advert' | 'keyword_stuffing' | 'laptop' | 'mention_only'
 ```
 
 ## Model output contracts

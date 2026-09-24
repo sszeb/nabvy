@@ -53,31 +53,60 @@ describe('cross-module access', () => {
   // Schemas whose owning service has another name. `auth` is a reserved Supabase schema, so the
   // auth module's Better Auth tables live in `better_auth` (README.md, "Better Auth").
   const ownerOf: Record<string, string> = { 'better-auth': 'auth' }
-  const importPattern =
-    /import\s+(type\s+)?\{([^}]*)\}\s+from\s+'@nabvy\/db\/schema\/([a-z0-9-]+)'/g
+  // Every import or re-export whose source is a module schema file, by package path or by a
+  // relative path into packages/db/src/schema.
+  const statementPattern =
+    /(?:import|export)\s[^;]*?from\s+['"]((?:@nabvy\/db\/schema\/|[^'"]*packages\/db\/src\/schema\/)([a-z0-9-]+)(?:\.ts)?)['"]/g
+  const namedPattern = /^(?:import|export)\s+(?:type\s+)?\{([^}]*)\}\s+from/
+
+  /** Problems with one statement that reaches another module's schema file, or none. */
+  function problems(statement: string, owner: string): string[] {
+    const named = namedPattern.exec(statement.trim())
+    if (!named)
+      return [`${owner}: only named imports of v_ views are allowed, not "${statement.trim()}"`]
+    return (named[1] ?? '')
+      .split(',')
+      .map(
+        (name) =>
+          name
+            .trim()
+            .replace(/^type\s+/, '')
+            .split(/\s+as\s+/)[0] ?? '',
+      )
+      .filter(Boolean)
+      .filter((name) => !/^v[A-Z]/.test(name))
+      .map((name) => `${owner}: ${name} is not a v_ view`)
+  }
+
+  it('recognises every import form', () => {
+    const forms = [
+      "import { hunts } from '@nabvy/db/schema/hunt-manager'",
+      "import * as hunt from '@nabvy/db/schema/hunt-manager'",
+      "export { hunts } from '@nabvy/db/schema/hunt-manager'",
+      "export * from '@nabvy/db/schema/hunt-manager'",
+      "import { hunts } from '../../../packages/db/src/schema/hunt-manager.ts'",
+    ]
+    for (const form of forms) {
+      const [match] = [...form.matchAll(statementPattern)]
+      expect(match?.[2], form).toBe('hunt-manager')
+      expect(problems(match?.[0] ?? '', 'hunt-manager').length, form).toBeGreaterThan(0)
+    }
+    const [allowed] = [
+      ..."import { type vHunts, vHunts as v } from '@nabvy/db/schema/hunt-manager'".matchAll(
+        statementPattern,
+      ),
+    ]
+    expect(problems(allowed?.[0] ?? '', 'hunt-manager')).toEqual([])
+  })
 
   it.skipIf(services.length === 0).each(services)(
-    '%s imports only v_ views from other modules’ schemas',
+    '%s reads other modules’ schemas only through v_ views',
     (service) => {
       for (const file of walk(join(repoRoot, 'services', service))) {
-        for (const match of readFileSync(file, 'utf8').matchAll(importPattern)) {
-          const [, , names = '', owner] = match
+        for (const match of readFileSync(file, 'utf8').matchAll(statementPattern)) {
+          const [statement, , owner] = match
           if (owner === service || ownerOf[owner ?? ''] === service) continue
-          const imported = names
-            .split(',')
-            .map(
-              (name) =>
-                name
-                  .trim()
-                  .split(/\s+as\s+/)[0]
-                  ?.replace(/^type\s+/, '') ?? '',
-            )
-            .filter(Boolean)
-          for (const name of imported) {
-            expect(name, `${relative(repoRoot, file)} imports ${name} from ${owner}`).toMatch(
-              /^v[A-Z]/,
-            )
-          }
+          expect(problems(statement, owner ?? ''), relative(repoRoot, file)).toEqual([])
         }
       }
     },

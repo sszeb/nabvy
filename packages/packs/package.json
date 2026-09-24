@@ -8,6 +8,10 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nabvy/contracts": "workspace:*",
+    "zod": "4.6.5"
   }
 }
