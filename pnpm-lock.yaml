@@ -443,9 +443,6 @@ importers:
       '@nabvy/account':
         specifier: workspace:*
         version: link:../account
-      '@nabvy/config':
-        specifier: workspace:*
-        version: link:../../packages/config
       '@nabvy/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
