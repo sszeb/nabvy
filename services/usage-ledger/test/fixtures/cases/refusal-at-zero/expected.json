@@ -1,0 +1,10 @@
+{
+  "outcomes": [
+    { "refused": "usage-ledger.insufficient", "balance": 0, "required": 1 },
+    { "changed": true },
+    { "changed": true },
+    { "refused": "usage-ledger.insufficient", "balance": 0, "required": 1 }
+  ],
+  "buckets": { "pi_10": 0 },
+  "balance": 0
+}
