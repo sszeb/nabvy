@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790263123938,
+      "tag": "20260924151843_product_catalogue_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790263131991,
+      "tag": "20260924151851_product_catalogue_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790263182430,
+      "tag": "20260924151942_product_catalogue_seed",
+      "breakpoints": true
+    }
+  ]
+}
