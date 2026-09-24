@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { EnvError, type EnvGroup, envGroups, envVariableNames, loadEnv } from '../src'
+import { EnvError, type EnvGroup, envGroups, envVariableNames, loadEnv, safeLoadEnv } from '../src'
 import fixture from './fixtures/complete-env.json'
 
 const complete: Readonly<Record<string, string>> = fixture.env
@@ -69,6 +69,7 @@ describe('loadEnv', () => {
       MODEL_VISION: 'claude-sonnet-5',
       POSTCODES_IO_BASE: 'https://api.postcodes.io',
       POSTHOG_HOST: 'https://eu.i.posthog.com',
+      LANGFUSE_SAMPLE_RATE: 1,
       LIVE_PROVIDERS: false,
     }
     const error = failure(() => loadEnv(allGroups, {}))
@@ -81,6 +82,7 @@ describe('loadEnv', () => {
       'models',
       'postcodes',
       'posthog',
+      'langfuse',
       'testing',
     ] as const
     const secrets = without(...Object.keys(defaults))
@@ -171,6 +173,19 @@ describe('variable inventory', () => {
 
   it('covers every variable in the complete fixture', () => {
     expect(Object.keys(complete).sort()).toEqual([...envVariableNames].sort())
+  })
+})
+
+describe('safeLoadEnv', () => {
+  it('returns the same data as loadEnv when the group is present', () => {
+    const result = safeLoadEnv(['posthog'], complete)
+    expect(result).toEqual({ success: true, data: loadEnv(['posthog'], complete) })
+  })
+
+  it('fails without throwing when keys are absent, with the same error loadEnv would throw', () => {
+    const result = safeLoadEnv(['posthog'], without('POSTHOG_KEY'))
+    expect(result.success).toBe(false)
+    expect(!result.success && result.error.missing).toEqual(['POSTHOG_KEY'])
   })
 })
 

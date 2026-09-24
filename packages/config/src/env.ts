@@ -17,6 +17,7 @@ const appUrl = () =>
   })
 const count = () => z.coerce.number().int().nonnegative()
 const flag = () => z.stringbool()
+const rate = () => z.coerce.number().min(0).max(1)
 const emailList = () =>
   z
     .string()
@@ -86,6 +87,8 @@ export const envGroups = {
     LANGFUSE_PUBLIC_KEY: required(),
     LANGFUSE_SECRET_KEY: required(),
     LANGFUSE_HOST: httpsUrl(),
+    // Share of non-model spans kept (model spans are always kept); 1 keeps every span.
+    LANGFUSE_SAMPLE_RATE: rate().default(1),
   }),
   telegram: z.object({ TELEGRAM_BOT_TOKEN: required() }),
   founderTelegram: z.object({ FOUNDER_TELEGRAM_CHAT_ID: required() }),
@@ -201,4 +204,23 @@ export function loadEnv<G extends EnvGroup>(
       return reason === undefined ? [] : [{ name, reason }]
     }),
   )
+}
+
+/**
+ * `loadEnv`, without throwing: for a client that must do nothing rather than fail to start when
+ * its keys are absent (a third-party integration with no key yet, in a dev or preview
+ * environment). Most callers want `loadEnv`, which fails fast; reach for this only where the
+ * caller's own contract is "run with reduced function when unset", never for a variable the
+ * service cannot run without.
+ */
+export function safeLoadEnv<G extends EnvGroup>(
+  groups: readonly G[],
+  source: EnvSource = process.env,
+): { success: true; data: Env<G> } | { success: false; error: EnvError } {
+  try {
+    return { success: true, data: loadEnv(groups, source) }
+  } catch (error) {
+    if (error instanceof EnvError) return { success: false, error }
+    throw error
+  }
 }

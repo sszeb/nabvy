@@ -1,0 +1,9 @@
+{
+  "event": "alert_feedback",
+  "properties": {
+    "verdict": "real_deal",
+    "dealScore": 82,
+    "riskScore": 10,
+    "note": "Buyer said the seller's description read like it was copied from another advert"
+  }
+}
