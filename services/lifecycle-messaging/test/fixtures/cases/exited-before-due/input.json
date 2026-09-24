@@ -1,0 +1,22 @@
+{
+  "synthetic": true,
+  "source": "docs/marketing.md, \"Activation\": alert_delivered with no alert_opened in 24 hours -- an early open cancels the step",
+  "programme": "activation",
+  "step": "24h",
+  "moduleState": "on",
+  "marketingConsentState": "on",
+  "granted": true,
+  "suppressed": false,
+  "triggerEvent": "alert_delivered",
+  "triggerProperties": {
+    "source": "facebook",
+    "channel": "telegram",
+    "dealScore": 0.8,
+    "freshnessSeconds": 30,
+    "valuationState": "banded"
+  },
+  "triggerAgeMinutes": 1440,
+  "exitEvent": "alert_opened",
+  "exitAgeMinutes": 60,
+  "priorMarketingRunToday": false
+}

@@ -12,10 +12,14 @@ dead-letter sink, with `retry: eventRetry` from `@nabvy/config`. The wrapper doe
 stamps, retries and dead-lettering (`packages/transport/README.md`, "Wiring").
 
 A scheduled task is thinner still: no event to validate, so it calls its module's function
-directly with `schedules.task({ id, cron, run })`. One exists so far:
+directly with `schedules.task({ id, cron, run })`. Two exist so far:
 
 - `spend-governor-recompute.ts` (backlog 1.2m) — `recompute` every 15 minutes, keeping
   `spend_governor.throttle` from going stale.
+- `lifecycle-messaging-run.ts` (backlog 4.6b) — `run` every 5 minutes, sending each programme's
+  due steps (`services/lifecycle-messaging/README.md`, "Outputs"). A no-op in practice today: no
+  PostHog Workflows or Resend account exists yet, so every send goes through the module's in-memory
+  clients (`services/lifecycle-messaging/README.md`, "Decisions").
 
 It does not publish the `budget-alerted` events `recompute` returns: no task consumes them yet,
 and the `TriggerClient` publisher adapter (`packages/transport/src/trigger.ts`) is task 1.2's to

@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "source": "docs/marketing.md, \"Lifecycle programmes\": channel-not-linked fires 2 hours after hunt_created with no channel_linked",
+  "programme": "channel-not-linked",
+  "step": "2h",
+  "moduleState": "on",
+  "marketingConsentState": "on",
+  "granted": true,
+  "suppressed": false,
+  "triggerEvent": "hunt_created",
+  "triggerProperties": { "pack": "gpu-pc", "radius": 10, "minDealScore": 0.5 },
+  "triggerAgeMinutes": 180,
+  "exitEvent": null,
+  "exitAgeMinutes": null,
+  "priorMarketingRunToday": false
+}
