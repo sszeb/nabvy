@@ -1,0 +1,25 @@
+{
+  "listings": {
+    "2005582460147017": {
+      "parts": [
+        "title:gpu:RTX 3080",
+        "title:cpu:Ryzen 7 3800X → cpu:amd:ryzen-7-3000",
+        "description:gpu:5080 → gpu:nvidia:rtx-5080:16gb [mention]",
+        "description:gpu:RTX 3080 → gpu:nvidia:rtx-3080:10gb",
+        "description:cpu:Ryzen 7 3800x → cpu:amd:ryzen-7-3000",
+        "description:ram_size:16gb Corsair rgb ram",
+        "description:storage_size:2tb",
+        "description:storage_type:hard drive",
+        "description:gpu:RTX 5080 → gpu:nvidia:rtx-5080:16gb [mention]",
+        "description:gpu:5080 → gpu:nvidia:rtx-5080:16gb [mention]",
+        "description:gpu:RTX 5080 → gpu:nvidia:rtx-5080:16gb [mention]",
+        "description:gpu:RTX 4090 → gpu:nvidia:rtx-4090:24gb [not_included]"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    }
+  }
+}
