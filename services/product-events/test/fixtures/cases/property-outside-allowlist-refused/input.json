@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "source": "fixtures/contracts/product-events/invalid/ProductEventsEvent.postcode-property.json",
+  "userId": "00000000-0000-7000-8000-000000000004",
+  "consent": true,
+  "switchState": "on",
+  "sessionId": null,
+  "trackInput": {
+    "event": "onboarding_completed",
+    "properties": {
+      "pack": "gpu-pc",
+      "radius": 40,
+      "channel": "telegram",
+      "postcode": "PO19 1SY"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "module": "scan-recognition",
+  "schema": "scan_recognition",
+  "dependsOn": ["core", "switches"]
+}

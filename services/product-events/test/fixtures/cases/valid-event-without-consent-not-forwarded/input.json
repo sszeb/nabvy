@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "source": "module card, \"Does / does not\": forwards to PostHog only with consent",
+  "userId": "00000000-0000-7000-8000-000000000002",
+  "consent": false,
+  "switchState": "on",
+  "sessionId": null,
+  "trackInput": {
+    "event": "scan_started",
+    "properties": {
+      "method": "barcode",
+      "confidence": 0.9,
+      "confirmed": true,
+      "onDemand": false,
+      "valuationState": "pending",
+      "latencyMs": 120,
+      "action": "opened"
+    }
+  }
+}
