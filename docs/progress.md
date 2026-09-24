@@ -85,7 +85,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | product-catalogue | 2 | done: PR #32 merged 16:19 (`d9fc189`); three migrations applied 16:33 (ledger checked) | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
 | apify-gateway | 2 | done: PR #29 merged 15:58 (`b060a99`); migration applied and Edge Function version 10 deployed 16:05 (ledger checked; cap $150 a month, build 1.0.82); inert until an admin switches on `apify` and `apify-gateway` | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
 | waitlist | 2 | done: PR #31 merged 16:18 (`3cf30d1`); both migrations applied 16:29 (ledger checked); email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
-| account | 2 | in progress, started 15:35 from the amended card on `claude/coordinator-4` | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
+| account | 2 | PR #33 open 16:09, changes needed 16:13 (five blockers), fix round by `session_01JaYi4X3zUDVQy1jZrxN9cG` (Sonnet) from 16:18; after merge apply `account/20260924155208_account_tables.sql` and `account/20260924155222_account_access.sql` (depend on core); standing ownership resolved by delegating to auth (README, "Standing: which function owns what") | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
 | listing-ingest | 3 | started 16:13; card `docs/design/modules/listing-ingest.md`; soft dependencies ebay-adapter and gumtree-adapter not built | `session_01HfncCwAz7dL7Kx9LnCeR2U` | top |
 | spend-governor | 3 | started 16:13; card `docs/design/modules/spend-governor.md`; $150-a-month Apify budget | `session_01CC2oetv6aarq9Pyf3wKC7q` | top |
 | route-health | 3 | started 16:13; card `docs/design/modules/route-health.md` | `session_01DgJ6WG8sK8FmVprvBHT7Ln` | Sonnet |
