@@ -90,7 +90,7 @@ The predecessor's design workflows write raw drafts. As each finishes, it is com
 | `modules.md` | The atomic module catalogue (about 290 KB) | Landed |
 | `copy-advert.md` | The copy-advert spam module | Being revised |
 | `actor-integration.md` | How Nabvy uses the actor: planning, scheduling, spend, ingest | Being revised |
-| `account-sharing.md` | Account-integrity: sharing protection, bans, ban evasion | Being revised |
+| `account-sharing.md` | Account-integrity: sharing protection, bans, ban evasion | Landed |
 | `listing-location.md` | Where an item really is: the location field, "collection from X", autofill mistakes | Being critiqued |
 | `search-map-routes.md` | eBay-style filters, the map with approximate markers, distance with "worth the trip" hints, pickup route planner | Being designed |
 | `too-good-to-be-true.md` | Marking scam-like listings from listing signals plus one-tap user reports | Being designed |
