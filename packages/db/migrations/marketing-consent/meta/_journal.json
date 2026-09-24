@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790271052016,
+      "tag": "20260924173052_marketing_consent_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790271059954,
+      "tag": "20260924173059_marketing_consent_access",
+      "breakpoints": true
+    }
+  ]
+}

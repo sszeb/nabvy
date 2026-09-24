@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790270624182,
+      "tag": "20260924172344_usage_ledger_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790270625847,
+      "tag": "20260924172345_usage_ledger_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790272173161,
+      "tag": "20260924174933_usage_ledger_policy_version",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790272362866,
+      "tag": "20260924175242_usage_ledger_allocation_guards",
+      "breakpoints": true
+    }
+  ]
+}
