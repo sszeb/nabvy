@@ -52,7 +52,7 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
 
 - Supabase project: fbapfy (ref rlgufxmsrkhyeiabdeic, eu-west-1). Leave the old
   `marketplace_monitor` schema alone.
-- Call only the private Apify Actor `YfdUav3sZ2BgEf8rh`. Never touch `JR2fdK8Nj6OLCwKkP`.
+- Call only the private Apify Actor `YfdUav3sZ2BgEf8rh`. Never touch `JR2fdK8Nj6OLCwKkP` or the public Store edition `UO1yEB9ct9SH6nHZ0`.
 - Never contact Facebook directly; all Facebook traffic goes through Apify runs.
 - The Apify token is a Supabase Edge Function secret; never put it in code or chat.
 - Seller identity (names, IDs, pictures) is internal only. Labels read "Suspected ...:" followed

@@ -65,15 +65,17 @@ describe('who may reach the gateway', () => {
   it('only this package queues jobs or reads the gateway tables', () => {
     const pattern =
       /apify_gateway\s*\.\s*(enqueue_run|jobs|items|settings|claim_next_job)\b|from\s+['"]@nabvy\/db\/schema\/apify-gateway['"]/
-    // Readers' test support (listing-ingest, run-coverage) seeds collected jobs into the gateway's
-    // tables in PGlite (never a live database), so their fixtures read the real views.
+    // Readers' test support (listing-ingest, detail-evidence, run-coverage) seeds collected jobs
+    // into the gateway's tables in PGlite (never a live database), so their fixtures read the real
+    // views.
+    const seeders = [
+      'services/listing-ingest/test/support/',
+      'services/detail-evidence/test/support/',
+      'services/run-coverage/test/support/',
+    ]
     const found = offenders(
       pattern,
-      (path) =>
-        path.startsWith(self) ||
-        ['listing-ingest', 'run-coverage'].some((m) =>
-          path.startsWith(`services/${m}/test/support/`),
-        ),
+      (path) => path.startsWith(self) || seeders.some((prefix) => path.startsWith(prefix)),
     )
     // Other packages read the published views through their v-prefixed Drizzle exports only.
     const viewsOnly = found.filter((path) => {

@@ -1,0 +1,16 @@
+{
+  "description": {
+    "type": "graphics card",
+    "brand": "NVIDIA",
+    "model": "RTX 3080 Ti",
+    "colour": "black",
+    "material": null,
+    "size": null,
+    "condition": "used"
+  },
+  "candidates": [
+    { "name": "RTX 3080 Ti", "confidence": 0.92 },
+    { "name": "RTX 3080 10GB", "confidence": 0.05 }
+  ],
+  "searchPhrases": ["rtx 3080 ti", "nvidia 3080 ti graphics card"]
+}

@@ -1,0 +1,12 @@
+{
+  "outcomes": [
+    { "changed": true },
+    { "changed": true },
+    { "changed": true },
+    { "changed": true },
+    { "changed": false },
+    { "refused": "usage-ledger.not_found" }
+  ],
+  "buckets": { "allowance:1": 20, "pi_1": 50 },
+  "balance": 70
+}

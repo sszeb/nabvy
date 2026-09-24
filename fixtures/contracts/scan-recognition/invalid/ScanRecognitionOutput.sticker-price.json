@@ -1,0 +1,14 @@
+{
+  "description": {
+    "type": "graphics card",
+    "brand": "NVIDIA",
+    "model": null,
+    "colour": null,
+    "material": null,
+    "size": null,
+    "condition": null
+  },
+  "candidates": [{ "name": "RTX 3080 Ti", "confidence": 0.95 }],
+  "searchPhrases": [],
+  "stickerPriceMinor": 45000
+}

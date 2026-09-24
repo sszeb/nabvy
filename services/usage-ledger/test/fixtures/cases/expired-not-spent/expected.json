@@ -1,0 +1,10 @@
+{
+  "outcomes": [
+    { "changed": true },
+    { "changed": true },
+    { "refused": "usage-ledger.insufficient", "balance": 10, "required": 20 },
+    { "changed": true }
+  ],
+  "buckets": { "allowance:last-month": 100, "pi_small": 0 },
+  "balance": 0
+}
