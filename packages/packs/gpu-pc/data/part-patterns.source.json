@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/sebtimize/fb-scrap-engine",
+  "path": "docs/data/part-patterns.json",
+  "commit": "f177a4479f1fa24d773c4d95b0ec634915524948",
+  "committedAt": "2026-09-24T01:44:54+01:00",
+  "sha256": "25d64b70e5b442cadb9fb485ea5470914ab28831269e725eb71c75ec41ee87e2",
+  "copiedAt": "2026-09-24",
+  "note": "Copied byte for byte from the actor repository (owner's reading list, docs/fb-actor-sources.md item 8). Do not edit part-patterns.json here: copy a newer version and update this file; the pack test checks the checksum."
+}

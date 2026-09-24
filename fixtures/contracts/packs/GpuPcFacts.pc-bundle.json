@@ -1,0 +1,18 @@
+{
+  "itemType": "pc",
+  "gpu": { "vendor": "nvidia", "model": "RTX 3070", "vramGb": 8, "variant": null },
+  "cpu": { "vendor": "intel", "model": "i7-12700K" },
+  "ramGb": 32,
+  "storage": [{ "type": "nvme", "gb": 1000 }],
+  "psuWatts": null,
+  "caseModel": null,
+  "condition": "used_working",
+  "tested": true,
+  "boxed": null,
+  "includesItems": ["keyboard", "mouse"],
+  "mentionsMining": false,
+  "mentionsDeposit": false,
+  "wantedPost": false,
+  "partsOnly": false,
+  "emptyBox": false
+}
