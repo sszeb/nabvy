@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790266686180,
+      "tag": "20260924161806_spend_governor_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790266687552,
+      "tag": "20260924161807_spend_governor_access",
+      "breakpoints": true
+    }
+  ]
+}

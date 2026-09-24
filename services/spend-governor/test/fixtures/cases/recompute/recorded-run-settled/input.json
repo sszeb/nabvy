@@ -1,0 +1,22 @@
+{
+  "now": "2026-09-24T12:00:00.000Z",
+  "usdGbpRate": 0.75,
+  "calls": [
+    {
+      "refId": "VkryjpwS6U2GBDh3k",
+      "reservedMicros": 336300,
+      "settledMicros": 17700,
+      "at": "2026-09-24T10:00:00.000Z"
+    }
+  ],
+  "jobs": [
+    {
+      "status": "succeeded",
+      "reserveUsd": "0.3363",
+      "costUsd": "0.0177",
+      "apifyRunId": "VkryjpwS6U2GBDh3k",
+      "settledAt": "2026-09-24T10:20:00.000Z",
+      "createdAt": "2026-09-24T09:59:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "stages": {
+    "levels": {
+      "passed": 9,
+      "total": 9
+    },
+    "recompute": {
+      "passed": 4,
+      "total": 4
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "now": "2026-09-24T12:00:00.000Z",
+  "usdGbpRate": 0.75,
+  "calls": [],
+  "jobs": [
+    {
+      "status": "pending",
+      "reserveUsd": "70.0000",
+      "createdAt": "2026-09-24T11:59:00.000Z"
+    }
+  ]
+}

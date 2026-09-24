@@ -1,0 +1,14 @@
+{
+  "name": "apify-monthly",
+  "provider": "apify",
+  "unit": "USD",
+  "period": "month",
+  "limitMicros": 150000000,
+  "committedMicros": 336300,
+  "remainingMicros": 149663700,
+  "forecastMicros": 428663,
+  "level": "none",
+  "periodStart": "2026-08-31T23:00:00.000Z",
+  "computedAt": "2026-09-24T12:00:00.000Z",
+  "setBy": "Owner, 2026-09-24: an Apify budget of $150 a month (docs/decisions.md, \"Beta coverage and Apify budget\"). The hard cap stays in apify-gateway."
+}
