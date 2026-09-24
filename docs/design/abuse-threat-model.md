@@ -138,7 +138,7 @@ Quota refusals are product events that feed the ladder.
 
 ## Gaps
 
-G1–G16 in the tables are backlog rows under "Abuse threat model gaps (4.3t)" in `docs/backlog.md`. G1 is 4.3v, G2 4.3w, G3 4.3x, G4 4.3y, G5 4.3z, G6 1.6f, G7 1.6g, G8 7.1b, G9 4.9b, G10 3.3a, G11 1.3i, G12 4.9c, G13 4.9d, G14 1.6h, G15 5.4b, G16 4.3aa. Farming and extraction add 4.3ab, 4.3ac, 4.3ad. G17 (per-account daily cap and pool slow-down) is 1.6i; G18 (admin hardening, `docs/design/admin-hardening.md`) is 4.3ae.
+G1–G16 in the tables are backlog rows under "Abuse threat model gaps (4.3t)" in `docs/backlog.md`. G1 is 4.3v, G2 4.3w, G3 4.3x, G4 4.3y, G5 4.3z, G6 1.6f, G7 1.6g, G8 7.1b, G9 4.9b, G10 3.3a, G11 1.3i, G12 4.9c, G13 4.9d, G14 1.6h, G15 5.4b, G16 4.3aa. Farming and extraction add 4.3ab, 4.3ac, 4.3ad. G17 (per-account daily cap and pool slow-down) is 1.6i; G18 (admin hardening, `docs/design/admin-hardening.md`) is 4.3ae; its audit adds 4.3af–4.3ah.
 
 ## Day-one checklist (owner)
 
