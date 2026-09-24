@@ -9,7 +9,7 @@
 You are the coordinator for Nabvy. You:
 
 - keep `docs/progress.md`, `docs/backlog.md`, `docs/questions.md` and `docs/legal-review.md` current;
-- apply merged migrations to the live database;
+- check in a two-hour sweep that the reviewer has applied each merged migration; since the owner's lean request of 11:20, the reviewer applies them straight after merging;
 - start and brief the build sessions, one session and one pull request per atomic module;
 - turn designs into backlog tasks;
 - record the owner's decisions in `docs/decisions.md`.
@@ -53,10 +53,10 @@ Do not read the whole build pack. Read a file when a task needs it.
 
 | Session | ID | Role and state | Its scheduled check-ins |
 | --- | --- | --- | --- |
-| Reviewer | `session_01BJMX3DUbvcfct6YS1HzneS` | Reviews, approves and merges. Told to review only new commits and to rely on CI for docs-only changes. Its context is about 680k tokens, so it has been told to hand off to a fresh reviewer session (look for the `nabvy-reviewer` tag with `list_sessions`) | 11:31, then every 20 minutes |
-| 4.1a web | `session_01WTj9DDh4ojbRPYGQvc8uaW` | PR #7, the design system and app shell. Its code fixes are done; it waits on the owner's decisions on on-screen wording | 12:02 |
-| 4.0 auth | `session_01CcwBErXfCaenzcEtRzHvvB` | PR #9, auth. The reviewer asked for changes: rate limits and a guard on the `better_auth` functions; it also conflicts with `main`. The session also opened PR #10, branded error pages stacked on #7. PR #10 is titled 4.1b, but 4.1b in the backlog is "User dashboard", so record it as 4.1c | 11:46 and 11:55 |
-| 1.1a actor scope | `session_011RWjM9pyFz1wrsBa58SGLN` | Actor scope clean-up and gateway input hardening. It was waiting for PR #4, which is now merged, so it opens its pull request next | 11:22 |
+| Reviewer | `session_01BJMX3DUbvcfct6YS1HzneS` | Reviews, approves and merges. Told to review only new commits and to rely on CI for docs-only changes. Its context is about 680k tokens, so it has been told to hand off to a fresh reviewer session (look for the `nabvy-reviewer` tag with `list_sessions`) 11:31 (`trig_01Xnda3urx7DksX7gUec6bDV`). At that check-in it hands off and switches to events plus a 60-minute fallback |
+| 4.1a web | `session_01WTj9DDh4ojbRPYGQvc8uaW` | PR #7, the design system and app shell. Its code fixes are done; it waits on the owner's decisions on on-screen wording 12:02 (lean: it waits on events and stops re-arming while it waits only on the owner) |
+| 4.0 auth | `session_01CcwBErXfCaenzcEtRzHvvB` | PR #9, auth. The reviewer asked for changes: rate limits and a guard on the `better_auth` functions; it also conflicts with `main`. The session also opened PR #10, branded error pages stacked on #7. PR #10 is titled 4.1b, but 4.1b in the backlog is "User dashboard", so record it as 4.1c 11:46, covering both PRs (lean, as for 4.1a) |
+| 1.1a actor scope | `session_011RWjM9pyFz1wrsBa58SGLN` | Actor scope clean-up and gateway input hardening. It was waiting for PR #4, which is now merged, so it opens its pull request next. Its own next check-in predates the lean rules, so send it them once with a one-shot trigger | 11:22 (fired) |
 | Finished | 0.6 `session_01JNfP9yJf91DJBZK72Hnpbi`, 0.4 `session_01SnM17CVEmK2WtWkpbH2CfZ`, foundation `session_014ie5uCxNhB9DRmZRmUQymC` | Their pull requests are merged. Their last check-ins will find that and stop. Archive them only if the owner agrees | none needed |
 
 **Pull requests.** Merged: #1, #2, #3, #4 (`f987bec`, 11:10 UTC), #5, #6, #8. Open: #7, #9, #10.
@@ -100,16 +100,20 @@ Treat the drafts as design notes, not decisions. A product choice in them goes t
 
 ## Next steps, in order
 
-1. **Re-create the scheduled checks** in your session with `send_later`.
-   - **Fleet check, hourly.** Call `get_session` for each session in the fleet table. List the open pull requests and check their reviews, CI and merges. After each merge, apply its migrations and update `docs/progress.md`. If a pull request sits unreviewed for more than 20 minutes, wake the reviewer with a one-shot trigger.
-   - **Actor documents, every 2 hours from 12:37 UTC.** Attach `sebtimize/fb-scrap-engine` with `add_repo` (read access), fetch it and check:
+1. **Set one scheduled sweep, every two hours from about 12:30 UTC,** with `send_later`. This replaces the old hourly fleet check and the separate actor-documents check. Each sweep does the following:
+   - **Fleet.** Call `get_session` by ID for each session in the fleet table.
+   - **Pull requests.** List them using the `fields` filter. For each merge, update `docs/progress.md` and check the migration ledger.
+   - **Reviewer.** If a pull request has sat unreviewed for over an hour, wake the reviewer with a one-shot trigger.
+   - **Actor documents.** Attach `sebtimize/fb-scrap-engine` with `add_repo` (read access), fetch it and check:
      - whether `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` now exist;
      - whether any file on the owner's list changed since `f177a44`. The T2 results should land in `EVIDENCE_LEDGER.md` after about 21:00 UTC.
 
-     If something changed, read only listed files, fold anything useful into the plans, and tell the owner. If nothing changed, re-arm without comment.
-2. **Publish a condensed module catalogue for the owner's approval,** as one page (an Artifact). For each module, show its job, its wave, its dependencies and the model tier the job needs. Build it from `docs/design/drafts/modules.md`. Wave 1 does not start until the owner approves.
+     Read only the listed files, and tell the owner only when something changed.
+
+   If nothing changed, re-arm without comment.
+2. **Publish a condensed module catalogue for the owner's approval,** as one page (an Artifact). For each module, show its job, its wave, its dependencies and the model tier the job needs. First split `docs/design/drafts/modules.md` into one card per module under `docs/design/modules/`, with a script rather than an agent, so a build session reads only its own card. Build the page from the cards. Wave 1 does not start until the owner approves.
 3. **Integrate each draft as it lands.** Condense it into `docs/design/<name>.md`. Add backlog tasks, using letter suffixes, and rows in `docs/progress.md`. Put the owner questions in `docs/questions.md`. Open one batched pull request.
-4. **Launch wave 1** after approval, one session per module:
+4. **Launch wave 1** after approval, one session per module. Each session gets a brief naming its card and the few files it needs, and the model its job needs: the top model for the pipeline core, security and money; Sonnet for web wiring, UI and CRUD-shaped work. Tell each session to wake the reviewer with a one-shot trigger when it opens its pull request. The modules:
    - region planning;
    - demand-driven scheduling;
    - spend governor, with the $150-a-month cap migration;
