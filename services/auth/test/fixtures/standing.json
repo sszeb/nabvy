@@ -1,0 +1,35 @@
+{
+  "about": "Better Auth ban fields and whether the account is restricted, judged at `now`. A ban without an expiry is permanent; one with an expiry is a suspension until then (docs/decisions.md, \"Fair use, suspension and bans\").",
+  "now": "2026-09-24T12:00:00.000Z",
+  "cases": [
+    {
+      "name": "never banned",
+      "user": { "banned": false, "banExpires": null },
+      "restricted": false
+    },
+    { "name": "banned unset (older rows)", "user": { "banned": null }, "restricted": false },
+    { "name": "no fields at all", "user": {}, "restricted": false },
+    { "name": "permanent ban", "user": { "banned": true, "banExpires": null }, "restricted": true },
+    { "name": "permanent ban, expiry absent", "user": { "banned": true }, "restricted": true },
+    {
+      "name": "suspended until tomorrow",
+      "user": { "banned": true, "banExpires": "2026-09-25T00:00:00.000Z" },
+      "restricted": true
+    },
+    {
+      "name": "suspension ended a second ago",
+      "user": { "banned": true, "banExpires": "2026-09-24T11:59:59.000Z" },
+      "restricted": false
+    },
+    {
+      "name": "suspension ends exactly now",
+      "user": { "banned": true, "banExpires": "2026-09-24T12:00:00.000Z" },
+      "restricted": false
+    },
+    {
+      "name": "stale expiry left on an unbanned account",
+      "user": { "banned": false, "banExpires": "2026-10-01T00:00:00.000Z" },
+      "restricted": false
+    }
+  ]
+}

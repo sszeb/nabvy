@@ -173,3 +173,11 @@ describe('variable inventory', () => {
     expect(Object.keys(complete).sort()).toEqual([...envVariableNames].sort())
   })
 })
+
+describe('auth secret', () => {
+  it('rejects a BETTER_AUTH_SECRET shorter than 32 characters', () => {
+    const error = failure(() => loadEnv(['auth'], { ...complete, BETTER_AUTH_SECRET: 'short' }))
+    expect(error.invalid).toEqual(['BETTER_AUTH_SECRET'])
+    expect(error.message).not.toContain('short')
+  })
+})

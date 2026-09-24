@@ -7,3 +7,4 @@ export {
   envVariableNames,
   loadEnv,
 } from './env'
+export { type RateLimit, rateLimits } from './limits'
