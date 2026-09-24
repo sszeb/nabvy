@@ -2,17 +2,16 @@
 
 Provider adapters behind the `ProviderAdapter` contract (`docs/contracts.md`, `docs/providers.md`).
 Task 1.0 records the Facebook actor's real fields and maps them to the target shape; task 1.1 builds
-the adapter on this record. Implemented so far: the route-health helper and actor-input validation with run presets (below).
+the adapter on this record. Implemented so far: the route-health helper (below). The actor-input validation was withdrawn on review and comes back re-derived from the owner's listed files.
 
 ## Facebook Marketplace actor (task 1.0)
 
 - **Actor.** The private Apify actor `YfdUav3sZ2BgEf8rh` ("Marketplace Verification Private"),
   build **1.0.82**, from `sebtimize/fb-scrap-engine` at `f177a44`. Called only through the
   `apify-gateway` Edge Function (`supabase/README.md`).
-- **Reference.** `docs/fb-actor-reference.md` is the full reference, compiled from a complete
-  read of the actor repository and checked against its code (inputs, routes, every output field,
-  `RUN_SUMMARY`, costs, failure modes, what the app must and must never do). This README is the
-  task 1.0 summary and the mapping; where they differ, the reference has the detail.
+- **Reference.** `docs/fb-actor-reference.md` is being rebuilt from the owner's listed files only
+  (`docs/fb-actor-sources.md`). Until the rebuilt version lands, rely only on what the listed files,
+  the recorded run and this README support.
 - **Recorded run.** `fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/`. Details are
   in the table below.
 
@@ -129,14 +128,14 @@ reference), `detailOutcome` and `detailAttempted` (requeue decisions), `provenan
 
 ### Missing or changed against the target
 
-No field that the adapter needs is missing, so the task does not stop. The differences, recorded in
-`docs/questions.md`:
+No field that the adapter needs is missing, so the task does not stop. The differences (1–3 are one
+entry in `docs/questions.md`; 4 is part of the build-pack rewrite there):
 
 1. **Coordinates only after details.** Watches run with details off, so stubs from a watch have a
    town label (and a `city_page` ID) but no coordinates. The brief shows location no finer than
    town or distance anyway.
 2. **No filters or high-water mark in the actor** (category, days since listed, minimum price,
-   known IDs, pass-through). They are app-side by design (ADR 0002).
+   known IDs, pass-through). They are app-side by design: the actor is a fetch tool (`docs/decisions.md`, "The actor is a tool").
 3. **Seller ID is sparse and internal.** 3 of 20 listings here; mostly rotating tokens.
 4. **`docs/providers.md` is out of date on three points.** `listedAt` is an exact timestamp, not a
    rounded label. Paging goes up to 100 pages, not one page of 20–24. And the fallback actor is
