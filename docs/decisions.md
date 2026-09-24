@@ -91,7 +91,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 
   Built on the build pack's stack (Next.js, Tailwind, shadcn/ui); the owner lets the build choose the look.
 - **Charging from launch** (owner's explicit override, 2026-09-24). Billing is built and live at the public beta launch. This overrides the brief's "do not charge before legal advice" (Precedence row "Legal gates") on the owner's instruction. The rest of that row was lifted too ("Legal gates lifted" below). Plans and prices are those under "Pricing and cadence" below. What each tier promises in cadence stays open until T2 reports (Precedence row "Cadence and tiers"), so plans are not sold on speed meanwhile.
-- **Listing photos.** Not shown in the web app until legal advice says they may be (owner, 2026-09-24). Cards show a neutral placeholder and an "Open on Facebook" link; a feature flag, off by default, lets photos be switched on later without a redesign.
+- **Listing photos.** Not shown in the web app until legal advice says they may be (owner, 2026-09-24). This is the owner's own product decision, not one of the lifted legal gates. Cards show a neutral placeholder and an "Open on Facebook" link; a feature flag, off by default, lets photos be switched on later without a redesign.
 - **Scan mode uses vision AI per scan** (owner's explicit override, 2026-09-24). Photo recognition runs a model call per scan, capped per user by `SCAN_SPEND_CAP_MINOR`. This overrides the brief's "never run AI per user" (Precedence row "Per-user work") for scan recognition only. Facebook fetches are still never run per user: pasted links join the shared, deduplicated details queue.
 - **No refunds** (owner, 2026-09-24). A strict no-refunds policy replaces the 14-day money-back. Nothing is refunded at the customer's request:
   - subscriptions, including a trial that has converted, annual plans and extra areas;
@@ -124,7 +124,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - automatic enforcement by the account-integrity module, each action with an internal reason, evidence and audit row;
   - internal admin tools to review, override and lift, also audited;
   - throttling and hunt or alert limits as fair-use steps short of suspension;
-  - checks against ban evasion (the same email or payment card);
+  - checks against ban evasion (the same email or payment card; listed in `docs/legal-review.md`);
   - a CI test that fails if any user-facing output carries an enforcement reason, rule, signal or score.
 - **Beta coverage and Apify budget** (owner, 2026-09-24).
   - **Nothing runs unless a user asks** (owner, 2026-09-24): "we are not running anything unless requested by the actual user." Collection is driven only by users' active hunts.
@@ -135,10 +135,10 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - **The one exception: our own test hunt.** The owner's team tests the app on a real hunt for **"rtx3090"**. Its area is Chichester, the verified centre the actor's own tests used (confirmed by the owner, 2026-09-24). This hunt is the first end-to-end acceptance test of the pipeline: search, ingest, parts and noise filtering, copy-advert detection, asking-price position, and an alert delivered.
   - **The grid.** Centres are Facebook city pages about 80–100 km apart covering Great Britain and Northern Ireland, taken from `city-pages.seed.json`. A centre is confirmed by a cheap verification run the first time a hunt needs it. Prices are GBP only.
   - **Budget.** The gateway enforces an Apify spend cap of **$150 a month**, as a ceiling. The gateway's cap today is a lifetime total ($5.50 for testing), so it becomes a monthly cap, reset each calendar month, with the same worst-case reservations.
-  - **Cadence within the budget.** The spend governor shares the monthly budget among the centres and terms that active hunts need, favouring paying subscribers. On the actor's evidence, about $3.20 a month per term per centre buys a newest-first check every 30 minutes. This is an estimate, refined once the actor's T2 results and measured spend are in.
+  - **Cadence within the budget.** The spend governor shares the monthly budget among the centres and terms that active hunts need, favouring paying subscribers. On the actor's evidence, about $3.20 a month per term per centre buys a newest-first check every 30 minutes ($0.0022 a check × 48 a day × 30 days, computed from fb-scrap-engine/docs/EVIDENCE_LEDGER.md:319; `docs/fb-actor-reference.md` §12). This is an estimate, refined once the actor's T2 results and measured spend are in.
 - **Search, map and pickup features** (owner, 2026-09-24). Design in progress; each is an atomic module or a web feature.
   - **Filters and sorting like eBay:** nearest distance, cheapest, newest, best asking-price position and the other eBay equivalents, plus price range, condition, collection or delivery, and radius.
-  - **A map view like Airbnb's:** listings as price markers on a map beside the list, panning and zooming to search. Markers show approximate location only, at town or area level, clustered where dense. This follows the Precedence row "Location precision" and Airbnb's own practice of an approximate area.
+  - **A map view like Airbnb's:** listings as price markers on a map beside the list, panning and zooming to search. Markers show approximate location only, at town or area level, clustered where dense. A marker is placed at the town or area's centroid, never at the listing's own coordinates and never at jittered real coordinates. A CI test enforces this. This follows the Precedence row "Location precision" and Airbnb's own practice of an approximate area.
   - **A distance limit with "worth the trip" hints:** users see only items within the distance they choose. The app may also hint at good deals slightly further away, when the saving outweighs the extra travel.
   - **Where an item really is** (owner, 2026-09-24). A listing's location field is not trusted on its own:
     - the location may be missing, with the real one only in the description (for example "collection from Bognor");
@@ -149,10 +149,12 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
     - place names and postcodes in the title and description;
     - conflicts between them.
 
-    Rules come first; AI runs at most once per listing version, shared by all users, only where rules cannot decide. What users see stays at town or area level, marked as approximate when it is uncertain. Distance filters, the map and hints use the resolved location.
+    Rules come first; AI runs at most once per listing version, shared by all users, only where rules cannot decide. What users see stays at town or area level, marked as approximate when it is uncertain. A full postcode or street in a description may be used internally, but only the town or area derived from it may reach a `v_` view or user-facing output; the location-precision CI test covers this. Model output is validated against a Zod schema before use. Distance filters, the map and hints use the resolved location.
   - **"Too good to be true"** (owner, 2026-09-24). Listings that look like scams are marked "too good to be true". The owner's examples: a listing placed on the Isle of Wight whose seller then says collection is in Manchester, and a listing in Chichester whose seller then says postage only. Nabvy never sees conversations with sellers, so the mark comes from two sources:
     - **Listing signals:** a price far below comparable asks (at n>=10); the listing's location conflicting with the location in its text (the "Where an item really is" resolution); "postage only", "courier only" or "delivery only" in a listing offered for collection; risky payment requests; and copies of the same advert across distant places (copy-advert).
     - **User reports:** after messaging a seller, a user can report in one tap what the seller said, for example that collection was elsewhere, that it was postage only, or that they asked for a bank transfer or deposit. The report counts towards the mark that other users see on that listing and on its copies.
+
+    The label reads "Suspected too good to be true:" followed by the facts. This joins the owner's phrase with the brief's "Suspected ...:" rule; the owner confirms the final text. Reports count only from distinct, established accounts, are rate-limited, need a threshold before a report-based mark shows, and never reveal who reported. The mark attaches to the listing, never to the seller.
 
     It follows the Precedence row "Labels and scores":
     - worded as a suspicion and shown with its evidence;
@@ -161,7 +163,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
     - no numeric score shown.
 
     Seller-level signals stay internal (Precedence row "Seller-derived flags"). It runs in shadow mode during the rtx3090 test hunt to set its thresholds, then goes live.
-  - **Pickup route planning:** the user records each pickup they have arranged with a seller (where, and the agreed time or window). The app plans an optimal route to collect the whole haul in one day. The addresses and times come from the user, stay private to that user, and are never taken from listing data or shown to anyone else.
+  - **Pickup route planning:** the user records each pickup they have arranged with a seller (where, and the agreed time or window). The app plans an optimal route to collect the whole haul in one day. The addresses and times come from the user, stay private to that user, and are never taken from listing data or shown to anyone else. They are stored under row-level security in the owning module's schema, appear in no `v_` view, and fall under the retention question.
 - **Legal gates lifted** (owner, 2026-09-24): "Lift the gates. The operational instruction is to have the production app fully working as intended." The gates are:
   - further data collection through Apify no longer waits for an LIA and a DPIA. Nabvy never deals with Facebook directly: it uses third-party data that comes from Apify runs (owner, 2026-09-24);
   - sharing or reselling listing data no longer waits for legal advice, so the build pack's Business features (export, channel feeds, public API) are back in the plan;
@@ -212,11 +214,11 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 - **Revenue rules:** annual plans at ten months' price; design partners on lifetime Pro; £5 usage credit to both sides per paying referral; no refunds (owner, 2026-09-24; "No refunds" under "MVP scope and pipeline runtime"). Prices include UK VAT (Stripe Tax).
 - **Free-tier limits:** 3 active hunts, £0.50 usage a month, eBay alerts live, other sources as a daily digest.
 - **Marketing machinery from day one:** lifecycle messaging on PostHog Workflows triggered by first-party events (abandoned checkout and onboarding, activation, cap reached, trial, failed payment, win-back, weekly review); Nabvy Daily, a daily brief with local hot deals, the user's product price moves and a UK market recap (plus regional CeX comparisons where we hold data), sent by email and channel post with a public indexable web version; transactional email on Resend with templates in the repository; SEO price pages generated from the Price Book; waitlist before launch; marketing consent by unticked box or soft opt-in with one-click unsubscribe and a preference centre. No separate marketing suite. Details in `docs/marketing.md`.
-- **Affiliate and creator programme from day one of the public beta,** run on Dub Partners (open source): 30% of net subscription revenue for 12 months, 10% on usage top-ups, tiers to 35% and 40% by active referred subscribers, 90-day last-click cookie, codes attribute without a click, £5 usage credit to the referred user, 30-day hold with refund clawback, monthly payouts with a £20 minimum, mandatory ad disclosure. Details in `docs/affiliates.md`.
+- **Affiliate and creator programme from day one of the public beta,** run on Dub Partners (open source): 30% of net subscription revenue for 12 months, 10% on usage top-ups, tiers to 35% and 40% by active referred subscribers, 90-day last-click cookie, codes attribute without a click, £5 usage credit to the referred user, 30-day hold with chargeback clawback, monthly payouts with a £20 minimum, mandatory ad disclosure. Details in `docs/affiliates.md`.
 
 ## Build order
 
-- **Build order:** Facebook Marketplace first, using the existing Nabvy Apify actor as the provider (it is ready); then eBay through the official API; then scan mode; then Gumtree; then the web app, billing and public beta. Facebook alerts stay private (the founder and design partners only) until the legal gate clears. *(Superseded for this push by "MVP scope and pipeline runtime" above: a full-featured public beta on Facebook only.)*
+- **Build order:** Facebook Marketplace first, using the existing Nabvy Apify actor as the provider (it is ready); then eBay through the official API; then scan mode; then Gumtree; then the web app, billing and public beta. Facebook alerts stay private (the founder and design partners only) until the legal gate clears; the gate was lifted by the owner on 2026-09-24 ("Legal gates lifted"). *(Superseded for this push by "MVP scope and pipeline runtime" above: a full-featured public beta on Facebook only.)*
 
 ## Success metrics
 

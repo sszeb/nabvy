@@ -11,7 +11,7 @@ Creators (YouTube, TikTok, Discord and Telegram server owners, bloggers) get a l
 | Tiers | 30% base; 35% once 25 referred users are paying at the same time; 40% at 100. Reviewed quarterly, never reduced retroactively |
 | Attribution | Last click, 90-day cookie, first-party tracking through Dub links; codes attribute without a click |
 | Two-sided incentive | The referred user gets £5 of non-expiring usage credit on their first paid invoice, plus any code discount the creator chooses to pass on (creator may split up to 10 points of their commission into a customer discount) |
-| Hold and clawback | Commissions become payable 30 days after the invoice (the chargeback window; there are no refunds, `docs/decisions.md` "No refunds"); chargebacks reverse the commission |
+| Hold and clawback | Commissions become payable 30 days after the invoice (the hold period; there are no refunds, `docs/decisions.md` "No refunds"); chargebacks reverse the commission |
 | Payouts | Monthly, minimum £20, through Dub (Stripe Express bank payout, PayPal where needed); payout fees as published by Dub |
 | Approval | Application reviewed within two working days; UK and international creators accepted; no purchase required |
 | Disclosure | Creators must disclose paid links (#ad or "affiliate link") as required by UK ASA/CAP rules and their platform |
