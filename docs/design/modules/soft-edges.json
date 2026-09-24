@@ -1,12 +1,40 @@
 {
   "note": "Back-edges that make cycles in index.json. Coordinator 6, 2026-09-24 18:40. The dependent codes to the later card's interface behind an injected function with a documented stub and the conservative default (unknown standing suppresses the send; unknown match matches nothing), and records the seam in docs/questions.md. Move these to softDependsOn in the catalogue at the next regeneration.",
   "edges": [
-    { "from": "subscriptions", "to": "account-integrity", "why": "trial eligibility only; the card already says soft" },
-    { "from": "want-manager", "to": "listing-search", "why": "want-manager owns wants; listing-search reads them; the search preview is injected" },
-    { "from": "notifier", "to": "account-integrity", "why": "standing check before a send; unknown standing suppresses" },
-    { "from": "parts-record", "to": "photo-review", "why": "photo-review corrections arrive as events later" },
-    { "from": "relist-merge", "to": "photo-review", "why": "photo fingerprints are optional evidence" },
-    { "from": "seller-reply-reports", "to": "noise-filter", "why": "noise flags are optional context on a report" },
-    { "from": "seller-reply-reports", "to": "notifier", "why": "reports are published as events; notifier consumes them later" }
+    {
+      "from": "subscriptions",
+      "to": "account-integrity",
+      "why": "trial eligibility only; the card already says soft"
+    },
+    {
+      "from": "want-manager",
+      "to": "listing-search",
+      "why": "want-manager owns wants; listing-search reads them; the search preview is injected"
+    },
+    {
+      "from": "notifier",
+      "to": "account-integrity",
+      "why": "standing check before a send; unknown standing suppresses"
+    },
+    {
+      "from": "parts-record",
+      "to": "photo-review",
+      "why": "photo-review corrections arrive as events later"
+    },
+    {
+      "from": "relist-merge",
+      "to": "photo-review",
+      "why": "photo fingerprints are optional evidence"
+    },
+    {
+      "from": "seller-reply-reports",
+      "to": "noise-filter",
+      "why": "noise flags are optional context on a report"
+    },
+    {
+      "from": "seller-reply-reports",
+      "to": "notifier",
+      "why": "reports are published as events; notifier consumes them later"
+    }
   ]
 }
