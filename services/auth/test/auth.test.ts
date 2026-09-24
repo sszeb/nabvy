@@ -1,7 +1,13 @@
-import { ACCOUNT_RESTRICTED_MESSAGE, AuthError } from '@nabvy/contracts/modules/auth'
+import {
+  AuthError,
+  accountRestrictedNotice,
+  type RestrictionPolicy,
+  type RestrictionStep,
+} from '@nabvy/contracts/modules/auth'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { AccountRestrictedError, ForbiddenError, UnauthenticatedError } from '../src/domain'
 import { assertAccountActive, isAccountActive } from '../src/repo'
+import { liftRestriction, restrictAccount } from '../src/restrict'
 import { getSession, requireActiveUser, requireAdmin, requireUser } from '../src/session'
 import {
   BASE_URL,
@@ -10,9 +16,11 @@ import {
   FOUNDER,
   type Harness,
   headersWith,
+  ipHeaders,
   requestMagicLink,
   signInByMagicLink,
 } from './support/harness'
+import { PASS_TOKEN } from './support/turnstile'
 
 // End to end through the mounted /api/auth/* handlers, Better Auth and the real better_auth
 // migrations on PGlite, connected as nabvy_auth. Emails go to the recording sender and captcha
@@ -82,7 +90,9 @@ describe('sign-up by magic link', () => {
     const email = 'once@example.com'
     await signInByMagicLink(harness, email)
     const link = harness.sender.latestFor(email)
-    const again = await harness.routes.GET(new Request(link?.url ?? ''))
+    const again = await harness.routes.GET(
+      new Request(link?.url ?? '', { headers: ipHeaders(email) }),
+    )
     expect(cookieHeader(again)).not.toContain('session_token')
     expect(again.headers.get('location')).toContain('error=INVALID_TOKEN')
   })
@@ -206,12 +216,17 @@ describe('sign-out', () => {
 })
 
 describe('account standing', () => {
-  async function restrict(email: string, banExpires: Date | null, reason = 'chargeback abuse') {
-    // What the account-integrity module will do: set Better Auth's ban fields directly.
+  async function restrict(
+    email: string,
+    banExpires: Date | null,
+    reason = 'chargeback abuse',
+    policy: string | null = null,
+  ) {
+    // Better Auth's ban fields set directly, as an older row or a manual fix would leave them.
     await harness.database.sql(
-      `update better_auth."user" set banned = true, ban_reason = $2,
+      `update better_auth."user" set banned = true, ban_reason = $2, restriction_policy = $4,
          ban_expires = ($3::timestamptz at time zone 'UTC') where email = $1`,
-      [email, reason, banExpires?.toISOString() ?? null],
+      [email, reason, banExpires?.toISOString() ?? null, policy],
     )
   }
 
@@ -224,31 +239,51 @@ describe('account standing', () => {
     return error as AccountRestrictedError
   }
 
-  function expectVague(error: AccountRestrictedError): void {
-    expect(error.message).toBe(ACCOUNT_RESTRICTED_MESSAGE)
+  /** The notice names the step and the policy, offers the review, and says nothing else. */
+  function expectNotice(
+    error: AccountRestrictedError,
+    step: RestrictionStep,
+    policy: RestrictionPolicy,
+  ) {
+    expect(error.message).toBe(accountRestrictedNotice(step, policy))
     expect(error.status).toBe(403)
+    expect(error.reviewOffer).toBe('You can ask for a review within 30 days.')
     const json = JSON.parse(JSON.stringify(error))
-    expect(json).toEqual({ code: 'auth.account_restricted', message: ACCOUNT_RESTRICTED_MESSAGE })
+    expect(json).toEqual({
+      code: 'auth.account_restricted',
+      message: accountRestrictedNotice(step, policy),
+      step,
+      policy,
+      reviewWithinDays: 30,
+    })
     expect(AuthError.parse(json)).toEqual(json)
-    expect(JSON.stringify(json)).not.toMatch(/chargeback|abuse|ban|suspend|until|20\d\d/i)
+    expect(JSON.stringify(json)).not.toMatch(/chargeback|abuse|scans|evidence|until|20\d\d/i)
   }
 
-  it('refuses a banned user with the vague message, never the reason', async () => {
+  it('refuses a banned user with the notice, never the reason', async () => {
     const email = 'banned@example.com'
     const cookie = await signInByMagicLink(harness, email)
     await restrict(email, null)
-    expectVague(await refusal(requireActiveUser(headersWith(cookie), harness.auth)))
-    expectVague(await refusal(requireAdmin(headersWith(cookie), harness.auth)))
+    expectNotice(
+      await refusal(requireActiveUser(headersWith(cookie), harness.auth)),
+      'banned',
+      'terms',
+    )
+    expectNotice(await refusal(requireAdmin(headersWith(cookie), harness.auth)), 'banned', 'terms')
     // Still signed in, so the app can show the notice and offer sign-out.
     await expect(requireUser(headersWith(cookie), harness.auth)).resolves.toBeTruthy()
   })
 
-  it('refuses a suspended user until the suspension ends', async () => {
+  it('refuses a suspended user until the suspension ends, naming the policy', async () => {
     const email = 'suspended@example.com'
     const cookie = await signInByMagicLink(harness, email)
     const until = new Date(Date.now() + 7 * 24 * 3600 * 1000)
-    await restrict(email, until, 'fair use: too many scans')
-    expectVague(await refusal(requireActiveUser(headersWith(cookie), harness.auth)))
+    await restrict(email, until, 'too many scans', 'fair-use')
+    expectNotice(
+      await refusal(requireActiveUser(headersWith(cookie), harness.auth)),
+      'suspended',
+      'fair-use',
+    )
     const after = new Date(until.getTime() + 1000)
     await expect(requireActiveUser(headersWith(cookie), harness.auth, after)).resolves.toBeTruthy()
   })
@@ -278,7 +313,42 @@ describe('account standing', () => {
     expect((await userRow(email))?.ban_reason).toBe('secret internal reason')
   })
 
-  it('an admin ban revokes sessions, and sign-in shows only the vague notice', async () => {
+  it('restrictAccount records the policy, keeps the reason, revokes sessions; sign-in shows the notice', async () => {
+    const email = 'restricted.by.module@example.com'
+    const cookie = await signInByMagicLink(harness, email)
+    const id = (await userRow(email))?.id as string
+    await restrictAccount(harness.auth, {
+      userId: id,
+      policy: 'acceptable-use',
+      until: new Date(Date.now() + 24 * 3600 * 1000),
+      reason: 'internal evidence',
+    })
+    expect(await sessionCount(id)).toBe(0)
+    expect(await userRow(email)).toMatchObject({ banned: true, ban_reason: 'internal evidence' })
+    await expect(requireActiveUser(headersWith(cookie), harness.auth)).rejects.toBeInstanceOf(
+      UnauthenticatedError,
+    )
+
+    // Signing in again is refused with the notice only.
+    await requestMagicLink(harness, email)
+    const link = harness.sender.latestFor(email)
+    const verified = await harness.routes.GET(
+      new Request(link?.url ?? '', { headers: ipHeaders(email) }),
+    )
+    expect(verified.status).toBe(403)
+    expect(cookieHeader(verified)).not.toContain('session_token')
+    const body = await verified.text()
+    expect(JSON.parse(body)).toMatchObject({
+      code: 'ACCOUNT_RESTRICTED',
+      message: 'Your account has been suspended under our Acceptable Use Policy.',
+    })
+    expect(body).not.toContain('internal evidence')
+
+    await liftRestriction(harness.auth, id)
+    await signInByMagicLink(harness, email)
+  })
+
+  it('an admin ban through the API revokes sessions and hides the reason', async () => {
     const adminCookie = await signInByMagicLink(harness, FOUNDER)
     const email = 'admin.banned@example.com'
     const userCookie = await signInByMagicLink(harness, email)
@@ -297,30 +367,98 @@ describe('account standing', () => {
     await expect(requireActiveUser(headersWith(userCookie), harness.auth)).rejects.toBeInstanceOf(
       UnauthenticatedError,
     )
-
-    // Signing in again is refused with the vague notice only.
-    await requestMagicLink(harness, email)
-    const link = harness.sender.latestFor(email)
-    const verified = await harness.routes.GET(new Request(link?.url ?? ''))
-    expect(verified.status).toBe(403)
-    expect(cookieHeader(verified)).not.toContain('session_token')
-    const body = await verified.text()
-    expect(JSON.parse(body).message).toBe(ACCOUNT_RESTRICTED_MESSAGE)
-    expect(body).not.toContain('internal evidence')
   })
 
   it('jobs acting for a user check standing on the app and pipeline roles', async () => {
     const active = await userRow('new.user@example.com')
     const banned = await userRow('banned@example.com')
+    const suspended = await userRow('suspended@example.com')
     for (const role of ['nabvy_app', 'nabvy_pipeline'] as const) {
       await harness.database.as(role, async (db) => {
         expect(await isAccountActive(db, active?.id as string)).toBe(true)
         await expect(assertAccountActive(db, active?.id as string)).resolves.toBeUndefined()
         expect(await isAccountActive(db, banned?.id as string)).toBe(false)
-        expectVague(await refusal(assertAccountActive(db, banned?.id as string)))
+        expectNotice(
+          await refusal(assertAccountActive(db, banned?.id as string)),
+          'banned',
+          'terms',
+        )
+        expectNotice(
+          await refusal(assertAccountActive(db, suspended?.id as string)),
+          'suspended',
+          'fair-use',
+        )
         // Unknown users are not acted for.
-        expect(await isAccountActive(db, '00000000-0000-4000-8000-000000000000')).toBe(false)
+        const unknown = '00000000-0000-4000-8000-000000000000'
+        expect(await isAccountActive(db, unknown)).toBe(false)
+        await expect(assertAccountActive(db, unknown)).rejects.toBeInstanceOf(UnauthenticatedError)
       })
     }
+  })
+})
+
+describe('admin permissions until admin actions are audited', () => {
+  let adminCookie: string | undefined
+  it.each([
+    ['impersonate-user', (id: string) => ({ userId: id })],
+    ['set-role', (id: string) => ({ userId: id, role: 'admin' })],
+    ['remove-user', (id: string) => ({ userId: id })],
+    ['create-user', () => ({ email: 'made@example.com', name: '', password: 'x'.repeat(12) })],
+  ])('an admin cannot %s', async (endpoint, body) => {
+    adminCookie ??= await signInByMagicLink(harness, FOUNDER)
+    const target = (await userRow('plain@example.com'))?.id as string
+    const response = await harness.routes.POST(
+      new Request(`${BASE_URL}/api/auth/admin/${endpoint}`, {
+        method: 'POST',
+        headers: { cookie: adminCookie, origin: BASE_URL, 'content-type': 'application/json' },
+        body: JSON.stringify(body(target)),
+      }),
+    )
+    expect(response.status).toBe(403)
+    expect((await userRow('plain@example.com'))?.role).toBe('user')
+  })
+})
+
+describe('rate limits', () => {
+  it('allows 5 magic-link emails an hour per address, then refuses without sending', async () => {
+    const email = 'eager@example.com'
+    for (let i = 0; i < 5; i++) {
+      // A different client each time, so only the per-address limit applies.
+      const response = await requestMagicLink(harness, email, PASS_TOKEN, `198.51.100.${i + 1}`)
+      expect(response.status).toBe(200)
+    }
+    const sent = harness.sender.sent.filter((link) => link.email === email).length
+    const refused = await requestMagicLink(harness, email, PASS_TOKEN, '198.51.100.99')
+    expect(refused.status).toBe(429)
+    expect(harness.sender.sent.filter((link) => link.email === email).length).toBe(sent)
+    // The counter key holds a hash of the address, never the address.
+    const keys = await harness.database.sql('select key from better_auth.rate_limit')
+    expect(JSON.stringify(keys)).not.toContain(email)
+  })
+
+  it('allows 5 sign-in requests an hour per IP, in the shared Postgres counter', async () => {
+    const ip = '203.0.113.7'
+    for (let i = 0; i < 5; i++) {
+      const response = await requestMagicLink(harness, `ip.user${i}@example.com`, PASS_TOKEN, ip)
+      expect(response.status).toBe(200)
+    }
+    const refused = await requestMagicLink(harness, 'ip.user5@example.com', PASS_TOKEN, ip)
+    expect(refused.status).toBe(429)
+    expect(harness.sender.latestFor('ip.user5@example.com')).toBeUndefined()
+    const [row] = await harness.database.sql(
+      "select count from better_auth.rate_limit where key like '%203.0.113.7%'",
+    )
+    expect(Number(row?.count)).toBe(5)
+  })
+
+  it('Google sign-in also needs a Turnstile token', async () => {
+    const response = await harness.routes.POST(
+      new Request(`${BASE_URL}/api/auth/sign-in/social`, {
+        method: 'POST',
+        headers: { origin: BASE_URL, 'content-type': 'application/json', ...ipHeaders('google') },
+        body: JSON.stringify({ provider: 'google' }),
+      }),
+    )
+    expect(response.status).toBe(400)
   })
 })

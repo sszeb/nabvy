@@ -1,6 +1,6 @@
 import type { Auth } from './auth'
 import { AccountRestrictedError, ForbiddenError, UnauthenticatedError } from './domain/errors'
-import { isRestricted } from './domain/standing'
+import { restrictionOf } from './domain/standing'
 import { getAuth } from './instance'
 
 /** A signed-in session with its user, as Better Auth returns it (never the ban reason). */
@@ -33,7 +33,8 @@ export async function requireUser(headers: Headers, auth: Auth = getAuth()): Pro
 /**
  * Signed in, and the account is neither suspended nor banned (docs/decisions.md, "Fair use,
  * suspension and bans"). A restricted account gets `AccountRestrictedError` (403), whose message
- * is only "Your account has been restricted under our terms."
+ * names the step and the policy only, e.g. "Your account has been suspended under our Fair Use
+ * Policy.", with the 30-day review offer.
  */
 export async function requireActiveUser(
   headers: Headers,
@@ -41,7 +42,8 @@ export async function requireActiveUser(
   now: Date = new Date(),
 ): Promise<SignedIn> {
   const signedIn = await requireUser(headers, auth)
-  if (isRestricted(signedIn.user, now)) throw new AccountRestrictedError()
+  const restriction = restrictionOf(signedIn.user, now)
+  if (restriction) throw new AccountRestrictedError(restriction.step, restriction.policy)
   return signedIn
 }
 

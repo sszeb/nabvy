@@ -1,7 +1,11 @@
 import {
-  ACCOUNT_RESTRICTED_MESSAGE,
+  ACCOUNT_REVIEW_OFFER,
   type AuthError,
   type AuthErrorCode,
+  accountRestrictedNotice,
+  REVIEW_WINDOW_DAYS,
+  type RestrictionPolicy,
+  type RestrictionStep,
 } from '@nabvy/contracts/modules/auth'
 
 /**
@@ -39,12 +43,29 @@ export class ForbiddenError extends AuthFailure {
 }
 
 /**
- * A suspended or banned account. It takes no arguments on purpose: the message is always the
- * vague notice, and no reason, rule, signal, score or date can be attached to it.
+ * A suspended or banned account. It takes only the step and the policy, both enumerations: the
+ * message names them and nothing more, so no reason, rule, signal, score or date can be added.
+ * The review route (`ACCOUNT_REVIEW_OFFER`) is shown with it.
  */
 export class AccountRestrictedError extends AuthFailure {
-  constructor() {
-    super('auth.account_restricted', ACCOUNT_RESTRICTED_MESSAGE, 403)
+  readonly step: RestrictionStep
+  readonly policy: RestrictionPolicy
+  readonly reviewOffer = ACCOUNT_REVIEW_OFFER
+
+  constructor(step: RestrictionStep, policy: RestrictionPolicy) {
+    super('auth.account_restricted', accountRestrictedNotice(step, policy), 403)
     this.name = 'AccountRestrictedError'
+    this.step = step
+    this.policy = policy
+  }
+
+  override toJSON(): AuthError {
+    return {
+      code: 'auth.account_restricted',
+      message: this.message,
+      step: this.step,
+      policy: this.policy,
+      reviewWithinDays: REVIEW_WINDOW_DAYS,
+    }
   }
 }

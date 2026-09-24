@@ -2,6 +2,8 @@
 export interface MagicLink {
   email: string
   url: string
+  /** The plain-text body, from `magicLinkText`. */
+  text: string
 }
 
 /** Delivers magic links. Better Auth calls `send` from its `/sign-in/magic-link` endpoint. */
@@ -40,10 +42,14 @@ export interface ResendSenderOptions {
 export const MAGIC_LINK_FROM = 'Nabvy <sign-in@mail.nabvy.com>'
 export const MAGIC_LINK_SUBJECT = 'Your Nabvy sign-in link'
 
-/** The plain-text body. Wording is provisional until the owner confirms it (docs/questions.md). */
-export function magicLinkText(url: string): string {
+/**
+ * The plain-text body, with the lifetime taken from the link's real expiry so the two cannot
+ * drift. Wording is provisional until the owner confirms it (docs/questions.md).
+ */
+export function magicLinkText(url: string, expiresInSeconds: number): string {
+  const minutes = Math.round(expiresInSeconds / 60)
   return [
-    'Use this link to sign in to Nabvy. It works once and expires in 5 minutes.',
+    `Use this link to sign in to Nabvy. It works once and expires in ${minutes} minute${minutes === 1 ? '' : 's'}.`,
     '',
     url,
     '',
@@ -58,7 +64,7 @@ export function magicLinkText(url: string): string {
 export function createResendMagicLinkSender(options: ResendSenderOptions): MagicLinkSender {
   const post = options.fetch ?? fetch
   return {
-    async send({ email, url }) {
+    async send({ email, text }) {
       const response = await post('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -69,7 +75,7 @@ export function createResendMagicLinkSender(options: ResendSenderOptions): Magic
           from: options.from ?? MAGIC_LINK_FROM,
           to: [email],
           subject: MAGIC_LINK_SUBJECT,
-          text: magicLinkText(url),
+          text,
         }),
       })
       if (!response.ok) throw new Error(`Resend refused the magic-link email (${response.status})`)

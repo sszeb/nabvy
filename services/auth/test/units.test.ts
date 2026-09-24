@@ -1,13 +1,15 @@
 import { readFileSync } from 'node:fs'
 import { EnvError } from '@nabvy/config'
-import { ACCOUNT_RESTRICTED_MESSAGE } from '@nabvy/contracts/modules/auth'
+import { accountRestrictedNotice } from '@nabvy/contracts/modules/auth'
 import { describe, expect, it, vi } from 'vitest'
+import { MAGIC_LINK_EXPIRES_IN } from '../src/auth'
 import { isFounderEmail } from '../src/domain/founders'
 import { isRestricted } from '../src/domain/standing'
 import {
   createRecordingMagicLinkSender,
   createResendMagicLinkSender,
   MAGIC_LINK_FROM,
+  magicLinkText,
 } from '../src/email/magic-link'
 import { AccountRestrictedError, createAuthFromEnv, createAuthRouteHandlers } from '../src/index'
 
@@ -50,18 +52,36 @@ describe('isFounderEmail', () => {
 })
 
 describe('AccountRestrictedError', () => {
-  it('always carries the vague notice and nothing else', () => {
-    const error = new AccountRestrictedError()
-    expect(error.message).toBe(ACCOUNT_RESTRICTED_MESSAGE)
-    expect(Object.keys(error.toJSON()).sort()).toEqual(['code', 'message'])
+  it('names the step and the policy, offers the review, and carries nothing else', () => {
+    const error = new AccountRestrictedError('suspended', 'fair-use')
+    expect(error.message).toBe('Your account has been suspended under our Fair Use Policy.')
+    expect(error.message).toBe(accountRestrictedNotice('suspended', 'fair-use'))
+    expect(error.reviewOffer).toBe('You can ask for a review within 30 days.')
+    expect(Object.keys(error.toJSON()).sort()).toEqual([
+      'code',
+      'message',
+      'policy',
+      'reviewWithinDays',
+      'step',
+    ])
+    expect(new AccountRestrictedError('banned', 'terms').message).toBe(
+      'Your account has been banned under our Terms of Service.',
+    )
+  })
+})
+
+describe('magic-link text', () => {
+  it('states the lifetime the link really has', () => {
+    expect(magicLinkText('https://x.test', MAGIC_LINK_EXPIRES_IN)).toContain('expires in 5 minutes')
+    expect(magicLinkText('https://x.test', 60)).toContain('expires in 1 minute.')
   })
 })
 
 describe('magic-link senders', () => {
   it('the recording sender keeps the newest link per address', async () => {
     const sender = createRecordingMagicLinkSender()
-    await sender.send({ email: 'a@example.com', url: 'https://x.test/1' })
-    await sender.send({ email: 'A@example.com', url: 'https://x.test/2' })
+    await sender.send({ email: 'a@example.com', url: 'https://x.test/1', text: '1' })
+    await sender.send({ email: 'A@example.com', url: 'https://x.test/2', text: '2' })
     expect(sender.latestFor('a@example.com')?.url).toBe('https://x.test/2')
     expect(sender.latestFor('b@example.com')).toBeUndefined()
   })
@@ -76,17 +96,20 @@ describe('magic-link senders', () => {
       apiKey: 'test-only-key',
       fetch: fetchDouble as unknown as typeof fetch,
     })
-    await sender.send({
-      email: 'a@example.com',
-      url: 'https://nabvy.app/api/auth/magic-link/verify?token=t',
-    })
+    const url = 'https://nabvy.app/api/auth/magic-link/verify?token=t'
+    await sender.send({ email: 'a@example.com', url, text: magicLinkText(url, 300) })
     expect(calls[0]?.url).toBe('https://api.resend.com/emails')
     expect(new Headers(calls[0]?.init.headers).get('authorization')).toBe('Bearer test-only-key')
     const body = JSON.parse(String(calls[0]?.init.body))
     expect(body).toMatchObject({ from: MAGIC_LINK_FROM, to: ['a@example.com'] })
     expect(body.text).toContain('https://nabvy.app/api/auth/magic-link/verify?token=t')
 
-    const failure = sender.send({ email: 'a@example.com', url: 'https://nabvy.app/secret-link' })
+    const secret = 'https://nabvy.app/secret-link'
+    const failure = sender.send({
+      email: 'a@example.com',
+      url: secret,
+      text: magicLinkText(secret, 300),
+    })
     await expect(failure).rejects.toThrow('(422)')
     await expect(failure).rejects.not.toThrow(/secret-link|a@example\.com/)
   })

@@ -6,4 +6,4 @@ export {
   UnauthenticatedError,
 } from './errors'
 export { isFounderEmail, normaliseEmail } from './founders'
-export { type BanFields, isRestricted } from './standing'
+export { type BanFields, isRestricted, type Restriction, restrictionOf } from './standing'

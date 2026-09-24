@@ -1,11 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import {
-  BASE_URL,
-  createHarness,
-  FOUNDER,
-  type Harness,
-  signInByMagicLink,
-} from './support/harness'
+import { guardSessionCreation } from '../src/auth'
+import { createHarness, type Harness, signInByMagicLink } from './support/harness'
 
 // Email verification is required before any session exists (docs/security.md), whatever creates
 // it: the session hook refuses an unverified address, such as a Google account whose email Google
@@ -38,22 +33,6 @@ async function sessionCount(userId: string): Promise<number> {
 }
 
 describe('email verification', () => {
-  it('refuses a session for an unverified address through an endpoint', async () => {
-    const id = await unverifiedUser('unverified@example.com')
-    const adminCookie = await signInByMagicLink(harness, FOUNDER)
-    // Impersonation is an endpoint that creates a session for someone else's account.
-    const response = await harness.routes.POST(
-      new Request(`${BASE_URL}/api/auth/admin/impersonate-user`, {
-        method: 'POST',
-        headers: { cookie: adminCookie, origin: BASE_URL, 'content-type': 'application/json' },
-        body: JSON.stringify({ userId: id }),
-      }),
-    )
-    expect(response.status).toBe(403)
-    expect(((await response.json()) as { code: string }).code).toBe('EMAIL_NOT_VERIFIED')
-    expect(await sessionCount(id)).toBe(0)
-  })
-
   it('fails closed when a session is created outside a request', async () => {
     const id = await unverifiedUser('outside@example.com')
     const context = await harness.auth.$context
@@ -65,5 +44,66 @@ describe('email verification', () => {
     const id = await unverifiedUser('late.verifier@example.com')
     await signInByMagicLink(harness, 'late.verifier@example.com')
     expect(await sessionCount(id)).toBe(1)
+  })
+})
+
+describe('the session guard', () => {
+  function context(user: Record<string, unknown> | null) {
+    const updates: Record<string, unknown>[] = []
+    return {
+      updates,
+      ctx: {
+        context: {
+          internalAdapter: {
+            findUserById: async () => user,
+            updateUser: async (_id: string, data: Record<string, unknown>) => {
+              updates.push(data)
+              return null
+            },
+          },
+        },
+      },
+    }
+  }
+  const guard = guardSessionCreation(['founder@example.com'])
+  const base = { id: 'u1', email: 'someone@example.com', emailVerified: true, role: 'user' }
+
+  it('refuses an unverified address, e.g. a Google account Google has not verified', async () => {
+    const { ctx } = context({ ...base, emailVerified: false })
+    await expect(guard({ userId: 'u1' }, ctx)).rejects.toMatchObject({
+      body: { code: 'EMAIL_NOT_VERIFIED' },
+    })
+  })
+
+  it('refuses a restricted account with the notice only', async () => {
+    const { ctx } = context({
+      ...base,
+      banned: true,
+      banExpires: null,
+      banReason: 'internal',
+      restrictionPolicy: 'fair-use',
+    })
+    const error = await guard({ userId: 'u1' }, ctx).catch((caught: unknown) => caught)
+    expect(error).toMatchObject({
+      body: {
+        code: 'ACCOUNT_RESTRICTED',
+        message: 'Your account has been banned under our Fair Use Policy.',
+      },
+    })
+    expect(JSON.stringify((error as { body: unknown }).body)).not.toContain('internal')
+  })
+
+  it('promotes a founder and admits a verified user', async () => {
+    const founder = context({ ...base, email: 'Founder@example.com' })
+    await expect(guard({ userId: 'u1' }, founder.ctx)).resolves.toBeUndefined()
+    expect(founder.updates).toEqual([{ role: 'admin' }])
+    const plain = context(base)
+    await expect(guard({ userId: 'u1' }, plain.ctx)).resolves.toBeUndefined()
+    expect(plain.updates).toEqual([])
+  })
+
+  it('fails closed with no request context or no user', async () => {
+    await expect(guard({ userId: 'u1' }, null)).resolves.toBe(false)
+    await expect(guard({ userId: 'u1' }, context(null).ctx)).resolves.toBe(false)
   })
 })
