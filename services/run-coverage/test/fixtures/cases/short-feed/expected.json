@@ -1,0 +1,38 @@
+{
+  "steps": [
+    {
+      "written": 1,
+      "statuses": ["complete"],
+      "degraded": 0,
+      "events": 0
+    }
+  ],
+  "outcomes": [
+    {
+      "step": 1,
+      "kind": "sweep",
+      "route": "http",
+      "stopReason": "source-no-new-listings",
+      "reportedRoute": "http",
+      "reportedStopReason": "source-no-new-listings",
+      "pages": 4,
+      "listings": 90,
+      "feedType": "short",
+      "binding": "verified",
+      "pageOneOverlap": null,
+      "previousStep": null,
+      "status": "complete",
+      "reasons": []
+    }
+  ],
+  "baselines": [
+    {
+      "centreId": "115935195086622",
+      "term": "gaming pc",
+      "kind": "sweep",
+      "basis": "complete",
+      "searchIndex": 0,
+      "step": 1
+    }
+  ]
+}

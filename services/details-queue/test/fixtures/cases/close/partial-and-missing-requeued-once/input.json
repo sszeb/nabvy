@@ -1,0 +1,52 @@
+{
+  "synthetic": true,
+  "source": "actor-integration.md 2.10 (docs/design/drafts/actor-integration.md:235-250); EVIDENCE_LEDGER.md:189-190",
+  "items": [
+    {
+      "id": "1000000000000011",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1000000000000012",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1000000000000013",
+      "attempts": 0,
+      "requeues": 1
+    },
+    {
+      "id": "1000000000000014",
+      "attempts": 0,
+      "requeues": 1
+    }
+  ],
+  "rows": [
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000011",
+      "detailOutcome": "collected",
+      "descriptionStatus": "partial"
+    },
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000012",
+      "detailOutcome": "collected",
+      "descriptionStatus": "missing"
+    },
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000013",
+      "detailOutcome": "collected",
+      "descriptionStatus": "partial"
+    },
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000014",
+      "detailOutcome": "metadata-only",
+      "descriptionStatus": "missing"
+    }
+  ]
+}
