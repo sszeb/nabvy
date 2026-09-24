@@ -17,7 +17,7 @@ wave 2, backlog task 4.3a.
 
 ## Standing: which function owns what
 
-`docs/questions.md` records an open ownership point: PR #9 (task 4.0) built an account standing
+`docs/questions/account.md` records an open ownership point: PR #9 (task 4.0) built an account standing
 check inside `auth` — `better_auth.user`'s `banned`/`ban_expires`/`restriction_policy` columns, the
 audited `restrictAccount`/`liftRestriction` functions, and the SQL functions
 `better_auth.account_active`/`account_restriction` that `nabvy_app` and `nabvy_pipeline` may call
@@ -69,7 +69,7 @@ follows the same convention rather than inventing a different one.
 The module catalogue's card names the channel events `channel.linked`/`channel.unlinked`, but rule
 7 of `docs/design/modules/_rules.md` fixes the event format as `<module>.<what happened>` and says
 only the emitting module's own name is used. Kept here as `account.channel-linked` /
-`account.channel-unlinked` to follow the rule; recorded in `docs/questions.md`.
+`account.channel-unlinked` to follow the rule; recorded in `docs/questions/account.md`.
 
 ## Tables
 
@@ -97,9 +97,9 @@ All in the `account` Postgres schema.
 | --- | --- | --- | --- |
 | Telegram link code TTL | 10 minutes | Module card: "single-use 10-minute link codes" | Fixed by the card |
 | Telegram re-link window | 30 days | `packages/config/src/modules/account.ts` | Starting value |
-| Telegram re-link cap per plan | `default`/`free`: 1, `standard`: 3, `business`: 10 per window | Card: "re-links capped per plan"; plan names from `docs/billing.md`, not yet built by `subscriptions` | Starting value; product decision needed (`docs/questions.md`) |
+| Telegram re-link cap per plan | `default`/`free`: 1, `standard`: 3, `business`: 10 per window | Card: "re-links capped per plan"; plan names from `docs/billing.md`, not yet built by `subscriptions` | Starting value; product decision needed (`docs/questions/account.md`) |
 | Deletion purge delay | 24 hours | `docs/security.md:11` | Fixed |
-| "Established device" gate on a new Telegram link or push subscription | Allowed whenever `account-integrity` is off | Card: `checkChannelBinding()` is a soft dependency, "allows when off"; `account-integrity` is not built yet, so `switches.state('account-integrity')` has no row and fails closed to `off` | Placeholder pending `account-integrity`; recorded in `docs/questions.md` |
+| "Established device" gate on a new Telegram link or push subscription | Allowed whenever `account-integrity` is off | Card: `checkChannelBinding()` is a soft dependency, "allows when off"; `account-integrity` is not built yet, so `switches.state('account-integrity')` has no row and fails closed to `off` | Placeholder pending `account-integrity`; recorded in `docs/questions/account.md` |
 
 ## Fixtures and pass rate
 
@@ -134,7 +134,7 @@ SQL functions against the real migrations, and the write side is `auth`'s own to
 
 - 2026-09-24: `isActive()`/`setStanding()` delegate to `@nabvy/auth` rather than re-deriving the
   suspended-until-date logic (see "Standing" above). This resolves the ownership overlap
-  `docs/questions.md` records between this module's card and PR #9.
+  `docs/questions/account.md` records between this module's card and PR #9.
 - 2026-09-24: the channel events are `account.channel-linked`/`account.channel-unlinked`, not the
   card's `channel.linked`/`channel.unlinked`, to follow rule 7's naming format.
 - 2026-09-24: `account-integrity`'s `checkChannelBinding()` is resolved locally as "allowed unless
@@ -150,9 +150,9 @@ SQL functions against the real migrations, and the write side is `auth`'s own to
 
 ## Open questions
 
-- `docs/questions.md`, "w1 account: standing ownership (auth vs. account)".
-- `docs/questions.md`, "w1 account: Telegram re-link plan names and caps".
-- `docs/questions.md`, "w1 account: checkChannelBinding() has no account-integrity to call yet".
+- `docs/questions/account.md`, "w1 account: standing ownership (auth vs. account)".
+- `docs/questions/account.md`, "w1 account: Telegram re-link plan names and caps".
+- `docs/questions/account.md`, "w1 account: checkChannelBinding() has no account-integrity to call yet".
 
 ## Incidents
 
