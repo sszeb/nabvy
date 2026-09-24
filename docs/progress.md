@@ -109,7 +109,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | listing-suppression | 5 | PR #52 open 18:10 (two migrations after merge); listing-feedback stacked on it | `session_018ji68bXcGtLAMEqYBdVp1v` | top |
 | parts-rules | 5 | PR #53 open 18:23 (two migrations after merge) [cp 11]; parts-ai stacked on it | `session_01DNsNA5egQBU1HGTkfhMNx3` | top |
 | pricing-console | 4 | PR #55 open 18:44 (two migrations after merge; seeds the ladder as initial policy values; no admin page until 4.1 and 4.3af) | `session_01NamNkeC55pewRzgfB6v6YS` | top |
-| subscriptions | 4 | PR #54 open 18:44 (two migrations after merge; Stripe test keys still missing; auth needs a small change to mount the plugin, see its questions); attribution stacked on it | `session_01P4ij9pAr9EjzDnS1bqS21i` | top |
+| subscriptions | 4 | PR #54 open (two migrations after merge; Stripe test keys still missing; auth needs a small change to mount the plugin, see its questions); round-2 review 21:55 "Changes needed" (one blocker: invoice.paid before the subscription row is active loses the first period's grant); fresh fix session 22:00 `session_01MnrRSFwhS6juphnpX6nruU` (top), build session (396k) told to stand down; attribution stacked on it | `session_01P4ij9pAr9EjzDnS1bqS21i` | top |
 | city-pages | 5 | done: PR #62 merged 21:49 (`a3a6dfa`) [cp 9]; both migrations sent for apply 21:57 (771 seed pages, 5 verified centres; ledger check pending); reviewer's non-blocking notes 1 to 4 for a later push; rule-16 fixture carried into the details-selector brief | `session_01MiuqZuB4erg6mpUnsSPPas` | Sonnet |
 | location | 6 | started 21:55 [cp 8] on main | `session_0176Bmog6ujKPKrMXMcC3ztr` | Sonnet |
 | details-selector | 6 | started 21:55 [cp 4] on main; carries city-pages' rule-16 note | `session_01A62uwPYuT6wwgmQRZxgH2z` | Sonnet |
@@ -120,7 +120,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | listing-lifecycle | 5 | PR #57 open 19:13 (two migrations after merge) [cp 7]; stacked on #46, main merged in | `session_014oeSpAALFLdsFPxQwxiSam` | top |
 | relist-merge | 5 | PR #56 merged 21:47 (8d97295), both migrations applied 21:50 (ledger 53 rows) [cp 8]; photo-review and seller-key as injected seams | `session_01T4PCF6E1BvXjABjhNMiPqW` | top |
 | parts-ai | 6 | started 19:36 [cp 11], stacked on parts-rules #53; one capped model call per item on recorded fixtures | `session_01XE861nwcZnmic8RQ474RbH` | top |
-| lifecycle-messaging | 4 | PR #65 open [cp 1]; "Changes needed" 21:51 (one blocker: shadow behaves as off; option b is a README, PR-body and test change, left to the build session); PostHog and Resend as injected clients | `session_01Dc4NR3MqeXE8n5A4zyCoXc` | Sonnet |
+| lifecycle-messaging | 4 | PR #65 open [cp 1]; "Changes needed" 21:51 (one blocker: shadow behaves as off; option b is a README, PR-body and test change); fresh fix session 22:00 `session_01U9N1orjTFoRHoocJphYs4m` (Sonnet), build session (425k) told to stand down; PostHog and Resend as injected clients | `session_01Dc4NR3MqeXE8n5A4zyCoXc` | Sonnet |
 | listing-feedback | 6 | started 19:36 [cp 4], stacked on listing-suppression #52 | `session_01Res9DzQVW9gvJBNkE5Wohv` | Sonnet |
 | attribution | 5 | started 19:36 [cp 1], stacked on subscriptions #54; Dub Partners as an injected client | `session_01EFJv4un35CR3HSet9DZByD` | Sonnet |
 
