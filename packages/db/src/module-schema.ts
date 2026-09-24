@@ -30,9 +30,17 @@ export const RESERVED_SCHEMAS = new Set([
 
 const MODULE_NAME = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/
 
+/**
+ * Reserved schemas that one named module owns: `apify_gateway` was created by supabase/migrations
+ * before the module layout existed, and the `apify-gateway` module took it over (task 1.1c). The
+ * name stays reserved for every other module, and the scaffold still refuses it.
+ */
+const OWNED_RESERVED: Readonly<Record<string, string>> = { 'apify-gateway': 'apify_gateway' }
+
 export function schemaNameOf(module: string): string {
   if (!MODULE_NAME.test(module)) throw new Error(`Module name "${module}" must be kebab case`)
   const schema = module.replaceAll('-', '_')
+  if (OWNED_RESERVED[module] === schema) return schema
   if (RESERVED_SCHEMAS.has(schema) || schema.startsWith('pg_')) {
     throw new Error(`Module name "${module}" maps to the reserved schema "${schema}"`)
   }

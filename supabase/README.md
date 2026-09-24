@@ -12,6 +12,17 @@ tool"), this gateway is reviewed against
 it and folded into the provider adapter (task 1.1), and the schema below moves
 into `packages/db` with task 0.3.
 
+**Owned by the `apify-gateway` module (task 1.1c).** `services/apify-gateway` owns this function
+and schema. Its migrations are in `packages/db/migrations/apify-gateway/`, applied by the
+`packages/db` runner after the files here, which stay the record of what was applied before; its
+README says how the function and the package divide the work. What the module changed: the gateway
+works only while `apify_gateway.enabled()` (module switch `apify-gateway` on or shadow, provider
+`apify` and global `pipeline` on), otherwise an invocation does nothing and no job is claimed; the
+cap is **$150 per calendar month** (Europe/London, by job creation); runs start on the pinned build
+`settings.actor_build` (1.0.82); a short download resumes after the last stored row; the pipeline
+queues runs with `enqueue_run(input, memory, timeout, note, tags)` and reads the published views.
+The steps below still describe the mechanism.
+
 **How it works.**
 
 1. Work is queued as rows in `apify_gateway.jobs` by SQL, which only the database owner can run.
@@ -51,8 +62,8 @@ exactly.
 finalises a run's `usageTotalUsd` a few minutes after the run ends (the first run read $0.0003 at
 finish and settled at $0.0177), so a started run counts at the larger of its provisional cost and
 its reservation until an invocation at least 10 minutes after it finished re-reads the final cost
-and sets `settled_at`. The cap is $5.50, the owner's £5 budget for
-paid runs. A run's reservation uses upper bounds held in `settings`: $0.40 per compute unit,
+and sets `settled_at`. The cap was $5.50 in total, the owner's £5 budget for test runs; the
+module makes it $150 a month (above). A run's reservation uses upper bounds held in `settings`: $0.40 per compute unit,
 $10/GB of proxy traffic and 0.5 MB per request. A run that costs more than its reservation is
 still counted in full once it settles.
 
