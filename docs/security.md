@@ -20,7 +20,7 @@ Threat model in one line: a small SaaS holding user accounts, payment relationsh
 
 - Every oRPC procedure and server action validates its input with the contracts schemas and checks the session before calling a module function; no raw SQL from user input; queries through Drizzle only. Public API keys (Business tier) are hashed at rest, scoped per user, rate limited, and revocable.
 - Content Security Policy that allows only self, Supabase, Stripe, PostHog and Sentry origins; `frame-ancestors 'none'`; HSTS.
-- CSRF protection via same-site cookies and origin checks on server actions; Stripe and Telegram webhooks verify signatures; eBay OAuth uses a state parameter bound to the session.
+- CSRF protection via same-site cookies and origin checks on server actions; Stripe webhooks verify signatures and Telegram webhooks the secret-token header (constant-time), each deduplicated on the event or `update_id`; eBay OAuth uses a state parameter bound to the session.
 - Uploads (scan photos) accepted only as JPEG, PNG or WebP under 10 MB, stored under a per-user path with signed, expiring URLs.
 - Rate limits per user and per IP on sign-up, scan, hunt creation and feedback endpoints (numbers in `docs/engineering.md`); Cloudflare Turnstile on sign-up to protect the free tier's paid provider calls.
 - Admin bootstrap only through `ADMIN_EMAILS`; every role change and admin action writes `audit_log`.
@@ -38,6 +38,21 @@ Threat model in one line: a small SaaS holding user accounts, payment relationsh
 - Provider adapters treat all provider output as untrusted data: schema-validated, size-limited, never executed, never used as instructions to a model without the pack's system prompt stating that listing text is data.
 - Model calls carry no user identifiers beyond what the task needs; prompts are logged to Langfuse with PII scrubbed.
 
+## Abuse and cost exploits
+
+Threat model and test plan: `docs/design/abuse-threat-model.md` (task 4.3t).
+
+- Identity limits (IP, device, email domain, card) raise an attacker's cost per account; the money bound is the chain behind them: admission rate, circuit breakers, free-burst pool, the £2 lifetime cap, the synchronous spend gate and its daily, weekly and monthly caps, the gateway's monthly cap, Apify's platform limit.
+- Every paid call (Apify run, model call, scan, pasted-link lookup, API-key request) passes the spend gate before submit; the gate and the run's reservation are one locked step, and a reservation is sized from the run's own cap.
+- Free-tier guards act from day one: never in shadow, and free admission holds when `account-integrity` is off or in shadow.
+- Trial keys (canonical email, card fingerprint, device) survive account deletion as keyed hashes, so deleting and rejoining never resets the free tier.
+- Only the free tier is limited: paid sign-ups and upgrades are never queued or held by the throttle, breakers, pool or farm ladder (owner, 2026-09-24). The free pool has a monthly ceiling set as a share of the provider's monthly cap, so free traffic cannot stop paid watchers.
+- Watching is prepaid: credits are reserved per check before submit; each user has a monthly spending limit.
+- First-seen is written once per listing; a replay, a late collection or an admin retry never re-alerts or repeats a model call.
+- Every free account costs at most £2 a day, counting every paid action, checked in the gate; paid accounts are bounded by their credits and the global caps (`docs/decisions.md`, "Free-tier limits, paid users and the daily cap"; free tier only, owner 18:18). Caps are policy rows edited in the admin panel.
+- Policy rows have ceilings in config that the admin console cannot pass; admin actions need a second factor, fresh within 15 minutes, on a device-bound session; the admin panel is hardened and adversarially audited before the free tier opens (`docs/design/admin-hardening.md`).
+- Telegram links: private chats only; wrong-code attempts limited per chat.
+
 ## Operations
 
 - Kill switches per provider and a global "pause pipeline" switch, both admin-only.
@@ -49,4 +64,5 @@ Threat model in one line: a small SaaS holding user accounts, payment relationsh
 - Penetration test of the web app and webhooks (an external scan at minimum).
 - Every table with `userId` has an RLS policy test, run once with `withUser` and once without to prove the deny-by-default.
 - Secrets scan clean; no service-role key in any client bundle (verified by grepping the built output).
-- Stripe webhook replay test; eBay OAuth state test; upload type and size test.
+- Stripe webhook replay test; eBay OAuth state test; upload type, size and pixel-count test.
+- The day-one checklist in `docs/design/abuse-threat-model.md` is all true before the free tier opens, and its fixtures pass.

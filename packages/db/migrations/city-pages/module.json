@@ -1,0 +1,5 @@
+{
+  "module": "city-pages",
+  "schema": "city_pages",
+  "dependsOn": ["core", "switches", "listing-ingest", "run-coverage", "audit-log"]
+}
