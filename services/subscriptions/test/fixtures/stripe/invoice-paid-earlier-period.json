@@ -1,0 +1,50 @@
+{
+  "id": "evt_TestInvoicePaidEarlier",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1917648120,
+  "data": {
+    "object": {
+      "id": "in_TestC1Earlier",
+      "object": "invoice",
+      "customer": "cus_TestC1",
+      "billing_reason": "subscription_cycle",
+      "amount_paid": 2900,
+      "currency": "gbp",
+      "total_taxes": [
+        {
+          "amount": 483,
+          "tax_behavior": "inclusive"
+        }
+      ],
+      "parent": {
+        "type": "subscription_details",
+        "subscription_details": {
+          "subscription": "sub_TestC1",
+          "metadata": {
+            "userId": "00000000-0000-4000-8000-0000000000c1"
+          }
+        }
+      },
+      "lines": {
+        "object": "list",
+        "data": [
+          {
+            "id": "il_TestC1Earlier",
+            "period": {
+              "start": 1915056000,
+              "end": 1917648000
+            }
+          }
+        ]
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "invoice.paid"
+}

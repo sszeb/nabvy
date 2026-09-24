@@ -28,6 +28,7 @@ describe('idempotency', () => {
   it.each([
     'customer-created',
     'sub-created-trialing',
+    'sub-created-incomplete',
     'charge-succeeded',
     'checkout-subscription',
     'checkout-topup',

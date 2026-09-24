@@ -159,6 +159,61 @@ describe('allowances and top-ups through usage-ledger', () => {
     expect(await buckets()).toHaveLength(1)
   })
 
+  it('a first invoice before its subscription is active is retried, then grants once', async () => {
+    const h = harness(db)
+    const run = (name: string) => processStripeEvent(stripeEvent(name) as never, h)
+    // Checkout creates the subscription `incomplete`; Stripe may send its first invoice before
+    // the `.updated` that makes it `active`.
+    await run('sub-created-incomplete')
+    expect((await db.as('nabvy_pipeline', (q) => getEntitlement(q, USER))).status).toBe('free')
+    await expect(run('invoice-paid-create')).rejects.toThrow('out_of_order')
+    expect(h.publisher.ofType('subscriptions.webhook-failed').map((e) => e.payload)).toEqual([
+      { stripeEventId: 'evt_TestInvoicePaidCreate', reason: 'out_of_order' },
+    ])
+    expect(await buckets()).toEqual([])
+    await run('sub-updated-active')
+    // Stripe's retry.
+    expect((await run('invoice-paid-create')).outcome).toBe('applied')
+    await expect(run('invoice-paid-create')).resolves.toMatchObject({ outcome: 'replayed' })
+    expect(await buckets()).toMatchObject([
+      { kind: 'allowance', ref_id: 'allowance:sub_TestC1@2030-10-08T00:00:00.000Z', credits: 6000 },
+    ])
+    expect(
+      await db.sql(
+        'select status, period_cash_minor, cash_period_start, period_start from subscriptions.entitlements',
+      ),
+    ).toEqual([
+      {
+        status: 'active',
+        period_cash_minor: 2417,
+        cash_period_start: new Date('2030-10-08T00:00:00Z'),
+        period_start: new Date('2030-10-08T00:00:00Z'),
+      },
+    ])
+    expect(
+      await db.sql(
+        `select outcome from subscriptions.billing_events where stripe_event_id = 'evt_TestInvoicePaidCreate'`,
+      ),
+    ).toEqual([{ outcome: 'applied' }])
+  })
+
+  it('a late invoice for an earlier period grants nothing and never moves the period back', async () => {
+    const h = harness(db)
+    await processStripeEvent(stripeEvent('sub-updated-active') as never, h)
+    await processStripeEvent(stripeEvent('invoice-paid-cycle') as never, h)
+    const r = await processStripeEvent(stripeEvent('invoice-paid-earlier-period') as never, h)
+    expect(r.outcome).toBe('recorded')
+    expect(await buckets()).toHaveLength(1)
+    expect(
+      await db.sql('select cash_period_start, period_end from subscriptions.entitlements'),
+    ).toEqual([
+      {
+        cash_period_start: new Date('2030-10-08T00:00:00Z'),
+        period_end: new Date('2030-11-08T00:00:00Z'),
+      },
+    ])
+  })
+
   it('without a usage policy the cash is recorded, ops hears, and the sweep grants later', async () => {
     const stub = harness(db, {
       usagePolicy: { bundleCredits: async () => null, topupCredits: async () => null },
@@ -220,6 +275,46 @@ describe('allowances and top-ups through usage-ledger', () => {
     expect(await buckets()).toMatchObject([
       { kind: 'topup', ref_id: 'pi_TestC1TopupBacs', credits: 833 },
     ])
+  })
+
+  it('a failed async payment is recorded as ignored and grants nothing', async () => {
+    const h = harness(db)
+    await processStripeEvent(stripeEvent('checkout-topup-unpaid') as never, h)
+    const r = await processStripeEvent(stripeEvent('checkout-topup-async-failed') as never, h)
+    expect(r).toMatchObject({ changed: true, outcome: 'ignored' })
+    expect(await buckets()).toEqual([])
+  })
+
+  it('a paid Checkout then its async_payment_succeeded (another event ID) grants once', async () => {
+    const h = harness(db)
+    await processStripeEvent(stripeEvent('checkout-topup') as never, h)
+    const again = await processStripeEvent(stripeEvent('checkout-topup-async-again') as never, h)
+    expect(again).toMatchObject({ changed: true, outcome: 'applied' })
+    expect(await buckets()).toMatchObject([
+      { kind: 'topup', ref_id: 'pi_TestC1Topup', credits: 833 },
+    ])
+    // The consent is stored once, by the first event for the session; the second records only
+    // its amount and does not report consent again.
+    expect(
+      await db.sql(
+        `select stripe_event_id, checkout_session_id, consent_start_now, amount_minor
+           from subscriptions.billing_events where stripe_object_id = 'cs_TestC1Topup' order by stripe_event_id`,
+      ),
+    ).toEqual([
+      {
+        stripe_event_id: 'evt_TestCheckoutTopup',
+        checkout_session_id: 'cs_TestC1Topup',
+        consent_start_now: true,
+        amount_minor: 1000,
+      },
+      {
+        stripe_event_id: 'evt_TestCheckoutTopupAsyncAgain',
+        checkout_session_id: null,
+        consent_start_now: null,
+        amount_minor: 1000,
+      },
+    ])
+    expect(h.publisher.ofType('subscriptions.webhook-failed')).toHaveLength(0)
   })
 
   it('a paid top-up Checkout becomes credit once, with its consent stored', async () => {
