@@ -1,0 +1,5 @@
+{
+  "module": "route-health",
+  "schema": "route_health",
+  "dependsOn": ["core", "switches"]
+}

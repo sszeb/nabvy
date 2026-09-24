@@ -1,0 +1,8 @@
+{
+  "route": "graphql",
+  "reason": "insufficient-data",
+  "successRate": 1,
+  "attempts": 19,
+  "newQueryIds": [],
+  "alert": false
+}
