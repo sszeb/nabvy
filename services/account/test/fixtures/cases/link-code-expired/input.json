@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "services/account/README.md: single-use 10-minute link codes",
+  "userId": "00000000-0000-4000-8000-0000000000d2",
+  "sessionId": "session-d2",
+  "chatId": "chat-d2",
+  "tamper": "expire",
+  "confirmTimes": 1
+}

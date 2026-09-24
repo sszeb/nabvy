@@ -1,0 +1,5 @@
+{
+  "module": "account",
+  "schema": "account",
+  "dependsOn": ["core"]
+}

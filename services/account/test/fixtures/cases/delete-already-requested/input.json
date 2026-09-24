@@ -1,0 +1,6 @@
+{
+  "synthetic": true,
+  "source": "CLAUDE.md: idempotent handlers; a request should not be filed twice",
+  "userId": "00000000-0000-4000-8000-0000000000d7",
+  "requestTimes": 2
+}

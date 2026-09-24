@@ -1,0 +1,16 @@
+{
+  "stages": {
+    "link": {
+      "passed": 3,
+      "total": 3
+    },
+    "export": {
+      "passed": 2,
+      "total": 2
+    },
+    "delete": {
+      "passed": 2,
+      "total": 2
+    }
+  }
+}
