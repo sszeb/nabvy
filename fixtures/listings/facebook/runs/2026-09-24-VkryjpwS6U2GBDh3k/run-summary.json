@@ -1,0 +1,113 @@
+{
+  "mode": "extract",
+  "requests": 22,
+  "searches": [
+    {
+      "url": "https://www.facebook.com/marketplace/115935195086622/search/?query=gaming+pc&sortBy=creation_time_descend",
+      "term": "gaming pc",
+      "pages": 1,
+      "route": "http",
+      "status": "truncated",
+      "listings": 20,
+      "stopReason": "results-limit",
+      "sourceBinding": "verified",
+      "httpStopReason": "page-cap",
+      "searchControls": {
+        "sort": "CREATION_TIME_DESCEND",
+        "latitude": 50.836,
+        "radiusKm": 65,
+        "longitude": -0.775
+      }
+    }
+  ],
+  "searchSort": "newest",
+  "collectedAt": "2026-09-24T01:40:43.415Z",
+  "detailRoute": {
+    "route": "graphql",
+    "detailOk": 19,
+    "failures": {},
+    "queryIds": ["28897280379855964"],
+    "bootstraps": 1,
+    "circuitOpen": false,
+    "detailFailed": 0,
+    "routedToPage": 0,
+    "extraRequests": 0,
+    "maxResponseKb": 453,
+    "detailRequests": 19,
+    "failedBootstraps": 0,
+    "medianResponseKb": 446
+  },
+  "candidateIds": [
+    "1816901372840238",
+    "1756692548940192",
+    "1716871313386322",
+    "1123980543398026",
+    "1072745435569624",
+    "1352645884594841",
+    "1783301919382894",
+    "1775698700306989",
+    "28242423458759790",
+    "2264485254402498",
+    "2126837844711748",
+    "1154042653756525",
+    "1639721697586478",
+    "1403975981250476",
+    "1073353648648306",
+    "1083674317719227",
+    "1380502417485603",
+    "1397200465308431",
+    "2005582460147017",
+    "2537899006714740"
+  ],
+  "inputVersion": 3,
+  "listingsFound": 20,
+  "candidateCount": 20,
+  "detailOutcomes": {
+    "collected": 20
+  },
+  "detailRequests": 20,
+  "searchRadiusKm": null,
+  "sourceOutcomes": [
+    {
+      "url": "https://www.facebook.com/marketplace/115935195086622/search/?query=gaming+pc&sortBy=creation_time_descend",
+      "rows": 20,
+      "pages": 1,
+      "route": "search",
+      "status": "truncated",
+      "stopReason": "results-limit",
+      "diagnostics": {
+        "httpSearchFirst": {
+          "pagesUsed": 1,
+          "stopReason": "page-cap",
+          "requestsUsed": 2,
+          "routeRetained": true,
+          "templateFound": true,
+          "bootstrapBytes": 668969,
+          "searchControls": {
+            "sort": "CREATION_TIME_DESCEND",
+            "latitude": 50.836,
+            "radiusKm": 65,
+            "longitude": -0.775
+          }
+        }
+      },
+      "sourceBinding": "verified"
+    }
+  ],
+  "detailPageStats": {
+    "p90Kb": 947,
+    "pages": 1,
+    "medianKb": 947,
+    "descriptionFound": 1,
+    "p90DescriptionEndPct": 87,
+    "medianDescriptionEndPct": 87
+  },
+  "detailRetryCount": 0,
+  "descriptionStatuses": {
+    "missing": 0,
+    "partial": 0,
+    "full_verified": 20
+  },
+  "detailAttemptedCount": 20,
+  "detailUnattemptedCount": 0
+}
