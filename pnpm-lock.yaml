@@ -791,6 +791,9 @@ importers:
 
   trigger:
     dependencies:
+      '@nabvy/account':
+        specifier: workspace:*
+        version: link:../services/account
       '@nabvy/config':
         specifier: workspace:*
         version: link:../packages/config
