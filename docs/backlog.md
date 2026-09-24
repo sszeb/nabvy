@@ -166,6 +166,11 @@ Converted from the ordered table in `docs/design/drafts/catalogue-audit-changes.
 
 **[CHECK-IN]** after 1.10 (`actor-integration.md:450`), and after 1.7b before 1.7c (`copy-advert.md:651-652`).
 
+New tasks from `docs/design/actor-app-guide.md` (2026-09-24, the `fb-scrap-engine` integration guide and `COPY_ADVERT_SPAM.md`). No task is written for the notified `excludeListingIds` saving (belongs to `check-scheduler`/`details-queue`): the term does not appear in the guide as read; see `docs/questions/actor-app-guide.md` question 1 before adding one.
+
+- **1.3h `listing-ingest`.** Fallback for `listingIds`-only rows (pasted links, rechecks) that carry no city page at all: nearest seeded town within 40 km by coordinates. Done: a synthetic ID-only row with no `locationDetails.reverse_geocode` resolves to its nearest seeded town, never null. Depends on: 1.3a, 1.2a. Source: `actor-app-guide.md`, "What changes" 4; `fb-scrap-engine/docs/APP_INTEGRATION_GUIDE.md:186`.
+- **1.7k `copy-advert`.** Reconcile the cluster/label thresholds in `copy-advert.md` with `COPY_ADVERT_SPAM.md`'s hand-labelled S1–S4 tiers, and decide whether the trade-seller and scam label mechanics sit in `copy-advert` or in `suspected-labels`/`warning-signs` as the catalogue currently splits them. Done: owner decision recorded in `docs/decisions.md`; `copy-advert.md`'s threshold section and module-ownership updated to match. Depends on: 1.7a, 1.7g; owner decision (open question 2). Source: `actor-app-guide.md`, "What changes" 10–12; `fb-scrap-engine/docs/design/COPY_ADVERT_SPAM.md`.
+
 Not scheduled in this push: `ebay-adapter`, `ebay-sold`, `cex-adapter`, `gumtree-adapter`, `cross-post-links`, `sold-price-book`, `valuation`, `similar-items`, `ebay-drafts`, `seo-price-pages` (after the MVP); `side-discovery` and the nine "Later" modules; `boosts`, `multi-quantity-filter` (1.7h reserved) and `fake-door` (parked) (`modules.md:171-177`). Their stubs come from 0.7 where an MVP module reads them.
 
 ## Draft integrations (2026-09-24)
