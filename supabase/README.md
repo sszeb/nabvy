@@ -39,8 +39,9 @@ still counted in full once it settles.
 functions are revoked from `public`, `anon` and `authenticated`, RLS is on with no policies, and
 the schema is not exposed to the Data API.
 
-**Seller data.** `apify_gateway.items` holds raw actor rows, which can include seller fields. Per
-the brief they are internal only: never copy them into user-facing tables, fixtures or logs.
+**Seller data.** `apify_gateway.items` holds the actor's rows complete and unredacted, seller fields
+included (owner's decision, `docs/decisions.md` "Actor data kept in full"). Developers see all of it;
+only end users of the app are never shown seller identity.
 
 **Redacted copies for fixtures.** `apify_gateway.redacted_items(job_id)` returns a job's rows with
 every `seller` and `marketplace_listing_seller` object replaced by a same-shaped placeholder (the ID

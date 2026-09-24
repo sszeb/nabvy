@@ -25,6 +25,18 @@ These are standing rules. Change them only with a human decision recorded here.
 | Legal gates | Facebook alerts reach paying users only after a UK legal review (`docs/compliance.md`) | Do not charge before legal advice (Meta's terms, database right, copyright, UK GDPR). An LIA and a DPIA come before further collection, not only before launch; get the legal view before collecting seller data at scale (`PARTS_INTELLIGENCE.md` §6, `SELLER_DATA.md` §5) |
 | Apify token | `APIFY_TOKEN` in the pipeline's platform vault (`docs/secrets.md`) | A Supabase Edge Function secret; never in code or chat. Only actor `YfdUav3sZ2BgEf8rh`, never `JR2fdK8Nj6OLCwKkP`. It is the Edge Function secret `APIFY_TOKEN` on `fbapfy`, read only by the `apify-gateway` Edge Function (`supabase/README.md`) |
 
+## Actor data kept in full
+
+**Owner's decision, 2026-09-24.** Keep all the data the actor returns: nothing is removed, redacted or stripped at ingest, including seller names, IDs and pictures and the full listing text. It is needed for scam detection and other internal analysis, and developers see the full data at all times. The one rule is that **end users of the app are never shown seller identity**. The simplest way to meet it:
+
+- users only read through the app's API and its `v_` views;
+- those views select an explicit allowlist of fields, and seller fields are never on it;
+- a CI test on user-facing output enforces this when the web app arrives.
+
+This replaces minimisation and stripping wherever the build pack or the brief call for them (`CLAUDE.md` "No personal data beyond need"; `SELLER_DATA.md` §5; `PARTS_INTELLIGENCE.md` on stripping descriptions). It does not change what users may see (Precedence table above). How long raw data is kept has not been set; it is kept until the owner decides otherwise.
+
+**Storage shape (plan for task 0.3):** each actor row is stored whole as `jsonb`, so no field is lost even when the actor adds new ones. The fields Nabvy filters and sorts on also get real columns (listing ID, price, currency, title, listed time, town, coordinates, availability, category, description status).
+
 Not a conflict in price: the brief's money section (Plus at about £4.99 a month) is labelled "inputs, not decisions", so the price points below stand until the owner decides otherwise. What each tier promises in cadence is a conflict (row "Cadence and tiers").
 
 New work from the brief, to be placed in the backlog when the integration guide lands: a parts record per listing (listing kind; every part quoted from the listing with its inclusion status; rules first from `part-patterns.json`, AI only for gaps, once per listing, shared by every user); spec search and alerts, where silence is never a "no" ("GPU not stated — ask the seller"); a free noise filter (wanted, swap and "I buy" adverts, keyword stuffing, laptops, mention-only hits); the copy-advert spam flag; suspected-behaviour labels; asking-price position; the price-drop watch; demand signals (first-party wants plus wanted adverts, cells under 5 suppressed); seller objection and erasure with a suppression list keyed by a hash of the listing ID (before launch); CI tests that fail if user-facing output carries seller fields, contact details, suppressed listings or aggregates under the display threshold (`SELLER_DATA.md` §3, §5).
