@@ -113,13 +113,28 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - fraud or chargeback abuse;
   - a risk to other users, to sellers or to the service.
 
-  Paid amounts are not refunded on a ban, under "No refunds", except where the law requires. A banned person may not open a new account. The legal texts keep this discretion as strongly as UK consumer law allows, with the lawyer's points marked `TODO-LEGAL`, for example reasons where lawful and safe, and an appeal route by email.
+  Paid amounts are not refunded on a ban, under "No refunds", except where the law requires. A banned person may not open a new account.
+
+  **Automatic, autonomous and internal** (owner, 2026-09-24). Enforcement is automatic: the system applies throttles, limits, suspensions and bans itself from its rules, with no human needed to act. Everything behind a decision stays internal and is never shown or told to any user, in any form:
+  - no reasons, evidence, rule names, signals or scores;
+  - nothing in the app, email, notifications, API, exports or support replies.
+
+  The user receives only a short, vague notice, for example "Your account has been restricted under our terms. If you think this is a mistake, contact us." Developers and admins see everything.
+
+  **The legal minimum, kept without revealing anything** (`TODO-LEGAL`). UK GDPR as amended by the Data (Use and Access) Act 2025 requires safeguards when a solely automated decision has a significant effect, which a ban on a paying account is likely to have:
+  - the person is told a decision was made;
+  - they can contest it;
+  - a human reviews it if they ask.
+
+  So the notice names a contact route. A human reviews internally, and the reply stays generic. The legal texts keep the discretion as strong as UK law allows, for example stating that Nabvy need not give reasons. Subject access requests are answered within the law's exemptions, for example crime and fraud prevention. The lawyer confirms both.
 
   The product enforces it:
   - an account status (active, suspended until a date, banned) checked on every signed-in request and by every job that acts for a user;
-  - admin actions to suspend, ban and lift, each with a reason and an audit row;
+  - automatic enforcement by the account-integrity module, each action with an internal reason, evidence and audit row;
+  - internal admin tools to review, override and lift, also audited;
   - throttling and hunt or alert limits as fair-use steps short of suspension;
-  - checks against ban evasion (the same email or payment card).
+  - checks against ban evasion (the same email or payment card);
+  - a CI test that fails if any user-facing output carries an enforcement reason, rule, signal or score.
 - **Pipeline runtime.** **Trigger.dev** runs the pipeline modules, as the build pack planned. Apify is still called only through the Supabase `apify-gateway` Edge Function: pipeline tasks queue gateway jobs in the database and read the collected rows back. This answers the runtime question in `docs/questions.md`.
 
 ## Product
