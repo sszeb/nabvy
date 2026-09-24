@@ -15,6 +15,13 @@
       "when": 1790242770253,
       "tag": "20260924093930_better_auth_access",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790246049976,
+      "tag": "20260924103409_better_auth_role",
+      "breakpoints": true
     }
   ]
 }
