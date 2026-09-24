@@ -17,7 +17,7 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
    **Rebuilt from the listed files only** (owner, 2026-09-24). `docs/fb-actor-scope-report.md` records
    what the old version held that the listed files do not support.
 
-1. `docs/APP_INTEGRATION_GUIDE.md` (not written yet; checked for until it lands. Nabvy writes its own
+1. `docs/APP_INTEGRATION_GUIDE.md` (exists since 2026-09-24, 178 KB, folded by coordinator 5; the coordinator re-checks it at each sweep. Nabvy writes its own
    integration plan either way: `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/APP_INTEGRATION_GUIDE.md
 2. `docs/HANDOFF.md`: read only the sections "Rules" and "The app: what we want it to do, and
@@ -29,7 +29,7 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
 3. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/PARTS_INTELLIGENCE.md
 4. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/CONTAINER_LISTINGS.md
 5. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/SELLER_DATA.md
-6. `docs/design/COPY_ADVERT_SPAM.md` (not written yet; checked for until it lands. Nabvy writes its own
+6. `docs/design/COPY_ADVERT_SPAM.md` (exists since 2026-09-24, 26 KB, found at the 19:40 sweep, commit `1c9fd3b`; the `copy-advert` session reads it. Nabvy writes its own
    copy-advert spam design either way: `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/COPY_ADVERT_SPAM.md
 

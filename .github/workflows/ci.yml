@@ -66,8 +66,13 @@ jobs:
             "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum --check --strict
           tar -xzf gitleaks.tgz gitleaks
-      - name: Scan the full history
-        run: ./gitleaks git --no-banner --redact --exit-code 1 --config .gitleaks.toml .
+      - name: Scan the history (a pull request scans only its own commits; a push scans everything)
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          RANGE=""
+          if [ -n "$BASE_SHA" ]; then RANGE="--log-opts=$BASE_SHA..HEAD"; fi
+          ./gitleaks git --no-banner --redact --exit-code 1 --config .gitleaks.toml $RANGE .
 
   migrations:
     name: Migration dry-run

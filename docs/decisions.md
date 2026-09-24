@@ -286,6 +286,19 @@ Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): win
 - **Abuse audit from day one.** A written threat model of cost and abuse exploits (burner accounts, sign-up floods, free-burst farming, credit and referral gaming, card-check bypass, Telegram and webhook replay, Apify cost amplification, account sharing) with a test plan, adversarially checked, before the free tier opens (owner, 17:08).
 - **Surge stop.** Circuit breakers in the synchronous spend gate trip on any of: sign-ups per minute, paid submits per minute, submits from accounts younger than a policy-set age, or cost per minute, each a policy row. A trip sets `hold-new` immediately for free bursts and new accounts (paid watchers keep their funded cadence while under the caps), pauses admission, and alerts the founder. It resets only by an admin, with an audit row. The owner's case: 1,000 bots creating accounts and searching at once trip the breaker within the first minute, so the spend is at most the reservations in flight.
 
+## Free-tier limits, paid users and the daily cap (owner, 2026-09-24, 17:20 and 17:25)
+
+Said by the owner to the 4.3t threat-model session and relayed to the coordinator at 18:20; recorded here verbatim as the owner's decision.
+
+1. On the free pool (17:20): "We do limit the free tier obviously the paid users are welcome to sign up any time at all times - same for upgrading from free to paid plan."
+2. On scans and paid calls (17:25): "You figure this out that we cap max individual user £2 a day so if a daily cap is £20 spend we can either have 10 users who runs their usage dry or a few who does but then a couple which goes slow etc And remember these caps have to be adjustable from admin panel. And the admin panel have to be hardened and adversarial security audit run."
+
+What this means for the build (PR #39, `docs/design/abuse-threat-model.md`):
+- **Only the free tier is limited.** Paid sign-ups and upgrades from free to paid are never queued, throttled or held, at any time.
+- **£2 a day per free account**, counting every paid action (checks, scans, pasted links, model calls), as a policy row editable from the admin panel. The owner clarified at 18:24: "Free tier only. Obviously". Paid accounts have no daily cap; they are bounded by their credits and by the global daily, weekly and monthly caps.
+- **The pool drains gracefully.** As a daily pool (the example: £20) runs down, the remaining accounts slow rather than stop at once.
+- **The admin panel is hardened and adversarially audited** before it is exposed (`docs/design/admin-hardening.md`; backlog 4.3af to 4.3ah; the admin gate 4.3af blocks the web deploy 0.5a).
+
 ## Cadence slider and the app's look (owner, 2026-09-24, 17:12)
 
 - **One control for speed.** Each want's check interval is set with a slider modelled on Claude Code's "Effort" control: 1-minute checks at the top as the "ultracode" equivalent, 4 hours at the bottom as the slow pace, with the intermediate steps between. It should be interesting and good-looking in the way that control is.
@@ -312,6 +325,22 @@ Coordinator 6's ladder, 17:40, on the slider's steps (initial policy values, not
 | Pro | £29 | 30 min (owner) | 5 min | 6,000 |
 | Max | £99 | 15 min | 1 min | 24,000 |
 | Business | from £299 | 15 min | 1 min, round the clock | 80,000 |
+
+## Starting prices (owner, 2026-09-24, 19:55)
+
+The owner, on the coordinator's ladder above: "Use your suggestion as a start." The table's prices are therefore the starting prices, no longer placeholders: Starter £12, Pro £29, Max £99, Business from £299 a month, with the base cadences, floors and bundled credits as listed. They are `pricing-console` policy rows, changed from the admin panel without a deploy; annual prices, top-up rates and unit prices stay the coordinator's to set within the 60% rule. Stripe Products and Prices are created in test mode from these values (backlog 4.10c and its gap tasks). This also answers the "price ladder go" item that was open for the owner.
+
+## Faster build: fresh-session reviewer, merge clerk, Sonnet by default (owner, 2026-09-24, 18:50)
+
+The owner, on the coordinator's speed-up findings ("Go ahead implement your findings then pause all work and resume in 40min"):
+- **The usage allowance is model-weighted.** Anthropic's Claude Code usage page: "Opus uses meaningfully more of your quota, so you should consider switching to Sonnet for routine work" (support.claude.com, "Models, usage and limits in Claude Code"); all surfaces, subagents and Routines draw on the same pool. So Sonnet is the tier for every remaining module that is not money, security or pipeline core, and the top model stays only where `CLAUDE.md` names it. Re-tiered today: parts-record, pickup-location, details-selector, copy-advert.
+- **The reviewer is a fresh session per fire** (backlog 0.14): one Routine on the top model with a standalone brief, fired with the PR number by build sessions and the watchdog, instead of a long-lived reviewer that hands off hourly. The reviewer still reviews, approves and merges everything and never touches Supabase.
+- **A merge clerk Routine may apply merged migrations** (backlog 0.15): a Sonnet fresh session that reads `docs/security.md`, applies the merge's pending migrations, checks the ledger and records the merge, so the coordinator wakes only for exceptions and the sweep. This amends "the coordinator applies every merged migration" in `CLAUDE.md`; the coordinator remains accountable and checks the ledger at each sweep.
+- **Pauses.** When the owner says pause, the coordinator interrupts every running session, disables the watchdog, and re-wakes them with one-shot triggers at the resume time.
+
+## Stripe scope (owner, 2026-09-24, 19:50)
+
+The owner asked to get started on Stripe for Billing, Invoicing, Tax, Connect and Payments, using the Stripe plugin and its implementation planner where available, and to review the integration already in progress against that plan. Recorded as backlog 4.10c: a plan document (`docs/design/stripe-integration.md`) that maps each Stripe product to the subscriptions, pricing-console and usage-ledger modules and reviews PR #54, with the gaps as backlog tasks. Connect has no consumer in the current design (Nabvy pays no sellers through Stripe); it is a question, not a build. Keys stay in the environment's secrets, never in chat.
 
 ## Open questions a human must answer
 
