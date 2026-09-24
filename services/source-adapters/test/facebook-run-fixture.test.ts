@@ -3,7 +3,15 @@ import { describe, expect, it } from 'vitest'
 
 // Checks the recorded actor run against the task 1.0 mapping in README.md: every field the mapping
 // relies on is present with the expected type, the fixture carries no seller identity, and the
-// recorded input obeys the actor's v3 rules and the gateway's limits.
+// recorded input uses only the properties of the actor's `.actor/input_schema.json` and obeys the
+// gateway's rules.
+//
+// Vocabularies marked OBSERVED were seen in one recorded run only; the owner's listed actor files
+// do not document them (docs/fb-actor-reference.md §11.2). They list exactly what was seen, so a
+// new value fails here and must be documented (README.md) before the adapter relies on it.
+
+const OBSERVED_MONEY_KINDS = ['fixed']
+const OBSERVED_SOURCE_STATUSES = ['truncated']
 
 type Row = Record<string, unknown>
 
@@ -14,6 +22,7 @@ const runs = readdirSync(RUNS, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
 
+// The schema's 23 properties (fb-scrap-engine/.actor/input_schema.json:8-183).
 const V3_INPUT_KEYS = [
   'inputVersion',
   'searchTerms',
@@ -42,7 +51,6 @@ const V3_INPUT_KEYS = [
 
 const isObject = (value: unknown): value is Row =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
-const nullableBoolean = (value: unknown) => value === null || typeof value === 'boolean'
 
 it('has at least one recorded run', () => {
   expect(runs.length).toBeGreaterThan(0)
@@ -67,7 +75,7 @@ describe.each(runs)('recorded run %s', (run) => {
   it('gives every listing the fields the stub mapping needs', () => {
     for (const row of listings) {
       expect(row.platform).toBe('facebook')
-      expect(row.listingId).toMatch(/^\d{1,30}$/)
+      expect(row.listingId).toMatch(/^\d+$/)
       expect(row.listingUrl).toBe(`https://www.facebook.com/marketplace/item/${row.listingId}/`)
       expect(row.url).toBe(row.listingUrl)
       expect(typeof row.title).toBe('string')
@@ -77,24 +85,28 @@ describe.each(runs)('recorded run %s', (run) => {
       expect(row.listedAt).toBeLessThan(10_000_000_000)
       expect(typeof row.imageUrl).toBe('string')
       expect(Array.isArray(row.deliveryTypes)).toBe(true)
-      expect(['string', 'number']).toContain(typeof row.categoryId)
+      // OBSERVED: a numeric string on every recorded row; a number would need a mapping change.
+      expect(row.categoryId).toMatch(/^\d+$/)
       expect(Array.isArray(row.foundBySearchTerms)).toBe(true)
       expect(isObject(row.sourceBindings)).toBe(true)
 
       const money = row.money as Row
-      expect(['fixed', 'free', 'unknown', 'ambiguous']).toContain(money.kind)
+      expect(OBSERVED_MONEY_KINDS).toContain(money.kind)
       if (money.kind === 'fixed') expect(Number.isInteger(money.amountMinor)).toBe(true)
       expect(row.currency).toBe(money.currency)
 
       const availability = row.availability as Row
       expect(Object.keys(availability).sort()).toEqual(['hidden', 'live', 'pending', 'sold'])
-      expect(Object.values(availability).every(nullableBoolean)).toBe(true)
+      // OBSERVED: all booleans; whether a value can be null is not documented.
+      expect(Object.values(availability).every((value) => typeof value === 'boolean')).toBe(true)
     }
   })
 
   it('gives detailed listings the fields the detail mapping needs', () => {
     for (const row of listings.filter((r) => r.detailOutcome === 'collected')) {
+      // Documented values (fb-scrap-engine/README.md:233-241).
       expect(['full_verified', 'partial', 'missing']).toContain(row.descriptionStatus)
+      // OBSERVED invariant, undocumented (reference §11, Q11): Nabvy keys on descriptionStatus.
       expect(row.descriptionComplete).toBe(row.descriptionStatus === 'full_verified')
       if (row.descriptionStatus !== 'missing') expect(typeof row.description).toBe('string')
       expect(row.attributes === null || Array.isArray(row.attributes)).toBe(true)
@@ -136,14 +148,8 @@ describe.each(runs)('recorded run %s', (run) => {
 
   it('reports source outcomes and a summary that agree with the rows', () => {
     for (const row of outcomes) {
-      expect([
-        'complete',
-        'verified-empty',
-        'truncated',
-        'partial',
-        'blocked',
-        'extraction-error',
-      ]).toContain(row.sourceStatus)
+      expect(OBSERVED_SOURCE_STATUSES).toContain(row.sourceStatus)
+      // Binding status (fb-scrap-engine/README.md:410); `unverified` is not yet observed.
       expect(['verified', 'unverified']).toContain(row.sourceBinding)
     }
     expect(summary.inputVersion).toBe(3)
@@ -156,16 +162,21 @@ describe.each(runs)('recorded run %s', (run) => {
     )
   })
 
-  it('was recorded with an input the actor and the gateway both accept', () => {
+  it('was recorded with schema properties only, within the gateway rules', () => {
     expect(Object.keys(actorInput).every((key) => V3_INPUT_KEYS.includes(key))).toBe(true)
     expect(actorInput.inputVersion).toBe(3)
-    expect(actorInput.cityId).toMatch(/^\d{5,30}$/)
+    expect(actorInput.cityId).toMatch(/^\d+$/)
+    for (const key of ['inputVersion', 'maxRequests', 'maxRunSeconds', 'maxListings']) {
+      expect(Number.isInteger(actorInput[key])).toBe(true)
+    }
+    expect(actorInput.searchTerms && actorInput.listingIds).toBeFalsy()
     expect(actorInput.browserFallback).toBe(false)
     expect(actorInput.useDetailCache).toBe(false)
     expect(actorInput).not.toHaveProperty('startUrls')
     expect(actorInput.maxRequests).toBeGreaterThanOrEqual(1)
     expect(actorInput.maxRequests).toBeLessThanOrEqual(1000)
-    expect(actorInput.maxRunSeconds).toBeLessThanOrEqual(runOptions.timeout)
+    // Strictly above, by the 60 s margin the gateway enforces (supabase/README.md).
+    expect(Number(actorInput.maxRunSeconds) + 60).toBeLessThanOrEqual(runOptions.timeout)
     expect([512, 1024, 2048]).toContain(runOptions.memory)
     expect(actorInput.proxyConfiguration).toEqual({
       useApifyProxy: true,
