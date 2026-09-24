@@ -1,0 +1,12 @@
+{
+  "module": "price-drop-watch",
+  "schema": "price_drop_watch",
+  "dependsOn": [
+    "core",
+    "switches",
+    "listing-ingest",
+    "listing-lifecycle",
+    "relist-merge",
+    "listing-suppression"
+  ]
+}

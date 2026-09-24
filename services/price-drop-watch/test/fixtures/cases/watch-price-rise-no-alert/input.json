@@ -1,0 +1,27 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "the recorded run's row for 1816901372840238, re-collected a day later at a higher price",
+  "listingSourceId": "1816901372840238",
+  "steps": [
+    {
+      "collectedAt": "2026-09-25T01:40:43.415Z",
+      "edits": [
+        {
+          "listingId": "1816901372840238",
+          "fields": {
+            "money": {
+              "kind": "fixed",
+              "display": "£250",
+              "currency": "GBP",
+              "exponent": 2,
+              "rawAmount": "250.00",
+              "amountMinor": 25000
+            },
+            "price": 250
+          }
+        }
+      ]
+    }
+  ]
+}
