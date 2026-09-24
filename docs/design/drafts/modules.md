@@ -323,7 +323,7 @@ Each card uses the same fields. "Depends on" lists every module whose views, eve
 - **Purpose:** record the cost of every paid call in one ledger.
 - **Does / does not:** one row per Apify run (reserved, then settled), per model call (tokens × the price table in config) and per counted free call (eBay, CeX). Stores the original amount and currency and the GBP amount converted with `USD_GBP_RATE` (`nabvy/docs/engineering.md:56`). It does not decide whether to spend (`spend-governor`) and does not enforce the gateway's hard cap (`apify-gateway`).
 - **Inputs:** `record()` and `settle()` calls from paying modules.
-- **Outputs:** `v_costs` (module, provider, kind, reserved, settled, currency, at).
+- **Outputs:** `v_costs` (module, provider, kind, ref_id, currency, reserved_micros, settled_micros, reserved_gbp_micros, settled_gbp_micros, counted_gbp_micros, status, settled_at, at). Amounts are integer micros (millionths of the currency unit), not minor units; `counted_gbp_micros` is the settlement once settled, else the reservation (built in PR #16).
 - **Owns:** `provider_calls` (id, module, provider, kind, ref_id, reserved_minor, settled_minor, currency, settled_at, latency_ms, status, at; unique on provider and ref_id).
 - **Views:** internal `v_costs`. User-facing: none.
 - **Contracts:** `CostMeterCall`.
@@ -518,7 +518,7 @@ Each card uses the same fields. "Depends on" lists every module whose views, eve
 ### `spend-governor`
 - **Purpose:** keep every paid call inside the owner's budgets.
 - **Does / does not:** reads settled and reserved costs; an unsettled run counts at the larger of its reservation and its provisional cost (`nabvy/supabase/README.md:45-49`), because displayed costs have been up to 45% low (`fb-scrap-engine/docs/EVIDENCE_LEDGER.md:17-18`). Budgets: the $150 monthly Apify budget (`nabvy/docs/decisions.md:138`; the hard cap itself stays in `apify-gateway`, today a $5.50 lifetime cap, `nabvy/docs/questions.md:10`), the account's recorded plan caps of $85 a month and 10 GB of residential proxy as working ceilings, with proxy GB summed from settled run objects in `v_jobs` (`fb-scrap-engine/docs/EVIDENCE_LEDGER.md:321-322`; `actor-integration.md` 2.12), and later budgets the owner sets, including model spend. At 80% of a budget it raises its throttle level; `check-scheduler` applies the order; queued work is never dropped (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:202-203`; 80% is the brief's starting value). It reports forecasts, and when an Apify plan change would pay (`fb-scrap-engine/docs/design/SCALE_PLAN.md:84-86`); the owner decides. It does not flip switches or set prices.
-- **Inputs:** `v_costs`; `v_jobs` (proxy GB per settled run).
+- **Inputs:** `v_costs` (sum `counted_gbp_micros`, integer micros); `v_jobs` (proxy GB per settled run).
 - **Outputs:** `spend-governor.budget-alerted` (budget).
 - **Owns:** `budgets` (name, limit_minor, currency, period, set_by), `throttle` (budget, level `none | slow-free | slow-paid | slow-sweeps | hold-new`, since).
 - **Views:** internal `v_throttle`, `v_budgets` (limit, committed, remaining, forecast). User-facing: none.

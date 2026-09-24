@@ -8,3 +8,6 @@ Coordinator-proposed conventions under `CLAUDE.md`, "Working economy"; not owner
 - **Check-ins.** A check-in's first call reads your pull requests' state with a `fields` filter. If all are merged or closed, stop and do not re-arm. Keep no check-in while you wait only on the owner. A fallback check-in is no more often than hourly.
 - **Hand-off.** At the start of a wake that brings new work, call `get_session` on yourself; over 300,000 used tokens, hand off before starting it.
 - **Names.** Name tools by bare name (`execute_sql`, `get_session`), never with the connector prefix, which can change mid-session. Record model tiers as "top" or "Sonnet", never as model IDs.
+- **Local migration dry-run.** `pnpm db:dry-run` needs the Postgres extensions: `apt-get install postgresql-16-pgvector postgresql-16-postgis-3`.
+- **Notes for the coordinator.** Send them to the coordinator session named at the top of `docs/handoff.md` (coordinator 3 is `session_01MDEFeMG2eAjgFNVvtDQcFi`), never to a session that has handed off.
+- **Reviews look like your own.** The reviewer posts from the same GitHub account as build sessions. Never skip a `pull_request_review.submitted` event as an echo: read its verdict line, and treat "Changes needed" as work now.
