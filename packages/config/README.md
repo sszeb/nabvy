@@ -36,10 +36,15 @@ Rule 14 of `docs/design/modules/_rules.md`: every threshold a module needs lives
 - **Empty means unset.** `.env.example` ships every variable with an empty value; a blank or
   whitespace-only value counts as missing, never as a valid empty string.
 - **Defaults only where docs/secrets.md states a value.** `CEX_API_BASE`, `CEX_DAILY_CAP_CALLS`,
-  the three `MODEL_*` IDs, `POSTCODES_IO_BASE`, `POSTHOG_HOST`, the three spend caps,
-  `EBAY_INSIGHTS_ENABLED` and `LIVE_PROVIDERS` have defaults. `USD_GBP_RATE` and `ADMIN_EMAILS` are
-  configuration without a default. Secrets never have defaults; a test proves that every other
-  variable is missing from an empty environment.
+  the three `MODEL_*` IDs, `POSTCODES_IO_BASE`, `POSTHOG_HOST`, `LANGFUSE_SAMPLE_RATE`, the three
+  spend caps, `EBAY_INSIGHTS_ENABLED` and `LIVE_PROVIDERS` have defaults. `USD_GBP_RATE` and
+  `ADMIN_EMAILS` are configuration without a default. Secrets never have defaults; a test proves
+  that every other variable is missing from an empty environment.
+- **`safeLoadEnv` for a client that must do nothing without its keys.** `loadEnv` fails fast, on
+  purpose: most callers cannot run correctly with half their configuration. A third-party client
+  installed ahead of its keys existing (`@nabvy/telemetry`, task 0.10) has a different contract —
+  run with reduced function, not refuse to start — so it safe-parses its group instead. `loadEnv`
+  stays the default for every other caller.
 - **`USD_GBP_RATE` has its own group.** It sat in `apify` with `APIFY_TOKEN`, but the token is an
   Edge Function secret read only by `apify-gateway` (`CLAUDE.md`), so no pipeline module could load
   that group just for the rate (`docs/questions.md`, "cost-meter: USD_GBP_RATE outside the apify
