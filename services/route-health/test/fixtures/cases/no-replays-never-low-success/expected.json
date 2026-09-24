@@ -1,0 +1,8 @@
+{
+  "route": "graphql",
+  "reason": "healthy",
+  "successRate": null,
+  "attempts": 0,
+  "newQueryIds": [],
+  "alert": false
+}
