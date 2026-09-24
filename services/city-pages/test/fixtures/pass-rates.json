@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "reconcile": {
+      "passed": 4,
+      "total": 4
+    }
+  }
+}
