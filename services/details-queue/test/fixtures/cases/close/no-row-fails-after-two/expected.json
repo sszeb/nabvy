@@ -1,0 +1,16 @@
+{
+  "items": {
+    "1000000000000021": {
+      "status": "queued",
+      "attempts": 1,
+      "requeues": 0,
+      "lastOutcome": "no-row"
+    },
+    "1000000000000022": {
+      "status": "failed",
+      "attempts": 2,
+      "requeues": 0,
+      "lastOutcome": "no-row"
+    }
+  }
+}

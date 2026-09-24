@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "source": "Review of PR #47, finding 1: a charge replayed after its reversal must not read as paid",
+  "steps": [
+    { "grant": { "kind": "topup", "credits": 20, "refId": "pi_20", "cashMinor": 200 } },
+    { "charge": { "action": "watch_day", "credits": 5, "refId": "want:w1@2026-09-24" } },
+    { "reverse": { "refId": "want:w1@2026-09-24" } },
+    { "charge": { "action": "watch_day", "credits": 5, "refId": "want:w1@2026-09-24" } }
+  ]
+}

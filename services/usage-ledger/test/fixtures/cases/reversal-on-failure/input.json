@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "source": "Card usage-ledger: reversal on failure; docs/decisions.md, No refunds, Failed actions",
+  "steps": [
+    {
+      "grant": { "kind": "allowance", "credits": 20, "refId": "allowance:1", "expiresInHours": 720 }
+    },
+    { "grant": { "kind": "topup", "credits": 50, "refId": "pi_1", "cashMinor": 500 } },
+    { "charge": { "action": "scan_live", "credits": 30, "refId": "scan:failed" } },
+    { "reverse": { "refId": "scan:failed" } },
+    { "reverse": { "refId": "scan:failed" } },
+    { "reverse": { "refId": "scan:never-charged" } }
+  ]
+}
