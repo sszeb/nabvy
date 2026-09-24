@@ -1,0 +1,58 @@
+{
+  "steps": [
+    {
+      "written": 1,
+      "statuses": ["capped"],
+      "degraded": 0,
+      "events": 0
+    },
+    {
+      "written": 1,
+      "statuses": ["degraded"],
+      "degraded": 1,
+      "events": 1
+    },
+    {
+      "written": 1,
+      "statuses": ["capped"],
+      "degraded": 0,
+      "events": 0
+    }
+  ],
+  "outcomes": [
+    {
+      "step": 1,
+      "route": "http",
+      "status": "capped",
+      "pageOneOverlap": null,
+      "previousStep": null,
+      "reasons": []
+    },
+    {
+      "step": 2,
+      "route": "browser-fallback",
+      "status": "degraded",
+      "pageOneOverlap": 20,
+      "previousStep": 1,
+      "reasons": ["route-browser-fallback"]
+    },
+    {
+      "step": 3,
+      "route": "http",
+      "status": "capped",
+      "pageOneOverlap": 20,
+      "previousStep": 1,
+      "reasons": []
+    }
+  ],
+  "baselines": [
+    {
+      "centreId": "115935195086622",
+      "term": "gaming pc",
+      "kind": "newest",
+      "basis": "bounded",
+      "searchIndex": 0,
+      "step": 1
+    }
+  ]
+}

@@ -89,6 +89,42 @@ export async function requeueForRefresh(
     .where(and(inArray(items.id, ids), inArray(items.status, ['done', 'failed'])))
 }
 
+/**
+ * Serialises scheduler ticks: a transaction-scoped advisory lock, the pattern of
+ * `apify_gateway.claim_next_job`. Two overlapping ticks would otherwise both find no open batch
+ * and submit two runs, or both pass the daily cap (review of PR #46). Held until the tick's
+ * transaction ends, so callers must run the tick in one transaction (`withPipeline`).
+ */
+export async function lockTick(q: Queryable): Promise<void> {
+  await q.execute(sql`select pg_advisory_xact_lock(hashtext('details_queue.tick'))`)
+}
+
+/**
+ * Marks waiting (not leased) text items done for listings whose own search run already returned a
+ * verified description, so a replayed `first-seen` never leaves them to a paid fetch.
+ */
+export async function markDescribed(
+  q: Queryable,
+  source: DetailsQueueSource,
+  sourceListingIds: string[],
+  now: Date,
+): Promise<number> {
+  if (sourceListingIds.length === 0) return 0
+  const done = await q
+    .update(items)
+    .set({ status: 'done', lastOutcome: 'full_verified', doneAt: now, deferredOn: null })
+    .where(
+      and(
+        eq(items.source, source),
+        eq(items.lane, 'text'),
+        inArray(items.status, ['queued', 'deferred']),
+        inArray(items.sourceListingId, sourceListingIds),
+      ),
+    )
+    .returning({ id: items.id })
+  return done.length
+}
+
 /** Batches not yet closed (at most one while the queue runs one details run at a time). */
 export async function selectOpenBatches(q: Queryable): Promise<BatchRow[]> {
   return q.select().from(batches).where(isNull(batches.closedAt)).orderBy(asc(batches.submittedAt))

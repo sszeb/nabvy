@@ -154,6 +154,42 @@ describe('idempotency', () => {
     expect(await snapshot()).toEqual(before)
   })
 
+  it('a replay that finds a queued listing already described marks it done, unpaid', async () => {
+    const listingId = '01930000-0000-7000-8000-000000000002'
+    await t.db.transaction((q) =>
+      enqueue(q, {
+        sourceListingIds: ['4000000000000002'],
+        priority: 'sweep',
+        lane: 'text',
+        reason: 'first-seen',
+        requestedBy: 'details-selector',
+      }),
+    )
+    await t.listing({
+      id: listingId,
+      sourceListingId: '4000000000000002',
+      jobId: 9,
+      kind: 'search',
+    })
+    await t.rows(9, [row('4000000000000002')])
+    const handler = firstSeenHandler({ transaction: (fn) => t.db.transaction(fn) })
+    const deps = { publisher: createMemoryPublisher(), deadLetters: { record: async () => ({}) } }
+    const envelope = createEvent(
+      ingestEvents,
+      'listing-ingest.first-seen',
+      1,
+      { listingIds: [listingId] },
+      { key: 'listing-ingest.first-seen:9:0' },
+    )
+    expect((await handler.run(envelope, attempt, deps)).status).toBe('handled')
+    expect(await snapshot()).toMatchObject([{ status: 'done', last_outcome: 'full_verified' }])
+    const ports = fakePorts()
+    expect(await t.db.transaction((q) => submitNext(q, { ports }))).toMatchObject({
+      status: 'idle',
+    })
+    expect(ports.submitted).toHaveLength(0)
+  })
+
   it('first-seen for listings listing-ingest does not show is retried, not dropped', async () => {
     const handler = firstSeenHandler({ transaction: (fn) => t.db.transaction(fn) })
     const deps = { publisher: createMemoryPublisher(), deadLetters: { record: async () => ({}) } }
