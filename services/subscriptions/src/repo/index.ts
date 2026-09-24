@@ -78,6 +78,24 @@ export async function userForCharge(q: Queryable, chargeId: string): Promise<str
   return row?.userId ?? null
 }
 
+/** Whether a `customer.subscription.deleted` for this subscription was already processed. */
+export async function subscriptionDeleted(
+  q: Queryable,
+  stripeSubscriptionId: string,
+): Promise<boolean> {
+  const [row] = await q
+    .select({ id: billingEvents.id })
+    .from(billingEvents)
+    .where(
+      and(
+        eq(billingEvents.stripeObjectId, stripeSubscriptionId),
+        eq(billingEvents.type, 'customer.subscription.deleted'),
+      ),
+    )
+    .limit(1)
+  return row !== undefined
+}
+
 export async function selectEntitlement(
   q: Queryable,
   userId: string,

@@ -23,7 +23,8 @@
         "userId": "00000000-0000-4000-8000-0000000000c1",
         "subscriptionId": "b6f0c2a0-0000-4000-8000-00000000a001",
         "referenceId": "00000000-0000-4000-8000-0000000000c1"
-      }
+      },
+      "payment_status": "paid"
     }
   },
   "livemode": false,

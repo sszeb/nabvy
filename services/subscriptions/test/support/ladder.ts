@@ -67,17 +67,21 @@ export const testUsagePolicy: UsageLedgerPolicy = {
 
 export interface FakeStripe extends SubscriptionsStripePort {
   endedTrials: string[]
+  trialKeys: string[]
   sessions: unknown[]
 }
 
 export function fakeStripe(): FakeStripe {
   const endedTrials: string[] = []
+  const trialKeys: string[] = []
   const sessions: unknown[] = []
   return {
     endedTrials,
+    trialKeys,
     sessions,
-    async endTrialNow(id) {
+    async endTrialNow(id, key) {
       endedTrials.push(id)
+      trialKeys.push(key)
     },
     async createCheckoutSession(params) {
       sessions.push(params)

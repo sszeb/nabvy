@@ -75,6 +75,15 @@ describe('subscription lifecycle', () => {
     expect(h.publisher.ofType('subscriptions.webhook-failed')).toHaveLength(0)
   })
 
+  it('a deleted subscription is terminal: a same-second update never restores the plan', async () => {
+    const h = harness(db)
+    await processStripeEvent(stripeEvent('sub-updated-cancel-at-end') as never, h)
+    await processStripeEvent(stripeEvent('sub-deleted') as never, h)
+    const r = await processStripeEvent(stripeEvent('sub-updated-after-deleted') as never, h)
+    expect(r.outcome).toBe('stale')
+    expect((await db.as('nabvy_pipeline', (q) => getEntitlement(q, USER))).status).toBe('free')
+  })
+
   it('an older event never overwrites a newer one', async () => {
     const h = harness(db)
     await processStripeEvent(stripeEvent('sub-updated-cancel-at-end') as never, h)
@@ -104,6 +113,7 @@ describe('subscription lifecycle', () => {
     const h = harness(db, { trialEligible: async () => false })
     await processStripeEvent(stripeEvent('sub-created-trialing') as never, h)
     expect(h.stripe.endedTrials).toEqual(['sub_TestC1'])
+    expect(h.stripe.trialKeys).toEqual(['end-trial:evt_TestSubCreatedTrial'])
   })
 
   it('with pricing-console absent (the stub), a paid subscription fails as unknown_plan', async () => {
@@ -185,6 +195,30 @@ describe('allowances and top-ups through usage-ledger', () => {
         cash_minor: 2014,
         expires_at: new Date('2031-03-10T00:00:00Z'),
       },
+    ])
+  })
+
+  it('a late renewal invoice after deletion grants nothing and leaves the period alone', async () => {
+    const h = harness(db)
+    await processStripeEvent(stripeEvent('sub-updated-active') as never, h)
+    await processStripeEvent(stripeEvent('sub-deleted') as never, h)
+    const r = await processStripeEvent(stripeEvent('invoice-paid-cycle') as never, h)
+    expect(r.outcome).toBe('recorded')
+    expect(await buckets()).toEqual([])
+    expect(
+      await db.sql('select period_cash_minor, period_start from subscriptions.entitlements'),
+    ).toEqual([{ period_cash_minor: null, period_start: null }])
+  })
+
+  it('an unpaid top-up (delayed method) grants nothing until its async payment succeeds', async () => {
+    const h = harness(db)
+    const unpaid = await processStripeEvent(stripeEvent('checkout-topup-unpaid') as never, h)
+    expect(unpaid.outcome).toBe('recorded')
+    expect(await buckets()).toEqual([])
+    await processStripeEvent(stripeEvent('checkout-topup-async-paid') as never, h)
+    await processStripeEvent(stripeEvent('checkout-topup-async-paid') as never, h)
+    expect(await buckets()).toMatchObject([
+      { kind: 'topup', ref_id: 'pi_TestC1TopupBacs', credits: 833 },
     ])
   })
 

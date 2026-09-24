@@ -189,6 +189,8 @@ export const SubscriptionsStripeCheckoutSession = z.looseObject({
   amount_total: z.int().nullish(),
   currency: z.string().nullish(),
   total_details: z.looseObject({ amount_tax: z.int().nullish() }).nullish(),
+  /** Only `paid` grants credit: delayed methods complete the session `unpaid` (review of PR #54). */
+  payment_status: z.enum(['paid', 'unpaid', 'no_payment_required']).nullish(),
   consent: z.looseObject({ terms_of_service: z.string().nullish() }).nullish(),
   metadata,
 })

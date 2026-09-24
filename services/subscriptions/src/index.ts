@@ -99,8 +99,11 @@ export function trialEligibilityWithSwitch(check: TrialEligibility): TrialEligib
 
 /** The few Stripe calls this module makes itself, so tests run on recorded fixtures only. */
 export interface SubscriptionsStripePort {
-  /** Ends a trial at once and charges the first period (`trial_end: 'now'`). */
-  endTrialNow(stripeSubscriptionId: string): Promise<void>
+  /**
+   * Ends a trial at once and charges the first period (`trial_end: 'now'`). `idempotencyKey` is
+   * derived from the Stripe event, so a retried event never repeats the call.
+   */
+  endTrialNow(stripeSubscriptionId: string, idempotencyKey: string): Promise<void>
   /** Opens a top-up Checkout (payment mode). */
   createCheckoutSession(
     params: Stripe.Checkout.SessionCreateParams,
@@ -110,8 +113,8 @@ export interface SubscriptionsStripePort {
 /** The real port over the Stripe SDK. */
 export function stripePort(stripe: Stripe): SubscriptionsStripePort {
   return {
-    async endTrialNow(id) {
-      await stripe.subscriptions.update(id, { trial_end: 'now' })
+    async endTrialNow(id, idempotencyKey) {
+      await stripe.subscriptions.update(id, { trial_end: 'now' }, { idempotencyKey })
     },
     async createCheckoutSession(params) {
       const session = await stripe.checkout.sessions.create(params)

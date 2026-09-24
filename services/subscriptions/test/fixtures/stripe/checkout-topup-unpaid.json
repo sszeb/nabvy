@@ -1,36 +1,33 @@
 {
-  "id": "evt_TestCheckoutSub",
+  "id": "evt_TestCheckoutTopupUnpaid",
   "object": "event",
   "api_version": "2026-08-26.dahlia",
-  "created": 1917043204,
+  "created": 1918047600,
   "data": {
     "object": {
-      "id": "cs_TestC1",
+      "id": "cs_TestC1TopupBacs",
       "object": "checkout.session",
-      "mode": "subscription",
+      "mode": "payment",
       "customer": "cus_TestC1",
       "client_reference_id": "00000000-0000-4000-8000-0000000000c1",
-      "subscription": "sub_TestC1",
-      "payment_intent": null,
-      "amount_total": 0,
+      "subscription": null,
+      "payment_intent": "pi_TestC1TopupBacs",
+      "amount_total": 1000,
       "currency": "gbp",
       "total_details": {
-        "amount_tax": 0
+        "amount_tax": 167
       },
       "consent": {
         "terms_of_service": "accepted",
         "promotions": null
       },
-      "consent_collection": {
-        "terms_of_service": "required"
-      },
       "metadata": {
         "userId": "00000000-0000-4000-8000-0000000000c1",
-        "subscriptionId": "b6f0c2a0-0000-4000-8000-00000000a001",
-        "referenceId": "00000000-0000-4000-8000-0000000000c1",
-        "nabvy_start_now_at": "2030-09-30T23:58:40.000Z"
+        "nabvy_kind": "topup",
+        "nabvy_start_now_at": "2030-10-12T14:58:00.000Z"
       },
-      "payment_status": "no_payment_required"
+      "payment_status": "unpaid",
+      "payment_method_types": ["bacs_debit"]
     }
   },
   "livemode": false,

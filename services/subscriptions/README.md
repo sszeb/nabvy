@@ -169,6 +169,18 @@ RLS, append-only billing events, the views' switch rules and that no user-facing
   endpoint without a Checkout, so `getCheckoutSessionParams` does not see it. Standing still
   applies there (auth revokes a restricted account's sessions); the switch does not (question).
 
+- 2026-09-24 (review of PR #54): a top-up grants credit only when the completed session is
+  `payment_status: 'paid'`; a delayed method (Bacs, bank transfer) completes `unpaid`, and
+  `checkout.session.async_payment_succeeded` grants later under the same refId (the payment
+  intent). A deleted subscription is terminal (no later or same-second event revives it); a late
+  renewal invoice never grants to a Free row or moves the period backwards; ending a trial
+  calls Stripe with an idempotency key per event, so a retried event never repeats it.
+- 2026-09-24 (review of PR #54): the server-side tick check proves only that the procedure (or
+  the plugin endpoint) was called with the tick; the tick time is set when the procedure runs.
+  The consent that counts as evidence is Stripe Checkout's own required tick
+  (`consent_collection.terms_of_service`), recorded as `consent_start_now`. It needs a terms of
+  service URL in the Stripe dashboard (human task).
+
 ## Open questions
 
 `docs/questions/subscriptions.md`: Stripe test keys; the obsolete plan price variables; nothing

@@ -228,6 +228,7 @@ async function effectsOf(
       }
     }
     case 'checkout.session.completed':
+    case 'checkout.session.async_payment_succeeded':
       return checkoutCompleted(q, event, SubscriptionsStripeCheckoutSession.parse(object), deps)
     default:
       return { outcome: 'ignored', userId: null, events: [] }
@@ -282,6 +283,14 @@ async function subscriptionChanged(
   // Stripe does not promise order: an older event never overwrites a newer one, and a
   // subscription the user has moved on from never downgrades the current one.
   if (existing && existing.lastEventAt > eventAt) return { outcome: 'stale', userId, events: [] }
+  // A deleted subscription is terminal: Stripe never revives it, so no later or same-second
+  // event for it may restore the plan (review of PR #54).
+  if (
+    event.type !== 'customer.subscription.deleted' &&
+    (await repo.subscriptionDeleted(q, sub.id))
+  ) {
+    return { outcome: 'stale', userId, events: [] }
+  }
   if (
     existing?.stripeSubscriptionId &&
     existing.stripeSubscriptionId !== sub.id &&
@@ -327,7 +336,7 @@ async function subscriptionChanged(
     sub.status === 'trialing' &&
     !(await deps.trialEligible(q, userId))
   ) {
-    await deps.stripe.endTrialNow(sub.id)
+    await deps.stripe.endTrialNow(sub.id, `end-trial:${event.id}`)
   }
 
   const changed =
@@ -381,6 +390,14 @@ async function invoicePaid(
   if (!line) throw new WebhookFailure('processing')
   const periodStart = new Date(line.period.start * 1000)
   const periodEnd = new Date(line.period.end * 1000)
+  // A late invoice never grants to an ended subscription, nor moves the period backwards
+  // (review of PR #54).
+  if (
+    entitlement.status === 'free' ||
+    (entitlement.cashPeriodStart && periodStart < entitlement.cashPeriodStart)
+  ) {
+    return { outcome: 'recorded', userId, events: [], row }
+  }
   const intervalMonths = intervalMonthsOf(periodStart, periodEnd)
   if (!intervalMonths) throw new WebhookFailure('processing')
   const cash = netCash(invoice.amount_paid, invoice.total_taxes)
@@ -447,7 +464,13 @@ async function checkoutCompleted(
     currency: session.currency ?? null,
   }
 
-  if (session.mode === 'payment' && session.metadata?.[SUBSCRIPTIONS_KIND_KEY] === 'topup') {
+  // Credit only for a paid top-up: a delayed method (Bacs, bank transfer) completes the session
+  // `unpaid`, and `checkout.session.async_payment_succeeded` grants later under the same refId.
+  if (
+    session.mode === 'payment' &&
+    session.metadata?.[SUBSCRIPTIONS_KIND_KEY] === 'topup' &&
+    session.payment_status === 'paid'
+  ) {
     const paymentIntent = idOf(session.payment_intent)
     if (!paymentIntent || !amount) throw new WebhookFailure('processing')
     const plan = (await repo.selectEntitlement(q, userId))?.tier ?? SUBSCRIPTIONS_FREE_PLAN
