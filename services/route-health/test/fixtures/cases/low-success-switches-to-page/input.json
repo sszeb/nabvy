@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "source": "fb-scrap-engine/test/route-health.test.js: a low success rate switches to page with an alert",
+  "history": [
+    {
+      "runId": "run1",
+      "route": "graphql",
+      "detailRequests": 100,
+      "detailOk": 60,
+      "queryIds": ["q1"]
+    }
+  ],
+  "state": null
+}

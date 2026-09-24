@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "source": "fixtures/contracts/product-events/invalid/ProductEventsEvent.unknown-event.json",
+  "userId": "00000000-0000-7000-8000-000000000003",
+  "consent": true,
+  "switchState": "on",
+  "sessionId": null,
+  "trackInput": {
+    "event": "listing_viewed",
+    "properties": {}
+  }
+}

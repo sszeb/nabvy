@@ -1,0 +1,5 @@
+{
+  "result": { "ok": false, "code": "product-events.invalid_input" },
+  "storedRowCount": 0,
+  "forwardedCalls": 0
+}

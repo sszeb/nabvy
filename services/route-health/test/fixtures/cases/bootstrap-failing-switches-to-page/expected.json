@@ -1,0 +1,8 @@
+{
+  "route": "page",
+  "reason": "bootstrap-failing",
+  "successRate": null,
+  "attempts": 0,
+  "newQueryIds": [],
+  "alert": true
+}
