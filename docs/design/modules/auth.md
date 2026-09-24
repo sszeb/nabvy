@@ -4,15 +4,15 @@
 
 ### `auth`
 - **Purpose:** identity, sessions and roles, through Better Auth.
-- **Does / does not:** Better Auth with the Drizzle adapter: magic link, Google, admin and captcha plugins; database-generated IDs; email verification; its generated tables are never edited by hand (`nabvy/docs/modules.md:96-100`; `nabvy/CLAUDE.md:59`). The Stripe plugin's `subscription` table is generated here and read by `subscriptions`.
+- **Does / does not:** Better Auth with the Drizzle adapter: magic link, Google, admin and captcha plugins; database-generated IDs; email verification; its generated tables are never edited by hand (`nabvy/docs/modules.md:96-100`; `nabvy/CLAUDE.md:59`). The Stripe plugin's `subscription` table is generated here and read by `subscriptions`. Also turns on the Email OTP plugin (a sign-in code alongside every magic link, needed because the installed iPhone app can't complete a Safari-opened link) and, pending a spike, the Device Authorization plugin (approval from an existing device). `bannedUserMessage` is fixed and carries only an opaque action ID, never `banReason`. Rate limiting uses `storage: 'database'` with `ipAddressHeaders: ['x-real-ip']`; the captcha plugin's `endpoints` list is widened to cover magic-link and email-code requests, not only email/password.
 - **Inputs:** sign-in flows.
 - **Outputs:** sessions; `userId` for every module.
 - **Owns:** the Better Auth generated tables.
 - **Views:** none of its own; generated tables read through `subscriptions` and `account`.
 - **Contracts:** `AuthSession`.
-- **Depends on:** none.
+- **Depends on:** `account-integrity` (soft) — `databaseHooks.session.create.before/after` call `accountIntegrity.beforeSessionCreate()`/`afterSessionCreate()`; returns `allow` when the module is off or not yet built (rule 1's soft-dependency stub pattern), so this never blocks auth shipping first.
 - **When off:** nobody signs in (fail closed).
-- **Tests and fixtures:** sign-up and magic link; admin role check; admin bootstrap from `ADMIN_EMAILS` (`nabvy/docs/modules.md:100`).
+- **Tests and fixtures:** sign-up and magic link; admin role check; admin bootstrap from `ADMIN_EMAILS` (`nabvy/docs/modules.md:100`); sign-in by code as well as by link; the fixed ban message never renders a reason.
 - **Priority and phase:** BP4 (`nabvy/docs/backlog.md:57`).
 - **Sources:** `nabvy/docs/modules.md:96-100`; `nabvy/docs/security.md:5-11`.
 - **Open questions:** none.
