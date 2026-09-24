@@ -23,7 +23,8 @@
     "dev:web": "node scripts/pending.mjs dev:web 0.5a",
     "trigger:dev": "node scripts/pending.mjs trigger:dev 1.2",
     "db:plan": "node packages/db/scripts/migrate.mjs plan",
-    "new:module": "node scripts/new-module.mjs"
+    "new:module": "node scripts/new-module.mjs",
+    "interfaces": "node scripts/interface-digest.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
