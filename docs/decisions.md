@@ -326,6 +326,10 @@ Coordinator 6's ladder, 17:40, on the slider's steps (initial policy values, not
 | Max | £99 | 15 min | 1 min | 24,000 |
 | Business | from £299 | 15 min | 1 min, round the clock | 80,000 |
 
+## Starting prices (owner, 2026-09-24, 19:55)
+
+The owner, on the coordinator's ladder above: "Use your suggestion as a start." The table's prices are therefore the starting prices, no longer placeholders: Starter £12, Pro £29, Max £99, Business from £299 a month, with the base cadences, floors and bundled credits as listed. They are `pricing-console` policy rows, changed from the admin panel without a deploy; annual prices, top-up rates and unit prices stay the coordinator's to set within the 60% rule. Stripe Products and Prices are created in test mode from these values (backlog 4.10c and its gap tasks). This also answers the "price ladder go" item that was open for the owner.
+
 ## Faster build: fresh-session reviewer, merge clerk, Sonnet by default (owner, 2026-09-24, 18:50)
 
 The owner, on the coordinator's speed-up findings ("Go ahead implement your findings then pause all work and resume in 40min"):
