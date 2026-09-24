@@ -1,0 +1,18 @@
+{
+  "steps": [
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 20, "cardChanged": [] },
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 0, "cardChanged": ["1816901372840238"] }
+  ],
+  "listings": 20,
+  "sightings": { "search": 40, "detail": 0 },
+  "priceChanges": [
+    {
+      "sourceListingId": "1816901372840238",
+      "kind": "search",
+      "previousMinor": 20000,
+      "priceMinor": 18000,
+      "currency": "GBP"
+    }
+  ],
+  "listing": { "sourceListingId": "1816901372840238", "priceMinor": 18000 }
+}

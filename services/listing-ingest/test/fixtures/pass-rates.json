@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "ingest": {
+      "passed": 6,
+      "total": 6
+    }
+  }
+}

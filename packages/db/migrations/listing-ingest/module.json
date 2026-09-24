@@ -1,0 +1,5 @@
+{
+  "module": "listing-ingest",
+  "schema": "listing_ingest",
+  "dependsOn": ["core", "switches", "apify-gateway"]
+}

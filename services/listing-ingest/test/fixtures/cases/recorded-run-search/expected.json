@@ -1,0 +1,29 @@
+{
+  "steps": [{ "cards": 20, "sightingsWritten": 20, "firstSeen": 20, "cardChanged": [] }],
+  "listings": 20,
+  "sightings": { "search": 20, "detail": 0 },
+  "priceChanges": [],
+  "listing": {
+    "sourceListingId": "1816901372840238",
+    "priceMinor": 20000,
+    "currency": "GBP",
+    "moneyKind": "fixed",
+    "cityPageId": "112249962124525",
+    "townLabel": "Epsom",
+    "availability": "live",
+    "categoryId": "1792291877663080",
+    "deliveryTypes": ["IN_PERSON"],
+    "primaryPhotoId": "1393542966276599",
+    "binding": "verified",
+    "foundByTerms": ["gaming pc"],
+    "listedAt": "2026-09-23T09:02:45.000Z",
+    "firstFetchedAt": "2026-09-24T01:40:43.415Z"
+  },
+  "sighting": {
+    "sourceListingId": "1816901372840238",
+    "kind": "search",
+    "term": "gaming pc",
+    "centreId": "115935195086622",
+    "rank": 1
+  }
+}
