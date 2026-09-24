@@ -1,0 +1,5 @@
+{
+  "module": "product-events",
+  "schema": "product_events",
+  "dependsOn": ["core", "switches"]
+}
