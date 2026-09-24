@@ -49,7 +49,7 @@ Threat model and test plan: `docs/design/abuse-threat-model.md` (task 4.3t).
 - Only the free tier is limited: paid sign-ups and upgrades are never queued or held by the throttle, breakers, pool or farm ladder (owner, 2026-09-24). The free pool has a monthly ceiling set as a share of the provider's monthly cap, so free traffic cannot stop paid watchers.
 - Watching is prepaid: credits are reserved per check before submit; each user has a monthly spending limit.
 - First-seen is written once per listing; a replay, a late collection or an admin retry never re-alerts or repeats a model call.
-- Every free account costs at most £2 a day, counting every paid action, checked in the gate; paid accounts are bounded by their credits and the global caps (owner, 2026-09-24). Caps are policy rows edited in the admin panel.
+- Every free account costs at most £2 a day, counting every paid action, checked in the gate; paid accounts are bounded by their credits and the global caps (`docs/decisions.md`, "Free-tier limits, paid users and the daily cap"; free tier only, owner 18:18). Caps are policy rows edited in the admin panel.
 - Policy rows have ceilings in config that the admin console cannot pass; admin actions need a second factor, fresh within 15 minutes, on a device-bound session; the admin panel is hardened and adversarially audited before the free tier opens (`docs/design/admin-hardening.md`).
 - Telegram links: private chats only; wrong-code attempts limited per chat.
 
