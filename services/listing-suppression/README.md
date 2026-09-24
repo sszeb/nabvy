@@ -19,6 +19,10 @@ before launch (`fb-scrap-engine/docs/design/SELLER_DATA.md:131`).
 
 - `add(q, input)`, called by `seller-rights` only: a request ID, the listings the requester named
   (source and source listing ID, from their links) and seller keys from `seller-key`.
+  `seller-rights` must call `add()` before any `erase()` of the named listings: look-alikes are
+  taken from the listings still visible in listing-ingest and detail-evidence, so suppression
+  applies before erasure finishes (backlog 4.12). Until `seller-key` exists, `AddReport` counts the
+  seller keys that hide nothing yet (`unenforcedSellerKeys`).
 - Views of `listing-ingest`: `v_listings` (listing IDs of named listings; listing hashes of every
   listing), `v_fingerprints` (card look-alikes: title, price and city page).
 - View of `detail-evidence`: `v_fingerprints` (description look-alikes of the current version).
@@ -99,7 +103,7 @@ failing closed with `listing-ingest` or `detail-evidence` off, and not on expire
 `contracts.test.ts` (the event, every entry and every `v_suppressed` row parse; only hashes stored,
 no seller-like column) and `packages/db/tests/listing-suppression.test.sql` (grants and function
 privileges, checks, resolution and expiry, a suppressed listing never reaching an `app` view, the
-app view empty while off or in shadow, failing closed, the foundation's view check). No module reads
+app view empty while off or in shadow, failing closed with `listing-ingest` or `detail-evidence` off, the description look-alike branch, the foundation's view check). No module reads
 this one yet, so no reader's fixtures run with it off; `app.v_listing_card`'s own test covers that
 once `listing-card` exists, with a stand-in view here meanwhile.
 
@@ -128,6 +132,9 @@ once `listing-card` exists, with a stand-in view here meanwhile.
   Postgres requires schema usage to call a function. It has no grant on the table or the view.
 - **2026-09-24: view rows are Zod in contracts.** `drizzle-zod` is not a dependency yet, as in
   `detail-evidence`.
+- **2026-09-24: `AddReport.unenforcedSellerKeys`** (review of PR #52): seller keys are recorded
+  but hide nothing until `seller-key` exists, and the report says so, so `seller-rights` cannot
+  report such a request as honoured.
 - **2026-09-24: `listing-ingest` and `detail-evidence` are dev dependencies only.** The module
   reads their views through `@nabvy/db`; the tests use their `ingest` and `record` to build real
   rows.

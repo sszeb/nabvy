@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import {
   events as contractEvents,
   ListingSuppressionChangedEvent,
@@ -36,7 +37,7 @@ beforeAll(async () => {
       .filter((row) => row.recordType === 'listing')
       .slice(0, 3)
       .map((row) => ({ source: 'facebook' as const, sourceListingId: String(row.listingId) })),
-    sellerKeys: ['8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a'],
+    sellerKeys: [createHash('sha256').update('seller-a').digest('hex')],
   })
   if (!result.ok) throw new Error(result.error.message)
   emitted = result.value.events

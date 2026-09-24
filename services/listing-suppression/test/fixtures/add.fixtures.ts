@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync } from 'node:fs'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { add, suppressed } from '../../src'
@@ -34,7 +35,8 @@ interface Input {
   add: {
     requestId: string
     listings: { source: 'facebook'; sourceListingId: string }[]
-    sellerKeys?: string[]
+    /** Seller keys, as seeds hashed when the test runs (no key-shaped literal in the repo). */
+    sellerKeySeeds?: string[]
     /** When the request is recorded (default: now). */
     now?: string
   }
@@ -101,12 +103,11 @@ describe('add', () => {
       const recorded = loadRun(input.run)
 
       if (input.collectFirst !== false) await collectedAndRecorded(t, recorded)
-      const { now, ...request } = input.add
-      const result = await add(
-        t.db,
-        { ...request, sellerKeys: request.sellerKeys ?? [] },
-        now ? { now: new Date(now) } : {},
+      const { now, sellerKeySeeds, ...request } = input.add
+      const sellerKeys = (sellerKeySeeds ?? []).map((seed) =>
+        createHash('sha256').update(seed).digest('hex'),
       )
+      const result = await add(t.db, { ...request, sellerKeys }, now ? { now: new Date(now) } : {})
       if (!result.ok) throw new Error(result.error.message)
       if (input.collectAfter) await collectedAndRecorded(t, recorded)
       if (input.relists) {

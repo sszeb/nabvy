@@ -3,6 +3,6 @@
   "add": {
     "requestId": "01920000-0000-7000-8000-00000000a001",
     "listings": [],
-    "sellerKeys": ["8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"]
+    "sellerKeySeeds": ["seller-a"]
   }
 }
