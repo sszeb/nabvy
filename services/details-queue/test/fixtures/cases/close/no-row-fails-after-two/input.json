@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "source": "actor-integration.md 2.10 (docs/design/drafts/actor-integration.md:235-250)",
+  "items": [
+    {
+      "id": "1000000000000021",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1000000000000022",
+      "attempts": 1,
+      "requeues": 0
+    }
+  ],
+  "rows": []
+}
