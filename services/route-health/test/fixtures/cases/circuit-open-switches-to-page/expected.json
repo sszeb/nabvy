@@ -1,0 +1,8 @@
+{
+  "route": "page",
+  "reason": "circuit-open",
+  "successRate": 0.3333333333333333,
+  "attempts": 30,
+  "newQueryIds": [],
+  "alert": true
+}

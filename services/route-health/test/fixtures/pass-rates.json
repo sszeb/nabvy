@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "route-decision": {
+      "passed": 7,
+      "total": 7
+    }
+  }
+}
