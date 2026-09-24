@@ -245,7 +245,8 @@ The owner approved the wording `quote-redaction` shows in place of contact detai
 ## Watching is metered, prices are dynamic (owner, 2026-09-24)
 
 The owner, after missing a £350 RTX 3090 Ti in Redhill that sold within hours:
-- **Radius.** A want's radius goes up to about a three-hour drive (about 150 miles). Redhill from Chichester is well inside it.
+- **Radius.** The user sets each want's radius freely and can change it at any time; there is no fixed cap (the owner would drive up to about three hours, and Redhill from Chichester is well inside that). A wider radius covers more areas, so its estimated credits rise and the want screen shows the new estimate before saving. Nabvy never changes the radius itself; from its own data it only hints, for example "Widen to 45 mi to see 12 more matching deals this week", with one tap to accept.
+- **Deal hot spots on the map.** The map can show where deals concentrate: a heat layer built only from town display points (never a listing's coordinates, per "Location precision"), weighted by how many clean, matching listings ask below their comparable median, over a chosen period. Hot spots just outside the user's ring feed the "widen your radius" hint.
 - **Speed is the user's choice and is paid for.** Each want has a check interval the user picks (for example 1, 5, 15 or 60 minutes) and a delivery speed (Instant, Batched, Daily digest). The app shows the estimated monthly cost in credits before saving and suggests a top-up when the balance will not cover it. This replaces the flat "watching" entitlement in "Pricing and cadence" for check speed; tiers become included credit and bundle discounts.
 - **Always profitable.** Every price is measured cost times a margin, with a floor that refuses any price, bundle or offer below cost plus the minimum margin.
 - **Bundles.** Credit bundles with volume discounts, in the style of Claude's and ChatGPT's usage packs, scaled to Nabvy's costs.
