@@ -13,7 +13,7 @@ import { createPostHogServer } from '@nabvy/telemetry'
 
 const posthog = createPostHogServer() // reads the `posthog` group of @nabvy/config
 await posthog.capture(userId, hasConsent, { event: 'alert_delivered', properties: { ... } })
-await posthog.isFeatureEnabled('pricing-page-v2', userId)
+await posthog.isFeatureEnabled('pricing-page-v2', userId, hasConsent)
 await posthog.shutdown()
 ```
 
@@ -21,11 +21,16 @@ await posthog.shutdown()
   `ProductEventsEvent` (`packages/contracts/src/modules/product-events.ts`) even though the
   caller's own type already matches it: a JS caller, or one that built the object by hand, does
   not get to skip the allow-list.
+- `isFeatureEnabled()` also takes `hasConsent`: no `personalApiKey` is configured (no such secret
+  exists yet), so a check reaches PostHog's remote `/flags` endpoint with `userId` rather than
+  evaluating locally, and that call needs the same consent as a capture.
 - `PostHogClientProvider` (`src/posthog/client.tsx`) loads `posthog-js` only once both a project
   key and consent are present, through the app's own `/ingest` rewrite (never straight to
   `eu.i.posthog.com`, so ad blockers do not drop events), with `session_recording.maskAllInputs`
   on. The key is read server-side and passed down as a prop; no `NEXT_PUBLIC_` variable exists
-  for it.
+  for it. `captureProductEvent(client, event)` wraps a `usePostHog()` client with the same
+  `ProductEventsEvent` allow-list `capture()` uses server-side, so a browser caller cannot reach
+  the raw `posthog-js` client and send a property outside it either.
 
 ## Langfuse
 

@@ -12,8 +12,17 @@ export interface PostHogServer {
   readonly enabled: boolean
   /** Records a product event for `userId`, forwarded to PostHog only if `hasConsent`. */
   capture(userId: string, hasConsent: boolean, event: ProductEventsEvent): Promise<void>
-  /** `undefined` when the flag is unknown or the client is disabled. */
-  isFeatureEnabled(flagKey: string, userId: string): Promise<boolean | undefined>
+  /**
+   * `undefined` without `hasConsent`, when the flag is unknown, or when the client is disabled.
+   * No `personalApiKey` is configured (no such secret exists yet), so a consented check still
+   * reaches PostHog's remote `/flags` endpoint with `userId` -- the same consent gate as
+   * `capture()` applies, rather than sending it unconditionally.
+   */
+  isFeatureEnabled(
+    flagKey: string,
+    userId: string,
+    hasConsent: boolean,
+  ): Promise<boolean | undefined>
   shutdown(): Promise<void>
 }
 
@@ -44,7 +53,8 @@ export function createPostHogServer(source?: EnvSource): PostHogServer {
         properties: validated.properties,
       })
     },
-    async isFeatureEnabled(flagKey, userId) {
+    async isFeatureEnabled(flagKey, userId, hasConsent) {
+      if (!hasConsent) return undefined
       return client.isFeatureEnabled(flagKey, userId)
     },
     async shutdown() {

@@ -127,10 +127,10 @@ export const ProductEventsEvent = z.discriminatedUnion('event', [
 export type ProductEventsEvent = z.infer<typeof ProductEventsEvent>
 
 /** The event names, derived from `ProductEventsEvent` so the list is never typed twice. */
-export const ProductEventName = z.enum(
+export const ProductEventsName = z.enum(
   ProductEventsEvent.options.map((option) => option.shape.event.value) as [string, ...string[]],
 )
-export type ProductEventName = z.infer<typeof ProductEventName>
+export type ProductEventsName = z.infer<typeof ProductEventsName>
 
 /** The product-events module publishes no domain events: it is read through `v_events`. */
 export const events = defineEvents(module, {})

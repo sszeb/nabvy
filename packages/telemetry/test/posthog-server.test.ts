@@ -25,7 +25,7 @@ describe('createPostHogServer', () => {
     const server = createPostHogServer({})
     expect(server.enabled).toBe(false)
     await server.capture('user-1', true, alertDelivered)
-    await expect(server.isFeatureEnabled('flag', 'user-1')).resolves.toBeUndefined()
+    await expect(server.isFeatureEnabled('flag', 'user-1', true)).resolves.toBeUndefined()
     expect(constructed).not.toHaveBeenCalled()
   })
 
@@ -59,6 +59,24 @@ describe('createPostHogServer', () => {
     }
     await expect(server.capture('user-1', true, withEmail)).rejects.toThrow()
     expect(capture).not.toHaveBeenCalled()
+    await server.shutdown()
+  })
+
+  it('does not check a feature flag without consent', async () => {
+    const isFeatureEnabled = vi.spyOn(PostHog.prototype, 'isFeatureEnabled')
+    const server = createPostHogServer(withKeys)
+    await expect(
+      server.isFeatureEnabled('pricing-page-v2', 'user-1', false),
+    ).resolves.toBeUndefined()
+    expect(isFeatureEnabled).not.toHaveBeenCalled()
+    await server.shutdown()
+  })
+
+  it('checks a feature flag with consent', async () => {
+    const isFeatureEnabled = vi.spyOn(PostHog.prototype, 'isFeatureEnabled').mockResolvedValue(true)
+    const server = createPostHogServer(withKeys)
+    await expect(server.isFeatureEnabled('pricing-page-v2', 'user-1', true)).resolves.toBe(true)
+    expect(isFeatureEnabled).toHaveBeenCalledWith('pricing-page-v2', 'user-1')
     await server.shutdown()
   })
 })

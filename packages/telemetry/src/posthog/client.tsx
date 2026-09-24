@@ -1,6 +1,19 @@
+import { ProductEventsEvent } from '@nabvy/contracts/modules/product-events'
 import posthog, { type PostHog } from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { type ReactNode, useEffect, useRef, useState } from 'react'
+
+/**
+ * Captures a product event from the browser, validated against the same allow-list as the
+ * server (`ProductEventsEvent`): a caller cannot reach the raw `posthog-js` client and send a
+ * property outside it. Use the `client` a `PostHogClientProvider` descendant reads from
+ * `usePostHog()` (`posthog-js/react`) -- calling this before that provider has loaded is a
+ * caller error, since there is no client yet.
+ */
+export function captureProductEvent(client: PostHog, event: ProductEventsEvent): void {
+  const validated = ProductEventsEvent.parse(event)
+  client.capture(validated.event, validated.properties)
+}
 
 /** Pulled out of the effect below so the consent gate is testable without a DOM renderer. */
 export function shouldLoadPostHogClient(posthogKey: string | undefined, consent: boolean): boolean {
