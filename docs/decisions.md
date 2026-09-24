@@ -276,6 +276,12 @@ Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): win
 - **The run-off is bounded, not hoped for.** The stop is checked synchronously before every paid submit, against reserved plus settled cost (never on a schedule alone); every run reserves its capped cost before it starts (a per-run cost cap in the actor input); concurrency is capped; so the overrun is at most the reservations in flight at the moment the cap is hit, which the caps are set to keep under 10%.
 - **Caps are policy rows** (spend-governor budgets), editable at run time, audited, with periods of day, week and month, on top of the gateway's own monthly hard cap and Apify's platform limit as second and third fences.
 
+## Sign-up throttle and surge stop (owner, 2026-09-24, 17:05)
+
+- **Sign-ups are throttled globally.** Policy rows set how many new accounts may join per minute, hour and day, on top of the per-IP, device and email-domain limits. Beyond the rate, new sign-ups join a queue and are admitted in order ("we are letting people in gradually"), never refused outright.
+- **Free bursts are admitted, not fired.** A new free account's first window starts when the admission scheduler admits it, normally within seconds, under a surge in order at a policy-set rate. Spend rate is therefore bounded by the admission rate times the burst cost, and stopping admission stops the spend at once.
+- **Surge stop.** Circuit breakers in the synchronous spend gate trip on any of: sign-ups per minute, paid submits per minute, submits from accounts younger than a policy-set age, or cost per minute, each a policy row. A trip sets `hold-new` immediately for free bursts and new accounts (paid watchers keep their funded cadence while under the caps), pauses admission, and alerts the founder. It resets only by an admin, with an audit row. The owner's case: 1,000 bots creating accounts and searching at once trip the breaker within the first minute, so the spend is at most the reservations in flight.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
