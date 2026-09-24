@@ -2,23 +2,41 @@
 // It takes no instructions from the request. Each invocation works through jobs queued in the
 // apify_gateway schema, which only the database owner can write, and the spend cap is enforced
 // there by claim_next_job(). Anyone who invokes it can only make it process jobs already queued.
+//
+// Collection is lossless (owner's decision: keep everything the actor returns): every dataset page
+// is downloaded without Apify's "clean" filter, and raw response text goes straight to Postgres,
+// never through JavaScript number parsing.
 import { Pool, type PoolClient } from 'jsr:@db/postgres@0.19.5'
 
 const APIFY = 'https://api.apify.com/v2'
 const TERMINAL = new Set(['SUCCEEDED', 'FAILED', 'TIMED-OUT', 'ABORTED'])
-const MAX_ITEMS = 1000
 const MAX_CLAIMS = 10
 
 type Json = Record<string, unknown>
 type Job = {
   id: number
-  kind: 'env_check' | 'actor_info' | 'run'
+  kind: 'env_check' | 'actor_info' | 'run' | 'collect'
   status: string
   input: Json
   run_options: { memory?: number; timeout?: number }
   apify_run_id: string | null
 }
-type Apify = (path: string, init?: RequestInit) => Promise<unknown>
+type Settings = { actor_id: string; download_page_size: number }
+type Apify = {
+  /** Response body as text, exactly as Apify sent it. */
+  text: (path: string, init?: RequestInit) => Promise<string>
+  /** Response body parsed, for control decisions only; stored data always uses `text`. */
+  json: (path: string, init?: RequestInit) => Promise<Json>
+}
+
+class ApifyError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message)
+  }
+}
 
 const pool = new Pool(Deno.env.get('SUPABASE_DB_URL') ?? '', 1, true)
 
@@ -51,22 +69,23 @@ function apifyToken(): string {
 }
 
 function apifyClient(): Apify {
-  return async (path, init = {}) => {
-    const token = apifyToken()
+  const text = async (path: string, init: RequestInit = {}) => {
     const response = await fetch(`${APIFY}${path}`, {
       ...init,
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(30_000),
+      headers: { Authorization: `Bearer ${apifyToken()}`, 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(60_000),
     })
-    const text = await response.text()
+    const body = await response.text()
     if (!response.ok) {
       const route = path.split('?')[0]
-      throw new Error(
-        `Apify ${init.method ?? 'GET'} ${route} returned ${response.status}: ${text.slice(0, 300)}`,
+      throw new ApifyError(
+        `Apify ${init.method ?? 'GET'} ${route} returned ${response.status}: ${body.slice(0, 300)}`,
+        response.status,
       )
     }
-    return text ? JSON.parse(text) : null
+    return body
   }
+  return { text, json: async (path, init) => obj(JSON.parse((await text(path, init)) || 'null')) }
 }
 
 function envCheck(): Json {
@@ -78,11 +97,11 @@ function envCheck(): Json {
 }
 
 async function actorInfo(apify: Apify, actorId: string): Promise<Json> {
-  const act = obj(obj(await apify(`/acts/${actorId}`)).data)
+  const act = obj((await apify.json(`/acts/${actorId}`)).data)
   const buildId = obj(obj(act.taggedBuilds).latest).buildId
   const build =
-    typeof buildId === 'string' ? obj(obj(await apify(`/actor-builds/${buildId}`)).data) : {}
-  const runs = obj(obj(await apify(`/acts/${actorId}/runs?desc=1&limit=20`)).data).items
+    typeof buildId === 'string' ? obj((await apify.json(`/actor-builds/${buildId}`)).data) : {}
+  const runs = obj((await apify.json(`/acts/${actorId}/runs?desc=1&limit=20`)).data).items
   const inputSchema =
     typeof build.inputSchema === 'string' ? obj(JSON.parse(build.inputSchema)) : {}
   return {
@@ -135,11 +154,11 @@ async function startRun(client: PoolClient, apify: Apify, actorId: string, job: 
   }
   const query = new URLSearchParams({ memory: String(memory), timeout: String(timeout) })
   const run = obj(
-    obj(
-      await apify(`/acts/${actorId}/runs?${query}`, {
+    (
+      await apify.json(`/acts/${actorId}/runs?${query}`, {
         method: 'POST',
         body: JSON.stringify(job.input),
-      }),
+      })
     ).data,
   )
   await client.queryArray(
@@ -148,52 +167,120 @@ async function startRun(client: PoolClient, apify: Apify, actorId: string, job: 
   )
 }
 
-async function pollRun(client: PoolClient, apify: Apify, job: Job) {
-  const run = obj(obj(await apify(`/actor-runs/${job.apify_run_id}`)).data)
-  if (!TERMINAL.has(String(run.status))) return false
-  const items = run.defaultDatasetId
-    ? await apify(
-        `/datasets/${run.defaultDatasetId}/items?clean=true&format=json&limit=${MAX_ITEMS}`,
-      )
-    : []
-  let runSummary: unknown = null
-  try {
-    runSummary = await apify(`/key-value-stores/${run.defaultKeyValueStoreId}/records/RUN_SUMMARY`)
-  } catch (error) {
-    runSummary = { unavailable: message(error) }
+// Every dataset row, page by page until a short page. No `clean`: Apify then keeps empty rows and
+// hidden fields. The page text is inserted as-is, so numbers keep their exact digits.
+async function downloadDataset(
+  client: PoolClient,
+  apify: Apify,
+  jobId: number,
+  datasetId: string,
+  pageSize: number,
+): Promise<number> {
+  let offset = 0
+  for (;;) {
+    const page = await apify.text(
+      `/datasets/${datasetId}/items?format=json&offset=${offset}&limit=${pageSize}`,
+    )
+    const counted = await client.queryObject<{ rows: number }>(
+      `with page as (
+         select value, ord from jsonb_array_elements($2::jsonb) with ordinality as t (value, ord)
+       ), stored as (
+         insert into apify_gateway.items (job_id, seq, item)
+         select $1, $3 + (ord - 1)::integer, value from page
+         on conflict do nothing
+       )
+       select count(*)::integer as rows from page`,
+      [jobId, page, offset],
+    )
+    const rows = counted.rows[0]?.rows ?? 0
+    offset += rows
+    if (rows < pageSize) break
   }
-  const rows = Array.isArray(items) ? items : []
+  // Refuse to finish short: the job stays open and the next invocation downloads again.
+  const expected = Number(obj((await apify.json(`/datasets/${datasetId}`)).data).itemCount ?? 0)
+  if (offset < expected) {
+    throw new Error(`downloaded ${offset} of ${expected} dataset rows; will retry`)
+  }
+  return offset
+}
+
+// The RUN_SUMMARY record as raw text; null only when the run has none. Other failures throw, so
+// the job stays open and the next invocation tries again.
+async function readRunSummary(apify: Apify, keyValueStoreId: unknown): Promise<string | null> {
+  if (typeof keyValueStoreId !== 'string') return null
+  try {
+    return await apify.text(`/key-value-stores/${keyValueStoreId}/records/RUN_SUMMARY`)
+  } catch (error) {
+    if (error instanceof ApifyError && error.status === 404) return null
+    throw error
+  }
+}
+
+// Downloads a finished run's dataset and summary into the job and returns the row count. The whole
+// Apify run object is stored as `result`, with `itemCount` and `runSummary` added.
+async function storeRun(
+  client: PoolClient,
+  apify: Apify,
+  job: Job,
+  runText: string,
+  run: Json,
+  pageSize: number,
+  status: string,
+  costUsd: number | null,
+) {
+  const itemCount =
+    typeof run.defaultDatasetId === 'string'
+      ? await downloadDataset(client, apify, job.id, run.defaultDatasetId, pageSize)
+      : 0
+  const runSummary = await readRunSummary(apify, run.defaultKeyValueStoreId)
   await client.queryArray(
-    `insert into apify_gateway.items (job_id, seq, item)
-     select $1, (t.ord - 1)::integer, t.value from jsonb_array_elements($2::jsonb) with ordinality as t(value, ord)
-     on conflict do nothing`,
-    [job.id, JSON.stringify(rows)],
+    `update apify_gateway.jobs
+     set status = $1,
+         result = ($2::jsonb -> 'data') || jsonb_build_object('itemCount', $3::integer, 'runSummary', $4::jsonb),
+         cost_usd = coalesce($5::numeric, cost_usd),
+         updated_at = now()
+     where id = $6`,
+    [status, runText, itemCount, runSummary, costUsd, job.id],
   )
-  await client.queryArray(
-    `update apify_gateway.jobs set status = $1, cost_usd = $2, result = $3::jsonb, updated_at = now()
-     where id = $4 and status = 'running'`,
-    [
-      run.status === 'SUCCEEDED' ? 'succeeded' : 'failed',
-      Number(run.usageTotalUsd ?? 0),
-      JSON.stringify({
-        ...pick(run, [
-          'status',
-          'statusMessage',
-          'startedAt',
-          'finishedAt',
-          'buildNumber',
-          'stats',
-          'usage',
-          'usageTotalUsd',
-          'options',
-        ]),
-        itemCount: rows.length,
-        runSummary,
-      }),
-      job.id,
-    ],
+  return itemCount
+}
+
+async function pollRun(client: PoolClient, apify: Apify, job: Job, pageSize: number) {
+  const runText = await apify.text(`/actor-runs/${job.apify_run_id}`)
+  const run = obj(obj(JSON.parse(runText)).data)
+  if (!TERMINAL.has(String(run.status))) return false
+  await storeRun(
+    client,
+    apify,
+    job,
+    runText,
+    run,
+    pageSize,
+    run.status === 'SUCCEEDED' ? 'succeeded' : 'failed',
+    Number(run.usageTotalUsd ?? 0),
   )
   return true
+}
+
+// Re-downloads a finished run of the configured actor into a free `collect` job.
+async function collectRun(
+  client: PoolClient,
+  apify: Apify,
+  settings: Settings,
+  job: Job,
+): Promise<number> {
+  const runId = String(job.input.apifyRunId ?? '')
+  if (!/^[A-Za-z0-9]{17}$/.test(runId)) throw new Error('collect needs input.apifyRunId')
+  const runText = await apify.text(`/actor-runs/${runId}`)
+  const run = obj(obj(JSON.parse(runText)).data)
+  if (run.actId !== settings.actor_id)
+    throw new Error('collect only reads runs of the configured actor')
+  if (!TERMINAL.has(String(run.status))) throw new Error(`run ${runId} has not finished`)
+  await client.queryArray(`update apify_gateway.jobs set apify_run_id = $1 where id = $2`, [
+    runId,
+    job.id,
+  ])
+  return storeRun(client, apify, job, runText, run, settings.download_page_size, 'succeeded', null)
 }
 
 Deno.serve(async (request) => {
@@ -201,7 +288,9 @@ Deno.serve(async (request) => {
   const client = await pool.connect()
   try {
     const settings = (
-      await client.queryObject<{ actor_id: string }>('select actor_id from apify_gateway.settings')
+      await client.queryObject<Settings>(
+        'select actor_id, download_page_size from apify_gateway.settings',
+      )
     ).rows[0]
     if (!settings) throw new Error('apify_gateway.settings is empty')
     const apify = apifyClient()
@@ -216,18 +305,18 @@ Deno.serve(async (request) => {
         continue
       }
       try {
+        let outcome = 'succeeded'
         if (job.kind === 'env_check') {
           await finish(client, job.id, 'succeeded', envCheck())
         } else if (job.kind === 'actor_info') {
           await finish(client, job.id, 'succeeded', await actorInfo(apify, settings.actor_id))
+        } else if (job.kind === 'collect') {
+          outcome = `collected ${await collectRun(client, apify, settings, job)} rows`
         } else {
           await startRun(client, apify, settings.actor_id, job)
+          outcome = 'started'
         }
-        processed.push({
-          id: job.id,
-          kind: job.kind,
-          outcome: job.kind === 'run' ? 'started' : 'succeeded',
-        })
+        processed.push({ id: job.id, kind: job.kind, outcome })
       } catch (error) {
         await finish(client, job.id, 'failed', null, message(error))
         processed.push({ id: job.id, kind: job.kind, outcome: 'failed' })
@@ -243,7 +332,10 @@ Deno.serve(async (request) => {
     const polled: Array<{ id: number; finished: boolean; error?: string }> = []
     for (const job of running) {
       try {
-        polled.push({ id: job.id, finished: await pollRun(client, apify, job) })
+        polled.push({
+          id: job.id,
+          finished: await pollRun(client, apify, job, settings.download_page_size),
+        })
       } catch (error) {
         polled.push({ id: job.id, finished: false, error: message(error) })
       }
@@ -261,7 +353,7 @@ Deno.serve(async (request) => {
     const settled: Array<{ id: number; error?: string }> = []
     for (const job of unsettled) {
       try {
-        const run = obj(obj(await apify(`/actor-runs/${job.apify_run_id}`)).data)
+        const run = obj((await apify.json(`/actor-runs/${job.apify_run_id}`)).data)
         await client.queryArray(
           `update apify_gateway.jobs set cost_usd = $1, settled_at = now(), updated_at = now()
            where id = $2 and settled_at is null`,

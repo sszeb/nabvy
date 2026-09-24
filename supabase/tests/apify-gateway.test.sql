@@ -87,6 +87,29 @@ update apify_gateway.jobs set cost_usd = 0.0177, settled_at = now() where note =
 select pg_temp.check(committed_usd = 0.0177, 'a settled run counts at its settled cost')
 from apify_gateway.spend;
 
+-- 4b. `collect` jobs re-download a finished run for free: never refused by the cap, never counted.
+update apify_gateway.jobs set status = 'failed' where status = 'pending';
+insert into apify_gateway.jobs (kind, input, note)
+values ('collect', '{"apifyRunId":"TestRunId00000001"}', 'collect');
+update apify_gateway.settings set cap_usd = 0;
+select pg_temp.check(kind = 'collect' and status = 'running', 'a collect job is claimed even at a zero cap')
+from apify_gateway.claim_next_job();
+update apify_gateway.settings set cap_usd = 5.50;
+select pg_temp.check(committed_usd = 0.0177, 'a collect job adds nothing to committed spend')
+from apify_gateway.spend;
+select pg_temp.check(download_page_size = 1000, 'datasets download in pages of 1,000 rows by default')
+from apify_gateway.settings;
+do $$
+begin
+  begin
+    update apify_gateway.settings set download_page_size = 0;
+    raise exception 'NOT REJECTED: page size 0';
+  exception when check_violation then
+    null;
+  end;
+end;
+$$;
+
 -- 5. Redaction.
 insert into apify_gateway.jobs (kind, note) values ('env_check', 'redaction');
 insert into apify_gateway.items (job_id, seq, item)
