@@ -1,0 +1,51 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md, \"Paid ladder\": the floor refuses a ladder value below cost plus the minimum margin (Business)",
+  "steps": [
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "business",
+        "fields": {
+          "monthlyPriceMinor": 20000
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "business",
+        "fields": {
+          "yearlyPriceMinor": 200000
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "business",
+        "fields": {
+          "bundledCredits": 100000
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "business",
+        "fields": {
+          "topupNetMicrosPerCredit": 2600
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "business",
+        "fields": {
+          "wants": 200
+        }
+      }
+    }
+  ]
+}
