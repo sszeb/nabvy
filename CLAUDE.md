@@ -37,7 +37,12 @@ The owner asked to cut token use without weakening the work.
 - **Tight briefs.** Tell each session or agent exactly which files to read; never "read the whole build pack".
 - **Batch pushes.** Collect small docs changes and push them together, at most about every 30–60 minutes, so each push costs one review.
 - **Incremental reviews.** The reviewer reviews only the commits since the head it last reviewed. For a docs-only delta, it relies on CI instead of re-running install, typecheck and tests.
-- **Short sessions.** Hand off to a fresh session, with a handoff note in the repo, once a session's context grows large, instead of carrying a huge context into every turn.
+- **Short sessions: hand off on your own** (owner, 2026-09-24). A long-running session (the coordinator, the reviewer, or a build session that takes on more work) hands off to a fresh one without asking the owner first. The trigger is `get_session` showing `external_metadata.context_usage.used_tokens` above 300,000, or the session's context having been summarised once, whichever comes first. Hand off at the next point where no edit is half done:
+  1. push everything;
+  2. write the handoff note: `docs/handoff.md` for the coordinator; for any other session, the successor's first prompt;
+  3. start the successor with `create_session` (same environment, model and tags; its own branch);
+  4. move your scheduled triggers and PR subscriptions to it: delete yours and let it re-create them;
+  5. leave the owner one short message with the successor's link, so they can follow it.
 
 ## Repository conventions
 
