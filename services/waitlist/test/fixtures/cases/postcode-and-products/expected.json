@@ -1,19 +1,15 @@
 {
-  "rows": 1,
-  "results": [
+  "results": [{ "ok": true, "joined": true }],
+  "storedRows": [
     {
-      "ok": true,
-      "created": true,
       "email": "fixture-full@example.com",
       "postcode": "EC1A 1BB",
       "wantedProducts": ["RTX 3080", "RTX 3090"],
-      "utm": {
-        "source": "reddit",
-        "medium": "social",
-        "campaign": "launch",
-        "term": "gpu",
-        "content": "banner-a"
-      }
+      "utmSource": "reddit",
+      "utmMedium": "social",
+      "utmCampaign": "launch",
+      "utmTerm": "gpu",
+      "utmContent": "banner-a"
     }
   ]
 }

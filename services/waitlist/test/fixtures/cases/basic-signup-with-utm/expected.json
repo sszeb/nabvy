@@ -1,13 +1,15 @@
 {
-  "rows": 1,
-  "results": [
+  "results": [{ "ok": true, "joined": true }],
+  "storedRows": [
     {
-      "ok": true,
-      "created": true,
       "email": "fixture-basic@example.com",
       "postcode": null,
       "wantedProducts": [],
-      "utm": { "source": "reddit", "medium": "social", "campaign": "launch" }
+      "utmSource": "reddit",
+      "utmMedium": "social",
+      "utmCampaign": "launch",
+      "utmTerm": null,
+      "utmContent": null
     }
   ]
 }

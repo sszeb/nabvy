@@ -26,7 +26,7 @@ afterAll(async () => {
 const on = { state: 'on' as const }
 
 describe('submit (CLAUDE.md, "Idempotent handlers")', () => {
-  it('writes one row for a repeat address and keeps the first entry', async () => {
+  it('writes one row for a repeat address, keeps the first entry, and never reveals it', async () => {
     const input = {
       email: 'Sam@Example.com',
       postcode: 'po19 8hr',
@@ -45,21 +45,16 @@ describe('submit (CLAUDE.md, "Idempotent handlers")', () => {
       ),
     )
 
-    expect(first).toEqual({
-      ok: true,
-      value: { entry: expect.objectContaining({ email: 'sam@example.com' }), created: true },
-    })
-    expect(second).toEqual({
-      ok: true,
-      value: { entry: expect.objectContaining({ email: 'sam@example.com' }), created: false },
-    })
-    if (second.ok) {
-      expect(second.value.entry.postcode).toBe('PO19 8HR')
-      expect(second.value.entry.utm).toEqual({ source: 'reddit' })
-    }
+    // Identical results for a new address and a repeat one: submit() never reveals which
+    // (PR #31 review).
+    expect(first).toEqual({ ok: true, value: { joined: true } })
+    expect(second).toEqual({ ok: true, value: { joined: true } })
 
     const rows = await harness.as('postgres', (db) => db.select().from(entries))
-    expect(rows.filter((row) => row.email === 'sam@example.com')).toHaveLength(1)
+    const matching = rows.filter((row) => row.email === 'sam@example.com')
+    expect(matching).toHaveLength(1)
+    expect(matching[0]?.postcode).toBe('PO19 8HR')
+    expect(matching[0]?.utmSource).toBe('reddit')
   })
 })
 

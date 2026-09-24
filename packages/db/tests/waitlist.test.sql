@@ -3,7 +3,33 @@
 begin;
 set local client_min_messages = warning;
 
--- Only nabvy_app writes entries; nabvy_pipeline cannot insert, and neither role can delete ----
+-- nabvy_app has no privilege on waitlist.entries at all, not even INSERT or SELECT: it writes only
+-- through the SECURITY DEFINER function waitlist.join(...) (PR #31 review) -------------------
+do $$
+begin
+  set local role nabvy_app;
+  begin
+    insert into waitlist.entries (email) values ('probe-direct-insert@example.com');
+    raise exception 'nabvy_app inserted directly into waitlist.entries';
+  exception when insufficient_privilege then null;
+  end;
+  reset role;
+end;
+$$;
+
+do $$
+begin
+  set local role nabvy_app;
+  begin
+    perform 1 from waitlist.entries where email = 'anything@example.com';
+    raise exception 'nabvy_app selected from waitlist.entries';
+  exception when insufficient_privilege then null;
+  end;
+  reset role;
+end;
+$$;
+
+-- nabvy_pipeline cannot write at all --------------------------------------------------------
 do $$
 begin
   set local role nabvy_pipeline;
@@ -16,11 +42,28 @@ begin
 end;
 $$;
 
+-- waitlist.join(...): nabvy_app can call it, it inserts, and it is idempotent on email --------
 set local role nabvy_app;
-insert into waitlist.entries (email, postcode, wanted_products, utm_source)
-values ('probe@example.com', 'PO19 8HR', array['RTX 3080'], 'reddit');
+select waitlist.join('probe@example.com', 'PO19 8HR', array['RTX 3080'], 'reddit', null, null, null, null);
+select waitlist.join('Probe@Example.com', 'SW1A 1AA', array['RTX 3090'], 'google', null, null, null, null);
 reset role;
 
+do $$
+declare
+  seen integer;
+  stored_postcode text;
+begin
+  select count(*) into seen from waitlist.entries where email = 'probe@example.com';
+  if seen <> 1 then raise exception 'waitlist.join wrote % rows for a repeat address', seen; end if;
+
+  select postcode into stored_postcode from waitlist.entries where email = 'probe@example.com';
+  if stored_postcode <> 'PO19 8HR' then
+    raise exception 'waitlist.join overwrote the first entry: postcode is %', stored_postcode;
+  end if;
+end;
+$$;
+
+-- No role may delete a waitlist entry --------------------------------------------------------
 do $$
 begin
   set local role nabvy_app;
@@ -33,25 +76,12 @@ begin
 end;
 $$;
 
--- A repeat address is refused by the unique constraint (services/waitlist upserts on it) ------
+-- waitlist.join(...) still enforces the email-lower-case and postcode-format check constraints -
 do $$
 begin
   set local role nabvy_app;
   begin
-    insert into waitlist.entries (email) values ('probe@example.com');
-    raise exception 'a duplicate email was not refused';
-  exception when unique_violation then null;
-  end;
-  reset role;
-end;
-$$;
-
--- The email-lower-case and postcode-format check constraints ---------------------------------
-do $$
-begin
-  set local role nabvy_app;
-  begin
-    insert into waitlist.entries (email) values ('Mixed-Case@example.com');
+    perform waitlist.join('Mixed-Case@example.com', null, null, null, null, null, null, null);
     raise exception 'a mixed-case email was not refused';
   exception when check_violation then null;
   end;
@@ -63,11 +93,26 @@ do $$
 begin
   set local role nabvy_app;
   begin
-    insert into waitlist.entries (email, postcode) values ('bad-postcode@example.com', 'NOTAPOSTCODE');
+    perform waitlist.join('bad-postcode@example.com', 'NOTAPOSTCODE', null, null, null, null, null, null);
     raise exception 'a malformed postcode was not refused';
   exception when check_violation then null;
   end;
   reset role;
+end;
+$$;
+
+-- Only nabvy_app may call waitlist.join(...) -------------------------------------------------
+do $$
+declare
+  callers text;
+begin
+  select string_agg(grantee, ',' order by grantee) into callers
+  from information_schema.role_routine_grants
+  where routine_schema = 'waitlist' and routine_name = 'join' and privilege_type = 'EXECUTE'
+    and grantee <> 'postgres';
+  if callers <> 'nabvy_app' then
+    raise exception 'waitlist.join callers changed: %', callers;
+  end if;
 end;
 $$;
 

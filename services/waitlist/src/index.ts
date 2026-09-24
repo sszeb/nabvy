@@ -4,7 +4,7 @@ import { ok, type Result } from '@nabvy/contracts'
 import type { WaitlistEntry, WaitlistError } from '@nabvy/contracts/modules/waitlist'
 import type { Queryable } from '@nabvy/db'
 import { checkSwitch, failure, planEntry, toEntry, type WaitlistContext } from './domain'
-import { consumeSubmitQuota, selectAll, upsertEntry } from './repo'
+import { consumeSubmitQuota, insertEntry, selectAll } from './repo'
 
 export type {
   WaitlistEntry,
@@ -16,24 +16,30 @@ export { events, module } from '@nabvy/contracts/modules/waitlist'
 export type { WaitlistContext } from './domain'
 export { InMemoryWaitlistSender, type WaitlistSender } from './sender'
 
-/** What `submit()` returns: the stored entry, and whether this call created it. */
-export interface WaitlistSubmission {
-  entry: WaitlistEntry
-  created: boolean
+/**
+ * What `submit()` returns: nothing about the address it was called with. A public form must not
+ * tell a caller who typed someone else's address whether that address was new or already on the
+ * list, or leak the first submitter's postcode, wanted products or UTM (PR #31 review). Callers
+ * that need the stored data read it back through `list()` with the pipeline role.
+ */
+export interface WaitlistJoined {
+  joined: true
 }
 
 /**
- * Adds an entry to the waitlist, or returns the caller's existing one unchanged for a repeat
- * address (module card, "Tests and fixtures": "an entry lands with its UTM"). Fails closed while
- * the switch is off (`waitlist.closed`, module card "When off": the form is closed) and rate
- * limits per IP (`waitlist.rate_limited`, `docs/security.md`). `ctx.ip` is the caller's address, as
- * the calling procedure resolved it; this module never reads a request object itself.
+ * Adds an entry to the waitlist, or silently leaves an existing one for the same address
+ * untouched (module card, "Tests and fixtures": one row per address, `docs/questions.md`,
+ * "waitlist: repeat sign-ups"). Fails closed while the switch is off (`waitlist.closed`, module
+ * card "When off": the form is closed) and rate limits per IP (`waitlist.rate_limited`,
+ * `docs/security.md`). `ctx.ip` is the caller's address, as the calling procedure resolved it;
+ * this module never reads a request object itself. The result never reveals whether the address
+ * was already on the list, and never reads back the stored row.
  */
 export async function submit(
   db: Queryable,
   input: unknown,
   ctx: WaitlistContext & { ip: string },
-): Promise<Result<WaitlistSubmission, WaitlistError>> {
+): Promise<Result<WaitlistJoined, WaitlistError>> {
   const on = checkSwitch(ctx)
   if (!on.ok) return on
   const withinQuota = await consumeSubmitQuota(db, ctx.ip)
@@ -42,8 +48,8 @@ export async function submit(
   }
   const planned = planEntry(input)
   if (!planned.ok) return planned
-  const { row, created } = await upsertEntry(db, planned.value)
-  return ok({ entry: toEntry(row), created })
+  await insertEntry(db, planned.value)
+  return ok({ joined: true })
 }
 
 /** Every entry, as `v_waitlist` shows it. Needs the pipeline role; empty while the switch is off. */

@@ -3,46 +3,40 @@
 import { createHash } from 'node:crypto'
 import { WAITLIST_SUBMIT_PER_IP } from '@nabvy/config/modules/waitlist'
 import type { Queryable } from '@nabvy/db'
-import { entries, vWaitlist } from '@nabvy/db/schema/waitlist'
-import { eq, sql } from 'drizzle-orm'
-import type { EntryInsert, EntryRow } from '../domain'
+import { vWaitlist } from '@nabvy/db/schema/waitlist'
+import { sql } from 'drizzle-orm'
+import type { EntryInsert } from '../domain'
 
 const rowsOf = <T>(result: unknown) => (result as { rows: T[] }).rows
 
-function toRow(row: typeof entries.$inferSelect): EntryRow {
-  return {
-    id: row.id,
-    email: row.email,
-    postcode: row.postcode,
-    wantedProducts: row.wantedProducts,
-    utmSource: row.utmSource,
-    utmMedium: row.utmMedium,
-    utmCampaign: row.utmCampaign,
-    utmTerm: row.utmTerm,
-    utmContent: row.utmContent,
-    createdAt: row.createdAt.toISOString(),
-  }
+/**
+ * A Postgres array literal for a `text[]` parameter (the pg wire protocol does not encode a plain
+ * JS array for a raw, untyped query parameter; without this a one-element array arrives as its
+ * bare element and a malformed-array error). `null` stays `null`.
+ */
+function pgTextArray(values: readonly string[] | null): string | null {
+  if (values === null) return null
+  const escaped = values.map((v) => `"${v.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`)
+  return `{${escaped.join(',')}}`
 }
 
 /**
- * Inserts the entry, or returns the caller's existing one unchanged for a repeat address (the
- * `entries_email_unique` constraint). A repeat sign-up therefore writes no new row and never
- * overwrites the first entry's postcode, wanted products or UTM (`docs/questions.md`, "waitlist:
- * repeat sign-ups"): the module's idempotency for public, unauthenticated input.
+ * Inserts the entry, or leaves an existing one for the same address untouched: a repeat sign-up
+ * writes no new row and never overwrites the first entry's postcode, wanted products or UTM
+ * (`docs/questions.md`, "waitlist: repeat sign-ups"). Goes through `waitlist.join(...)`, a
+ * `SECURITY DEFINER` SQL function, and not a Drizzle insert on `entries` directly: `nabvy_app` has
+ * no privilege on that table at all, because even `insert ... on conflict do nothing` needs
+ * `SELECT` to detect the conflict (PR #31 review). The function returns nothing, so a public
+ * submission can never learn whether an address it names was already on the list, or read that
+ * address's stored postcode, products or UTM.
  */
-export async function upsertEntry(
-  db: Queryable,
-  values: EntryInsert,
-): Promise<{ row: EntryRow; created: boolean }> {
-  const inserted = await db
-    .insert(entries)
-    .values(values)
-    .onConflictDoNothing({ target: entries.email })
-    .returning()
-  if (inserted[0]) return { row: toRow(inserted[0]), created: true }
-  const [existing] = await db.select().from(entries).where(eq(entries.email, values.email)).limit(1)
-  if (!existing) throw new Error(`waitlist: ${values.email} vanished on insert`)
-  return { row: toRow(existing), created: false }
+export async function insertEntry(db: Queryable, values: EntryInsert): Promise<void> {
+  await db.execute(sql`
+    select waitlist.join(
+      ${values.email}, ${values.postcode}, ${pgTextArray(values.wantedProducts)}::text[],
+      ${values.utmSource}, ${values.utmMedium}, ${values.utmCampaign},
+      ${values.utmTerm}, ${values.utmContent}
+    )`)
 }
 
 /** A row of `v_waitlist` with its time as an ISO string; `list()` parses it. */

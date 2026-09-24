@@ -1,4 +1,4 @@
 {
-  "rows": 0,
-  "results": [{ "ok": false, "code": "waitlist.invalid_input" }]
+  "results": [{ "ok": false, "code": "waitlist.invalid_input" }],
+  "storedRows": []
 }

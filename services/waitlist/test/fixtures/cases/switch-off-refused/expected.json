@@ -1,4 +1,4 @@
 {
-  "rows": 0,
-  "results": [{ "ok": false, "code": "waitlist.closed" }]
+  "results": [{ "ok": false, "code": "waitlist.closed" }],
+  "storedRows": []
 }
