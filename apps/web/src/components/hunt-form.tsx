@@ -2,7 +2,12 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import type { ChannelKind, Hunt } from '@/data/types'
+import type { CadenceSeconds, ChannelKind, Hunt } from '@/data/types'
+import {
+  CADENCE_DEFAULT_SECONDS,
+  estimateCadencePlaceholderUntilWantManagerShips,
+} from '@/lib/cadence'
+import { CadenceSlider } from './cadence-slider'
 import { channelName } from './hunt-card'
 import { Button } from './ui/button'
 import { Checkbox } from './ui/checkbox'
@@ -19,6 +24,11 @@ const channelKinds: ChannelKind[] = ['telegram', 'push', 'email']
 export function HuntForm({ hunt }: { hunt?: Hunt }) {
   const router = useRouter()
   const [active, setActive] = useState(hunt ? hunt.status === 'active' : true)
+  const [savedCadence, setSavedCadence] = useState<CadenceSeconds>(
+    hunt?.cadenceSeconds ?? CADENCE_DEFAULT_SECONDS,
+  )
+  const [previewCadence, setPreviewCadence] = useState<CadenceSeconds>(savedCadence)
+  const cadenceEstimate = estimateCadencePlaceholderUntilWantManagerShips(previewCadence)
   return (
     <form
       className="grid max-w-xl gap-6"
@@ -103,6 +113,18 @@ export function HuntForm({ hunt }: { hunt?: Hunt }) {
             <option value="posted">Delivery only</option>
           </NativeSelect>
         </div>
+      </div>
+      <div className="grid gap-2">
+        <input type="hidden" name="cadenceSeconds" value={savedCadence} />
+        <CadenceSlider
+          value={previewCadence}
+          onValueChange={setPreviewCadence}
+          onValueCommit={(seconds) => {
+            setPreviewCadence(seconds)
+            setSavedCadence(seconds)
+          }}
+          estimate={cadenceEstimate}
+        />
       </div>
       <fieldset className="grid gap-3">
         <legend className="mb-3 font-medium text-sm">Send alerts to</legend>
