@@ -61,6 +61,7 @@ import {
   deleteListings,
   insertItems,
   leaseBatch,
+  lockTick,
   markClosed,
   raisePriority,
   releaseLeases,
@@ -222,10 +223,14 @@ const openLanes = (): DetailsQueueLane[] =>
  * batch is in flight — reads the spend throttle, applies the daily cap, picks the next batch (one
  * lane, one region, at most 200 IDs, most urgent first) and submits it through apify-gateway,
  * leasing its IDs in the same transaction, so a refused submit leases nothing and a retried tick
- * finds the batch in flight. The caller publishes `report.events` after commit.
+ * finds the batch in flight. Ticks are serialised by a transaction-scoped advisory lock, so the
+ * caller must run it in one transaction. The caller publishes `report.events` after commit.
  */
 export async function submitNext(q: Queryable, deps: TickDeps): Promise<TickReport> {
   const now = deps.now ?? new Date()
+  // One tick at a time, whatever the scheduler does: one details run at a time and the daily
+  // cap both depend on it.
+  await lockTick(q)
   if ((await state(q, MODULE)) === 'off' || !(await isOn(q, 'pipeline'))) return { status: 'off' }
   const { ports } = deps
 

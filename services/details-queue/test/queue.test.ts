@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { closeBatch, enqueue, readQueue, submitNext } from '../src'
 import {
@@ -152,12 +153,32 @@ describe('submitNext', () => {
   })
 
   it('leases each ID so no other batch sends it', async () => {
-    const [a] = ids(1)
+    const [a, b] = ids(2)
     await add([a as string])
-    await tick()
-    // The same listing asked for in the photo lane waits for the text fetch's lease, whatever lane.
-    await add([a as string], { lane: 'photo', priority: 'photo-capture', reason: 'photo-capture' })
-    expect(await t.sql('select job_id from details_queue.leases')).toEqual([{ job_id: 1 }])
+    expect(await tick()).toMatchObject({ status: 'submitted', jobId: 1 })
+    // The same listing, requeued elsewhere while its lease still holds, and the batch record
+    // closed: the next tick must not send it again.
+    await t.sql("update details_queue.items set status = 'queued'")
+    await t.sql('update details_queue.batches set closed_at = now()')
+    await add([b as string])
+    expect(await tick()).toMatchObject({ status: 'submitted', jobId: 2, size: 1 })
+    expect(ports.submitted[1]?.input.listingIds).toEqual([b])
+    expect(await t.sql('select job_id from details_queue.leases order by job_id')).toEqual([
+      { job_id: 1 },
+      { job_id: 2 },
+    ])
+  })
+
+  it('serialises ticks with a transaction-scoped advisory lock', async () => {
+    await add(ids(1))
+    const held = await t.db.transaction(async (q) => {
+      await submitNext(q, { ports, now: NOW })
+      return q.execute(sql`select count(*)::int as n from pg_locks where locktype = 'advisory'`)
+    })
+    expect((held as unknown as { rows: unknown[] }).rows).toEqual([{ n: 1 }])
+    expect(
+      await t.sql("select count(*)::int as n from pg_locks where locktype = 'advisory'"),
+    ).toEqual([{ n: 0 }])
   })
 
   it('uses route-health for text and the default region for unplaced items', async () => {

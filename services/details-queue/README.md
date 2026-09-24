@@ -91,7 +91,7 @@ Schema `details_queue`:
 Other tests: `domain.test.ts` (verdicts, counter boundaries, throttle mapping, London days across
 BST, run input), `queue.test.ts` (deduplication, priority, batch size and region, one run at a
 time, leases, throttle read before submit, refused submits, photo lane, daily cap and deferral,
-lease expiry per job state), `idempotency.test.ts` (enqueue, close, both handlers twice),
+lease expiry per job state, the tick lock), `idempotency.test.ts` (enqueue, close, both handlers twice),
 `switch.test.ts`, `contracts.test.ts`, and `packages/db/tests/details-queue.test.sql` (grants,
 keys, checks, close-once trigger, `v_queue` columns and switch filter, the view check). Other
 modules' views are stand-in tables in PGlite, and the gateway, route-health and spend-governor
@@ -112,6 +112,16 @@ waits for `details-selector`.
 - **2026-09-24: submit and lease in one transaction.** `submitNext` calls `submitRun` inside the
   tick's transaction and leases the batch there, so a refused submit leases nothing and a lost
   reply leaves the batch visible as in flight. This stands in for the gateway's missing request key.
+- **2026-09-24: ticks are serialised** (review of PR #46). `submitNext` first takes the
+  transaction-scoped advisory lock `hashtext('details_queue.tick')`, the pattern of
+  `apify_gateway.claim_next_job`, so two overlapping ticks can never submit two runs or both pass
+  the daily cap. The tick must run in one transaction (`withPipeline`).
+- **2026-09-24: a replayed `first-seen` that shows a waiting listing already described marks it
+  done** (review of PR #46), so it never gets a paid fetch it does not need.
+- **2026-09-24: known gaps, left visible** (review of PR #46). An ID the actor keeps reporting as not
+  attempted is requeued with no failure counted, so it can cycle; its `last_outcome` shows it. A
+  batch whose job the gateway never shows (the gateway off) stays open and every tick reports
+  `busy`; `v_queue` shows its leases. Neither alerts yet: `ops-metrics` reads `v_queue`.
 - **2026-09-24: a lease never expires under a live job.** When a lease runs out the queue asks the
   gateway: only a refused, failed, or succeeded-and-announced job frees its IDs.
 - **2026-09-24: keys by source listing ID.** Callers such as pasted links have no listing-ingest

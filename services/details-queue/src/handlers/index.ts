@@ -14,7 +14,7 @@ import type { Queryable } from '@nabvy/db'
 import { defineHandler, type EventHandler } from '@nabvy/transport'
 import { priorityOfSearchShape } from '../domain'
 import { closeBatch, enqueue } from '../index'
-import { insertItems, selectFirstSeen } from '../repo'
+import { insertItems, markDescribed, selectFirstSeen } from '../repo'
 
 export interface FirstSeenDeps {
   /** Runs `fn` in one pipeline transaction: `withPipeline` in the task file. */
@@ -48,7 +48,9 @@ export async function handleFirstSeen(
   const facebook = found.filter((l) => l.source === 'facebook' && l.fromSearch)
 
   // Already described by its own run: recorded as done, so later callers need a refresh to pay.
+  // One a replay finds already waiting is marked done too, so it never gets a paid fetch.
   const described = facebook.filter((l) => l.described)
+  const now = new Date()
   total.skipped += await insertItems(
     q,
     described.map((l) => ({
@@ -61,8 +63,14 @@ export async function handleFirstSeen(
       regionId: l.regionId ?? null,
       status: 'done' as const,
       lastOutcome: 'full_verified',
-      doneAt: new Date(),
+      doneAt: now,
     })),
+  )
+  total.skipped += await markDescribed(
+    q,
+    'facebook',
+    described.map((l) => l.sourceListingId),
+    now,
   )
 
   const groups = new Map<
