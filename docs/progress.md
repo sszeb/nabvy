@@ -55,7 +55,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 1.1d | Actor app integration guide condensed | done: PR #38 merged 17:02 (`4a856cf`), `docs/design/actor-app-guide.md`; third off-limits actor added to `CLAUDE.md` | 2026-09-24 | `session_012jNJ1yAmFo3qjybDMsQYg9`, Sonnet |
 | 4.3t | Abuse and cost-exploit threat model | started 17:05 | 2026-09-24 | `session_01Y4xYvmajeh5wX2ghYYWfyM`, top |
 | 1.2m, 4.3r | Governor recompute schedule; account purge schedule | 1.2m done: PR #45 merged 17:45 (`2bc0534`), no migration; adds the `@nabvy/trigger` workspace package and `@trigger.dev/sdk` (MIT); 4.3r next in the same session | 2026-09-24 | `session_01PrKA1b7kzJ6CkMpxiS93Y9`, Sonnet |
-| 4.1q | Cadence slider (web) | started 17:21; spec `docs/design/cadence-slider.md` | 2026-09-24 | `session_01KVppkxjxt2jWHXVoP4JRgF`, Sonnet |
+| 4.1q | Cadence slider (web) | PR #49 open 17:48; six steps in the PR (the 30-minute step, 4.1r, was briefed at 17:48 and may follow) | 2026-09-24 | `session_01KVppkxjxt2jWHXVoP4JRgF`, Sonnet |
 | 4.3b | Security hardening | not started | | |
 | 4.4 | Crawl planner v1 | not started | | |
 | 4.5 | Review console | not started | | |
@@ -96,22 +96,26 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | listing-ingest | 3 | done: PR #35 merged 16:54 (approved at `04b54ba`); both migrations applied 16:57 (ledger checked); first-seen may re-announce on out-of-order replay, so details-queue dedupes on listing ID | `session_01HfncCwAz7dL7Kx9LnCeR2U` | top |
 | spend-governor | 3 | done: PR #36 merged 16:39 (`5c2b7eb`); both migrations applied 16:43 (ledger checked); budgets seeded ($150 Apify month, $85 plan, 10 GB proxy); needs a scheduled recompute and a measured `proxy_gb` before any paying module reads `v_throttle` (backlog 1.2m, 1.2n) | `session_01CC2oetv6aarq9Pyf3wKC7q` | top |
 | route-health | 3 | done: PR #37 merged 17:08 (`583a4c0`); both migrations applied 17:12 (ledger checked); follow-ups in `docs/questions.md` (retire the source-adapters port; no-description replays) | `session_01DgJ6WG8sK8FmVprvBHT7Ln` | Sonnet |
-| run-coverage | 4 | PR #48 open 17:45 (two migrations after merge: tables, access); card `docs/design/modules/run-coverage.md` | `session_01W9G6WWzHRC5ZWWNB5Ud36i` | top |
+| run-coverage | 4 | done: PR #48 merged 19:06 (`07e6dd4`); both migrations applied 19:34 in one call (ledger 51 rows); questions folded | `session_01W9G6WWzHRC5ZWWNB5Ud36i` | top |
 | detail-evidence | 4 | done: PR #40 merged 17:44 (`4412aed`); both migrations applied 17:49 (ledger 41 rows, checksums checked); 30 s test timeouts added to listing-ingest and detail-evidence; questions folded (ordering against listing-ingest, partial versions, unresolved rows, the `fetches` table) | `session_019oxS7CYEwPHJ2YpQjxK4Gw` | top |
 | product-events | 3 | done: PR #42 merged 17:39 (`61203aa`); both migrations applied 17:42 (ledger 37 rows, checksums checked, no view violations); PostHog keys still missing, forwarder injected; partition rotation needs `pg_cron` (backlog 0.12, `docs/questions.md`); non-blocking review notes: `forwarded` doc comment, unused `@nabvy/switches` dependency | `session_01Mb9c2K2KfFYvqLcNQ8ysMD` | Sonnet |
 | scan-recognition | 3 | done: PR #41 merged 17:43 (`c76c4df`); both migrations applied 17:49 (ledger 41 rows); server time now drives the spend cap and photo expiry; model client on recorded fixtures until the Anthropic key exists; questions folded | `session_01XqmaYu7JxPG5Ps2vpYGBcx` | top |
-| details-queue | 4 | PR #46 open 17:35 (two migrations after merge: tables, access); started 17:10; card `docs/design/modules/details-queue.md`; dedupes first-seen on listing ID; uses the actor's `excludeListingIds` | `session_012piuTFFBNE7nuuToeJMbpN` | top |
+| details-queue | 4 | done: PR #46 merged 19:06 (`cc8c298`); both migrations applied 19:34 in one call (ledger 51 rows, checksums checked); questions folded | `session_012piuTFFBNE7nuuToeJMbpN` | top |
 | usage-ledger | 3 | done: PR #47 merged 18:14 (`d463e94`); four migrations applied 18:16 (tables, access, policy_version, allocation_guards; ledger 45 rows, checksums checked, no view violations); grants of allowance and top-up wait on pricing-console's policy (`usage-ledger.no_policy`); review follow-ups in backlog 4.9e; questions folded | `session_011LkRPvWVCRKMZ9Zs7DBwSt` | top |
-| marketing-consent | 3 | started 17:19; card `docs/design/modules/marketing-consent.md`; suppression sync stubbed | `session_01X62QWS4QYSezdddLCJAvVw` | Sonnet |
-| travel-cost | 3 | started 17:19; card `docs/design/modules/travel-cost.md`; rates from config with sources | `session_01UMS77L76YWgX1RrcfbsayV` | Sonnet |
-| listing-suppression | 5 | started 17:50; card `docs/design/modules/listing-suppression.md`; depends on detail-evidence (merged) | `session_018ji68bXcGtLAMEqYBdVp1v` | top |
-| parts-rules | 5 | started 17:50; card `docs/design/modules/parts-rules.md`; depends on detail-evidence (merged); pipeline core | `session_01DNsNA5egQBU1HGTkfhMNx3` | top |
-| pricing-console | 4 | started 18:17; card `docs/design/modules/pricing-console.md`; the paid ladder and 4.10a/4.10b as policy rows; implements `UsageLedgerPolicy` | `session_01NamNkeC55pewRzgfB6v6YS` | top |
-| subscriptions | 4 | started 18:17; card `docs/design/modules/subscriptions.md`; Stripe test keys still missing, recorded webhook fixtures; account-integrity soft | `session_01P4ij9pAr9EjzDnS1bqS21i` | top |
+| marketing-consent | 3 | done: PR #51 merged 18:05 (no wake reached the coordinator: reviewer 7 was outside its lineage); both migrations applied 19:35 in one call (ledger 51 rows); questions folded; `canMarket` takes the email from the caller (`docs/questions.md`) | `session_01X62QWS4QYSezdddLCJAvVw` | Sonnet |
+| travel-cost | 3 | PR #50 open 17:52 (three migrations after merge: tables, access, seed) | `session_01UMS77L76YWgX1RrcfbsayV` | Sonnet |
+| listing-suppression | 5 | PR #52 open 18:10 (two migrations after merge); listing-feedback stacked on it | `session_018ji68bXcGtLAMEqYBdVp1v` | top |
+| parts-rules | 5 | PR #53 open 18:23 (two migrations after merge) [cp 11]; parts-ai stacked on it | `session_01DNsNA5egQBU1HGTkfhMNx3` | top |
+| pricing-console | 4 | PR #55 open 18:44 (two migrations after merge; seeds the ladder as initial policy values; no admin page until 4.1 and 4.3af) | `session_01NamNkeC55pewRzgfB6v6YS` | top |
+| subscriptions | 4 | PR #54 open 18:44 (two migrations after merge; Stripe test keys still missing; auth needs a small change to mount the plugin, see its questions); attribution stacked on it | `session_01P4ij9pAr9EjzDnS1bqS21i` | top |
 | city-pages | 5 | started 18:43 [cp 9], stacked on run-coverage #48 (`task/w1-run-coverage`); opens its PR after #48 merges | `session_01MiuqZuB4erg6mpUnsSPPas` | Sonnet |
 | source-health | 5 | started 18:43 [cp 2], stacked on run-coverage #48 | `session_011wTSwKM3earZpvYNFD3MDP` | Sonnet |
-| listing-lifecycle | 5 | started 18:43 [cp 7], stacked on details-queue #46 (`task/w1-details-queue`); detail-evidence merged | `session_014oeSpAALFLdsFPxQwxiSam` | top |
-| relist-merge | 5 | started 18:44 [cp 8] from `main`; photo-review is a soft edge (stub); opens a draft PR at the surface | `session_01T4PCF6E1BvXjABjhNMiPqW` | top |
+| listing-lifecycle | 5 | PR #57 open 19:13 (two migrations after merge) [cp 7]; stacked on #46, main merged in | `session_014oeSpAALFLdsFPxQwxiSam` | top |
+| relist-merge | 5 | PR #56 open 18:50 (two migrations after merge) [cp 8]; photo-review and seller-key as injected seams | `session_01T4PCF6E1BvXjABjhNMiPqW` | top |
+| parts-ai | 6 | started 19:36 [cp 11], stacked on parts-rules #53; one capped model call per item on recorded fixtures | `session_01XE861nwcZnmic8RQ474RbH` | top |
+| lifecycle-messaging | 4 | started 19:36 [cp 1] from `main`; PostHog and Resend as injected clients | `session_01Dc4NR3MqeXE8n5A4zyCoXc` | Sonnet |
+| listing-feedback | 6 | started 19:36 [cp 4], stacked on listing-suppression #52 | `session_01Res9DzQVW9gvJBNkE5Wohv` | Sonnet |
+| attribution | 5 | started 19:36 [cp 1], stacked on subscriptions #54; Dub Partners as an injected client | `session_01EFJv4un35CR3HSet9DZByD` | Sonnet |
 
 ## Work outside the backlog
 
