@@ -1,4 +1,20 @@
 export {
+  ApifyRunOptions,
+  catchUpCheck,
+  detailBatch,
+  FacebookActorInput,
+  type FacebookActorRun,
+  fullSweep,
+  GATEWAY_MAX_REQUESTS,
+  MAX_DETAIL_BATCH,
+  newestFirstCheck,
+  PINNED_ACTOR_BUILD,
+  parseFacebookActorRun,
+  requestBudget,
+  TIMEOUT_MARGIN_SECONDS,
+  termKey,
+} from './domain/facebook-actor-input'
+export {
   type DetailRoute,
   type DetailRouteRun,
   ROUTE_HEALTH_DEFAULTS,
