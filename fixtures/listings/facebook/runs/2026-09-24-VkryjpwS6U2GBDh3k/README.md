@@ -44,5 +44,5 @@ After export, each of the 21 rows was re-serialised the way Postgres prints `jso
 compared with the database's. All 21 match, and so do the combined checksum
 (`e5bbfc0138ed5af0a276ceb49c70dbc2`, rows joined by newlines) and the checksums of the input, run
 options, run metadata and summary. Formatting by Biome changed layout only.
-`services/source-adapters/test/facebook-run-fixture.test.ts` checks the fixture on every test
-run.
+`services/source-adapters/test/fixtures/adapter.facebook-run.fixtures.ts` checks the fixture on every
+`pnpm test:fixtures` run.
