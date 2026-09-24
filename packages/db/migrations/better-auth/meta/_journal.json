@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790242768271,
+      "tag": "20260924093928_better_auth_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790242770253,
+      "tag": "20260924093930_better_auth_access",
+      "breakpoints": true
+    }
+  ]
+}

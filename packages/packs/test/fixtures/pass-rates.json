@@ -1,0 +1,12 @@
+{
+  "stages": {
+    "dictionary": {
+      "passed": 43,
+      "total": 43
+    },
+    "gate": {
+      "passed": 48,
+      "total": 48
+    }
+  }
+}

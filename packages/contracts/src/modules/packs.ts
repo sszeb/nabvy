@@ -1,5 +1,71 @@
 import { z } from 'zod'
-import { RiskFlag, sellerDerivedRiskFlags } from './enums'
+import { Currency, defineEvents } from '../index'
+
+// Contracts of @nabvy/packs: the category pack format (docs/contracts.md, "Category pack format"),
+// the risk flags a pack references and the fact template of pack gpu-pc. Packs are data loaded
+// in-process, so this module publishes no events. See packages/packs/README.md.
+
+export const module = 'packs'
+export const events = defineEvents(module, {})
+
+// Risk flags a pack may reference (docs/contracts.md, "Enumerations").
+export const RiskFlag = z.enum([
+  'mining',
+  'untested',
+  'stock_photo',
+  'deposit_request',
+  'new_seller',
+  'reused_photos',
+  'price_far_below_floor',
+  'parts_only',
+  'wanted_post',
+  'empty_box',
+])
+export type RiskFlag = z.infer<typeof RiskFlag>
+
+// Flags computed from seller keys. The brief keeps them out of every public table and every
+// public score (docs/decisions.md, Precedence, "Seller-derived flags").
+export const sellerDerivedRiskFlags = ['new_seller', 'reused_photos'] as const satisfies RiskFlag[]
+
+// Fact template for pack `gpu-pc` (docs/contracts.md). Fields the text does not support are
+// null, never guessed.
+
+export const GpuPcItemType = z.enum(['gpu', 'pc', 'cpu', 'ram', 'storage', 'psu', 'case', 'other'])
+export type GpuPcItemType = z.infer<typeof GpuPcItemType>
+
+export const GpuPcCondition = z.enum(['new', 'used_working', 'untested', 'faulty', 'unknown'])
+export type GpuPcCondition = z.infer<typeof GpuPcCondition>
+
+export const GpuPcFacts = z.strictObject({
+  itemType: GpuPcItemType,
+  gpu: z
+    .object({
+      vendor: z.enum(['nvidia', 'amd', 'intel']),
+      model: z.string().min(1),
+      vramGb: z.number().int().positive().nullish(),
+      variant: z.string().min(1).nullish(),
+    })
+    .nullish(),
+  cpu: z.strictObject({ vendor: z.enum(['intel', 'amd']), model: z.string().min(1) }).nullish(),
+  ramGb: z.number().int().positive().nullish(),
+  storage: z
+    .array(
+      z.strictObject({ type: z.enum(['ssd', 'hdd', 'nvme']), gb: z.number().int().positive() }),
+    )
+    .nullish(),
+  psuWatts: z.number().int().positive().nullish(),
+  caseModel: z.string().min(1).nullish(),
+  condition: GpuPcCondition,
+  tested: z.boolean().nullable(),
+  boxed: z.boolean().nullable(),
+  includesItems: z.array(z.string()),
+  mentionsMining: z.boolean(),
+  mentionsDeposit: z.boolean(),
+  wantedPost: z.boolean(),
+  partsOnly: z.boolean(),
+  emptyBox: z.boolean(),
+})
+export type GpuPcFacts = z.infer<typeof GpuPcFacts>
 
 // The category pack format (docs/contracts.md, "Category pack format"). A pack is data: regexes are
 // stored as source strings and compiled case-insensitively by the loader in @nabvy/packs.
@@ -99,9 +165,12 @@ export const NoiseRuleName = z.enum([
 ])
 export type NoiseRuleName = z.infer<typeof NoiseRuleName>
 
+// `shadow` records what the rule would remove without removing it; `filter` removes. A rule runs
+// in shadow until fixtures measure its precision.
 export const NoiseRule = z.strictObject({
   rule: NoiseRuleName,
   test: z.string().min(1),
+  mode: z.enum(['shadow', 'filter']),
   patterns: z.array(PatternItem).default([]),
 })
 
@@ -169,10 +238,24 @@ export const PackValuation = z.strictObject({
 const wellFormedTemplate = (template: string) =>
   !/[{}]/.test(template.replace(/\{[a-zA-Z]+\}/g, ''))
 
+// Text shown to users. `displayable: false` keeps a template out of every user-facing surface
+// until the owner approves its wording (docs/questions.md).
+export const PackExplanation = z.strictObject({
+  template: z
+    .string()
+    .min(1)
+    .refine(wellFormedTemplate, { message: 'placeholders must look like {name}' }),
+  displayable: z.boolean(),
+})
+export type PackExplanation = z.infer<typeof PackExplanation>
+
 export const CategoryPack = z
   .strictObject({
     id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
     version: z.string().min(1),
+    // Every amount in the pack (prices, fees, postage, travel, repairs) is in minor units of this
+    // currency. GBP and EUR groups are never mixed or converted (Precedence, "Region and currency").
+    currency: Currency,
     factTemplate: z.custom<z.ZodType>((value) => value instanceof z.ZodType, {
       message: 'must be a Zod schema',
     }),
@@ -182,10 +265,7 @@ export const CategoryPack = z
     dictionary: z.array(DictionaryEntry).min(1),
     valuation: PackValuation,
     risk: z.array(RiskRule),
-    explanationTemplate: z
-      .string()
-      .min(1)
-      .refine(wellFormedTemplate, { message: 'placeholders must look like {name}' }),
+    explanation: PackExplanation,
     embeddingModel: z.string().min(1),
   })
   .superRefine((pack, ctx) => {

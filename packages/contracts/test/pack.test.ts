@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { GpuPcFacts, PatternItem, RiskRule } from '../src'
+import { GpuPcFacts, PatternItem, RiskRule } from '../src/modules/packs'
 
 describe('GpuPcFacts', () => {
   const facts = {

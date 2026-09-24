@@ -1,4 +1,4 @@
-import { GpuPcFacts } from '@nabvy/contracts'
+import { GpuPcFacts } from '@nabvy/contracts/modules/packs'
 import dictionary from './data/dictionary.json'
 import pack from './data/pack.json'
 import partPatterns from './data/part-patterns.json'

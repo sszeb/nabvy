@@ -6,30 +6,13 @@ import {
   PartPatterns,
   RiskFlag,
   sellerDerivedRiskFlags,
-} from '@nabvy/contracts'
+} from '@nabvy/contracts/modules/packs'
 import { describe, expect, it } from 'vitest'
-import { z } from 'zod'
 import source from '../gpu-pc/data/part-patterns.source.json'
 import { getPack, gpuPcDefinition, loadPack, PackValidationError } from '../src'
 
 const readRepoFile = (path: string) => readFileSync(new URL(`../../../${path}`, import.meta.url))
 const pack = getPack('gpu-pc')
-
-const AliasFixtures = z.strictObject({
-  about: z.string(),
-  cases: z
-    .array(
-      z.strictObject({
-        text: z.string().min(1),
-        family: z.string().nullable(),
-        productKey: z.string().nullable(),
-      }),
-    )
-    .min(1),
-})
-const aliases = AliasFixtures.parse(
-  JSON.parse(readRepoFile('fixtures/packs/gpu-pc/aliases.json').toString('utf8')),
-)
 
 type Draft = {
   factTemplate: unknown
@@ -67,20 +50,38 @@ describe('gpu-pc pack', () => {
     )
   })
 
-  it('references every risk flag once and keeps seller-derived flags internal', () => {
+  it('references every risk flag once and keeps seller-derived and photo flags internal', () => {
     expect(pack.risk.map((rule) => rule.flag).sort()).toEqual([...RiskFlag.options].sort())
     const publicFlags = pack.risk.filter((rule) => rule.action !== 'internal').map((r) => r.flag)
-    for (const flag of sellerDerivedRiskFlags) expect(publicFlags).not.toContain(flag)
+    for (const flag of [...sellerDerivedRiskFlags, 'stock_photo']) {
+      expect(publicFlags).not.toContain(flag)
+    }
+  })
+
+  it("keeps the actor's broad wanted and laptop patterns out of destructive rules", () => {
+    const destructive = [...pack.definition.gate.excludeTitle]
+    for (const rule of pack.definition.risk)
+      if (rule.action === 'drop') destructive.push(...rule.patterns)
+    expect(destructive).not.toContainEqual({ ref: 'listingKind.wantedTitle' })
+    expect(destructive).not.toContainEqual({ ref: 'listingKind.laptopTitle' })
   })
 
   it("covers the brief's noise filter", () => {
     expect(pack.noise.map((rule) => rule.rule).sort()).toEqual([...NoiseRuleName.options].sort())
   })
 
-  it('fills the explanation template only from named placeholders', () => {
-    const names = [...pack.definition.explanationTemplate.matchAll(/\{(\w+)\}/g)].map((m) => m[1])
-    expect(names).toContain('ask')
-    expect(names).not.toContain('partOutTotal')
+  it('keeps the explanation away from users until the owner approves its wording', () => {
+    const { template, displayable } = pack.definition.explanation
+    expect(displayable).toBe(false)
+    expect(template).not.toMatch(/sold for|dealScore|partOutTotal/)
+  })
+
+  it('runs every noise rule in shadow until fixtures measure it', () => {
+    for (const rule of pack.noise) expect(rule.mode).toBe('shadow')
+  })
+
+  it('prices in GBP', () => {
+    expect(pack.definition.currency).toBe('GBP')
   })
 })
 
@@ -106,12 +107,6 @@ describe('part-patterns.json', () => {
 })
 
 describe('dictionary', () => {
-  it.each(aliases.cases)('resolves "$text"', ({ text, family, productKey }) => {
-    const [first] = pack.resolve(text)
-    expect(first?.family ?? null).toBe(family)
-    expect(first?.productKey ?? null).toBe(productKey)
-  })
-
   it('lists the variants when the VRAM is not stated', () => {
     const [match] = pack.resolve('RTX 3060 Gaming X')
     expect(match?.productKey).toBeNull()
@@ -121,25 +116,6 @@ describe('dictionary', () => {
   it('finds each product once, in text order', () => {
     const found = pack.resolve('Ryzen 7 5800X3D, RTX 3080 Ti, spare 3080 ti cooler')
     expect(found.map((m) => m.family)).toEqual(['cpu:amd:ryzen-7-5000', 'RTX 3080 Ti'])
-  })
-})
-
-describe('title gate', () => {
-  it.each([
-    ['Gaming PC RTX 3070 with monitor, keyboard and mouse', true],
-    ['RTX 4070 Super', true],
-    ['3080 ti founders', true],
-    ['Arc B580', true],
-    ['Dell OptiPlex 7070 i7', true],
-    ['WTB RTX 3080', false],
-    ['Looking for a gaming PC', false],
-    ['Swap my 3080 for a 6800xt', false],
-    ['I buy gaming PCs, cash paid', false],
-    ['Asus ROG Zephyrus G14 RTX 4060', false],
-    ['RTX 3080 box only', false],
-    ['Office chair', false],
-  ])('%s → %s', (title, expected) => {
-    expect(pack.gate.passesTitle(title)).toBe(expected)
   })
 })
 

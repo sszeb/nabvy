@@ -3,7 +3,7 @@ import {
   PACK_REGEX_FLAGS,
   type PartPatterns,
   type PatternItem,
-} from '@nabvy/contracts'
+} from '@nabvy/contracts/modules/packs'
 import type { z } from 'zod'
 import { createResolver, type Resolver } from './dictionary'
 

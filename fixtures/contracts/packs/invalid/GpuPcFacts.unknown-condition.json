@@ -1,0 +1,12 @@
+{
+  "itemType": "gpu",
+  "condition": "mint",
+  "tested": null,
+  "boxed": null,
+  "includesItems": [],
+  "mentionsMining": false,
+  "mentionsDeposit": false,
+  "wantedPost": false,
+  "partsOnly": false,
+  "emptyBox": false
+}

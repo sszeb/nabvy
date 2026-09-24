@@ -1,56 +1,96 @@
 {
   "id": "gpu-pc",
   "version": "1",
+  "currency": "GBP",
   "gate": {
     "includeTitle": [
       "\\b(rtx|gtx|radeon|rx ?\\d{4}|arc a\\d{3}|geforce|graphics card|gpu|gaming pc|gaming computer|desktop pc|custom (built )?pc|pc build|tower|workstation|ryzen|core i[3579]|i[3579]-\\d{4,5})\\b",
-      { "ref": "fields.GPU model" },
-      { "ref": "listingKind.cpuOrPcTitle" }
+      {
+        "ref": "fields.GPU model"
+      },
+      {
+        "ref": "listingKind.cpuOrPcTitle"
+      }
     ],
     "excludeTitle": [
-      { "ref": "listingKind.wantedTitle" },
-      { "ref": "listingKind.laptopTitle" },
+      "\\b(wanted|looking for|wtb|want to buy|i\\s*buy|we buy|i'?m buying|buying (your|all|any|broken))\\b",
+      "\\b(laptop|notebook|macbook|chromebook)\\b",
       "\\b(box only|empty box)\\b"
     ],
     "minPriceMinor": 500,
-    "detailFetchAll": { "categories": ["computers"] }
+    "detailFetchAll": {
+      "categories": ["computers"]
+    }
   },
   "noise": [
     {
       "rule": "wanted_advert",
       "test": "wanted_advert",
+      "mode": "shadow",
       "patterns": [
-        { "ref": "listingKind.wantedTitle" },
-        { "ref": "listingKind.wantedDescriptionFirst400Chars" }
+        {
+          "ref": "listingKind.wantedTitle"
+        },
+        {
+          "ref": "listingKind.wantedDescriptionFirst400Chars"
+        }
       ]
     },
     {
       "rule": "swap_advert",
       "test": "swap_advert",
-      "patterns": [{ "ref": "listingKind.wantedTitle" }]
+      "mode": "shadow",
+      "patterns": [
+        {
+          "ref": "listingKind.wantedTitle"
+        }
+      ]
     },
     {
       "rule": "i_buy_advert",
       "test": "i_buy_advert",
+      "mode": "shadow",
       "patterns": [
-        { "ref": "listingKind.wantedTitle" },
-        { "ref": "listingKind.wantedDescriptionFirst400Chars" }
+        {
+          "ref": "listingKind.wantedTitle"
+        },
+        {
+          "ref": "listingKind.wantedDescriptionFirst400Chars"
+        }
       ]
     },
     {
       "rule": "keyword_stuffing",
       "test": "keyword_stuffing",
-      "patterns": [{ "ref": "fields.GPU model" }]
+      "mode": "shadow",
+      "patterns": [
+        {
+          "ref": "fields.GPU model"
+        }
+      ]
     },
     {
       "rule": "laptop",
       "test": "laptop",
-      "patterns": [{ "ref": "listingKind.laptopTitle" }]
+      "mode": "shadow",
+      "patterns": [
+        {
+          "ref": "listingKind.laptopTitle"
+        }
+      ]
     },
     {
       "rule": "mention_only",
       "test": "mention_only",
-      "patterns": [{ "ref": "fields.GPU model" }, { "ref": "fields.CPU model" }]
+      "mode": "shadow",
+      "patterns": [
+        {
+          "ref": "fields.GPU model"
+        },
+        {
+          "ref": "fields.CPU model"
+        }
+      ]
     }
   ],
   "valuation": {
@@ -65,9 +105,16 @@
     "bundleFixedAllowanceMinor": 6000,
     "feePct": 0.129,
     "feeFixedMinor": 30,
-    "postageMinor": { "gpu": 800, "pc": 2500 },
+    "postageMinor": {
+      "gpu": 800,
+      "pc": 2500
+    },
     "travelPerKmMinor": 25,
-    "expectedRepairMinor": { "used_working": 0, "untested": 4000, "faulty": 12000 }
+    "expectedRepairMinor": {
+      "used_working": 0,
+      "untested": 4000,
+      "faulty": 12000
+    }
   },
   "risk": [
     {
@@ -87,15 +134,17 @@
     {
       "flag": "stock_photo",
       "test": "stock_photo_known_image",
-      "action": "weight",
-      "weight": 0.2
+      "action": "internal",
+      "shadowWeight": 0.2
     },
     {
       "flag": "reused_photos",
       "test": "reused_photos",
       "action": "internal",
       "shadowWeight": 0.2,
-      "params": { "minListings": 3 }
+      "params": {
+        "minListings": 3
+      }
     },
     {
       "flag": "deposit_request",
@@ -111,14 +160,18 @@
       "test": "new_seller",
       "action": "internal",
       "shadowWeight": 0.15,
-      "params": { "firstSeenDays": 7 }
+      "params": {
+        "firstSeenDays": 7
+      }
     },
     {
       "flag": "price_far_below_floor",
       "test": "price_far_below_floor",
       "action": "weight",
       "weight": 0.35,
-      "params": { "askBelowBandLowFraction": 0.5 }
+      "params": {
+        "askBelowBandLowFraction": 0.5
+      }
     },
     {
       "flag": "parts_only",
@@ -131,7 +184,9 @@
       "flag": "wanted_post",
       "test": "wanted_post",
       "action": "drop",
-      "patterns": [{ "ref": "listingKind.wantedTitle" }]
+      "patterns": [
+        "\\b(wanted|looking for|wtb|want to buy|i\\s*buy|we buy|i'?m buying|buying (your|all|any|broken))\\b"
+      ]
     },
     {
       "flag": "empty_box",
@@ -140,6 +195,9 @@
       "patterns": ["\\b(box only|empty box)\\b"]
     }
   ],
-  "explanationTemplate": "Asking £{ask} for {itemSummary}. Similar {product} sold for £{low}–£{high} in the last 90 days (median £{mid}, {trend}). CeX pays £{cexCash} cash. After eBay fees and {collectionOrPostage}, expected margin £{margin} ({dealScore}/100). {flagsSentence}",
+  "explanation": {
+    "template": "Asking £{ask} for {itemSummary}. CeX pays £{cexCash} cash. After eBay fees and {collectionOrPostage}, expected margin £{margin}. {flagsSentence}",
+    "displayable": false
+  },
   "embeddingModel": "Xenova/clip-vit-base-patch32"
 }

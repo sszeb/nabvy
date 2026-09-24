@@ -1,0 +1,8 @@
+{
+  "flag": "deposit_request",
+  "test": "deposit_request",
+  "action": "weight",
+  "weight": 0.3,
+  "patterns": ["\\bdeposit\\b"],
+  "params": {}
+}

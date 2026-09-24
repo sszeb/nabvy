@@ -1,5 +1,5 @@
-import type { DictionaryEntry, PartPatterns } from '@nabvy/contracts'
-import { PACK_REGEX_FLAGS } from '@nabvy/contracts'
+import type { DictionaryEntry, PartPatterns } from '@nabvy/contracts/modules/packs'
+import { PACK_REGEX_FLAGS } from '@nabvy/contracts/modules/packs'
 
 // Resolves product mentions in listing text to dictionary product keys. Rules tier only: no
 // model call, no guessing. A family with VRAM variants resolves to a key only when the text states
