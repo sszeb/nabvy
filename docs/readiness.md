@@ -16,7 +16,7 @@ Purpose: state what the documentation covers, what remains for humans, and wheth
 | User and admin dashboards, database stance | `docs/dashboards.md` | Complete |
 | Analytics and learning loop (first-party events, PostHog, Langfuse) | `docs/analytics.md` | Complete; PostHog and Langfuse projects pending |
 | Marketing machinery (lifecycle programmes, consent, deliverability, SEO pages, waitlist) | `docs/marketing.md` | Complete; copy and sending domains pending |
-| Monetisation: Stripe catalogue, usage balance, entitlements, trials, tax, refunds, referrals | `docs/billing.md` | Complete; Stripe account setup pending |
+| Monetisation: Stripe catalogue, usage balance, entitlements, trials, tax, no-refunds policy, referrals | `docs/billing.md` | Complete; Stripe account setup pending |
 | Affiliate and creator programme | `docs/affiliates.md` | Complete; Dub workspace setup pending |
 | Identity and sessions (Better Auth), server-only data access, RLS | `docs/security.md`, `docs/contracts.md` | Complete |
 | Security | `docs/security.md` | Complete; external scan pending |

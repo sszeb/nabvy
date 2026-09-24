@@ -23,9 +23,9 @@ Plugin configuration: three plans, `standard`, `pro` and `business`, each with `
 
 Metered actions debit a per-user usage balance in pence through a ledger, never a running counter:
 
-- `usage_ledger` rows: `userId`, `deltaPence` (negative for a charge), `kind` (`included_grant`, `bonus_grant`, `topup`, `charge`, `refund`, `referral`), `action` (`scan_cached`, `scan_live`, `similar_search`, `boost_24h`, `boost_7d`, `export`), `refId` (scan event, boost, Stripe payment intent), `expiresAt` for grants, `at`.
+- `usage_ledger` rows: `userId`, `deltaPence` (negative for a charge), `kind` (`included_grant`, `bonus_grant`, `topup`, `charge`, `reversal`, `referral`), `action` (`scan_cached`, `scan_live`, `similar_search`, `boost_24h`, `boost_7d`, `export`), `refId` (scan event, boost, Stripe payment intent), `expiresAt` for grants, `at`.
 - Balance = sum of unexpired grants and top-ups minus charges, computed as two buckets: expiring (included and bonus grants) is spent first, then non-expiring (top-ups). A monthly job writes the included grant on each user's billing anniversary (Free: first of the month) and expires the previous one.
-- Every metered action checks the balance first, shows its price in the UI, and refuses with a top-up or upgrade prompt when insufficient. Charges are written in the same transaction as the action's result; a failed action is refunded in the same transaction.
+- Every metered action checks the balance first, shows its price in the UI, and refuses with a top-up or upgrade prompt when insufficient. Charges are written in the same transaction as the action's result; a failed action is reversed (its credits returned) in the same transaction. A reversal is not a refund of money.
 - The Free cap of £0.50 is simply the Free included grant; there is no separate scan counter.
 - List prices per action are configuration (`docs/decisions.md`), set at two to three times measured cost and reviewed monthly against `metrics_daily`.
 
@@ -38,11 +38,16 @@ Entitlements derive from the plugin's `subscription` table (status, plan, period
 ## Flows
 
 - **Upgrade:** `authClient.subscription.upgrade({ plan, annual })` opens Stripe Checkout; success returns to the app; the webhook grants the entitlement, so the app shows "activating" for up to a minute. Plan switches between Standard and Pro use the plugin's upgrade or scheduled change.
-- **Manage, cancel, change card, invoices:** the plugin's billing portal session, linked from the account page. Cancellation takes effect at period end; entitlement drops when the subscription ends.
+- **Manage, cancel, change card, invoices:** the plugin's billing portal session, linked from the account page. Cancellation takes effect at period end with no proration credit; entitlement drops when the subscription ends. Downgrades are scheduled for the period end; upgrades apply at once and charge the difference.
 - **Top-ups:** custom Stripe Checkout in payment mode with a top-up price; `checkout.session.completed` writes a `topup` ledger row (with the plan's bonus percentage) and a `billing_events` row for idempotency. Auto top-up (charge the saved card when the balance falls below £1) is a later option, off by default.
 - **Boosts and exports:** debited from the usage balance; a boost writes a `boosts` row for the Crawl Planner.
 - **Failed payment:** Stripe Smart Retries; the app shows a banner from `invoice.payment_failed`; after the final retry the subscription becomes `unpaid` and the entitlement reverts to Free. Data and hunts are kept.
-- **Refunds:** 14-day money-back on the first payment of a new subscription, issued through the Stripe dashboard by a human. Boosts are non-refundable once active.
+- **No refunds** (owner, 2026-09-24; `docs/decisions.md`, "No refunds"):
+  - **Consent at checkout.** Every Checkout that takes or schedules a first payment (subscription, trial, top-up) requires the customer's express consent to start now, their acknowledgement of losing the 14-day right to cancel, and their acceptance that payments are non-refundable. The consent uses Checkout's consent collection plus custom text from `content/legal`, marked `TODO-LEGAL` until reviewed. The session's consent and timestamp are stored in `billing_events`.
+  - **Disclosure.** Pricing and Checkout show "Payments are non-refundable" before purchase.
+  - **Reminders.** A reminder email goes out 3 days before a trial converts and 14 days before an annual renewal.
+  - **No refund path** for users or admins. A refund the law requires is issued by the owner through an audited admin action with a stated legal reason; nothing else refunds.
+  - **Chargebacks.** `charge.dispute.created` is recorded, the stored consent is submitted as evidence, and the affiliate commission is reversed.
 - **Referral credit:** £5 non-expiring usage to both the referrer and the referred user when the referred user's first subscription invoice is paid; written as `referral` ledger rows once per pair. Referral codes are per user and stored in `user_profiles`.
 - **Design partners:** admin sets `lifetimeFree` on the profile; entitlement treated as Pro.
 
@@ -64,4 +69,4 @@ The Crawl Planner's cadence rule uses subscription revenue per cell from `entitl
 
 ## Tests
 
-Webhook idempotency (same event twice → one change); entitlement matrix per tier; trial offered once and refused twice; failed-payment downgrade; monthly grant and expiry; balance buckets spend expiring first; a metered action refused at zero balance and refunded on failure; boost expiry removes the unit; referral credit applied once.
+Webhook idempotency (same event twice → one change); entitlement matrix per tier; trial offered once and refused twice; failed-payment downgrade; monthly grant and expiry; balance buckets spend expiring first; a metered action refused at zero balance and reversed on failure; Checkout refuses to proceed without consent; the stored consent matches the session; no user or ordinary admin path can create a refund; downgrades land at period end with no credit; boost expiry removes the unit; referral credit applied once.
