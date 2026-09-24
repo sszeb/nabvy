@@ -12,6 +12,7 @@ export {
   RestrictionStep,
   Role,
 } from '@nabvy/contracts/modules/auth'
+export { liftRestriction, restrictAccount, revokeSessions, setRole } from './admin'
 export { type Auth, type AuthDatabase, type AuthOptions, createAuth } from './auth'
 export {
   AccountRestrictedError,
@@ -20,6 +21,7 @@ export {
   isRestricted,
   restrictionOf,
   UnauthenticatedError,
+  UnknownAccountError,
 } from './domain'
 export {
   createRecordingMagicLinkSender,
@@ -31,7 +33,6 @@ export {
 } from './email/magic-link'
 export { createAuthFromEnv, getAuth } from './instance'
 export { assertAccountActive, isAccountActive } from './repo'
-export { liftRestriction, restrictAccount } from './restrict'
 export { createAuthRouteHandlers } from './route-handler'
 export {
   getSession,

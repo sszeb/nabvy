@@ -5,9 +5,9 @@ import {
   type RestrictionStep,
 } from '@nabvy/contracts/modules/auth'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { liftRestriction, restrictAccount } from '../src/admin'
 import { AccountRestrictedError, ForbiddenError, UnauthenticatedError } from '../src/domain'
 import { assertAccountActive, isAccountActive } from '../src/repo'
-import { liftRestriction, restrictAccount } from '../src/restrict'
 import { getSession, requireActiveUser, requireAdmin, requireUser } from '../src/session'
 import {
   BASE_URL,
@@ -317,12 +317,18 @@ describe('account standing', () => {
     const email = 'restricted.by.module@example.com'
     const cookie = await signInByMagicLink(harness, email)
     const id = (await userRow(email))?.id as string
-    await restrictAccount(harness.auth, {
-      userId: id,
-      policy: 'acceptable-use',
-      until: new Date(Date.now() + 24 * 3600 * 1000),
-      reason: 'internal evidence',
-    })
+    await signInByMagicLink(harness, FOUNDER)
+    const actorUserId = (await userRow(FOUNDER))?.id as string
+    await restrictAccount(
+      {
+        actorUserId,
+        userId: id,
+        policy: 'acceptable-use',
+        until: new Date(Date.now() + 24 * 3600 * 1000),
+        reason: 'internal evidence',
+      },
+      harness.auth,
+    )
     expect(await sessionCount(id)).toBe(0)
     expect(await userRow(email)).toMatchObject({ banned: true, ban_reason: 'internal evidence' })
     await expect(requireActiveUser(headersWith(cookie), harness.auth)).rejects.toBeInstanceOf(
@@ -344,29 +350,8 @@ describe('account standing', () => {
     })
     expect(body).not.toContain('internal evidence')
 
-    await liftRestriction(harness.auth, id)
+    await liftRestriction({ actorUserId, userId: id }, harness.auth)
     await signInByMagicLink(harness, email)
-  })
-
-  it('an admin ban through the API revokes sessions and hides the reason', async () => {
-    const adminCookie = await signInByMagicLink(harness, FOUNDER)
-    const email = 'admin.banned@example.com'
-    const userCookie = await signInByMagicLink(harness, email)
-    const id = (await userRow(email))?.id as string
-
-    const response = await harness.routes.POST(
-      new Request(`${BASE_URL}/api/auth/admin/ban-user`, {
-        method: 'POST',
-        headers: { cookie: adminCookie, origin: BASE_URL, 'content-type': 'application/json' },
-        body: JSON.stringify({ userId: id, banReason: 'internal evidence' }),
-      }),
-    )
-    expect(response.status).toBe(200)
-    expect(await response.text()).not.toContain('internal evidence')
-    expect(await sessionCount(id)).toBe(0)
-    await expect(requireActiveUser(headersWith(userCookie), harness.auth)).rejects.toBeInstanceOf(
-      UnauthenticatedError,
-    )
   })
 
   it('jobs acting for a user check standing on the app and pipeline roles', async () => {
@@ -397,13 +382,17 @@ describe('account standing', () => {
   })
 })
 
-describe('admin permissions until admin actions are audited', () => {
+describe('Better Auth admin endpoints: reads only, every change goes through the audited functions', () => {
   let adminCookie: string | undefined
   it.each([
     ['impersonate-user', (id: string) => ({ userId: id })],
     ['set-role', (id: string) => ({ userId: id, role: 'admin' })],
     ['remove-user', (id: string) => ({ userId: id })],
     ['create-user', () => ({ email: 'made@example.com', name: '', password: 'x'.repeat(12) })],
+    ['ban-user', (id: string) => ({ userId: id, banReason: 'unaudited' })],
+    ['unban-user', (id: string) => ({ userId: id })],
+    ['revoke-user-sessions', (id: string) => ({ userId: id })],
+    ['update-user', (id: string) => ({ userId: id, data: { role: 'admin' } })],
   ])('an admin cannot %s', async (endpoint, body) => {
     adminCookie ??= await signInByMagicLink(harness, FOUNDER)
     const target = (await userRow('plain@example.com'))?.id as string
@@ -415,7 +404,17 @@ describe('admin permissions until admin actions are audited', () => {
       }),
     )
     expect(response.status).toBe(403)
-    expect((await userRow('plain@example.com'))?.role).toBe('user')
+    expect(await userRow('plain@example.com')).toMatchObject({ role: 'user', banned: false })
+  })
+
+  it('an admin can still list users', async () => {
+    adminCookie ??= await signInByMagicLink(harness, FOUNDER)
+    const response = await harness.routes.GET(
+      new Request(`${BASE_URL}/api/auth/admin/list-users`, {
+        headers: { cookie: adminCookie, origin: BASE_URL },
+      }),
+    )
+    expect(response.status).toBe(200)
   })
 })
 
