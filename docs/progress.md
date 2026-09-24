@@ -77,7 +77,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | audit-log | 0 | PR #15 open, changes needed | `session_01SUaJRBg87fChhAHgCmYrGb` | top |
 | cost-meter | 0 | done: PR #16 merged 13:00; both migrations applied 13:05 (ledger checked) | `session_01P7EwgNXQxqDq16uiLsSEVg` | top |
 | incidents | 0 | PR #19 open | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
-| quote-redaction | 0 | PR #17 open, changes needed; mask wording waits on the owner | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
+| quote-redaction | 0 | PR #17 open, changes needed; mask wording approved by the owner | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
 
 ## Work outside the backlog
 

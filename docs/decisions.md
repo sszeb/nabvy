@@ -244,3 +244,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 - eBay Marketplace Insights, Partner Network and Sell API approvals.
 - CeX or CeXDB licensing outcome.
 - UK legal review outcome for provider-collected Facebook and Gumtree data.
+
+## Quote masks shown to users (owner, 2026-09-24)
+
+The owner approved the wording `quote-redaction` shows in place of contact details: `[phone redacted]`, `[email redacted]`, `[handle redacted]`, `[link redacted]`, and a full postcode cut to its outward half plus `[redacted]` (for example `PO19 [redacted]`). Approved as "Approve and carry on" on PR #17.
