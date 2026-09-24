@@ -1,0 +1,1 @@
+Top candidate at 0.55 is below the threshold: the user confirms or picks. "Gigabyte RTX 3080 Eagle" matches the RTX 3080 family without its VRAM, so it names no catalogue item and is dropped (never a guess).

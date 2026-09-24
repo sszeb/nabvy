@@ -1,0 +1,27 @@
+{
+  "name": "@nabvy/scan-recognition",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nabvy/account": "workspace:*",
+    "@nabvy/config": "workspace:*",
+    "@nabvy/contracts": "workspace:*",
+    "@nabvy/cost-meter": "workspace:*",
+    "@nabvy/db": "workspace:*",
+    "@nabvy/product-catalogue": "workspace:*",
+    "@nabvy/switches": "workspace:*",
+    "drizzle-orm": "0.45.3",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8"
+  }
+}
