@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "docs/affiliates.md Tests: lead tracked once per user",
+  "steps": [
+    { "capture": { "affiliateClickId": "click_abc" } },
+    { "capture": { "affiliateClickId": "click_abc" } },
+    { "capture": { "affiliateClickId": "click_xyz" } }
+  ]
+}
