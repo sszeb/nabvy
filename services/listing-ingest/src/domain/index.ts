@@ -136,6 +136,8 @@ export interface Card {
   foundByTerms: string[]
   /** The search URL that returned the card (first of `sourceUrls`); null for details rows. */
   sourceUrl: string | null
+  /** Every search URL that returned the card; empty for details rows. */
+  sourceUrls: string[]
 }
 
 const iso = (value: unknown): string | null => {
@@ -158,7 +160,8 @@ export function readCard(item: unknown, seq: number, fallbackSeenAt: string): Ca
   const title = text(item.title) ?? ''
   const availability = availabilityOf(item.availability)
   const primaryPhotoId = primaryPhotoOf(item)
-  const sourceUrl = strings(item.sourceUrls)[0] ?? null
+  const sourceUrls = strings(item.sourceUrls)
+  const sourceUrl = sourceUrls[0] ?? null
   const bindings = item.sourceBindings
   const binding =
     sourceUrl && isObject(bindings) ? text(bindings[sourceUrl]) : text(item.sourceBinding)
@@ -199,7 +202,28 @@ export function readCard(item: unknown, seq: number, fallbackSeenAt: string): Ca
     binding,
     foundByTerms: strings(item.foundBySearchTerms),
     sourceUrl,
+    sourceUrls,
   }
+}
+
+const union = (a: readonly string[], b: readonly string[]) => [...new Set([...a, ...b])]
+
+/**
+ * Folds a later row of the same listing in one run into the first: the first row's values stand,
+ * and the found-by terms and search URLs of both are kept, so a listing found by two terms or two
+ * centres carries both origins (`docs/backlog.md`, 1.3a).
+ */
+export function mergeOrigins(first: Card, later: Card): Card {
+  return {
+    ...first,
+    foundByTerms: union(first.foundByTerms, later.foundByTerms),
+    sourceUrls: union(first.sourceUrls, later.sourceUrls),
+  }
+}
+
+/** The found-by terms after a new card: every term seen so far, earlier ones first. */
+export function mergeTerms(stored: readonly string[], card: readonly string[]): string[] {
+  return union(stored, card)
 }
 
 /** A sighting to write for one card, before the listing ID is known. */
@@ -207,15 +231,16 @@ export interface Observation {
   sourceListingId: string
   seq: number
   kind: ListingIngestSightingKind
-  term: string | null
-  centreId: string | null
+  terms: string[]
+  centreIds: string[]
   rank: number | null
 }
 
 /**
  * One observation per card per run (question 4): the first row of each listing ID wins. A search
  * run gives `search` sightings ranked by row order within their search URL; a details run gives
- * `detail` observations with no term, centre or rank.
+ * `detail` observations with no terms, centres or rank. Every found-by term and every centre of the
+ * card's search URLs is kept on the sighting.
  */
 export function observationsOf(
   cards: readonly Card[],
@@ -236,16 +261,16 @@ export function observationsOf(
             sourceListingId: card.sourceListingId,
             seq: card.seq,
             kind: 'search',
-            term: card.foundByTerms[0] ?? null,
-            centreId: centreOfUrl(card.sourceUrl),
+            terms: card.foundByTerms,
+            centreIds: [...new Set(card.sourceUrls.flatMap((url) => centreOfUrl(url) ?? []))],
             rank,
           }
         : {
             sourceListingId: card.sourceListingId,
             seq: card.seq,
             kind: 'detail',
-            term: null,
-            centreId: null,
+            terms: [],
+            centreIds: [],
             rank: null,
           },
     )

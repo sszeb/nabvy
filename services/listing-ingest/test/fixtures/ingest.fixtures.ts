@@ -22,6 +22,10 @@ interface Step {
   price?: { listingId: string; amountMinor: number }
   /** Rewrites each `money.rawAmount` and `display` (the text differs; the amount does not). */
   rawDisplay?: boolean
+  /** Replaces one listing's found-by terms (synthetic: the same card found by another search). */
+  terms?: { listingId: string; terms: string[] }
+  /** Appends a second row of one listing, found by another term from another centre. */
+  extraOrigin?: { listingId: string; term: string; centreId: string }
 }
 
 interface Input {
@@ -53,6 +57,28 @@ const camel = (row: Json) =>
 function rowsFor(step: Step, dataset: Json[]): Json[] {
   let rows = step.kind === 'details' ? asDetailRows(dataset) : dataset
   if (step.price) rows = withPrice(rows, step.price.listingId, step.price.amountMinor)
+  if (step.terms) {
+    const { listingId, terms } = step.terms
+    rows = rows.map((row) =>
+      row.listingId === listingId ? { ...row, foundBySearchTerms: terms } : row,
+    )
+  }
+  if (step.extraOrigin) {
+    const { listingId, term, centreId } = step.extraOrigin
+    const row = rows.find((r) => r.listingId === listingId)
+    const url = `https://www.facebook.com/marketplace/${centreId}/search/?query=${encodeURIComponent(term)}&sortBy=creation_time_descend`
+    if (row) {
+      rows = [
+        ...rows,
+        {
+          ...row,
+          foundBySearchTerms: [term],
+          sourceUrls: [url],
+          sourceBindings: { [url]: 'verified' },
+        },
+      ]
+    }
+  }
   if (step.rawDisplay) {
     rows = rows.map((row) => {
       const money = row.money as Json | undefined
@@ -124,7 +150,8 @@ describe('ingest', () => {
       const [row] = await t.asPipeline(
         `select s.* from listing_ingest.v_sightings s
          join listing_ingest.v_listings l on l.id = s.listing_id
-         where l.source_listing_id = $1 and s.kind = $2`,
+         where l.source_listing_id = $1 and s.kind = $2
+         order by s.seen_at, s.job_id limit 1`,
         [expected.sighting.sourceListingId, expected.sighting.kind],
       )
       const sighting = camel(row ?? {})

@@ -87,6 +87,14 @@ describe('idempotency', () => {
     expect(await counts()).toMatchObject({ listings: 20, sightings: 20 })
   })
 
+  it('a job with no run kind is refused, never guessed', async () => {
+    const jobId = await t.collected({ ...recorded, runSummary: {} })
+    const result = await ingest(t.db, { jobId })
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.error.code).toBe('listing-ingest.unknown_run_kind')
+    expect(await counts()).toMatchObject({ listings: 0, sightings: 0 })
+  })
+
   it('a job the gateway does not show fails, so it is retried rather than dropped', async () => {
     const result = await ingest(t.db, { jobId: 999, kind: 'search' })
     expect(result.ok).toBe(false)

@@ -9,8 +9,8 @@
   "sighting": {
     "sourceListingId": "1816901372840238",
     "kind": "detail",
-    "term": null,
-    "centreId": null,
+    "terms": [],
+    "centreIds": [],
     "rank": null
   }
 }

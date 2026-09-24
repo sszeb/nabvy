@@ -50,9 +50,9 @@ insert into listing_ingest.listings (source, source_listing_id, card_hash, price
   money_kind, title, first_fetched_at, last_seen_at, availability, item_job_id, item_seq)
 values ('facebook', '28242423458759790', repeat('a', 64), 20000, 'GBP', 'fixed', 'Gaming PC',
   '2026-09-24T01:40:43Z', '2026-09-24T01:40:43Z', 'live', 1, 0);
-insert into listing_ingest.sightings (listing_id, job_id, seq, kind, term, centre_id, rank,
+insert into listing_ingest.sightings (listing_id, job_id, seq, kind, terms, centre_ids, rank,
   card_hash, price_minor, currency, availability, seen_at)
-select id, 1, 0, 'search', 'gaming pc', '115935195086622', 1, repeat('a', 64), 20000, 'GBP',
+select id, 1, 0, 'search', array['gaming pc'], array['115935195086622'], 1, repeat('a', 64), 20000, 'GBP',
   'live', '2026-09-24T01:40:43Z'
 from listing_ingest.listings;
 insert into listing_ingest.sightings (listing_id, job_id, seq, kind, card_hash, price_minor,

@@ -95,7 +95,6 @@ const cardColumns = (card: Card) => ({
   primaryPhotoId: card.primaryPhotoId,
   displayedPreviousMinor: card.displayedPreviousMinor,
   binding: card.binding,
-  foundByTerms: card.foundByTerms,
 })
 
 /** Inserts identities not yet stored; an existing `(source, source_listing_id)` is left alone. */
@@ -108,6 +107,7 @@ export async function insertListings(q: Queryable, jobId: number, cards: Card[])
         source: card.source,
         sourceListingId: card.sourceListingId,
         ...cardColumns(card),
+        foundByTerms: card.foundByTerms,
         firstFetchedAt: new Date(card.seenAt),
         itemJobId: jobId,
         itemSeq: card.seq,
@@ -147,9 +147,32 @@ export async function updateFromDetail(q: Queryable, listingId: string, card: Ca
       cityPageId: sql`coalesce(${listings.cityPageId}, ${card.cityPageId})`,
       townLabel: sql`coalesce(${listings.townLabel}, ${card.townLabel})`,
       categoryId: sql`coalesce(${listings.categoryId}, ${card.categoryId})`,
-      displayedPreviousMinor: card.displayedPreviousMinor,
+      displayedPreviousMinor: sql`coalesce(${card.displayedPreviousMinor}::bigint, ${listings.displayedPreviousMinor})`,
     })
     .where(eq(listings.id, listingId))
+}
+
+/**
+ * Adds found-by terms a listing does not carry yet, keeping the earlier ones first, in one
+ * statement. Runs for every search card, newer or not, so no run's terms are lost; a listing that
+ * already carries them all is not written.
+ */
+export async function addTerms(
+  q: Queryable,
+  rows: { listingId: string; terms: string[] }[],
+): Promise<void> {
+  const payload = rows.filter((row) => row.terms.length > 0)
+  if (payload.length === 0) return
+  await q.execute(sql`
+    update listing_ingest.listings l
+    set found_by_terms = l.found_by_terms || array(
+      select distinct t from jsonb_array_elements_text(x.terms) as t
+      where not (t = any (l.found_by_terms)))
+    from jsonb_to_recordset(${JSON.stringify(
+      payload.map((row) => ({ id: row.listingId, terms: row.terms })),
+    )}::jsonb) as x (id uuid, terms jsonb)
+    where l.id = x.id
+      and not (l.found_by_terms @> array(select jsonb_array_elements_text(x.terms)))`)
 }
 
 /** One sighting per listing, job and kind; a replayed job inserts nothing. */
@@ -167,8 +190,8 @@ export async function insertSightings(
         jobId,
         seq: observation.seq,
         kind: observation.kind,
-        term: observation.term,
-        centreId: observation.centreId,
+        terms: observation.terms,
+        centreIds: observation.centreIds,
         rank: observation.rank,
         cardHash: card.cardHash,
         priceMinor: card.priceMinor,

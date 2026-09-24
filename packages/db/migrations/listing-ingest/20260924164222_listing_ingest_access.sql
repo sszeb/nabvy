@@ -30,7 +30,7 @@ where switches.state('listing-ingest') <> 'off';
 
 create view listing_ingest.v_sightings with (security_invoker = true) as
 select
-  s.id, s.listing_id, s.job_id, s.seq, s.kind, s.term, s.centre_id, s.rank, s.card_hash,
+  s.id, s.listing_id, s.job_id, s.seq, s.kind, s.terms, s.centre_ids, s.rank, s.card_hash,
   s.price_minor, s.currency, s.availability, s.seen_at
 from listing_ingest.sightings s
 where switches.state('listing-ingest') <> 'off';

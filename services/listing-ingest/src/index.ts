@@ -22,10 +22,12 @@ import {
   detailUpdate,
   eventKey,
   isChange,
+  mergeOrigins,
   observationsOf,
   readCard,
 } from './domain'
 import {
+  addTerms,
   deleteListings,
   insertListings,
   insertSightings,
@@ -87,14 +89,23 @@ export async function ingest(
       message: `Job ${input.jobId} is not a collected job in apify_gateway.v_jobs (or the gateway is off).`,
     })
   }
-  const runKind = input.kind ?? job.runKind ?? 'search'
+  const runKind = input.kind ?? job.runKind
+  if (!runKind) {
+    return err({
+      code: 'listing-ingest.unknown_run_kind',
+      message: `Job ${input.jobId} has no run kind (no event kind and no RUN_SUMMARY): not ingested.`,
+    })
+  }
   const fallbackSeenAt = job.collectedAt ?? job.finishedAt ?? new Date().toISOString()
 
-  // One card per listing ID: the first row wins (one observation per card per run).
+  // One card per listing ID: the first row's values win (one observation per card per run), and
+  // the terms and search URLs of every row of that ID are kept.
   const cards = new Map<string, Card>()
   for (const row of await selectListingRows(q, input.jobId)) {
     const card = readCard(row.item, row.seq, fallbackSeenAt)
-    if (card && !cards.has(card.sourceListingId)) cards.set(card.sourceListingId, card)
+    if (!card) continue
+    const first = cards.get(card.sourceListingId)
+    cards.set(card.sourceListingId, first ? mergeOrigins(first, card) : card)
   }
   report.cards = cards.size
   const ids = [...cards.keys()]
@@ -127,6 +138,15 @@ export async function ingest(
   const listingIdOf = new Map(
     (await selectListings(q, 'facebook', ids)).map((row) => [row.sourceListingId, row.id]),
   )
+  if (runKind === 'search') {
+    await addTerms(
+      q,
+      [...cards.values()].flatMap((card) => {
+        const listingId = listingIdOf.get(card.sourceListingId)
+        return listingId ? [{ listingId, terms: card.foundByTerms }] : []
+      }),
+    )
+  }
   const rows = observationsOf([...observed.values()], runKind).flatMap((observation) => {
     const listingId = listingIdOf.get(observation.sourceListingId)
     const card = observed.get(observation.sourceListingId)

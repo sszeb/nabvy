@@ -1,0 +1,14 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "steps": [
+    {
+      "kind": "search",
+      "extraOrigin": {
+        "listingId": "1816901372840238",
+        "term": "gaming computer",
+        "centreId": "106078429431815"
+      }
+    },
+    { "kind": "search", "terms": { "listingId": "1816901372840238", "terms": ["gaming tower"] } }
+  ]
+}

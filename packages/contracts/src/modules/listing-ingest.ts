@@ -70,10 +70,10 @@ export const ListingIngestSighting = z.strictObject({
   jobId: JobId,
   seq: z.int().min(0),
   kind: ListingIngestSightingKind,
-  /** The first found-by search term; null for a detail observation. */
-  term: z.string().nullable(),
-  /** The Facebook city page the search was centred on; null for a detail observation. */
-  centreId: z.string().nullable(),
+  /** Every search term that found the card in this run; empty for a detail observation. */
+  terms: z.array(z.string()),
+  /** The Facebook city pages the searches were centred on; empty for a detail observation. */
+  centreIds: z.array(z.string()),
   /** 1-based row order within the search that returned the card; null for a detail observation. */
   rank: z.int().min(1).nullable(),
   cardHash: ListingIngestCardHash,
@@ -116,5 +116,6 @@ export const events = defineEvents(module, {
 /** Error codes the module returns as values. */
 export const ListingIngestErrorCode = z.enum([
   'listing-ingest.job_not_found', // the job is not in apify_gateway.v_jobs (or the gateway is off)
+  'listing-ingest.unknown_run_kind', // neither the event nor the job says search or details
 ])
 export type ListingIngestErrorCode = z.infer<typeof ListingIngestErrorCode>

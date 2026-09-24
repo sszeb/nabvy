@@ -22,8 +22,8 @@
   "sighting": {
     "sourceListingId": "1816901372840238",
     "kind": "search",
-    "term": "gaming pc",
-    "centreId": "115935195086622",
+    "terms": ["gaming pc"],
+    "centreIds": ["115935195086622"],
     "rank": 1
   }
 }

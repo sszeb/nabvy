@@ -41,8 +41,8 @@ user-facing output. `erase` runs whatever the switch says. P1, step 2
     town_label, availability, category_id, delivery_types, primary_photo_id,
     displayed_previous_minor, binding, found_by_terms, item_job_id, item_seq
     (`ListingIngestListing`).
-  - `listing_ingest.v_sightings`: id, listing_id, job_id, seq, kind (`search | detail`), term,
-    centre_id, rank, card_hash, price_minor, currency, availability, seen_at
+  - `listing_ingest.v_sightings`: id, listing_id, job_id, seq, kind (`search | detail`), terms,
+    centre_ids, rank, card_hash, price_minor, currency, availability, seen_at
     (`ListingIngestSighting`). Coverage and page-1 overlap read kind `search` only.
   - `listing_ingest.v_price_changes`: listing_id, sighting_id, kind, previous_minor, price_minor,
     currency, previous_seen_at, seen_at (`ListingIngestPriceChange`), within one listing ID.
@@ -73,7 +73,8 @@ Schema `listing_ingest`:
 | Price | Only `money.kind` "fixed" in GBP or EUR, from `amountMinor`; else null, kind kept | actor-integration.md 2.7 | Fixed |
 | Card hash | SHA-256 of NFKC-lower-cased, whitespace-collapsed title, `priceMinor`, currency, availability, primary photo ID | Rule 8 | Starting value (question 3) |
 | Availability | `sold`, then `pending`, then `hidden`, then `live`, else `unknown`, from the actor's flags | This module | Starting value |
-| Observations | One per listing per run; the first row of an ID wins | Question 4 | Starting value |
+| Observations | One per listing per run; the first row of an ID gives the values, every row's terms and centres are kept | Question 4; `docs/backlog.md` 1.3a | Starting value |
+| Found-by terms | The listing keeps the union of every run's terms, earlier ones first | `docs/backlog.md` 1.3a | Fixed |
 | Rank | 1-based row order within the card's search URL | The card ("row order") | Fixed |
 | Newer wins | A card replaces stored values only if it is at least as recent as `last_seen_at` | This module | Fixed |
 | Event batch | 500 listing IDs | Rule 7 (`LISTING_INGEST_EVENT_BATCH_SIZE`) | Fixed |
@@ -93,10 +94,12 @@ gateway jobs:
 - `detail-price-drop` (synthetic): a details refresh at a lower price gives `card-changed` and a
   `detail` price change.
 - `pasted-links` (synthetic): listings first known through a details run.
+- `two-terms` (synthetic): a listing found by two terms from two centres in one run carries both
+  on its sighting, and its found-by terms are the union across runs (`docs/backlog.md` 1.3a).
 
-Pass rate 6/6 (2026-09-24). Other tests: `domain.test.ts`, `idempotency.test.ts` (a replayed job
+Pass rate 7/7 (2026-09-24). Other tests: `domain.test.ts`, `idempotency.test.ts` (a replayed job
 writes nothing and returns the same keys; a late older run never overwrites a newer card; the
-handler publishes once), `switch.test.ts` (off, paused pipeline, shadow, erase),
+handler publishes once; a job with no run kind is refused), `switch.test.ts` (off, paused pipeline, shadow, erase),
 `contracts.test.ts` (events and every view row parse; no seller-like column), and
 `packages/db/tests/listing-ingest.test.sql` (grants, unique keys, views empty while off, the
 foundation's view check). With this module, `apify-gateway`'s reader check is covered: this
@@ -113,6 +116,14 @@ acknowledging a job the gateway does not show.
   the search card's (fresh card fields win), and the card hash is recomputed over them, so a
   details fetch that only rewords the price text changes nothing. Listed time, city page, town and
   category are filled from a details row only where still unknown.
+- **2026-09-24: both origins survive** (review of PR #35). A sighting keeps every found-by term
+  (`terms`) and every centre of its search URLs (`centre_ids`), and the listing's
+  `found_by_terms` is a set union across runs, added for every search card, newer or not. The
+  card's single `term` and `centre_id` became arrays.
+- **2026-09-24: an unknown run kind is refused** (review of PR #35): `ingest` returns
+  `listing-ingest.unknown_run_kind` rather than guessing `search`.
+- **2026-09-24: a details row without a displayed previous price keeps the stored one**, so a
+  details fetch never erases that raw fact.
 - **2026-09-24: sightings carry price, currency and availability.** The card lists the sighting's
   columns without them, but `v_price_changes` and the details observation (section 8, change 5)
   need them. `listings.found_by_terms` holds the card's found-by terms, which the card names under
@@ -130,7 +141,8 @@ acknowledging a job the gateway does not show.
 ## Open questions
 
 `docs/questions/listing-ingest.md` (folded into `docs/questions.md` by the coordinator): first-seen
-for listings first known through a details run; the card hash on photo ID. Catalogue questions 3
+for listings first known through a details run; the card hash on photo ID; photo-only changes;
+events when jobs arrive out of order; per-listing updates. Catalogue questions 3
 and 4.
 
 ## Incidents

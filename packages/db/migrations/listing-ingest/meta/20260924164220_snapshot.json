@@ -1,5 +1,5 @@
 {
-  "id": "26858ef8-d0fa-4673-80f2-6030e0152be4",
+  "id": "c6bf931e-f562-4328-83da-16d118b02721",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -247,17 +247,19 @@
           "primaryKey": false,
           "notNull": true
         },
-        "term": {
-          "name": "term",
-          "type": "text",
+        "terms": {
+          "name": "terms",
+          "type": "text[]",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'{}'::text[]"
         },
-        "centre_id": {
-          "name": "centre_id",
-          "type": "text",
+        "centre_ids": {
+          "name": "centre_ids",
+          "type": "text[]",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'{}'::text[]"
         },
         "rank": {
           "name": "rank",
@@ -696,17 +698,17 @@
           "primaryKey": false,
           "notNull": true
         },
-        "term": {
-          "name": "term",
-          "type": "text",
+        "terms": {
+          "name": "terms",
+          "type": "text[]",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "centre_id": {
-          "name": "centre_id",
-          "type": "text",
+        "centre_ids": {
+          "name": "centre_ids",
+          "type": "text[]",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "rank": {
           "name": "rank",

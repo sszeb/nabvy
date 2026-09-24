@@ -8,6 +8,8 @@ import {
   cityPageOf,
   detailUpdate,
   isChange,
+  mergeOrigins,
+  mergeTerms,
   normaliseTitle,
   observationsOf,
   primaryPhotoOf,
@@ -162,12 +164,35 @@ describe('observationsOf', () => {
     const out = observationsOf(doubled, 'search')
     expect(out).toHaveLength(20)
     expect(out.map((o) => o.rank)).toEqual(Array.from({ length: 20 }, (_, i) => i + 1))
-    expect(out[0]).toMatchObject({ kind: 'search', term: 'gaming pc', centreId: '115935195086622' })
+    expect(out[0]).toMatchObject({
+      kind: 'search',
+      terms: ['gaming pc'],
+      centreIds: ['115935195086622'],
+    })
   })
 
-  it('gives detail observations no term, centre or rank', () => {
+  it('keeps both origins of a listing found by two terms and two centres', () => {
+    const [card] = cards
+    if (!card) throw new Error('no card')
+    const other = {
+      ...card,
+      seq: 30,
+      foundByTerms: ['gaming computer'],
+      sourceUrls: [
+        'https://www.facebook.com/marketplace/106078429431815/search/?query=gaming+computer',
+      ],
+    }
+    const merged = mergeOrigins(card, other)
+    expect(merged.seq).toBe(card.seq)
+    const [out] = observationsOf([merged], 'search')
+    expect(out?.terms).toEqual(['gaming pc', 'gaming computer'])
+    expect(out?.centreIds).toEqual(['115935195086622', '106078429431815'])
+    expect(mergeTerms(['a', 'b'], ['b', 'c'])).toEqual(['a', 'b', 'c'])
+  })
+
+  it('gives detail observations no terms, centres or rank', () => {
     const [first] = observationsOf(cards, 'details')
-    expect(first).toMatchObject({ kind: 'detail', term: null, centreId: null, rank: null })
+    expect(first).toMatchObject({ kind: 'detail', terms: [], centreIds: [], rank: null })
   })
 })
 
