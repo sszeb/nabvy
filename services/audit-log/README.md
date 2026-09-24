@@ -44,6 +44,7 @@ Access (`packages/db/migrations/audit-log/*_audit_log_access.sql`):
 | --- | --- | --- |
 | `nabvy_app` | insert | only rows whose `actor_user_id` is the `withUser` user |
 | `nabvy_pipeline` | insert | any row: the pipeline is trusted to name the real actor |
+| `nabvy_auth` | insert | only rows whose `actor_user_id` is an existing account (task 4.0b, `better-auth/20260924143843_better_auth_audit_access.sql`) |
 | anyone | no select, update, delete or truncate | triggers refuse update, delete and truncate even for the owner |
 
 ## Rules and thresholds

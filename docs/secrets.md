@@ -21,6 +21,7 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `CEX_API_BASE`, `CEX_DAILY_CAP_CALLS` | source-adapters | Config, not secret: `https://wss2.cex.uk.webuy.io/v3`, `300` |
 | `ANTHROPIC_API_KEY` | extraction-enrichment, recognition, valuation (explanations) | Anthropic Console |
 | `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST` | model calls | Langfuse project |
+| `LANGFUSE_SAMPLE_RATE` | `@nabvy/telemetry` (tracing) | Config, not secret: share of non-model spans exported, `0`-`1`; default `1` |
 | `TELEGRAM_BOT_TOKEN` | notification-dispatcher | BotFather |
 | `DISCORD_BOT_TOKEN` | notification-dispatcher (phase 5) | Discord developer portal |
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | notification-dispatcher, web app | Generated once with `web-push generate-vapid-keys` |

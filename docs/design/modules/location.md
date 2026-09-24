@@ -15,4 +15,4 @@
 - **Tests and fixtures:** on the recorded run, 14 of 20 listings sit more than 65 km from Facebook's reported centre (11.6–109.0 km; computed by this session from `…/dataset.json` and `…/run-summary.json:15-20`); the city-page fallback; rounding.
 - **Priority and phase:** P1; distance belongs to the app (`fb-scrap-engine/docs/HANDOFF.md:84-86`).
 - **Sources:** `fb-scrap-engine/docs/HANDOFF.md:84-86`; `fb-scrap-engine/docs/EVIDENCE_LEDGER.md:425-428`; `fb-scrap-engine/README.md:412,447`; `fb-scrap-engine/docs/design/SELLER_DATA.md:301`; `nabvy/docs/decisions.md:20`.
-- **Open questions:** none.
+- **Open questions:** the search-map-routes draft proposes OS Open Names places and display points (task 1.2g); decide when 1.2g is scheduled.

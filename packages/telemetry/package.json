@@ -1,0 +1,34 @@
+{
+  "name": "@nabvy/telemetry",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@langfuse/client": "5.11.1",
+    "@langfuse/otel": "5.11.1",
+    "@langfuse/tracing": "5.11.1",
+    "@nabvy/config": "workspace:*",
+    "@nabvy/contracts": "workspace:*",
+    "@opentelemetry/api": "1.9.1",
+    "@opentelemetry/sdk-node": "0.222.0",
+    "@opentelemetry/sdk-trace-base": "2.11.0",
+    "posthog-js": "1.434.12",
+    "posthog-node": "5.53.0",
+    "zod": "4.6.5"
+  },
+  "peerDependencies": {
+    "react": "19.3.0"
+  },
+  "devDependencies": {
+    "@opentelemetry/core": "2.11.0",
+    "@types/react": "19.3.0",
+    "react": "19.3.0"
+  }
+}
