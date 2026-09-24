@@ -51,6 +51,8 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 0.11 | Replace the switch stubs | done: PR #34 merged 16:36 (`19f68e6`); both migrations applied 16:43 (ledger checked); cost-meter is seeded off, so `v_costs` is empty until an admin switches it on | 2026-09-24 | `session_01Lb6LJFC25YwtRsFqvxXgff`, Sonnet |
 | 1.1d | Actor app integration guide condensed | done: PR #38 merged 17:02 (`4a856cf`), `docs/design/actor-app-guide.md`; third off-limits actor added to `CLAUDE.md` | 2026-09-24 | `session_012jNJ1yAmFo3qjybDMsQYg9`, Sonnet |
 | 4.3t | Abuse and cost-exploit threat model | started 17:05 | 2026-09-24 | `session_01Y4xYvmajeh5wX2ghYYWfyM`, top |
+| 1.2m, 4.3r | Governor recompute schedule; account purge schedule | started 17:20, two PRs in order | 2026-09-24 | `session_01PrKA1b7kzJ6CkMpxiS93Y9`, Sonnet |
+| 4.1q | Cadence slider (web) | started 17:21; spec `docs/design/cadence-slider.md` | 2026-09-24 | `session_01KVppkxjxt2jWHXVoP4JRgF`, Sonnet |
 | 4.3b | Security hardening | not started | | |
 | 4.4 | Crawl planner v1 | not started | | |
 | 4.5 | Review console | not started | | |
@@ -96,6 +98,9 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | product-events | 3 | started 16:56; card `docs/design/modules/product-events.md`; PostHog keys still missing, sending stubbed | `session_01Mb9c2K2KfFYvqLcNQ8ysMD` | Sonnet |
 | scan-recognition | 3 | started 16:56; card `docs/design/modules/scan-recognition.md`; model client on recorded fixtures until the Anthropic key exists | `session_01XqmaYu7JxPG5Ps2vpYGBcx` | top |
 | details-queue | 4 | started 17:10; card `docs/design/modules/details-queue.md`; dedupes first-seen on listing ID; uses the actor's `excludeListingIds` | `session_012piuTFFBNE7nuuToeJMbpN` | top |
+| usage-ledger | 3 | started 17:19; card `docs/design/modules/usage-ledger.md` and backlog 4.9 | `session_011LkRPvWVCRKMZ9Zs7DBwSt` | top |
+| marketing-consent | 3 | started 17:19; card `docs/design/modules/marketing-consent.md`; suppression sync stubbed | `session_01X62QWS4QYSezdddLCJAvVw` | Sonnet |
+| travel-cost | 3 | started 17:19; card `docs/design/modules/travel-cost.md`; rates from config with sources | `session_01UMS77L76YWgX1RrcfbsayV` | Sonnet |
 
 ## Work outside the backlog
 
