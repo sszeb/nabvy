@@ -37,6 +37,12 @@ importers:
 
   packages/db: {}
 
+  packages/fixtures:
+    dependencies:
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+
   packages/packs: {}
 
   services/source-adapters:
