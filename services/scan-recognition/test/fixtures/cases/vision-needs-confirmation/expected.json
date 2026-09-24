@@ -1,0 +1,9 @@
+{
+  "status": "needs_confirmation",
+  "method": "vision",
+  "identified": null,
+  "candidates": ["gpu:nvidia:rtx-3080:10gb", "gpu:nvidia:rtx-3080-ti:12gb"],
+  "confidence": 0.55,
+  "modelCalled": true,
+  "event": false
+}
