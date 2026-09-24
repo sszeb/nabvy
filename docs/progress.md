@@ -47,7 +47,12 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 4.1b | User dashboard | not started | | |
 | 4.2 | Web push and email | not started | | |
 | 4.3 | Billing | blocked | 2026-09-24 | Charging from launch and strict no refunds decided by the owner (`docs/decisions.md`). Blocked on the Stripe test key and network access in the environment, then 0.3, 4.0 and 4.1a |
-| 4.3a | Account and channels | not started | | |
+| 4.3a | Account and channels | done: PR #33 merged 16:54; 24-hour purge sweep `purgeDueDeletions` shipped (see the account row in the module table) | 2026-09-24 | `session_019z1ZHft2YbdK31o3y4i7i3` then fix round `session_01JaYi4X3zUDVQy1jZrxN9cG`, Sonnet |
+| 0.11 | Replace the switch stubs | done: PR #34 merged 16:36 (`19f68e6`); both migrations applied 16:43 (ledger checked); cost-meter is seeded off, so `v_costs` is empty until an admin switches it on | 2026-09-24 | `session_01Lb6LJFC25YwtRsFqvxXgff`, Sonnet |
+| 1.1d | Actor app integration guide condensed | done: PR #38 merged 17:02 (`4a856cf`), `docs/design/actor-app-guide.md`; third off-limits actor added to `CLAUDE.md` | 2026-09-24 | `session_012jNJ1yAmFo3qjybDMsQYg9`, Sonnet |
+| 4.3t | Abuse and cost-exploit threat model | started 17:05 | 2026-09-24 | `session_01Y4xYvmajeh5wX2ghYYWfyM`, top |
+| 1.2m, 4.3r | Governor recompute schedule; account purge schedule | started 17:20, two PRs in order | 2026-09-24 | `session_01PrKA1b7kzJ6CkMpxiS93Y9`, Sonnet |
+| 4.1q | Cadence slider (web) | started 17:21; spec `docs/design/cadence-slider.md` | 2026-09-24 | `session_01KVppkxjxt2jWHXVoP4JRgF`, Sonnet |
 | 4.3b | Security hardening | not started | | |
 | 4.4 | Crawl planner v1 | not started | | |
 | 4.5 | Review console | not started | | |
@@ -81,10 +86,21 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | incidents | 0 | done: PR #19 merged 15:03 (`fa7d90f`); both migrations applied 15:10 (ledger checked) | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
 | quote-redaction | 0 | done: PR #17 merged 14:42 (`f4ded65`); both migrations applied 14:45 (ledger checked); mask wording approved by the owner | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
 | switches | 1 | done: PR #23 merged 15:03 (`c30e3af`); both migrations applied 15:10 (ledger checked) | `session_01CtxXRGTqrS7tCXgFaNfw2J` | top |
-| product-catalogue | 2 | PR #32 open 15:43; after merge apply `product-catalogue/20260924151843_product_catalogue_tables.sql`, `20260924151851_product_catalogue_access.sql` and `20260924151942_product_catalogue_seed.sql` (depend on core, switches, audit-log) | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
+| product-catalogue | 2 | done: PR #32 merged 16:19 (`d9fc189`); three migrations applied 16:33 (ledger checked) | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
 | apify-gateway | 2 | done: PR #29 merged 15:58 (`b060a99`); migration applied and Edge Function version 10 deployed 16:05 (ledger checked; cap $150 a month, build 1.0.82); inert until an admin switches on `apify` and `apify-gateway` | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
-| waitlist | 2 | PR #31 open 15:42; after merge apply `waitlist/20260924152710_waitlist_tables.sql` and `waitlist/20260924152712_waitlist_access.sql` (depend on core and switches); email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
-| account | 2 | in progress, started 15:35 from the amended card on `claude/coordinator-4` | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
+| waitlist | 2 | done: PR #31 merged 16:18 (`3cf30d1`); both migrations applied 16:29 (ledger checked); email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
+| account | 2 | done: PR #33 merged 16:54 (`1c28404`) after the fix round; three migrations applied 16:59 (ledger checked) | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
+| listing-ingest | 3 | done: PR #35 merged 16:54 (approved at `04b54ba`); both migrations applied 16:57 (ledger checked); first-seen may re-announce on out-of-order replay, so details-queue dedupes on listing ID | `session_01HfncCwAz7dL7Kx9LnCeR2U` | top |
+| spend-governor | 3 | done: PR #36 merged 16:39 (`5c2b7eb`); both migrations applied 16:43 (ledger checked); budgets seeded ($150 Apify month, $85 plan, 10 GB proxy); needs a scheduled recompute and a measured `proxy_gb` before any paying module reads `v_throttle` (backlog 1.2m, 1.2n) | `session_01CC2oetv6aarq9Pyf3wKC7q` | top |
+| route-health | 3 | done: PR #37 merged 17:08 (`583a4c0`); both migrations applied 17:12 (ledger checked); follow-ups in `docs/questions.md` (retire the source-adapters port; no-description replays) | `session_01DgJ6WG8sK8FmVprvBHT7Ln` | Sonnet |
+| run-coverage | 4 | started 16:55; card `docs/design/modules/run-coverage.md` | `session_01W9G6WWzHRC5ZWWNB5Ud36i` | top |
+| detail-evidence | 4 | started 16:55; card `docs/design/modules/detail-evidence.md` | `session_019oxS7CYEwPHJ2YpQjxK4Gw` | top |
+| product-events | 3 | done: PR #42 merged 17:39 (`61203aa`); both migrations applied 17:42 (ledger 37 rows, checksums checked, no view violations); PostHog keys still missing, forwarder injected; partition rotation needs `pg_cron` (backlog 0.12, `docs/questions.md`); non-blocking review notes: `forwarded` doc comment, unused `@nabvy/switches` dependency | `session_01Mb9c2K2KfFYvqLcNQ8ysMD` | Sonnet |
+| scan-recognition | 3 | started 16:56; card `docs/design/modules/scan-recognition.md`; model client on recorded fixtures until the Anthropic key exists | `session_01XqmaYu7JxPG5Ps2vpYGBcx` | top |
+| details-queue | 4 | started 17:10; card `docs/design/modules/details-queue.md`; dedupes first-seen on listing ID; uses the actor's `excludeListingIds` | `session_012piuTFFBNE7nuuToeJMbpN` | top |
+| usage-ledger | 3 | started 17:19; card `docs/design/modules/usage-ledger.md` and backlog 4.9 | `session_011LkRPvWVCRKMZ9Zs7DBwSt` | top |
+| marketing-consent | 3 | started 17:19; card `docs/design/modules/marketing-consent.md`; suppression sync stubbed | `session_01X62QWS4QYSezdddLCJAvVw` | Sonnet |
+| travel-cost | 3 | started 17:19; card `docs/design/modules/travel-cost.md`; rates from config with sources | `session_01UMS77L76YWgX1RrcfbsayV` | Sonnet |
 
 ## Work outside the backlog
 

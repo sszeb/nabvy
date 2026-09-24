@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "docs/marketing.md, \"Preference centre\": pause all marketing for 30 days",
+  "moduleState": "on",
+  "banned": false,
+  "granted": true,
+  "paused": true,
+  "suppressed": false
+}

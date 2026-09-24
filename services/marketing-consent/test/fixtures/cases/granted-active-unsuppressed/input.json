@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "module card: canMarket(userId, category) before any marketing send",
+  "moduleState": "on",
+  "banned": false,
+  "granted": true,
+  "paused": false,
+  "suppressed": false
+}
