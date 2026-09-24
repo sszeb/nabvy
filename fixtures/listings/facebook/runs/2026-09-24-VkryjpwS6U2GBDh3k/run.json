@@ -1,0 +1,57 @@
+{
+  "apifyRunId": "VkryjpwS6U2GBDh3k",
+  "actorId": "YfdUav3sZ2BgEf8rh",
+  "gatewayJobId": 6,
+  "settledCostUsd": 0.0177,
+  "reserveUsd": 0.3363,
+  "run": {
+    "status": "SUCCEEDED",
+    "statusMessage": "Finished! Total 1 requests: 1 succeeded, 0 failed.",
+    "startedAt": "2026-09-24T01:40:18.718Z",
+    "finishedAt": "2026-09-24T01:40:44.010Z",
+    "buildNumber": "1.0.82",
+    "itemCount": 21,
+    "usageTotalUsd": 0.0002925739708973302,
+    "options": {
+      "build": "latest",
+      "diskMbytes": 2048,
+      "timeoutSecs": 300,
+      "memoryMbytes": 1024,
+      "isMaxTotalChargeUsdSetByUser": false
+    },
+    "stats": {
+      "metamorph": 0,
+      "netRxBytes": 2109602,
+      "netTxBytes": 108567,
+      "cpuAvgUsage": 8.579574124699821,
+      "cpuMaxUsage": 49.7544339025933,
+      "memAvgBytes": 139904997.48011354,
+      "memMaxBytes": 158183424,
+      "rebootCount": 0,
+      "runTimeSecs": 25.109,
+      "computeUnits": 0.0069747222222222224,
+      "inputBodyLen": 403,
+      "restartCount": 0,
+      "durationMillis": 25109,
+      "migrationCount": 0,
+      "resurrectCount": 0,
+      "cpuCurrentUsage": 0,
+      "memCurrentBytes": 0
+    },
+    "usage": {
+      "PROXY_SERPS": 0,
+      "DATASET_READS": 0,
+      "DATASET_WRITES": 21,
+      "ACTOR_COMPUTE_UNITS": 0.0069747222222222224,
+      "REQUEST_QUEUE_READS": 0,
+      "REQUEST_QUEUE_WRITES": 0,
+      "KEY_VALUE_STORE_LISTS": 0,
+      "KEY_VALUE_STORE_READS": 1,
+      "PROXY_UNBLOCKER_UNITS": 0,
+      "KEY_VALUE_STORE_WRITES": 3,
+      "DATA_TRANSFER_EXTERNAL_GBYTES": 0.0000977618619799614,
+      "DATA_TRANSFER_INTERNAL_GBYTES": 0.00015270616859197617,
+      "PROXY_RESIDENTIAL_TRANSFER_GBYTES": 0.0001356257125735283
+    }
+  }
+}

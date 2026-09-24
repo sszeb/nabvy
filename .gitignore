@@ -1,0 +1,20 @@
+# Dependencies and build output
+node_modules/
+.turbo/
+dist/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# Local environment: secrets never leave the machine (docs/secrets.md)
+.env
+.env.*
+!.env.example
+
+# Tooling state
+.vercel/
+.trigger/
+supabase/.temp/
+*.log
+.DS_Store

@@ -1,0 +1,27 @@
+{
+  "actorInput": {
+    "inputVersion": 3,
+    "searchTerms": ["gaming pc"],
+    "cityId": "115935195086622",
+    "sort": "newest",
+    "includeDetails": true,
+    "detailRoute": "graphql",
+    "maxListings": 20,
+    "maxPagesPerSearch": 1,
+    "maxDetails": 24,
+    "maxRequests": 60,
+    "maxRunSeconds": 240,
+    "browserFallback": false,
+    "useDetailCache": false,
+    "sourceDiagnostics": true,
+    "proxyConfiguration": {
+      "useApifyProxy": true,
+      "apifyProxyGroups": ["RESIDENTIAL"],
+      "apifyProxyCountry": "GB"
+    }
+  },
+  "runOptions": {
+    "memory": 1024,
+    "timeout": 300
+  }
+}

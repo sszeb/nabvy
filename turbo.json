@@ -1,0 +1,14 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["tsconfig.base.json", ".env.example", "docs/secrets.md"],
+  "tasks": {
+    "typecheck": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": [],
+      "env": ["LIVE_PROVIDERS"],
+      "passThroughEnv": ["DATABASE_URL", "DATABASE_URL_PIPELINE"]
+    }
+  }
+}
