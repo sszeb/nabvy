@@ -1,0 +1,5 @@
+{
+  "module": "detail-evidence",
+  "schema": "detail_evidence",
+  "dependsOn": ["core", "switches", "apify-gateway", "listing-ingest"]
+}
