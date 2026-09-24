@@ -54,9 +54,14 @@ describe('cross-module access', () => {
   // auth module's Better Auth tables live in `better_auth` (README.md, "Better Auth").
   const ownerOf: Record<string, string> = { 'better-auth': 'auth' }
   // Every import or re-export whose source is a module schema file, by package path or by a
-  // relative path into packages/db/src/schema.
+  // relative path into packages/db/src/schema. The body cannot contain another "import "/"export "
+  // (the start of the next statement), so a schema-less import right before a schema import (for
+  // example a bare `import type { Queryable } from '@nabvy/db'`, needed by nearly every repo file)
+  // never gets swept into the same match — found when route-health became the first module to read
+  // another module's view: without the lookahead, the match captured the previous, unrelated
+  // statement's named imports instead of the schema import's own (review of the route-health PR).
   const statementPattern =
-    /(?:import|export)\s[^;]*?from\s+['"]((?:@nabvy\/db\/schema\/|[^'"]*packages\/db\/src\/schema\/)([a-z0-9-]+)(?:\.ts)?)['"]/g
+    /(?:import|export)\s(?:(?!import\s|export\s)[^;])*?from\s+['"]((?:@nabvy\/db\/schema\/|[^'"]*packages\/db\/src\/schema\/)([a-z0-9-]+)(?:\.ts)?)['"]/g
   const namedPattern = /^(?:import|export)\s+(?:type\s+)?\{([^}]*)\}\s+from/
 
   /** Problems with one statement that reaches another module's schema file, or none. */
