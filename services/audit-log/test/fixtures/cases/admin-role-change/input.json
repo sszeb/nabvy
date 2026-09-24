@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "source": "docs/security.md: every role change and admin action writes audit_log",
+  "role": "nabvy_app",
+  "sessionUserId": "00000000-0000-4000-8000-0000000000a1",
+  "entry": {
+    "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+    "action": "auth.role-changed",
+    "target": "user:00000000-0000-4000-8000-0000000000b2",
+    "before": { "role": "user" },
+    "after": { "role": "admin" }
+  }
+}

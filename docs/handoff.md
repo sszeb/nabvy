@@ -53,7 +53,7 @@ Do not read the whole build pack. Read a file when a task needs it.
 
 ## Fleet at handoff (11:20 UTC, snapshot)
 
-Check each row with `get_session` by ID and `list_triggers` before acting; sessions and blocks after this time are not listed. At each hand-off, fill in what each session is blocked on from a fresh `get_session` sweep. Since 12:57 the reviewer is `session_01AxhGvp1bDTi7zahVzsJAii` ("Nabvy PR reviewer (3)"); reviewers 1 and 2 (`session_01N9Z7KMkngJHEJBjDEReGo3`) have handed off. Find a later reviewer with `get_session` on that ID, else `list_sessions` with `mine: true` and no `tags` filter (the filter errors inside a session), taking the newest non-archived row titled "Nabvy PR reviewer".
+Check each row with `get_session` by ID and `list_triggers` before acting; sessions and blocks after this time are not listed. At each hand-off, fill in what each session is blocked on from a fresh `get_session` sweep. Since 13:57 the reviewer is `session_01X3MfLzncUgZWQcMCE33WMa` ("Nabvy PR reviewer (4)"); reviewers 1 to 3 (the last two `session_01N9Z7KMkngJHEJBjDEReGo3` and `session_01AxhGvp1bDTi7zahVzsJAii`) have handed off. The watchdog prompt names reviewer 4. Find a later reviewer with `get_session` on that ID, else `list_sessions` with `mine: true` and no `tags` filter (the filter errors inside a session), taking the newest non-archived row titled "Nabvy PR reviewer".
 
 | Session | ID | Role and state | Its scheduled check-ins |
 | --- | --- | --- | --- |
