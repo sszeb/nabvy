@@ -37,8 +37,9 @@ A module's tables live in a Postgres schema named after it in snake case (`listi
 - **The owning module writes.** Only `services/<module>` imports the tables from
   `@nabvy/db/schema/<module>`. No table sits in `public`.
 - **Others read only `v_` views.** Views are exported with a `v` prefix (`vListings` for
-  `listing_registry.v_listings`). A test fails if a service imports anything else from another
-  module's schema file.
+  `listing_registry.v_listings`). A test fails if a service imports, or re-exports, anything
+  else from another module's schema file, by package path or relative path; namespace imports
+  (`import * as`) of another module's schema are refused.
 - **Reserved names:** Supabase's schemas (`auth`, `storage`, `extensions` and the rest),
   `nabvy_core`, `apify_gateway`, `marketplace_monitor` (deprecated; left alone). The Better Auth
   tables are in `better_auth` because `auth` belongs to Supabase.
@@ -124,7 +125,7 @@ default, so a role with a grant but no policy sees nothing.
 pnpm db:plan      # every migration in apply order, with checksums
 pnpm db:migrate   # apply pending ones with psql (standard PG* variables, as the migration role)
 pnpm db:dry-run   # throwaway local Postgres: supabase/migrations, then this runner, then all tests
-node packages/db/scripts/migrate.mjs emit <module>/<file>   # SQL + ledger row, for the coordinator
+node packages/db/scripts/migrate.mjs emit <module>/<file>   # lock, guard, SQL, ledger row
 ```
 
 The dry-run applies, in the order the live project gets them: Supabase stand-ins, then
@@ -132,6 +133,23 @@ The dry-run applies, in the order the live project gets them: Supabase stand-ins
 no-op), then `supabase/tests/*.test.sql` and `tests/*.test.sql`. The coordinator applies merged
 migrations to Supabase: run `plan`, compare it with `select module, name from
 nabvy_core.schema_migrations`, and apply each pending file's `emit` output in plan order.
+
+Each file runs in one transaction that first takes a shared advisory lock
+(`pg_advisory_xact_lock`) and then stops if the file is already in the ledger, so two runners
+never apply the same file twice. `emit` prints the same lock and guard but no `begin`/`commit`:
+the connector's `apply_migration` already wraps its input in one transaction. With psql, run
+the output with `-1`.
+
+After applying to the live project, the coordinator runs the checks the dry-run cannot make
+faithfully, because its `anon`/`authenticated` stand-ins carry none of Supabase's grants:
+`select * from nabvy_core.view_violations()` (expect no rows);
+`select rolname, rolbypassrls from pg_roles where rolname like 'nabvy%'` (expect `false`); and
+`has_schema_privilege('anon' | 'authenticated', <module schema>, 'usage')` (expect `false`).
+
+New functions in `nabvy_core` must `revoke all on function … from public` in their migration.
+Postgres's global default grants EXECUTE to PUBLIC, and a per-schema default cannot remove it,
+so the dry-run fails when any `nabvy_core` function other than `uuidv7()` and
+`current_user_id()` is executable by an application role.
 
 ## Roles, `withUser` and RLS
 
@@ -156,19 +174,22 @@ to the next transaction on a pooled connection).
 ## Views
 
 `v_` views are the only way other modules and users read a module's data. Two rules, checked by
-`nabvy_core.view_violations()` in the dry-run, which the coordinator can also run on the live
-project:
+`nabvy_core.view_violations()` over every view and materialised view in a module schema (the
+schemas the migration ledger knows), in the dry-run and on the live project:
 
-1. **`security_invoker = true`** on every `v_` view, so RLS applies to the reader. A plain view
-   runs as its owner and would bypass RLS.
-2. **An allowlist of columns that never includes seller identity.** No column named like
+1. **`security_invoker = true`** on every plain view in a module schema, whatever its name, so
+   RLS applies to the reader. A plain view runs as its owner and would bypass RLS as soon as it
+   is granted to an application role.
+2. **An allowlist of columns that never includes seller identity**, on every `v_` view, every
+   `mv_` materialised view, and any other view `nabvy_app` can select. No column named like
    `seller…`, `profile_url`/`profile_link`/`profile_pic…`, `raw`, `raw_…`, `…_raw` or
    `source_fields`. Actor data is kept in full in the owning module's tables, and developers see
    it there; end users never see seller identity (`docs/decisions.md`, "Actor data kept in full").
    The name check is a backstop: it does not replace choosing an allowlist.
 
 Materialised views (`mv_`) run as their owner and have no RLS. They carry aggregates only, and
-never user or seller rows.
+never user or seller rows. An internal view that shows developers seller data is allowed only
+if it is not named `v_`/`mv_` and is not granted to `nabvy_app`.
 
 ## Every table
 
