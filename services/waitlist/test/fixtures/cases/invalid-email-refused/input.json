@@ -1,0 +1,11 @@
+{
+  "synthetic": true,
+  "source": "docs/security.md: every procedure validates its input with the contracts schema",
+  "calls": [
+    {
+      "ip": "203.0.113.105",
+      "state": "on",
+      "input": { "email": "not-an-email" }
+    }
+  ]
+}

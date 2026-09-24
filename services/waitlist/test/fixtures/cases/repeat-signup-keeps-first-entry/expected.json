@@ -1,0 +1,15 @@
+{
+  "results": [{ "ok": true, "joined": true }, { "ok": true, "joined": true }],
+  "storedRows": [
+    {
+      "email": "fixture-repeat@example.com",
+      "postcode": "PO19 8HR",
+      "wantedProducts": [],
+      "utmSource": "reddit",
+      "utmMedium": null,
+      "utmCampaign": null,
+      "utmTerm": null,
+      "utmContent": null
+    }
+  ]
+}

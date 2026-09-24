@@ -1,0 +1,476 @@
+{
+  "id": "ec0e43e1-6604-4d1d-a97a-6c70315c851d",
+  "prevId": "a6a5d1b3-198a-48cf-be4a-1debb7eff01d",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "product_catalogue.aliases": {
+      "name": "aliases",
+      "schema": "product_catalogue",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alias": {
+          "name": "alias",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "aliases_catalogue_id_alias_key": {
+          "name": "aliases_catalogue_id_alias_key",
+          "columns": [
+            {
+              "expression": "catalogue_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "alias",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "aliases_catalogue_id_items_catalogue_id_fk": {
+          "name": "aliases_catalogue_id_items_catalogue_id_fk",
+          "tableFrom": "aliases",
+          "columnsFrom": [
+            "catalogue_id"
+          ],
+          "tableTo": "items",
+          "schemaTo": "product_catalogue",
+          "columnsTo": [
+            "catalogue_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "aliases_alias_length": {
+          "name": "aliases_alias_length",
+          "value": "length(\"product_catalogue\".\"aliases\".\"alias\") between 1 and 200"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "product_catalogue.codes": {
+      "name": "codes",
+      "schema": "product_catalogue",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "codes_kind_code_key": {
+          "name": "codes_kind_code_key",
+          "columns": [
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "codes_catalogue_id_items_catalogue_id_fk": {
+          "name": "codes_catalogue_id_items_catalogue_id_fk",
+          "tableFrom": "codes",
+          "columnsFrom": [
+            "catalogue_id"
+          ],
+          "tableTo": "items",
+          "schemaTo": "product_catalogue",
+          "columnsTo": [
+            "catalogue_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "codes_kind": {
+          "name": "codes_kind",
+          "value": "\"product_catalogue\".\"codes\".\"kind\" in ('ean', 'cex_box')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "product_catalogue.items": {
+      "name": "items",
+      "schema": "product_catalogue",
+      "columns": {
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "variant": {
+          "name": "variant",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_mobile": {
+          "name": "is_mobile",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "pack_id": {
+          "name": "pack_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "items_catalogue_id_format": {
+          "name": "items_catalogue_id_format",
+          "value": "\"product_catalogue\".\"items\".\"catalogue_id\" ~ '^[a-z0-9-]+(:[a-z0-9-]+)+$' and length(\"product_catalogue\".\"items\".\"catalogue_id\") <= 200"
+        },
+        "items_kind": {
+          "name": "items_kind",
+          "value": "\"product_catalogue\".\"items\".\"kind\" in ('gpu', 'cpu')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "product_catalogue.negative_contexts": {
+      "name": "negative_contexts",
+      "schema": "product_catalogue",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "pattern": {
+          "name": "pattern",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "blocked_catalogue_id": {
+          "name": "blocked_catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "negative_contexts_pattern_blocked_key": {
+          "name": "negative_contexts_pattern_blocked_key",
+          "columns": [
+            {
+              "expression": "pattern",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "blocked_catalogue_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "negative_contexts_blocked_catalogue_id_items_catalogue_id_fk": {
+          "name": "negative_contexts_blocked_catalogue_id_items_catalogue_id_fk",
+          "tableFrom": "negative_contexts",
+          "columnsFrom": [
+            "blocked_catalogue_id"
+          ],
+          "tableTo": "items",
+          "schemaTo": "product_catalogue",
+          "columnsTo": [
+            "catalogue_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "negative_contexts_pattern_length": {
+          "name": "negative_contexts_pattern_length",
+          "value": "length(\"product_catalogue\".\"negative_contexts\".\"pattern\") between 1 and 200"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "product_catalogue": "product_catalogue"
+  },
+  "views": {
+    "product_catalogue.v_aliases": {
+      "name": "v_aliases",
+      "schema": "product_catalogue",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alias": {
+          "name": "alias",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "product_catalogue.v_items": {
+      "name": "v_items",
+      "schema": "product_catalogue",
+      "columns": {
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "variant": {
+          "name": "variant",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_mobile": {
+          "name": "is_mobile",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pack_id": {
+          "name": "pack_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "product_catalogue.v_negative_contexts": {
+      "name": "v_negative_contexts",
+      "schema": "product_catalogue",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pattern": {
+          "name": "pattern",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "blocked_catalogue_id": {
+          "name": "blocked_catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

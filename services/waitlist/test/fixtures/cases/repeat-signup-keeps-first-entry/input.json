@@ -1,0 +1,24 @@
+{
+  "synthetic": true,
+  "source": "task 0.5a, \"Done\"; docs/questions.md, \"waitlist: repeat sign-ups\"",
+  "calls": [
+    {
+      "ip": "203.0.113.102",
+      "state": "on",
+      "input": {
+        "email": "fixture-repeat@example.com",
+        "postcode": "po19 8hr",
+        "utm": { "source": "reddit" }
+      }
+    },
+    {
+      "ip": "203.0.113.103",
+      "state": "on",
+      "input": {
+        "email": "Fixture-Repeat@Example.com",
+        "postcode": "sw1a 1aa",
+        "utm": { "source": "google" }
+      }
+    }
+  ]
+}

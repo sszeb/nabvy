@@ -335,6 +335,40 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
 
+  services/product-catalogue:
+    dependencies:
+      '@nabvy/audit-log':
+        specifier: workspace:*
+        version: link:../audit-log
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/packs':
+        specifier: workspace:*
+        version: link:../../packages/packs
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
+
   services/quote-redaction:
     dependencies:
       '@nabvy/contracts':
@@ -374,6 +408,31 @@ importers:
       '@nabvy/transport':
         specifier: workspace:*
         version: link:../../packages/transport
+
+  services/waitlist:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
 
 packages:
 
