@@ -21,7 +21,7 @@ delete from apify_gateway.jobs;
 -- module's own behaviour is tested in packages/db/tests/apify-gateway.test.sql.
 insert into switches.switches (name, kind, state) values ('apify-gateway', 'module', 'on')
   on conflict (name) do update set state = 'on';
-update switches.switches set state = 'on' where name in ('apify', 'pipeline');
+update switches.switches set state = 'on' where name in ('apify', 'pipeline', 'cost-meter');
 update apify_gateway.settings set cap_usd = 5.50;
 
 -- 1. enqueue_run rejects every input the gateway must refuse, and accepts a valid one.

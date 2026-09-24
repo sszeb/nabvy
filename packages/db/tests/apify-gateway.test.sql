@@ -132,7 +132,12 @@ select pg_temp.check(committed_usd = 0 and remaining_usd = 150
     and month = date_trunc('month', now() at time zone 'Europe/London')::date,
   'last month''s runs, settled or not, do not count this month')
 from apify_gateway.spend;
-select pg_temp.check(kind = 'run' and status = 'running', 'a run fits under this month''s cap')
+-- Paid work pauses while the cost meter is off (rule 11); the one pending job is a run.
+select pg_temp.check(count(*) = 0, 'no run is claimed while cost-meter is off')
+from apify_gateway.claim_next_job();
+update switches.switches set state = 'on' where name = 'cost-meter';
+select pg_temp.check(kind = 'run' and status = 'running' and claimed_at is not null,
+  'a run fits under this month''s cap, and records when it was claimed')
 from apify_gateway.claim_next_job();
 select pg_temp.check(committed_usd = (select reserve_usd from apify_gateway.jobs where note = 'newest'),
   'this month''s running run counts at its reservation')
@@ -144,6 +149,24 @@ select pg_temp.check(status = 'refused' and error like 'spend cap:%',
   'a run past the monthly cap is refused')
 from apify_gateway.claim_next_job();
 delete from apify_gateway.jobs where note in ('last day of last month', 'settled last month', 'over the cap');
+
+-- A backlog queued late last month and claimed this month is charged to this month, the month the
+-- cap checked it against, so it cannot slip between the two caps (review of PR #29).
+insert into apify_gateway.jobs (kind, input, run_options, reserve_usd, note, created_at)
+select 'run', (select input from good), '{"memory":1024,"timeout":180}', 100.0000, n,
+  (date_trunc('month', now() at time zone 'Europe/London') - interval '10 minutes')
+    at time zone 'Europe/London'
+from unnest(array['backlog 1', 'backlog 2']) as n;
+select pg_temp.check(note = 'backlog 1' and status = 'running', 'the first backlog run is claimed')
+from apify_gateway.claim_next_job();
+select pg_temp.check(
+  committed_usd = 100 + (select reserve_usd from apify_gateway.jobs where note = 'newest'),
+  'a run queued last month and claimed this month counts this month')
+from apify_gateway.spend;
+select pg_temp.check(note = 'backlog 2' and status = 'refused' and error like 'spend cap:%',
+  'the second backlog run is refused once this month''s cap is reached')
+from apify_gateway.claim_next_job();
+delete from apify_gateway.jobs where note like 'backlog %';
 
 -- 6. Published views. ----------------------------------------------------------------------------
 insert into apify_gateway.jobs (kind, status, input, apify_run_id, result, note)

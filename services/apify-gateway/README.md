@@ -84,7 +84,7 @@ Schema `apify_gateway`, created by `supabase/migrations` (the bootstrap) and ext
 
 | Rule | Value | Basis | Status |
 | --- | --- | --- | --- |
-| Spend cap | $150 per calendar month, Europe/London, by the job's `created_at` | Owner, `docs/decisions.md` ("Budget", 2026-09-24); actor-integration.md 3.5 | Owner's value |
+| Spend cap | $150 per calendar month, Europe/London, by the month a run is claimed | Owner, `docs/decisions.md` ("Budget", 2026-09-24); actor-integration.md 3.5 | Owner's value |
 | Reservation bounds | $0.40/CU, $10/GB, 0.5 MB per request, + $0.01 | `supabase/README.md`, "Spend" | Unchanged |
 | Build pin | 1.0.82 | The recorded run's build; `docs/decisions.md` ("pin the actor build") | Starting value |
 | Settlement read | ≥ 10 minutes after the run finished | `supabase/README.md`, "Spend"; cost-meter's `APIFY_SETTLE_DELAY_MS` | Matched to cost-meter |
@@ -121,7 +121,7 @@ module off" waits for `listing-ingest` (task 1.3a).
   `supabase/migrations` stay the record of what was applied before the module; this module's
   changes are hand-written in `packages/db/migrations/apify-gateway/`, which the runner applies
   after them. The Drizzle file mirrors the live tables for typed queries and is never used to
-  generate a migration.
+  generate a migration (the module has no Drizzle snapshot; use `--custom` only).
 - **2026-09-24: security_invoker views and table grants.** Joining the ledger puts the schema under
   the foundation's view check, so every view there, `spend` included, is security_invoker, and
   `nabvy_pipeline` needs `SELECT` on `jobs` and `items` beneath the views (with RLS pipeline
@@ -132,6 +132,18 @@ module off" waits for `listing-ingest` (task 1.3a).
   even an older deployed function starts nothing), the Edge Function, and the pipeline's
   `enqueue_run`; the owner's four-argument `enqueue_run` still queues, but nothing is claimed while
   off (`docs/questions.md`, "the gateway is inert until switched on").
+- **2026-09-24: a run is charged to the month it is claimed** (review of PR #29).
+  `claim_next_job` checks the cap against the current month and sets `claimed_at`, and `spend`
+  counts a run in the month of `claimed_at` (runs claimed before the column existed: `created_at`).
+  A backlog queued late in one month and claimed in the next counts in the next.
+- **2026-09-24: paid runs wait while cost-meter is off.** Rule 11: paid work pauses. `submitRun`
+  refuses, and `claim_next_job` leaves pending `run` jobs pending while `cost-meter` reads off; free
+  jobs go on.
+- **2026-09-24: the pipeline can set the watcher times.** `nabvy_pipeline` holds `UPDATE` on
+  `metered_at`, `announced_at` and `settle_announced_at`. Setting one early would skip metering, an
+  announcement or a settlement for that job. Acceptable until per-module roles exist; the trigger
+  stops a time, once set, from changing, and the conventions test limits which packages name the
+  table (review of PR #29).
 - **2026-09-24: shadow runs.** Rule 11: shadow runs and writes; the gateway has no user-facing
   rows, so shadow and on behave the same.
 - **2026-09-24: the monthly cap by `created_at`.** A run counts in the London calendar month its job

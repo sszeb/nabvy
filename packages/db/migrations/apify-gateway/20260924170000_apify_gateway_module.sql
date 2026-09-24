@@ -9,7 +9,8 @@
 --      emitted) and settle_announced_at (run-settled emitted);
 --   2. settings.actor_build pins the actor build (1.0.82, the recorded run's build;
 --      docs/questions.md:14), which the Edge Function passes as the run's `build` option;
---   3. the spend cap becomes $150 per calendar month, Europe/London, by the job's created_at
+--   3. the spend cap becomes $150 per calendar month, Europe/London, by the month a run is
+--      claimed (claimed_at; created_at for runs claimed before this migration)
 --      (docs/decisions.md:138; actor-integration.md 3.5);
 --   4. the gateway works only while the module switch `apify-gateway` is not off and the provider
 --      switch `apify` and the global `pipeline` switch are on (fail closed; switches.state()
@@ -26,6 +27,7 @@ alter table apify_gateway.jobs
   add column metered_at timestamptz,
   add column announced_at timestamptz,
   add column settle_announced_at timestamptz,
+  add column claimed_at timestamptz,
   add constraint jobs_tags_object check (jsonb_typeof(tags) = 'object');
 
 comment on column apify_gateway.jobs.tags is
@@ -56,10 +58,13 @@ as $$
   select date_trunc('month', at at time zone 'Europe/London')::date
 $$;
 
--- Committed spend of the current month: runs created this month, each at its settled cost once
+-- Committed spend of the current month: runs claimed this month, each at its settled cost once
 -- settled, otherwise at the larger of its provisional cost and its reservation
--- (20260924022000_apify_gateway_settle_cost.sql). A run created on the last day of a month keeps
--- counting in that month, settled or not. security_invoker: only the owner reads it.
+-- (20260924022000_apify_gateway_settle_cost.sql). A run is charged to the month claim_next_job
+-- claimed it in, the month the cap was checked against, so a job queued late in one month and
+-- claimed in the next counts in the next (review of PR #29). A run claimed on the last day of a
+-- month keeps counting in that month, settled or not. Runs claimed before claimed_at existed use
+-- created_at. security_invoker: only the owner reads it.
 create or replace view apify_gateway.spend with (security_invoker = true) as
 select
   s.cap_usd,
@@ -77,7 +82,8 @@ left join lateral (
     end as committed
   from apify_gateway.jobs j
   where j.kind = 'run'
-    and apify_gateway.spend_month(j.created_at) = apify_gateway.spend_month(now())
+    and apify_gateway.spend_month(coalesce(j.claimed_at, j.created_at))
+      = apify_gateway.spend_month(now())
 ) c on true
 group by s.cap_usd;
 
@@ -101,8 +107,9 @@ as $$
   )
 $$;
 
--- claim_next_job (20260924020000) with one change: nothing is claimed while the gateway is off,
--- so queued jobs wait, whichever version of the Edge Function asks.
+-- claim_next_job (20260924020000) with three changes: nothing is claimed while the gateway is
+-- off, so queued jobs wait, whichever version of the Edge Function asks; paid runs also wait while
+-- the cost meter is off; and a claimed run records claimed_at, the month it is charged to.
 create or replace function apify_gateway.claim_next_job() returns setof apify_gateway.jobs
 language plpgsql
 set search_path = ''
@@ -116,8 +123,11 @@ begin
   if not apify_gateway.enabled() then
     return;
   end if;
+  -- Paid runs wait while the cost meter is off (rule 11: paid work pauses); free jobs go on.
   select * into j from apify_gateway.jobs
-  where status = 'pending' order by id limit 1 for update skip locked;
+  where status = 'pending'
+    and (kind <> 'run' or switches.state('cost-meter') <> 'off')
+  order by id limit 1 for update skip locked;
   if not found then
     return;
   end if;
@@ -133,7 +143,9 @@ begin
       return;
     end if;
   end if;
-  update apify_gateway.jobs set status = 'running', updated_at = now()
+  update apify_gateway.jobs
+  set status = 'running', updated_at = now(),
+      claimed_at = case when j.kind = 'run' then now() end
   where id = j.id returning * into j;
   return next j;
 end;

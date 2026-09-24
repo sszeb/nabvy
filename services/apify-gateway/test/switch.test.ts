@@ -78,6 +78,16 @@ describe('cost meter off', () => {
     expect(await jobCount()).toBe(0)
   })
 
+  it('a run already queued is not claimed until it is back on', async () => {
+    await t.switches(ALL_ON)
+    const submitted = await submitRun(t.db, request)
+    if (!submitted.ok) throw new Error(submitted.error.message)
+    await t.switches({ 'cost-meter': 'off' })
+    expect(await claim(t)).toBeUndefined()
+    await t.switches({ 'cost-meter': 'on' })
+    expect(await claim(t)).toMatchObject({ id: submitted.value.jobId, status: 'running' })
+  })
+
   it('the watcher still announces rows but leaves metering for later', async () => {
     await t.switches(ALL_ON)
     const submitted = await submitRun(t.db, request)
