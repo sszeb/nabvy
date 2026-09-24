@@ -111,7 +111,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | city-pages | 5 | started 18:43 [cp 9], stacked on run-coverage #48 (`task/w1-run-coverage`); opens its PR after #48 merges | `session_01MiuqZuB4erg6mpUnsSPPas` | Sonnet |
 | source-health | 5 | started 18:43 [cp 2], stacked on run-coverage #48 | `session_011wTSwKM3earZpvYNFD3MDP` | Sonnet |
 | listing-lifecycle | 5 | PR #57 open 19:13 (two migrations after merge) [cp 7]; stacked on #46, main merged in | `session_014oeSpAALFLdsFPxQwxiSam` | top |
-| relist-merge | 5 | PR #56 open 18:50 (two migrations after merge) [cp 8]; photo-review and seller-key as injected seams | `session_01T4PCF6E1BvXjABjhNMiPqW` | top |
+| relist-merge | 5 | PR #56 merged 21:47 (8d97295), both migrations applied 21:50 (ledger 53 rows) [cp 8]; photo-review and seller-key as injected seams | `session_01T4PCF6E1BvXjABjhNMiPqW` | top |
 | parts-ai | 6 | started 19:36 [cp 11], stacked on parts-rules #53; one capped model call per item on recorded fixtures | `session_01XE861nwcZnmic8RQ474RbH` | top |
 | lifecycle-messaging | 4 | started 19:36 [cp 1] from `main`; PostHog and Resend as injected clients | `session_01Dc4NR3MqeXE8n5A4zyCoXc` | Sonnet |
 | listing-feedback | 6 | started 19:36 [cp 4], stacked on listing-suppression #52 | `session_01Res9DzQVW9gvJBNkE5Wohv` | Sonnet |
