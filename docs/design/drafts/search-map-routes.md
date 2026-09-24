@@ -1270,3 +1270,10 @@ Cited from the researchers' reports. Where a researcher read only a search summa
 - R24 `/tmp/claude-0/-home-user-nabvy/6ec97e4b-b0e8-55d8-9880-b19e4f1f389e/scratchpad/atomic/actor-integration.md` §6 (1.3a–1.3d reserved).
 - R25 `/home/user/nabvy/docs/legal-review.md` (columns "# | Area | Point to review | Where it is decided"; rows 1–22).
 - R-map-ux: the map-ux researcher's findings on Rightmove's "same actions in list and map" and Google Maps saved lists. Underlying sources: https://www.rightmove.co.uk/news/articles/property-news/you-can-now-see-saved-searches-in-map-view-on-my-rightmove/ and https://9to5google.com/2023/09/06/google-maps-saved-places-icon-emoji/
+
+## Owner additions (2026-09-24)
+
+Recorded by the coordinator from the owner's instructions; they take precedence over this draft where they differ (`docs/decisions.md`, "Watching is metered, prices are dynamic").
+
+1. **Radius is the user's.** The user sets it freely and can change it at any time; there is no fixed cap. §4's band and hints stay, and a second, aggregate hint is added: when enough clean, matching listings sit in a ring just beyond the radius, the feed and the want screen offer "Widen to N mi to see M more matching deals" (M counted over the last 7 days, n≥3 as a starting value), with one tap to accept and the credit estimate for the new radius shown first. Nabvy never widens a radius itself.
+2. **Deal hot spots.** A map layer, off by default and one tap to show, that shades where deals concentrate. It is built only from town display points (§3.5; never a listing's coordinates), weighted per town by the count of clean, product-matched listings asking below their comparable median (n≥10, as `asking-price-position` requires), over 7 or 30 days. It is drawn with MapLibre's built-in heatmap layer, so no new dependency. With a want selected it counts only that want's matches; without one, all matching deals in view. Hot spots outside the ring feed the widen hint in 1. The layer has a list alternative ("Top areas for deals") for accessibility.

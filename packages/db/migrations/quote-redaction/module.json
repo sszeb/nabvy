@@ -1,0 +1,5 @@
+{
+  "module": "quote-redaction",
+  "schema": "quote_redaction",
+  "dependsOn": ["core"]
+}
