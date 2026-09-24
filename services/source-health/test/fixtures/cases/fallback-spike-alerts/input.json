@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "source": "docs/design/modules/source-health.md: \"Starting alert value: more than 10% of a day's searches degraded\"",
+  "jobs": [
+    {
+      "jobId": 1,
+      "routes": [
+        "http", "http", "http", "http", "http",
+        "browser-fallback", "browser-fallback", "browser-fallback", "browser-fallback", "browser-fallback"
+      ],
+      "sellerPresence": [],
+      "newOperationIds": [],
+      "breakerTripped": false
+    }
+  ]
+}

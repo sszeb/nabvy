@@ -14,9 +14,16 @@ import type { Queryable } from '@nabvy/db'
 import { withPipeline } from '@nabvy/db'
 import { state } from '@nabvy/switches'
 import { defineHandler } from '@nabvy/transport'
-import { decideRampAdvance, evaluateAlert, londonDay, mergeHealthDay } from '../domain'
+import {
+  decideRampAdvance,
+  evaluateAlert,
+  londonDay,
+  mergeHealthDay,
+  type SearchOutcome,
+} from '../domain'
 import {
   insertRampStage,
+  type RegionDecision,
   seedRampIfMissing,
   selectCurrentRamp,
   selectHealthDay,
@@ -42,6 +49,30 @@ export interface RunCollectedResult {
 }
 
 /**
+ * What `handleRunCollected` needs to know about one collected job: whether it exists, its region,
+ * its judged searches, its seller-presence flags and its region's route-health decision. The
+ * default (`realRunCollectedReader`) is the real reads (`../repo`); tests inject a fake one
+ * instead of writing `apify_gateway.jobs` directly, which only the apify-gateway module may do
+ * (`services/apify-gateway/test/conventions.test.ts`) — the same split route-health's
+ * `RunCollectedReader` uses (`services/route-health/src/handlers/index.ts`).
+ */
+export interface RunCollectedReader {
+  jobExists(db: Queryable, jobId: number): Promise<boolean>
+  jobRegion(db: Queryable, jobId: number): Promise<string | undefined>
+  searchRoutes(db: Queryable, jobId: number): Promise<SearchOutcome[]>
+  sellerPresence(db: Queryable, jobId: number): Promise<boolean[]>
+  regionDecision(db: Queryable, regionId: string): Promise<RegionDecision | undefined>
+}
+
+export const realRunCollectedReader: RunCollectedReader = {
+  jobExists: selectJobExists,
+  jobRegion: selectJobRegion,
+  searchRoutes: selectSearchRoutes,
+  sellerPresence: selectSellerPresence,
+  regionDecision: selectRegionDecision,
+}
+
+/**
  * Folds one collected apify-gateway job into its Europe/London day's tally and evaluates the
  * alert (card: "Starting alert value" and "Tests and fixtures"). Rule 11: while `source-health`
  * is off, acknowledges and writes nothing. Idempotent (rule 8): a replayed job (same `jobId`)
@@ -51,16 +82,17 @@ export async function handleRunCollected(
   db: Queryable,
   payload: RunCollectedPayload,
   at: string,
+  reader: RunCollectedReader = realRunCollectedReader,
 ): Promise<Result<RunCollectedResult | undefined, { code: SourceHealthErrorCode; message: string }>> {
   if ((await state(db, MODULE)) === 'off') return ok(undefined)
 
-  if (!(await selectJobExists(db, payload.jobId))) {
+  if (!(await reader.jobExists(db, payload.jobId))) {
     return err({
       code: 'source-health.job_not_found',
       message: `apify-gateway job ${payload.jobId} has no v_jobs row yet`,
     })
   }
-  const regionId = await selectJobRegion(db, payload.jobId)
+  const regionId = await reader.jobRegion(db, payload.jobId)
   if (regionId === undefined) {
     return err({
       code: 'source-health.job_not_found',
@@ -69,9 +101,9 @@ export async function handleRunCollected(
   }
 
   const [searches, sellerPresence, decision] = await Promise.all([
-    selectSearchRoutes(db, payload.jobId),
-    selectSellerPresence(db, payload.jobId),
-    selectRegionDecision(db, regionId),
+    reader.searchRoutes(db, payload.jobId),
+    reader.sellerPresence(db, payload.jobId),
+    reader.regionDecision(db, regionId),
   ])
 
   const day = londonDay(at)
