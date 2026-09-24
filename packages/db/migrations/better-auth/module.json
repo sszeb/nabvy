@@ -1,0 +1,5 @@
+{
+  "module": "better-auth",
+  "schema": "better_auth",
+  "dependsOn": ["core"]
+}
