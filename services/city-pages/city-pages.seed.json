@@ -1,0 +1,6945 @@
+{
+  "source": "City-page IDs seen on Marketplace listing cards in Apify runs, 2026-09-22 to 2026-09-23 (mostly from searches centred on Chichester). Coordinates are town-level approximations from listing data; verify before use as search centres.",
+  "count": 771,
+  "cityPages": [
+    {
+      "cityPageId": "114793255199138",
+      "name": "Abberley, Worcestershire",
+      "towns": ["Worcester"],
+      "lat": 52.2043,
+      "lng": -2.2028,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112407058771249",
+      "name": "Abberton, Essex",
+      "towns": ["Colchester"],
+      "lat": 51.8857,
+      "lng": 0.8954,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103990299637602",
+      "name": "Abbots Langley",
+      "towns": ["Abbots Langley"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109414362418775",
+      "name": "Abingdon, Oxfordshire",
+      "towns": ["Abingdon"],
+      "lat": 51.6605,
+      "lng": -1.3019,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104949142874196",
+      "name": "Abram, Wigan, United Kingdom",
+      "towns": ["Wigan"],
+      "lat": 53.5281,
+      "lng": -2.6312,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105610012806839",
+      "name": "Accrington",
+      "towns": ["Accrington"],
+      "lat": 53.7534,
+      "lng": -2.3676,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105060642864033",
+      "name": "Alcester, Warwickshire, United Kingdom",
+      "towns": ["Alcester"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107743589255005",
+      "name": "Aldershot",
+      "towns": ["Aldershot"],
+      "lat": 51.2485,
+      "lng": -0.7086,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112450422099910",
+      "name": "Alfreton",
+      "towns": ["Alfreton"],
+      "lat": 53.0832,
+      "lng": -1.3678,
+      "listingsSeen": 31,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108491129176215",
+      "name": "Allington, Kent",
+      "towns": ["Maidstone"],
+      "lat": 51.2704,
+      "lng": 0.5109,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103152689725485",
+      "name": "Alton, Hampshire",
+      "towns": ["Alton"],
+      "lat": 51.1661,
+      "lng": -0.9393,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104069739628562",
+      "name": "Altrincham",
+      "towns": ["Altrincham"],
+      "lat": 53.3853,
+      "lng": -2.3456,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106077566097171",
+      "name": "Amersham, Buckinghamshire",
+      "towns": ["Amersham"],
+      "lat": 51.6769,
+      "lng": -0.5988,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108454859184651",
+      "name": "Andover, Hampshire, United Kingdom",
+      "towns": ["Andover"],
+      "lat": 51.2045,
+      "lng": -1.4777,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114101358603105",
+      "name": "Anstey, Leicester, United Kingdom",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107930752569133",
+      "name": "Ansty, Warwickshire",
+      "towns": ["Coventry"],
+      "lat": 52.4075,
+      "lng": -1.5106,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105718279462647",
+      "name": "Armagh",
+      "towns": ["Armagh"],
+      "lat": 54.3192,
+      "lng": -6.6193,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114202655262664",
+      "name": "Arundel, West Sussex",
+      "towns": ["Arundel"],
+      "lat": 50.8914,
+      "lng": -0.5988,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114214231922349",
+      "name": "Ascot, Bracknell Forest, United Kingdom",
+      "towns": ["Ascot"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106616949371624",
+      "name": "Ashbourne, Derby, United Kingdom",
+      "towns": ["Ashbourne"],
+      "lat": 53.0118,
+      "lng": -1.7413,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108081159226763",
+      "name": "Ashby de la Zouch",
+      "towns": ["Ashby-de-la-Zouch"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108117932542984",
+      "name": "Ashford, Kent",
+      "towns": ["Ashford"],
+      "lat": 51.221,
+      "lng": 0.7526,
+      "listingsSeen": 18,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106453722720989",
+      "name": "Ashford, Slough, England",
+      "towns": ["Ashford"],
+      "lat": 51.221,
+      "lng": 0.7526,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112010852145052",
+      "name": "Ashtead",
+      "towns": ["Ashtead"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113899071961045",
+      "name": "Ashton in Makerfield",
+      "towns": ["Wigan"],
+      "lat": 53.5281,
+      "lng": -2.6312,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108006779222373",
+      "name": "Ashton-under-Lyne",
+      "towns": ["Ashton-under-Lyne"],
+      "lat": 53.4787,
+      "lng": -2.1039,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115831805093875",
+      "name": "Aylesbury, Buckinghamshire",
+      "towns": ["Aylesbury"],
+      "lat": 51.8143,
+      "lng": -0.7965,
+      "listingsSeen": 36,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106495456052820",
+      "name": "Aylesford, Kent",
+      "towns": ["Aylesford"],
+      "lat": 51.3144,
+      "lng": 0.4999,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106024959438340",
+      "name": "Aylsham, Norfolk",
+      "towns": ["Norwich"],
+      "lat": 52.6492,
+      "lng": 1.2909,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108244029203725",
+      "name": "Backworth",
+      "towns": ["Newcastle upon Tyne"],
+      "lat": 54.9893,
+      "lng": -1.5765,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106173512748316",
+      "name": "Bacup",
+      "towns": ["Bacup"],
+      "lat": 53.7039,
+      "lng": -2.1918,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108299252527040",
+      "name": "Bagshot",
+      "towns": ["Bagshot"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109895735700087",
+      "name": "Bakewell, Derbyshire",
+      "towns": ["Bakewell"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103137506392833",
+      "name": "Bala, Gwynedd",
+      "towns": ["Bala"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104099856291850",
+      "name": "Baldock",
+      "towns": ["Baldock"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107901065904533",
+      "name": "Ballymena",
+      "towns": ["Ballymena"],
+      "lat": 54.863,
+      "lng": -6.2787,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105497682817174",
+      "name": "Ballymoney",
+      "towns": ["Ballymoney"],
+      "lat": 55.1266,
+      "lng": -6.4984,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108032085891581",
+      "name": "Banbridge",
+      "towns": ["Banbridge"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112139312146369",
+      "name": "Banbury, Oxfordshire",
+      "towns": ["Banbury"],
+      "lat": 52.1164,
+      "lng": -1.3239,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112305665453280",
+      "name": "Bangor, County Down",
+      "towns": ["Bangor"],
+      "lat": 54.6652,
+      "lng": -5.6635,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108374082518045",
+      "name": "Banstead",
+      "towns": ["Banstead"],
+      "lat": 51.3254,
+      "lng": -0.2032,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112567112089688",
+      "name": "Bargoed",
+      "towns": ["Bargoed"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114818845200946",
+      "name": "Barking, United Kingdom",
+      "towns": ["Barking"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109413875751017",
+      "name": "Barlaston",
+      "towns": ["Stoke-on-Trent"],
+      "lat": 53.0667,
+      "lng": -2.1918,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "116915764989231",
+      "name": "Barnet",
+      "towns": ["Barnet"],
+      "lat": 51.6495,
+      "lng": -0.1703,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103126909727190",
+      "name": "Barnsley",
+      "towns": ["Barnsley"],
+      "lat": 53.5226,
+      "lng": -1.3898,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111275298897504",
+      "name": "Barnstaple, Devon",
+      "towns": ["Barnstaple"],
+      "lat": 51.0837,
+      "lng": -4.0485,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115432035138738",
+      "name": "Barrow in Furness",
+      "towns": ["Barrow-in-Furness"],
+      "lat": 54.1214,
+      "lng": -3.2245,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109495005735427",
+      "name": "Barry, Vale of Glamorgan",
+      "towns": ["Barry"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108026779229986",
+      "name": "Basildon, Essex",
+      "towns": ["Basildon"],
+      "lat": 51.5726,
+      "lng": 0.4559,
+      "listingsSeen": 40,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112762288737794",
+      "name": "Basingstoke",
+      "towns": ["Basingstoke"],
+      "lat": 51.265,
+      "lng": -1.0822,
+      "listingsSeen": 123,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103097293064397",
+      "name": "Bath, Somerset",
+      "towns": ["Bath"],
+      "lat": 51.4023,
+      "lng": -2.3895,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108290929192937",
+      "name": "Batley",
+      "towns": ["Batley"],
+      "lat": 53.7149,
+      "lng": -1.6425,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105555792810120",
+      "name": "Bebington",
+      "towns": ["Wirral"],
+      "lat": 53.3524,
+      "lng": -2.9828,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110244785661498",
+      "name": "Beckenham, Bromley, United Kingdom",
+      "towns": ["Beckenham"],
+      "lat": 51.3968,
+      "lng": -0.0385,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108869299146813",
+      "name": "Bedford, Bedfordshire, United Kingdom",
+      "towns": ["Bedford"],
+      "lat": 52.1329,
+      "lng": -0.4559,
+      "listingsSeen": 53,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109312942421526",
+      "name": "Belfast",
+      "towns": ["Belfast"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": true
+    },
+    {
+      "cityPageId": "107557142606860",
+      "name": "Belper",
+      "towns": ["Belper"],
+      "lat": 53.0283,
+      "lng": -1.4777,
+      "listingsSeen": 33,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113356158676706",
+      "name": "Bentley, Doncaster, United Kingdom",
+      "towns": ["Doncaster"],
+      "lat": 53.5336,
+      "lng": -1.1371,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108156492537850",
+      "name": "Berkeley, Gloucestershire",
+      "towns": ["Berkeley"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103792876326230",
+      "name": "Betchworth",
+      "towns": ["Betchworth"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110586328969633",
+      "name": "Bewdley, Worcestershire",
+      "towns": ["Bewdley"],
+      "lat": 52.3801,
+      "lng": -2.2906,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105854446120898",
+      "name": "Bexhill, East Sussex",
+      "towns": ["Bexhill on Sea"],
+      "lat": 50.842,
+      "lng": 0.4779,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113123582048209",
+      "name": "Bexley, Bexley, United Kingdom",
+      "towns": ["Bexley"],
+      "lat": 51.4407,
+      "lng": 0.1263,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106503629385473",
+      "name": "Bicester, Oxfordshire",
+      "towns": ["Bicester"],
+      "lat": 51.9022,
+      "lng": -1.1481,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115273531821442",
+      "name": "Bickleigh, Devon",
+      "towns": ["Plymouth"],
+      "lat": 50.3751,
+      "lng": -4.1473,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108595412498957",
+      "name": "Biddulph",
+      "towns": ["Stoke-on-Trent"],
+      "lat": 53.0667,
+      "lng": -2.1918,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115995848410462",
+      "name": "Bideford, Devon",
+      "towns": ["Bideford"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115986098415007",
+      "name": "Billingshurst, West Sussex",
+      "towns": ["Billingshurst"],
+      "lat": 51.0782,
+      "lng": -0.5219,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109950079028047",
+      "name": "Birkenhead, United Kingdom",
+      "towns": ["Birkenhead"],
+      "lat": 53.4018,
+      "lng": -3.0267,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114469421897671",
+      "name": "Birmingham, United Kingdom",
+      "towns": ["Birmingham"],
+      "lat": 52.4734,
+      "lng": -1.8512,
+      "listingsSeen": 297,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109392945746858",
+      "name": "Bishop Auckland",
+      "towns": ["Bishop Auckland"],
+      "lat": 54.7476,
+      "lng": -1.8182,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108069759227214",
+      "name": "Bishops Stortford",
+      "towns": ["Bishop's Stortford"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114514585227416",
+      "name": "Bishops Waltham, Hampshire",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105594776141991",
+      "name": "Blackburn",
+      "towns": ["Blackburn"],
+      "lat": 53.7479,
+      "lng": -2.4774,
+      "listingsSeen": 47,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112340335443842",
+      "name": "Blackwood, Caerphilly",
+      "towns": ["Blackwood"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103761356329511",
+      "name": "Bodenham",
+      "towns": ["Hereford"],
+      "lat": 52.056,
+      "lng": -2.7191,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108540552503171",
+      "name": "Bognor Regis",
+      "towns": ["Bognor Regis"],
+      "lat": 50.798,
+      "lng": -0.6207,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112646475416920",
+      "name": "Bolsover",
+      "towns": ["Chesterfield"],
+      "lat": 53.248,
+      "lng": -1.4337,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107582152598459",
+      "name": "Bolton",
+      "towns": ["Bolton"],
+      "lat": 53.5776,
+      "lng": -2.4335,
+      "listingsSeen": 36,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108268445868580",
+      "name": "Bordon",
+      "towns": ["Bordon"],
+      "lat": 51.1166,
+      "lng": -0.8514,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106646729369602",
+      "name": "Boston, Lincolnshire, United Kingdom",
+      "towns": ["Boston"],
+      "lat": 52.9733,
+      "lng": -0.0275,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104733586232522",
+      "name": "Botley, Southampton, United Kingdom",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106076432757037",
+      "name": "Bournemouth",
+      "towns": ["Bournemouth"],
+      "lat": 50.7321,
+      "lng": -1.8512,
+      "listingsSeen": 101,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106064859431906",
+      "name": "Bourton on the Water, Gloucestershire",
+      "towns": ["Cheltenham"],
+      "lat": 51.9022,
+      "lng": -2.0819,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108377019186260",
+      "name": "Brackley",
+      "towns": ["Brackley"],
+      "lat": 52.0285,
+      "lng": -1.1481,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109762445708609",
+      "name": "Bracknell",
+      "towns": ["Bracknell"],
+      "lat": 51.4188,
+      "lng": -0.7526,
+      "listingsSeen": 37,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108000899228177",
+      "name": "Bradninch",
+      "towns": ["Exeter"],
+      "lat": 50.7211,
+      "lng": -3.4991,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112463398769325",
+      "name": "Braintree, Essex",
+      "towns": ["Braintree"],
+      "lat": 51.8802,
+      "lng": 0.5548,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109755449043047",
+      "name": "Bramcote",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104288789606437",
+      "name": "Bramford",
+      "towns": ["Ipswich"],
+      "lat": 52.056,
+      "lng": 1.181,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103967069640843",
+      "name": "Brandon, Suffolk",
+      "towns": ["Brandon"],
+      "lat": 52.4515,
+      "lng": 0.6207,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106354889399290",
+      "name": "Braunstone, Leicester, United Kingdom",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111906762160356",
+      "name": "Brentwood, UK",
+      "towns": ["Brentwood"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103952436308971",
+      "name": "Bridgend",
+      "towns": ["Bridgend"],
+      "lat": 51.5231,
+      "lng": -3.5651,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103773459661768",
+      "name": "Bridgwater",
+      "towns": ["Bridgwater"],
+      "lat": 51.1221,
+      "lng": -2.818,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109501329069553",
+      "name": "Bridport",
+      "towns": ["Bridport"],
+      "lat": 50.7541,
+      "lng": -2.8619,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109621735730110",
+      "name": "Brierley Hill",
+      "towns": ["Brierley Hill"],
+      "lat": 52.4844,
+      "lng": -2.1259,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110780428946918",
+      "name": "Brigg, North Lincolnshire",
+      "towns": ["Brigg"],
+      "lat": 53.5556,
+      "lng": -0.4889,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108695472488778",
+      "name": "Brighton and Hove",
+      "towns": ["Hove", "Brighton"],
+      "lat": 50.842,
+      "lng": -0.1593,
+      "listingsSeen": 98,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108700782494847",
+      "name": "Bristol, United Kingdom",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 179,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107417482621155",
+      "name": "Brixham",
+      "towns": ["Brixham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112760402068769",
+      "name": "Brockworth, Gloucestershire",
+      "towns": ["Gloucester"],
+      "lat": 51.8637,
+      "lng": -2.2357,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104035902966837",
+      "name": "Bromborough",
+      "towns": ["Wirral"],
+      "lat": 53.3524,
+      "lng": -2.9828,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111799325514473",
+      "name": "Bromley, Bromley, United Kingdom",
+      "towns": ["Bromley"],
+      "lat": 51.4078,
+      "lng": 0.0165,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108144625872600",
+      "name": "Bromsgrove",
+      "towns": ["Bromsgrove"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110247122336928",
+      "name": "Brundall, Norfolk",
+      "towns": ["Norwich"],
+      "lat": 52.6492,
+      "lng": 1.2909,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105695342797070",
+      "name": "Buckingham",
+      "towns": ["Buckingham"],
+      "lat": 51.9736,
+      "lng": -1.0052,
+      "listingsSeen": 25,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104903282880053",
+      "name": "Bungay, Norfolk, United Kingdom",
+      "towns": ["Bungay"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105561819478640",
+      "name": "Burgess Hill",
+      "towns": ["Burgess Hill"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110099212352610",
+      "name": "Burnley, Lancashire",
+      "towns": ["Burnley"],
+      "lat": 53.8138,
+      "lng": -2.2247,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106070046091991",
+      "name": "Burntwood",
+      "towns": ["Burntwood"],
+      "lat": 52.6712,
+      "lng": -1.9501,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105496499483057",
+      "name": "Burton upon Trent",
+      "towns": ["Burton upon Trent"],
+      "lat": 52.8085,
+      "lng": -1.6425,
+      "listingsSeen": 28,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115010418516529",
+      "name": "Burwash, East Sussex",
+      "towns": ["Etchingham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103096213063630",
+      "name": "Bury",
+      "towns": ["Bury"],
+      "lat": 53.5886,
+      "lng": -2.3016,
+      "listingsSeen": 106,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "531934883514601",
+      "name": "Bury St. Edmunds",
+      "towns": ["Bury St Edmunds"],
+      "lat": 52.2482,
+      "lng": 0.8844,
+      "listingsSeen": 22,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109502442400847",
+      "name": "Buxton, Norfolk",
+      "towns": ["Norwich"],
+      "lat": 52.6492,
+      "lng": 1.2909,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109364509081783",
+      "name": "Caddington",
+      "towns": ["Luton"],
+      "lat": 51.8912,
+      "lng": -0.4449,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109213452430744",
+      "name": "Caerphilly",
+      "towns": ["Caerphilly"],
+      "lat": 51.6165,
+      "lng": -3.2245,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112766502071029",
+      "name": "Caldicot, Monmouthshire",
+      "towns": ["Newport"],
+      "lat": 51.5891,
+      "lng": -2.9938,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113733928641566",
+      "name": "Calverton, Nottingham, United Kingdom",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105538756145230",
+      "name": "Camberley",
+      "towns": ["Camberley"],
+      "lat": 51.3419,
+      "lng": -0.7416,
+      "listingsSeen": 30,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109482102403575",
+      "name": "Cambourne",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107847249250173",
+      "name": "Cambridge, Cambridgeshire",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 30,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107585789271272",
+      "name": "Cannock",
+      "towns": ["Cannock"],
+      "lat": 52.6932,
+      "lng": -2.027,
+      "listingsSeen": 63,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105789409461096",
+      "name": "Canterbury, Kent",
+      "towns": ["Canterbury"],
+      "lat": 51.2869,
+      "lng": 1.2799,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103145123058362",
+      "name": "Cardiff",
+      "towns": ["Cardiff"],
+      "lat": 51.4847,
+      "lng": -3.1805,
+      "listingsSeen": 62,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107068172658579",
+      "name": "Cardigan, Ceredigion, United Kingdom",
+      "towns": ["Cardigan"],
+      "lat": 52.0889,
+      "lng": -4.6527,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104053336298489",
+      "name": "Carlisle, Cumbria",
+      "towns": ["Carlisle"],
+      "lat": 54.8959,
+      "lng": -2.8949,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111681248855318",
+      "name": "Carshalton, United Kingdom",
+      "towns": ["Carshalton"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104269326279548",
+      "name": "Carterton, Oxfordshire, United Kingdom",
+      "towns": ["Carterton"],
+      "lat": 51.7538,
+      "lng": -1.5985,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106068836090872",
+      "name": "Castleford",
+      "towns": ["Castleford", "Leeds"],
+      "lat": 53.7259,
+      "lng": -1.3678,
+      "listingsSeen": 23,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110411288987449",
+      "name": "Chapel en le Frith",
+      "towns": ["High Peak"],
+      "lat": 53.3249,
+      "lng": -1.9061,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104137736290377",
+      "name": "Chard, Somerset",
+      "towns": ["Chard"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110888338935750",
+      "name": "Chatham, Medway",
+      "towns": ["Chatham"],
+      "lat": 51.3803,
+      "lng": 0.5219,
+      "listingsSeen": 30,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112760152070415",
+      "name": "Chatteris",
+      "towns": ["Chatteris"],
+      "lat": 52.468,
+      "lng": 0.0385,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106058999434808",
+      "name": "Chelmsford, Essex",
+      "towns": ["Chelmsford", "Wickford"],
+      "lat": 51.7648,
+      "lng": 0.4669,
+      "listingsSeen": 39,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110519355635992",
+      "name": "Cheltenham, Gloucestershire",
+      "towns": ["Cheltenham"],
+      "lat": 51.9022,
+      "lng": -2.0819,
+      "listingsSeen": 35,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112674248745729",
+      "name": "Chertsey",
+      "towns": ["Chertsey"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104015399634893",
+      "name": "Chesham",
+      "towns": ["Chesham"],
+      "lat": 51.7484,
+      "lng": -0.6427,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103743346331027",
+      "name": "Cheshunt",
+      "towns": ["Waltham Cross"],
+      "lat": 51.7044,
+      "lng": -0.0385,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108041822550301",
+      "name": "Chester-le-Street",
+      "towns": ["Chester le Street"],
+      "lat": 54.8575,
+      "lng": -1.5765,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115477621800142",
+      "name": "Chester, Cheshire",
+      "towns": ["Chester"],
+      "lat": 53.1766,
+      "lng": -2.9169,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112819852065374",
+      "name": "Chesterfield",
+      "towns": ["Chesterfield"],
+      "lat": 53.248,
+      "lng": -1.4337,
+      "listingsSeen": 31,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115935195086622",
+      "name": "Chichester, West Sussex",
+      "towns": ["Chichester"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": true
+    },
+    {
+      "cityPageId": "115447981798665",
+      "name": "Chigwell, United Kingdom",
+      "towns": ["Chigwell"],
+      "lat": 51.6165,
+      "lng": 0.0714,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103091429730431",
+      "name": "Chilwell",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110008752355578",
+      "name": "Chippenham, Wiltshire",
+      "towns": ["Chippenham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108289902526241",
+      "name": "Chipping Campden",
+      "towns": ["Chipping Campden"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106192719412577",
+      "name": "Chipping Norton",
+      "towns": ["Chipping Norton"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105506172815454",
+      "name": "Chorley",
+      "towns": ["Chorley"],
+      "lat": 53.671,
+      "lng": -2.6862,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108394829184469",
+      "name": "Christchurch, Dorset",
+      "towns": ["Christchurch"],
+      "lat": 50.7596,
+      "lng": -1.7743,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108640115834541",
+      "name": "Church Stretton, Shropshire",
+      "towns": ["Church Stretton"],
+      "lat": 52.5394,
+      "lng": -2.796,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115193585162059",
+      "name": "Churchdown, Gloucestershire",
+      "towns": ["Gloucester"],
+      "lat": 51.8637,
+      "lng": -2.2357,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108148522552110",
+      "name": "Cirencester, Gloucestershire",
+      "towns": ["Cirencester"],
+      "lat": 51.7209,
+      "lng": -1.9501,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106246092739961",
+      "name": "City of Bradford",
+      "towns": ["Keighley", "Bradford", "Ilkley"],
+      "lat": 53.8687,
+      "lng": -1.9061,
+      "listingsSeen": 142,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108090452545796",
+      "name": "City of Salford",
+      "towns": ["Manchester", "Salford"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 46,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112404765441676",
+      "name": "City of Sunderland",
+      "towns": ["Sunderland"],
+      "lat": 54.8959,
+      "lng": -1.4117,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109059635779414",
+      "name": "Clacton-on-Sea",
+      "towns": ["Clacton-on-Sea"],
+      "lat": 51.7978,
+      "lng": 1.1481,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112965832051225",
+      "name": "Claydon, Suffolk",
+      "towns": ["Ipswich"],
+      "lat": 52.056,
+      "lng": 1.181,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113378655342344",
+      "name": "Cleethorpes",
+      "towns": ["Cleethorpes"],
+      "lat": 53.5666,
+      "lng": -0.0494,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "100239773351606",
+      "name": "Clyst Honiton, Devon, United Kingdom",
+      "towns": ["Exeter"],
+      "lat": 50.7211,
+      "lng": -3.4991,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106502692719670",
+      "name": "Coalville, Leicester",
+      "towns": ["Coalville"],
+      "lat": 52.7151,
+      "lng": -1.3788,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112623765416903",
+      "name": "Cobham, Surrey",
+      "towns": ["Cobham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108247492536204",
+      "name": "Codsall",
+      "towns": ["Wolverhampton"],
+      "lat": 52.5833,
+      "lng": -2.1149,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109470002416572",
+      "name": "Colchester, Essex",
+      "towns": ["Colchester"],
+      "lat": 51.8857,
+      "lng": 0.8954,
+      "listingsSeen": 58,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103742286331121",
+      "name": "Coleford, Gloucestershire",
+      "towns": ["Coleford"],
+      "lat": 51.8088,
+      "lng": -2.6202,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113193938693433",
+      "name": "Coleraine, Coleraine, United Kingdom",
+      "towns": ["Coleraine"],
+      "lat": 55.1321,
+      "lng": -6.6632,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109835309042025",
+      "name": "Colne",
+      "towns": ["Colne"],
+      "lat": 53.8358,
+      "lng": -2.1149,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108110249217275",
+      "name": "Congleton",
+      "towns": ["Congleton"],
+      "lat": 53.1656,
+      "lng": -2.2137,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104042416297970",
+      "name": "Conisbrough",
+      "towns": ["Doncaster"],
+      "lat": 53.5336,
+      "lng": -1.1371,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106980002665866",
+      "name": "Connahs Quay, Flintshire, United Kingdom",
+      "towns": ["Deeside"],
+      "lat": 53.215,
+      "lng": -3.0707,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107694762593615",
+      "name": "Consett",
+      "towns": ["Consett"],
+      "lat": 54.8575,
+      "lng": -1.8182,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105634112804384",
+      "name": "Cookstown",
+      "towns": ["Magherafelt"],
+      "lat": 54.7531,
+      "lng": -6.6083,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112428545436443",
+      "name": "Corby",
+      "towns": ["Corby"],
+      "lat": 52.5009,
+      "lng": -0.7086,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112006862158166",
+      "name": "Corsham, Wiltshire",
+      "towns": ["Corsham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103779536328042",
+      "name": "Coulsdon",
+      "towns": ["Coulsdon"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106076586099038",
+      "name": "Coventry, United Kingdom",
+      "towns": ["Coventry"],
+      "lat": 52.4075,
+      "lng": -1.5106,
+      "listingsSeen": 117,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109417889085176",
+      "name": "Cowbridge",
+      "towns": ["Cowbridge"],
+      "lat": 51.4407,
+      "lng": -3.5541,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112595305418846",
+      "name": "Craigavon",
+      "towns": ["Craigavon"],
+      "lat": 54.4345,
+      "lng": -6.4545,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104084406295627",
+      "name": "Cramlington",
+      "towns": ["Cramlington"],
+      "lat": 55.0827,
+      "lng": -1.5985,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106068799424902",
+      "name": "Cranbrook, Kent",
+      "towns": ["Cranbrook"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104174839617904",
+      "name": "Cranleigh",
+      "towns": ["Cranleigh"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105393842827088",
+      "name": "Crawley",
+      "towns": ["Crawley"],
+      "lat": 51.1221,
+      "lng": -0.1923,
+      "listingsSeen": 22,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115912331755746",
+      "name": "Crediton, Devon",
+      "towns": ["Crediton"],
+      "lat": 50.787,
+      "lng": -3.642,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104065979629251",
+      "name": "Crewe",
+      "towns": ["Crewe"],
+      "lat": 53.1107,
+      "lng": -2.4445,
+      "listingsSeen": 64,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111004918927622",
+      "name": "Crowborough, East Sussex",
+      "towns": ["Crowborough"],
+      "lat": 51.0507,
+      "lng": 0.1703,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113110875369914",
+      "name": "Crowland",
+      "towns": ["Peterborough"],
+      "lat": 52.5833,
+      "lng": -0.2472,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109319819094636",
+      "name": "Crowthorne",
+      "towns": ["Crowthorne"],
+      "lat": 51.3748,
+      "lng": -0.8075,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105797086126624",
+      "name": "Croydon, United Kingdom",
+      "towns": ["Croydon", "South Croydon"],
+      "lat": 51.3748,
+      "lng": -0.1154,
+      "listingsSeen": 62,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107895559231420",
+      "name": "Cullompton",
+      "towns": ["Cullompton"],
+      "lat": 50.9134,
+      "lng": -3.2245,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108626969161630",
+      "name": "Cwmbran",
+      "towns": ["Cwmbran"],
+      "lat": 51.655,
+      "lng": -3.0267,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104665362905989",
+      "name": "Cymmer, Neath Port Talbot, United Kingdom",
+      "towns": ["Port Talbot"],
+      "lat": 51.644,
+      "lng": -3.631,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106033979435732",
+      "name": "Dagenham, United Kingdom",
+      "towns": ["Dagenham"],
+      "lat": 51.5451,
+      "lng": 0.1483,
+      "listingsSeen": 30,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109804995705288",
+      "name": "Dalbeattie",
+      "towns": ["Dalbeattie"],
+      "lat": 54.8795,
+      "lng": -3.7299,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106017922763477",
+      "name": "Darlington, Co Durham",
+      "towns": ["Darlington"],
+      "lat": 54.5279,
+      "lng": -1.5436,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109840709042335",
+      "name": "Dartford",
+      "towns": ["Dartford"],
+      "lat": 51.4462,
+      "lng": 0.2252,
+      "listingsSeen": 42,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113477381999801",
+      "name": "Darwen",
+      "towns": ["Darwen"],
+      "lat": 53.6929,
+      "lng": -2.4664,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108119175888515",
+      "name": "Daventry, Northamptonshire",
+      "towns": ["Daventry"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105453406154838",
+      "name": "Deal, Kent",
+      "towns": ["Deal"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113048195373989",
+      "name": "Denton, Tameside, United Kingdom",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108050889223312",
+      "name": "Derby",
+      "towns": ["Derby"],
+      "lat": 52.9239,
+      "lng": -1.4777,
+      "listingsSeen": 56,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115863568427176",
+      "name": "Dereham, Norfolk",
+      "towns": ["Dereham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112344788777098",
+      "name": "Devizes",
+      "towns": ["Devizes"],
+      "lat": 51.3309,
+      "lng": -2.005,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108225375871711",
+      "name": "Dibden",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115012725178687",
+      "name": "Didcot, Oxfordshire",
+      "towns": ["Didcot"],
+      "lat": 51.6,
+      "lng": -1.2579,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112307118795760",
+      "name": "Diss, Norfolk",
+      "towns": ["Diss"],
+      "lat": 52.3636,
+      "lng": 1.1041,
+      "listingsSeen": 25,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107921475902221",
+      "name": "Donaghadee",
+      "towns": ["Donaghadee"],
+      "lat": 54.6378,
+      "lng": -5.5426,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106010149430037",
+      "name": "Doncaster",
+      "towns": ["Doncaster"],
+      "lat": 53.5336,
+      "lng": -1.1371,
+      "listingsSeen": 34,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109435875749334",
+      "name": "Dorchester, Dorset",
+      "towns": ["Dorchester"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109408565745586",
+      "name": "Dorking",
+      "towns": ["Dorking"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112003908826570",
+      "name": "Dover, Kent",
+      "towns": ["Dover"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110654088961744",
+      "name": "Down Hatherley, Gloucestershire, United Kingdom",
+      "towns": ["Gloucester"],
+      "lat": 51.8637,
+      "lng": -2.2357,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110766918949787",
+      "name": "Downham Market, Norfolk, United Kingdom",
+      "towns": ["Downham Market"],
+      "lat": 52.6053,
+      "lng": 0.39,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114791815202971",
+      "name": "Droitwich",
+      "towns": ["Droitwich"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105751872790698",
+      "name": "Dronfield",
+      "towns": ["Dronfield"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103779702993997",
+      "name": "Droylsden",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110574558968075",
+      "name": "Drumahoe, Londonderry, United Kingdom",
+      "towns": ["Londonderry"],
+      "lat": 55.0333,
+      "lng": -7.2675,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115870088423410",
+      "name": "Drybrook, Gloucestershire",
+      "towns": ["Drybrook"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110769888951990",
+      "name": "Dublin",
+      "towns": ["Dublin"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 0,
+      "verifiedAsSearchCentre": true
+    },
+    {
+      "cityPageId": "109151472437375",
+      "name": "Dudley",
+      "towns": ["Dudley"],
+      "lat": 52.5119,
+      "lng": -2.1039,
+      "listingsSeen": 36,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105543192811747",
+      "name": "Dunstable",
+      "towns": ["Dunstable"],
+      "lat": 51.8802,
+      "lng": -0.5328,
+      "listingsSeen": 38,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112036342155298",
+      "name": "Durham, Durham",
+      "towns": ["Durham"],
+      "lat": 54.7751,
+      "lng": -1.5765,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105999139431336",
+      "name": "Dursley",
+      "towns": ["Dursley"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103775206328009",
+      "name": "Earley",
+      "towns": ["Reading"],
+      "lat": 51.4517,
+      "lng": -0.9723,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107205852652254",
+      "name": "East Cowes, Isle Of Wight, United Kingdom",
+      "towns": ["East Cowes"],
+      "lat": 50.7596,
+      "lng": -1.2799,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109714359054500",
+      "name": "East Grinstead",
+      "towns": ["East Grinstead"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113447115332423",
+      "name": "East Harling",
+      "towns": ["Norwich"],
+      "lat": 52.6492,
+      "lng": 1.2909,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114982701851116",
+      "name": "East Retford",
+      "towns": ["Retford"],
+      "lat": 53.3194,
+      "lng": -0.9393,
+      "listingsSeen": 23,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108338735853719",
+      "name": "East Tilbury",
+      "towns": ["Tilbury"],
+      "lat": 51.4737,
+      "lng": 0.423,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115532125128040",
+      "name": "Eastbourne, East Sussex",
+      "towns": ["Eastbourne"],
+      "lat": 50.7761,
+      "lng": 0.2911,
+      "listingsSeen": 36,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104074319627987",
+      "name": "Eastleigh",
+      "towns": ["Eastleigh"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114666361879813",
+      "name": "Eastwood, nottingham",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106171669415021",
+      "name": "Ebbw Vale",
+      "towns": ["Ebbw Vale"],
+      "lat": 51.7758,
+      "lng": -3.2025,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113916285285815",
+      "name": "Edenbridge, Kent",
+      "towns": ["Edenbridge"],
+      "lat": 51.2155,
+      "lng": 0.0604,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115753025103602",
+      "name": "Edinburgh",
+      "towns": ["Edinburgh"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 0,
+      "verifiedAsSearchCentre": true
+    },
+    {
+      "cityPageId": "110507968975193",
+      "name": "Ellesmere, Wrexham, United Kingdom",
+      "towns": ["Ellesmere"],
+      "lat": 52.9074,
+      "lng": -2.8949,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111959508828899",
+      "name": "Elmore, Gloucestershire, United Kingdom",
+      "towns": ["Gloucester"],
+      "lat": 51.8637,
+      "lng": -2.2357,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110014205683267",
+      "name": "Ely, Cambridgeshire, United Kingdom",
+      "towns": ["Ely"],
+      "lat": 52.3306,
+      "lng": 0.39,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111895088827844",
+      "name": "Emsworth",
+      "towns": ["Emsworth"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108913315803095",
+      "name": "Enfield, Enfield, United Kingdom",
+      "towns": ["Enfield"],
+      "lat": 51.655,
+      "lng": -0.0824,
+      "listingsSeen": 50,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109126665772075",
+      "name": "Epping, Essex",
+      "towns": ["Epping"],
+      "lat": 51.7044,
+      "lng": 0.1044,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112249962124525",
+      "name": "Epsom",
+      "towns": ["Epsom"],
+      "lat": 51.3309,
+      "lng": -0.2692,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113152165377989",
+      "name": "Erith, Greenwich, United Kingdom",
+      "towns": ["Erith"],
+      "lat": 51.4737,
+      "lng": 0.1703,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112798248733518",
+      "name": "Esher",
+      "towns": ["Esher"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111984292146665",
+      "name": "Eston",
+      "towns": ["Middlesbrough"],
+      "lat": 54.5663,
+      "lng": -1.1481,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109785485714733",
+      "name": "Etchingham",
+      "towns": ["Etchingham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112566415422133",
+      "name": "Evesham",
+      "towns": ["Evesham"],
+      "lat": 52.1054,
+      "lng": -1.9391,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114701878545946",
+      "name": "Exeter, Devon",
+      "towns": ["Exeter"],
+      "lat": 50.7211,
+      "lng": -3.4991,
+      "listingsSeen": 38,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109055045779571",
+      "name": "Exhall",
+      "towns": ["Coventry"],
+      "lat": 52.4075,
+      "lng": -1.5106,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110609532294504",
+      "name": "Exmouth, England",
+      "towns": ["Exmouth"],
+      "lat": 50.6387,
+      "lng": -3.4003,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113926431951450",
+      "name": "Failsworth",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112108588805564",
+      "name": "Falmouth, Cornwall",
+      "towns": ["Falmouth"],
+      "lat": 50.1498,
+      "lng": -5.0812,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105632292802787",
+      "name": "Fareham",
+      "towns": ["Fareham"],
+      "lat": 50.8585,
+      "lng": -1.1371,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105488182818424",
+      "name": "Farnborough, Hampshire",
+      "towns": ["Farnborough"],
+      "lat": 51.2924,
+      "lng": -0.7526,
+      "listingsSeen": 28,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108322399188757",
+      "name": "Farnham",
+      "towns": ["Farnham"],
+      "lat": 51.232,
+      "lng": -0.7965,
+      "listingsSeen": 28,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108506742513304",
+      "name": "Faversham, Kent",
+      "towns": ["Faversham"],
+      "lat": 51.3144,
+      "lng": 0.8954,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106608169372026",
+      "name": "Fawley, Southampton, United Kingdom",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112344025449837",
+      "name": "Felixstowe",
+      "towns": ["Felixstowe"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106221069409810",
+      "name": "Feltham",
+      "towns": ["Feltham"],
+      "lat": 51.4462,
+      "lng": -0.39,
+      "listingsSeen": 40,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103377679704067",
+      "name": "Feniscowles, Blackburn With Darwen, United Kingdom",
+      "towns": ["Blackburn"],
+      "lat": 53.7479,
+      "lng": -2.4774,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113514688658992",
+      "name": "Ferndown",
+      "towns": ["Ferndown"],
+      "lat": 50.8145,
+      "lng": -1.8842,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108547892502586",
+      "name": "Ferryhill",
+      "towns": ["Ferryhill"],
+      "lat": 54.6652,
+      "lng": -1.5546,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109606999064895",
+      "name": "Filton",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108305025857606",
+      "name": "Fishguard",
+      "towns": ["Fishguard"],
+      "lat": 51.9955,
+      "lng": -4.9823,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104065169628961",
+      "name": "Flamstead",
+      "towns": ["St Albans", "Luton"],
+      "lat": 51.7538,
+      "lng": -0.3131,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112266602122217",
+      "name": "Fleet, Hampshire",
+      "towns": ["Fleet"],
+      "lat": 51.2759,
+      "lng": -0.8405,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110092169012550",
+      "name": "Folkestone, Kent",
+      "towns": ["Folkestone"],
+      "lat": 51.0837,
+      "lng": 1.1591,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103104149729259",
+      "name": "Fordingbridge",
+      "towns": ["Fordingbridge"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112754105404021",
+      "name": "Forest Hall",
+      "towns": ["Newcastle upon Tyne"],
+      "lat": 54.9893,
+      "lng": -1.5765,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109008345793312",
+      "name": "Fort Wallington, Portsmouth, United Kingdom",
+      "towns": ["Fareham"],
+      "lat": 50.8585,
+      "lng": -1.1371,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107983695889874",
+      "name": "Freckleton",
+      "towns": ["Preston"],
+      "lat": 53.7698,
+      "lng": -2.6862,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108592935832028",
+      "name": "Frinton-on-Sea",
+      "towns": ["Frinton-on-Sea"],
+      "lat": 51.8417,
+      "lng": 1.225,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110681842286915",
+      "name": "Friston, East Sussex",
+      "towns": ["Eastbourne"],
+      "lat": 50.7761,
+      "lng": 0.2911,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111688712184378",
+      "name": "Frome, Somerset",
+      "towns": ["Frome"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112053178807320",
+      "name": "Gerrards Cross",
+      "towns": ["Gerrards Cross"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109866669039477",
+      "name": "Gildersome",
+      "towns": ["Leeds"],
+      "lat": 53.7973,
+      "lng": -1.5436,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112578135421726",
+      "name": "Gillingham, Dorset",
+      "towns": ["Gillingham"],
+      "lat": 51.0397,
+      "lng": -2.2797,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115283438483109",
+      "name": "Gillingham, Medway",
+      "towns": ["Gillingham"],
+      "lat": 51.0397,
+      "lng": -2.2797,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108339932521303",
+      "name": "Girton, Cambridgeshire",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108055115889054",
+      "name": "Girvan, Scotland",
+      "towns": ["Girvan"],
+      "lat": 55.3299,
+      "lng": -4.8175,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106233566079281",
+      "name": "Glasgow",
+      "towns": ["Glasgow"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 0,
+      "verifiedAsSearchCentre": true
+    },
+    {
+      "cityPageId": "106593629374274",
+      "name": "Glenfield, Leicester, United Kingdom",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112087812151796",
+      "name": "Gloucester, Gloucestershire",
+      "towns": ["Gloucester"],
+      "lat": 51.8637,
+      "lng": -2.2357,
+      "listingsSeen": 36,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109440335749626",
+      "name": "Godalming",
+      "towns": ["Godalming"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112141112137136",
+      "name": "Goring by Sea, England",
+      "towns": ["Worthing"],
+      "lat": 50.831,
+      "lng": -0.423,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109376845755520",
+      "name": "Gorseinon",
+      "towns": ["Swansea"],
+      "lat": 51.622,
+      "lng": -3.9386,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106145219416777",
+      "name": "Gosport",
+      "towns": ["Gosport"],
+      "lat": 50.8035,
+      "lng": -1.1371,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112906655386067",
+      "name": "Gravesend, Kent",
+      "towns": ["Gravesend"],
+      "lat": 51.4297,
+      "lng": 0.368,
+      "listingsSeen": 27,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111553192194602",
+      "name": "Grays",
+      "towns": ["Grays"],
+      "lat": 51.4792,
+      "lng": 0.3241,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112486355431982",
+      "name": "Great Missenden",
+      "towns": ["High Wycombe"],
+      "lat": 51.6275,
+      "lng": -0.7526,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106181052746559",
+      "name": "Great Yarmouth",
+      "towns": ["Great Yarmouth"],
+      "lat": 52.5558,
+      "lng": 1.6644,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107475159289560",
+      "name": "Grimsby, North East Lincolnshire, United Kingdom",
+      "towns": ["Grimsby"],
+      "lat": 53.5666,
+      "lng": -0.0824,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108339199186201",
+      "name": "Guildford",
+      "towns": ["Guildford"],
+      "lat": 51.243,
+      "lng": -0.5658,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108682902490015",
+      "name": "Hadleigh, Essex",
+      "towns": ["Benfleet"],
+      "lat": 51.5671,
+      "lng": 0.5658,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110579782297513",
+      "name": "Hailsham, East Sussex",
+      "towns": ["Hailsham"],
+      "lat": 50.864,
+      "lng": 0.2582,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112463968765395",
+      "name": "Halifax, West Yorkshire",
+      "towns": ["Halifax"],
+      "lat": 53.7259,
+      "lng": -1.8622,
+      "listingsSeen": 130,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104340056273555",
+      "name": "Hampton, London, United Kingdom",
+      "towns": ["Hampton"],
+      "lat": 51.4297,
+      "lng": -0.3571,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109806865713118",
+      "name": "Hardwick, Cambridgeshire",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110787878945315",
+      "name": "Harlow, Essex",
+      "towns": ["Harlow"],
+      "lat": 51.7484,
+      "lng": 0.1044,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107200895984788",
+      "name": "Harold Wood, Havering, United Kingdom",
+      "towns": ["Romford"],
+      "lat": 51.5836,
+      "lng": 0.1813,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107713312582719",
+      "name": "Harpenden",
+      "towns": ["Harpenden"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115071895174795",
+      "name": "Harrogate, North Yorkshire",
+      "towns": ["Harrogate"],
+      "lat": 54.006,
+      "lng": -1.5216,
+      "listingsSeen": 32,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111788408838882",
+      "name": "Harrow, United Kingdom",
+      "towns": ["Harrow"],
+      "lat": 51.5836,
+      "lng": -0.2911,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112986902048217",
+      "name": "Hartlepool",
+      "towns": ["Hartlepool"],
+      "lat": 54.6872,
+      "lng": -1.214,
+      "listingsSeen": 23,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103757906330318",
+      "name": "Hartwell, Northamptonshire",
+      "towns": ["Northampton"],
+      "lat": 52.2427,
+      "lng": -0.8954,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113004175381257",
+      "name": "Harwich",
+      "towns": ["Harwich"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107511189278293",
+      "name": "Hassocks",
+      "towns": ["Hassocks"],
+      "lat": 50.9299,
+      "lng": -0.1703,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110339788987693",
+      "name": "Hastings, East Sussex",
+      "towns": ["Hastings"],
+      "lat": 50.8585,
+      "lng": 0.5768,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107796655909824",
+      "name": "Hatfield, Hertfordshire",
+      "towns": ["Hatfield"],
+      "lat": 51.7593,
+      "lng": -0.2362,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112752295405439",
+      "name": "Havant",
+      "towns": ["Havant"],
+      "lat": 50.8475,
+      "lng": -1.0052,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111818438835533",
+      "name": "Haverhill, Suffolk",
+      "towns": ["Haverhill"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108561295842194",
+      "name": "Havering atte Bower",
+      "towns": ["Romford"],
+      "lat": 51.5836,
+      "lng": 0.1813,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106153706083065",
+      "name": "Hawarden",
+      "towns": ["Deeside"],
+      "lat": 53.215,
+      "lng": -3.0707,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112086478808302",
+      "name": "Haxby",
+      "towns": ["York"],
+      "lat": 54.017,
+      "lng": -1.0602,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109232882433817",
+      "name": "Hay, Monmouthshire, United Kingdom",
+      "towns": ["Hereford"],
+      "lat": 52.056,
+      "lng": -2.7191,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108434975843564",
+      "name": "Hayes, Hillingdon",
+      "towns": ["Hayes"],
+      "lat": 51.5012,
+      "lng": -0.423,
+      "listingsSeen": 37,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104029009632551",
+      "name": "Hayling Island",
+      "towns": ["Hayling Island"],
+      "lat": 50.798,
+      "lng": -0.9723,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108381509185955",
+      "name": "Haywards Heath",
+      "towns": ["Haywards Heath"],
+      "lat": 50.9848,
+      "lng": -0.1044,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112973258728625",
+      "name": "Hebburn, North Tyneside, United Kingdom",
+      "towns": ["Hebburn"],
+      "lat": 54.9619,
+      "lng": -1.4996,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109278029091303",
+      "name": "Hedge End",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112088468802501",
+      "name": "Hellesdon",
+      "towns": ["Norwich"],
+      "lat": 52.6492,
+      "lng": 1.2909,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112036858821787",
+      "name": "Helston, Cornwall",
+      "towns": ["Helston"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106451282725734",
+      "name": "Hemel Hempstead, Hertfordshire",
+      "towns": ["Hemel Hempstead"],
+      "lat": 51.7484,
+      "lng": -0.4779,
+      "listingsSeen": 53,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103990439637449",
+      "name": "Henfield",
+      "towns": ["Henfield"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104001949637438",
+      "name": "Hengoed",
+      "towns": ["Hengoed"],
+      "lat": 51.644,
+      "lng": -3.2245,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110142062342233",
+      "name": "Henley on Thames",
+      "towns": ["Henley-on-Thames"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108030965897318",
+      "name": "Hereford, Herefordshire",
+      "towns": ["Hereford"],
+      "lat": 52.056,
+      "lng": -2.7191,
+      "listingsSeen": 22,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "100244313350501",
+      "name": "Heywood, Rochdale, United Kingdom",
+      "towns": ["Heywood"],
+      "lat": 53.5831,
+      "lng": -2.2247,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105032292866931",
+      "name": "Hickleton, Rotherham, United Kingdom",
+      "towns": ["Rotherham"],
+      "lat": 53.4732,
+      "lng": -1.3019,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114665091882274",
+      "name": "High Wycombe, Buckinghamshire",
+      "towns": ["High Wycombe"],
+      "lat": 51.6275,
+      "lng": -0.7526,
+      "listingsSeen": 44,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107764485920251",
+      "name": "Hinckley",
+      "towns": ["Hinckley"],
+      "lat": 52.5339,
+      "lng": -1.3898,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103118246394504",
+      "name": "Hindhead",
+      "towns": ["Hindhead"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107887452577051",
+      "name": "Hindley, Wigan",
+      "towns": ["Wigan"],
+      "lat": 53.5281,
+      "lng": -2.6312,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113635818650330",
+      "name": "Hindlip, Worcestershire, United Kingdom",
+      "towns": ["Worcester"],
+      "lat": 52.2043,
+      "lng": -2.2028,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108102862556105",
+      "name": "Histon",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107963209232548",
+      "name": "Hitchin",
+      "towns": ["Hitchin"],
+      "lat": 51.9516,
+      "lng": -0.2802,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109585385734929",
+      "name": "Hockley",
+      "towns": ["Hockley"],
+      "lat": 51.6055,
+      "lng": 0.6427,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103763169662054",
+      "name": "Hoddesdon",
+      "towns": ["Hoddesdon"],
+      "lat": 51.7758,
+      "lng": -0.0165,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108528092504498",
+      "name": "Holmfirth",
+      "towns": ["Holmfirth"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109318159093180",
+      "name": "Hook, Wokingham, United Kingdom",
+      "towns": ["Hook"],
+      "lat": 51.2924,
+      "lng": -0.9064,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104034549632632",
+      "name": "Horley",
+      "towns": ["Horley"],
+      "lat": 51.1771,
+      "lng": -0.1703,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111285188899160",
+      "name": "Hornchurch, Barking And Dagenham, United Kingdom",
+      "towns": ["Rainham"],
+      "lat": 51.5396,
+      "lng": 0.1923,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104091572962169",
+      "name": "Horsham",
+      "towns": ["Horsham"],
+      "lat": 51.0617,
+      "lng": -0.3241,
+      "listingsSeen": 35,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106288296075916",
+      "name": "Houghton le Spring",
+      "towns": ["Houghton le Spring"],
+      "lat": 54.83,
+      "lng": -1.4557,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109040592463005",
+      "name": "Hounslow, Hounslow, United Kingdom",
+      "towns": ["Hounslow"],
+      "lat": 51.4682,
+      "lng": -0.368,
+      "listingsSeen": 30,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103751416329549",
+      "name": "Hucclecote",
+      "towns": ["Gloucester"],
+      "lat": 51.8637,
+      "lng": -2.2357,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106477092722718",
+      "name": "Hucknall, Nottinghamshire",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104072556295818",
+      "name": "Huddersfield",
+      "towns": ["Huddersfield"],
+      "lat": 53.638,
+      "lng": -1.8073,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111508358861234",
+      "name": "Hungerford",
+      "towns": ["Hungerford"],
+      "lat": 51.4188,
+      "lng": -1.5216,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105695186131317",
+      "name": "Hunstanton",
+      "towns": ["Hunstanton"],
+      "lat": 52.9349,
+      "lng": 0.4889,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113133562034451",
+      "name": "Huntingdon",
+      "towns": ["Huntingdon"],
+      "lat": 52.4515,
+      "lng": 0.0165,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107165492648460",
+      "name": "Hyde, Tameside, United Kingdom",
+      "towns": ["Hyde"],
+      "lat": 53.4567,
+      "lng": -2.0819,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108448029180446",
+      "name": "Hythe, Kent",
+      "towns": ["Hythe"],
+      "lat": 51.0782,
+      "lng": 1.0272,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105004839535298",
+      "name": "Hythe, Southampton, United Kingdom",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 28,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109011305799741",
+      "name": "Ilford, Redbridge, United Kingdom",
+      "towns": ["Ilford"],
+      "lat": 51.5726,
+      "lng": 0.0824,
+      "listingsSeen": 45,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112919752052948",
+      "name": "Ilkeston",
+      "towns": ["Ilkeston"],
+      "lat": 52.9678,
+      "lng": -1.2909,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109281289098314",
+      "name": "Ilminster",
+      "towns": ["Ilminster"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110336295660526",
+      "name": "Ipswich, Suffolk",
+      "towns": ["Ipswich"],
+      "lat": 52.056,
+      "lng": 1.181,
+      "listingsSeen": 40,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112072752138317",
+      "name": "Isleworth",
+      "towns": ["Isleworth"],
+      "lat": 51.4737,
+      "lng": -0.3351,
+      "listingsSeen": 32,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108064219214551",
+      "name": "Iver",
+      "towns": ["Iver"],
+      "lat": 51.5341,
+      "lng": -0.5219,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105624386138911",
+      "name": "Jarrow",
+      "towns": ["Jarrow"],
+      "lat": 54.9838,
+      "lng": -1.4777,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109279212433139",
+      "name": "Kettering, Northamptonshire, United Kingdom",
+      "towns": ["Kettering"],
+      "lat": 52.402,
+      "lng": -0.7196,
+      "listingsSeen": 47,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109705532389163",
+      "name": "Kidderminster",
+      "towns": ["Kidderminster"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108327945855304",
+      "name": "Kidsgrove",
+      "towns": ["Stoke-on-Trent"],
+      "lat": 53.0667,
+      "lng": -2.1918,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107963172558265",
+      "name": "Kilby",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112588652089695",
+      "name": "Kilnhurst",
+      "towns": ["Rotherham"],
+      "lat": 53.4732,
+      "lng": -1.3019,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108561152509280",
+      "name": "King's Lynn, Norfolk",
+      "towns": ["King's Lynn"],
+      "lat": 52.7536,
+      "lng": 0.401,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112382648778727",
+      "name": "Kingsbridge",
+      "towns": ["Kingsbridge"],
+      "lat": 50.2817,
+      "lng": -3.7738,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113013485375759",
+      "name": "Kingston upon Hull",
+      "towns": ["Hull"],
+      "lat": 53.7698,
+      "lng": -0.368,
+      "listingsSeen": 40,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107886532565618",
+      "name": "Kingston upon Thames",
+      "towns": ["Kingston upon Thames"],
+      "lat": 51.4078,
+      "lng": -0.2802,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111802328844639",
+      "name": "Kingswinford, West Midlands, United Kingdom",
+      "towns": ["Kingswinford"],
+      "lat": 52.4954,
+      "lng": -2.1698,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105538909480636",
+      "name": "Kingswood, South Gloucestershire",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110537045633112",
+      "name": "Kirkby in Ashfield",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112032415474696",
+      "name": "Knaresborough",
+      "towns": ["Knaresborough"],
+      "lat": 54.0005,
+      "lng": -1.4667,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107722115924522",
+      "name": "Knottingley",
+      "towns": ["Knottingley"],
+      "lat": 53.7094,
+      "lng": -1.2579,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105614122806309",
+      "name": "Lakenheath",
+      "towns": ["Brandon"],
+      "lat": 52.4515,
+      "lng": 0.6207,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112116145467159",
+      "name": "Lancaster, Lancashire",
+      "towns": ["Lancaster"],
+      "lat": 54.061,
+      "lng": -2.796,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108002535895476",
+      "name": "Lancing, England",
+      "towns": ["Lancing"],
+      "lat": 50.842,
+      "lng": -0.3351,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108525519172294",
+      "name": "Launceston, Cornwall",
+      "towns": ["Launceston"],
+      "lat": 50.6442,
+      "lng": -4.3671,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106299459409258",
+      "name": "Leamington Spa, Warwickshire",
+      "towns": ["Leamington Spa"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112334292112037",
+      "name": "Leatherhead",
+      "towns": ["Leatherhead"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107447485951936",
+      "name": "Ledbury",
+      "towns": ["Ledbury"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108558129168704",
+      "name": "Lee-on-the-Solent",
+      "towns": ["Lee-on-the-Solent", "Fareham"],
+      "lat": 50.8585,
+      "lng": -1.1371,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110212755674509",
+      "name": "Leicester, United Kingdom",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 107,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103104389729625",
+      "name": "Leighton Buzzard",
+      "towns": ["Leighton Buzzard"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103996552969164",
+      "name": "Lenham",
+      "towns": ["Maidstone"],
+      "lat": 51.2704,
+      "lng": 0.5109,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105765386123950",
+      "name": "Leominster",
+      "towns": ["Leominster"],
+      "lat": 52.2263,
+      "lng": -2.7411,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105666406133910",
+      "name": "Letchworth",
+      "towns": ["Letchworth"],
+      "lat": 51.9736,
+      "lng": -0.2472,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106569909378785",
+      "name": "Lewes, East Sussex",
+      "towns": ["Lewes"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109190905773723",
+      "name": "Leyland, Lancashire",
+      "towns": ["Leyland"],
+      "lat": 53.7094,
+      "lng": -2.7081,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106093606088457",
+      "name": "Lincoln, Lincolnshire",
+      "towns": ["Lincoln"],
+      "lat": 53.2095,
+      "lng": -0.5109,
+      "listingsSeen": 20,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103481403017441",
+      "name": "Linthwaite",
+      "towns": ["Huddersfield"],
+      "lat": 53.638,
+      "lng": -1.8073,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104067462963953",
+      "name": "Liphook",
+      "towns": ["Liphook"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106086129422919",
+      "name": "Lisburn",
+      "towns": ["Lisburn"],
+      "lat": 54.5114,
+      "lng": -6.037,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108678969164280",
+      "name": "Liskeard, Cornwall",
+      "towns": ["Liskeard"],
+      "lat": 50.452,
+      "lng": -4.4659,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107638689265456",
+      "name": "Liss",
+      "towns": ["Liss"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109524912407025",
+      "name": "Litherland",
+      "towns": ["Liverpool"],
+      "lat": 53.4128,
+      "lng": -2.8729,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112793158737482",
+      "name": "Littleborough, Rochdale, United Kingdom",
+      "towns": ["Littleborough"],
+      "lat": 53.6435,
+      "lng": -2.1039,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108157049211731",
+      "name": "Littlehampton",
+      "towns": ["Littlehampton"],
+      "lat": 50.8145,
+      "lng": -0.4779,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105653082800923",
+      "name": "Liverpool",
+      "towns": ["Liverpool"],
+      "lat": 53.4128,
+      "lng": -2.8729,
+      "listingsSeen": 118,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103759312995584",
+      "name": "Liversedge",
+      "towns": ["Liversedge"],
+      "lat": 53.7149,
+      "lng": -1.6974,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103151809724379",
+      "name": "Llandudno Junction",
+      "towns": ["Llandudno Junction"],
+      "lat": 53.2864,
+      "lng": -3.7958,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109746249052260",
+      "name": "Llanelli",
+      "towns": ["Llanelli"],
+      "lat": 51.6824,
+      "lng": -4.1583,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106078429431815",
+      "name": "London, United Kingdom",
+      "towns": ["London", "Woodford Green"],
+      "lat": 51.5121,
+      "lng": -0.1044,
+      "listingsSeen": 1086,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104042962964380",
+      "name": "Long Eaton",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105711142795548",
+      "name": "Longfield",
+      "towns": ["Longfield"],
+      "lat": 51.3638,
+      "lng": 0.3021,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104104116293518",
+      "name": "Longstanton",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105446479490168",
+      "name": "Loughborough",
+      "towns": ["Loughborough"],
+      "lat": 52.7536,
+      "lng": -1.225,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109352629083756",
+      "name": "Lowestoft",
+      "towns": ["Lowestoft"],
+      "lat": 52.457,
+      "lng": 1.7303,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105759216124738",
+      "name": "Ludlow",
+      "towns": ["Ludlow"],
+      "lat": 52.3746,
+      "lng": -2.5983,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112123522136714",
+      "name": "Luton",
+      "towns": ["Luton"],
+      "lat": 51.8912,
+      "lng": -0.4449,
+      "listingsSeen": 47,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108653282492869",
+      "name": "Lutterworth",
+      "towns": ["Lutterworth"],
+      "lat": 52.457,
+      "lng": -1.203,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110226615667316",
+      "name": "Lydney, Gloucestershire",
+      "towns": ["Lydney"],
+      "lat": 51.7264,
+      "lng": -2.5323,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106004602763929",
+      "name": "Lymington",
+      "towns": ["Lymington"],
+      "lat": 50.7376,
+      "lng": -1.5875,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110404968979597",
+      "name": "Lytham St Annes, Lancashire",
+      "towns": ["Lytham St Annes"],
+      "lat": 53.7534,
+      "lng": -3.0157,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113379755342157",
+      "name": "Macclesfield",
+      "towns": ["Macclesfield"],
+      "lat": 53.259,
+      "lng": -2.1149,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103136166393686",
+      "name": "Magherafelt",
+      "towns": ["Magherafelt"],
+      "lat": 54.7531,
+      "lng": -6.6083,
+      "listingsSeen": 23,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108223895865151",
+      "name": "Maidenhead",
+      "towns": ["Maidenhead"],
+      "lat": 51.5231,
+      "lng": -0.7306,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114781748533347",
+      "name": "Maidstone, Kent",
+      "towns": ["Maidstone"],
+      "lat": 51.2704,
+      "lng": 0.5109,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107435409286361",
+      "name": "Maldon, Essex",
+      "towns": ["Maldon"],
+      "lat": 51.7319,
+      "lng": 0.6757,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108233085865492",
+      "name": "Malvern, Worcestershire",
+      "towns": ["Great Malvern"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114629675219759",
+      "name": "Manchester, United Kingdom",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 161,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114558275227122",
+      "name": "Mansfield, Nottinghamshire",
+      "towns": ["Mansfield"],
+      "lat": 53.1381,
+      "lng": -1.203,
+      "listingsSeen": 61,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112766272070272",
+      "name": "March, Cambridgeshire",
+      "towns": ["March"],
+      "lat": 52.5558,
+      "lng": 0.0934,
+      "listingsSeen": 18,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104105419627418",
+      "name": "Marchwood",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106075476098844",
+      "name": "Margate, Kent",
+      "towns": ["Margate"],
+      "lat": 51.3858,
+      "lng": 1.4117,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109293345755668",
+      "name": "Market Drayton",
+      "towns": ["Market Drayton"],
+      "lat": 52.9019,
+      "lng": -2.4994,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109484285744958",
+      "name": "Market Harborough",
+      "towns": ["Market Harborough"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112508092094115",
+      "name": "Market Rasen",
+      "towns": ["Market Rasen"],
+      "lat": 53.4293,
+      "lng": -0.1813,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112889245392298",
+      "name": "Marlow, Buckinghamshire",
+      "towns": ["Marlow"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112549142093360",
+      "name": "Marston Green",
+      "towns": ["Birmingham"],
+      "lat": 52.4734,
+      "lng": -1.8512,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "116387505037992",
+      "name": "Mayfield, East Sussex, United Kingdom",
+      "towns": ["Mayfield"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "100241700018006",
+      "name": "Melbourne, Derby, United Kingdom",
+      "towns": ["Derby"],
+      "lat": 52.9239,
+      "lng": -1.4777,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108136755873452",
+      "name": "Melksham",
+      "towns": ["Melksham"],
+      "lat": 51.3858,
+      "lng": -2.1149,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104086622962433",
+      "name": "Melton Mowbray",
+      "towns": ["Melton Mowbray"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113037858710605",
+      "name": "Merthyr Tydfil",
+      "towns": ["Merthyr Tydfil"],
+      "lat": 51.7429,
+      "lng": -3.3783,
+      "listingsSeen": 22,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105487649483627",
+      "name": "Metheringham",
+      "towns": ["Lincoln"],
+      "lat": 53.2095,
+      "lng": -0.5109,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107698252586158",
+      "name": "Mexborough",
+      "towns": ["Mexborough"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109384075754743",
+      "name": "Middlesbrough",
+      "towns": ["Middlesbrough"],
+      "lat": 54.5663,
+      "lng": -1.1481,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114021431941209",
+      "name": "Middleton, Oldham, United Kingdom",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103020529734416",
+      "name": "Milton Keynes",
+      "towns": ["Milton Keynes"],
+      "lat": 52.0395,
+      "lng": -0.7635,
+      "listingsSeen": 92,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104353589605516",
+      "name": "Mitcham, Bromley, United Kingdom",
+      "towns": ["Mitcham"],
+      "lat": 51.3968,
+      "lng": -0.1373,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105657679468175",
+      "name": "Mold, Flintshire",
+      "towns": ["Mold"],
+      "lat": 53.1656,
+      "lng": -3.1366,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111969445484955",
+      "name": "Monmouth",
+      "towns": ["Monmouth"],
+      "lat": 51.8033,
+      "lng": -2.7191,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103714733000093",
+      "name": "Montgomery, Powys",
+      "towns": ["Montgomery"],
+      "lat": 52.5339,
+      "lng": -3.0487,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107361095966295",
+      "name": "Morden, Merton, United Kingdom",
+      "towns": ["Morden"],
+      "lat": 51.4023,
+      "lng": -0.2032,
+      "listingsSeen": 37,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112970398716844",
+      "name": "Morecambe",
+      "towns": ["Morecambe"],
+      "lat": 54.072,
+      "lng": -2.851,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108681795826032",
+      "name": "Morpeth, Northumberland",
+      "towns": ["Morpeth"],
+      "lat": 55.1761,
+      "lng": -1.6864,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109562392404291",
+      "name": "Morriston",
+      "towns": ["Swansea"],
+      "lat": 51.622,
+      "lng": -3.9386,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109432289083366",
+      "name": "Moulton, Northamptonshire",
+      "towns": ["Northampton"],
+      "lat": 52.2427,
+      "lng": -0.8954,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112284232118030",
+      "name": "Mytholmroyd",
+      "towns": ["Halifax"],
+      "lat": 53.7259,
+      "lng": -1.8622,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108505372507980",
+      "name": "Nailsea",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109441875748960",
+      "name": "Nantwich",
+      "towns": ["Nantwich"],
+      "lat": 53.0667,
+      "lng": -2.5214,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110885438940535",
+      "name": "Neath, Neath Port Talbot",
+      "towns": ["Neath"],
+      "lat": 51.6495,
+      "lng": -3.8068,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107770225918375",
+      "name": "Nelson, Lancashire",
+      "towns": ["Nelson"],
+      "lat": 53.8358,
+      "lng": -2.2137,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104116916291198",
+      "name": "Neston",
+      "towns": ["Neston"],
+      "lat": 53.2919,
+      "lng": -3.0597,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "102194436489500",
+      "name": "New Alresford, Hampshire",
+      "towns": ["New Alresford"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107378842631504",
+      "name": "New Malden, Bromley, United Kingdom",
+      "towns": ["New Malden"],
+      "lat": 51.3968,
+      "lng": -0.2582,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113073728708908",
+      "name": "New Milton, Hampshire, United Kingdom",
+      "towns": ["New Milton"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106415292726213",
+      "name": "Newark, Nottingham, United Kingdom",
+      "towns": ["Newark"],
+      "lat": 53.0722,
+      "lng": -0.8075,
+      "listingsSeen": 37,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109336842419106",
+      "name": "Newbury, Berkshire",
+      "towns": ["Newbury"],
+      "lat": 51.3913,
+      "lng": -1.3239,
+      "listingsSeen": 33,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110723905619478",
+      "name": "Newcastle under Lyme",
+      "towns": ["Newcastle"],
+      "lat": 52.9678,
+      "lng": -2.3016,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113194725360629",
+      "name": "Newcastle upon Tyne",
+      "towns": ["Newcastle upon Tyne"],
+      "lat": 54.9893,
+      "lng": -1.5765,
+      "listingsSeen": 42,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104087362961568",
+      "name": "Newhaven, East Sussex",
+      "towns": ["Newhaven"],
+      "lat": 50.809,
+      "lng": 0.0275,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110243672335901",
+      "name": "Newmarket, Suffolk, United Kingdom",
+      "towns": ["Newmarket"],
+      "lat": 52.2482,
+      "lng": 0.39,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105998629430468",
+      "name": "Newport Pagnell",
+      "towns": ["Newport Pagnell"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108800749144620",
+      "name": "Newport, Isle of Wight",
+      "towns": ["Newport"],
+      "lat": 51.5891,
+      "lng": -2.9938,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112195725462212",
+      "name": "Newport, Wales",
+      "towns": ["Newport"],
+      "lat": 51.5891,
+      "lng": -2.9938,
+      "listingsSeen": 38,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110377415658035",
+      "name": "Newquay, England",
+      "towns": ["Newquay"],
+      "lat": 50.419,
+      "lng": -5.0812,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108418852516622",
+      "name": "Newry",
+      "towns": ["Newry"],
+      "lat": 54.1928,
+      "lng": -6.1469,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103143073059704",
+      "name": "Newton Abbot",
+      "towns": ["Newton Abbot"],
+      "lat": 50.5289,
+      "lng": -3.609,
+      "listingsSeen": 27,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107425079280905",
+      "name": "Newton Aycliffe",
+      "towns": ["Newton Aycliffe"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105881269444929",
+      "name": "Newton-le-Willows",
+      "towns": ["Newton-le-Willows"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107528192609933",
+      "name": "Newtown, Powys",
+      "towns": ["Newtown"],
+      "lat": 52.5174,
+      "lng": -3.3234,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112144722134644",
+      "name": "North Shields",
+      "towns": ["North Shields"],
+      "lat": 55.0113,
+      "lng": -1.4777,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110751605615573",
+      "name": "North Tidworth",
+      "towns": ["Tidworth"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111858618833258",
+      "name": "Northampton, Northamptonshire",
+      "towns": ["Northampton"],
+      "lat": 52.2427,
+      "lng": -0.8954,
+      "listingsSeen": 42,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110999822256807",
+      "name": "Northolt, Slough, United Kingdom",
+      "towns": ["Greenford", "Northolt"],
+      "lat": 51.5341,
+      "lng": -0.3571,
+      "listingsSeen": 55,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103751876330992",
+      "name": "Northwich",
+      "towns": ["Northwich"],
+      "lat": 53.259,
+      "lng": -2.4774,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109467349081511",
+      "name": "Northwood, Slough, United Kingdom",
+      "towns": ["Northwood"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108461749184998",
+      "name": "Norwich, Norfolk",
+      "towns": ["Norwich"],
+      "lat": 52.6492,
+      "lng": 1.2909,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109916022364166",
+      "name": "Nottingham, United Kingdom",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 103,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106044539433646",
+      "name": "Nuneaton, Warwickshire",
+      "towns": ["Nuneaton"],
+      "lat": 52.5229,
+      "lng": -1.4667,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106377622726650",
+      "name": "Oadby",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108560029168073",
+      "name": "Oakham",
+      "towns": ["Oakham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103436849696192",
+      "name": "Okehampton",
+      "towns": ["Okehampton"],
+      "lat": 50.6937,
+      "lng": -4.0924,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "100245000016530",
+      "name": "Oldbury, Sandwell, United Kingdom",
+      "towns": ["Oldbury"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115798445101470",
+      "name": "Oldham, United Kingdom",
+      "towns": ["Oldham"],
+      "lat": 53.5556,
+      "lng": -2.1039,
+      "listingsSeen": 30,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109335565751126",
+      "name": "Ormskirk",
+      "towns": ["Ormskirk"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107404689295416",
+      "name": "Orpington, Bromley, United Kingdom",
+      "towns": ["Orpington"],
+      "lat": 51.3748,
+      "lng": 0.0934,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110397758981589",
+      "name": "Ossett, West Yorkshire",
+      "towns": ["Ossett"],
+      "lat": 53.6765,
+      "lng": -1.5656,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106003752764653",
+      "name": "Oswaldtwistle",
+      "towns": ["Blackburn"],
+      "lat": 53.7479,
+      "lng": -2.4774,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108735112483072",
+      "name": "Overton, Wiltshire, United Kingdom",
+      "towns": ["Basingstoke"],
+      "lat": 51.265,
+      "lng": -1.0822,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108023362564746",
+      "name": "Oxford, Oxfordshire",
+      "towns": ["Oxford"],
+      "lat": 51.7648,
+      "lng": -1.236,
+      "listingsSeen": 40,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108023409226621",
+      "name": "Oxted",
+      "towns": ["Oxted"],
+      "lat": 51.265,
+      "lng": -0.0165,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112002795482262",
+      "name": "Paignton",
+      "towns": ["Paignton"],
+      "lat": 50.4355,
+      "lng": -3.5651,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108449852513659",
+      "name": "Par, Cornwall",
+      "towns": ["Par"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111450805538746",
+      "name": "Paulton",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112159658801307",
+      "name": "Peacehaven",
+      "towns": ["Peacehaven"],
+      "lat": 50.7925,
+      "lng": -0.0055,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113211648693804",
+      "name": "Penn, Buckinghamshire",
+      "towns": ["High Wycombe"],
+      "lat": 51.6275,
+      "lng": -0.7526,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106103969420904",
+      "name": "Penrith, Cumbria",
+      "towns": ["Penrith"],
+      "lat": 54.6378,
+      "lng": -2.7301,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111857572167033",
+      "name": "Penzance, Cornwall",
+      "towns": ["Penzance"],
+      "lat": 50.1169,
+      "lng": -5.5426,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108230862537617",
+      "name": "Perranporth",
+      "towns": ["Perranporth"],
+      "lat": 50.3476,
+      "lng": -5.1581,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110154509005372",
+      "name": "Pershore, Worcestershire",
+      "towns": ["Pershore"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107923919229426",
+      "name": "Peterborough",
+      "towns": ["Peterborough"],
+      "lat": 52.5833,
+      "lng": -0.2472,
+      "listingsSeen": 67,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105556819478910",
+      "name": "Peterlee",
+      "towns": ["Peterlee"],
+      "lat": 54.7586,
+      "lng": -1.3348,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104100739627870",
+      "name": "Petersfield",
+      "towns": ["Petersfield"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112795852064597",
+      "name": "Petworth",
+      "towns": ["Petworth"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112716175407003",
+      "name": "Pewsey",
+      "towns": ["Pewsey"],
+      "lat": 51.3419,
+      "lng": -1.7633,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106882729342899",
+      "name": "Pilsley, Nottinghamshire, United Kingdom",
+      "towns": ["Chesterfield"],
+      "lat": 53.248,
+      "lng": -1.4337,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106924479347280",
+      "name": "Pinhoe, Devon, United Kingdom",
+      "towns": ["Exeter"],
+      "lat": 50.7211,
+      "lng": -3.4991,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108413739183223",
+      "name": "Pinner",
+      "towns": ["Pinner"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103732889665215",
+      "name": "Pinxton",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107666599263369",
+      "name": "Plymouth",
+      "towns": ["Plymouth"],
+      "lat": 50.3751,
+      "lng": -4.1473,
+      "listingsSeen": 92,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105960202768514",
+      "name": "Plympton",
+      "towns": ["Plymouth"],
+      "lat": 50.3751,
+      "lng": -4.1473,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105947672770025",
+      "name": "Polegate",
+      "towns": ["Lewes"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "116240078390432",
+      "name": "Pontardawe, Neath Port Talbot, United Kingdom",
+      "towns": ["Swansea"],
+      "lat": 51.622,
+      "lng": -3.9386,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109233899095885",
+      "name": "Pontefract",
+      "towns": ["Pontefract"],
+      "lat": 53.616,
+      "lng": -1.2909,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107736022588211",
+      "name": "Pontyclun",
+      "towns": ["Pontyclun"],
+      "lat": 51.5396,
+      "lng": -3.3893,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109104162442901",
+      "name": "Pontypool",
+      "towns": ["Pontypool"],
+      "lat": 51.6989,
+      "lng": -3.0377,
+      "listingsSeen": 19,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111951888822149",
+      "name": "Pontypridd",
+      "towns": ["Pontypridd"],
+      "lat": 51.6,
+      "lng": -3.3344,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114747201876025",
+      "name": "Poole, Dorset",
+      "towns": ["Poole"],
+      "lat": 50.7376,
+      "lng": -1.9501,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113388008674701",
+      "name": "Portadown",
+      "towns": ["Craigavon"],
+      "lat": 54.4345,
+      "lng": -6.4545,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111738872170406",
+      "name": "Portsmouth",
+      "towns": ["Portsmouth", "Southsea"],
+      "lat": 50.8145,
+      "lng": -1.0822,
+      "listingsSeen": 134,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107547675935239",
+      "name": "Potters Bar",
+      "towns": ["Potters Bar"],
+      "lat": 51.6934,
+      "lng": -0.1813,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108122929215065",
+      "name": "Poynton",
+      "towns": ["Stockport"],
+      "lat": 53.3963,
+      "lng": -2.1588,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105568462808936",
+      "name": "Prescot",
+      "towns": ["Liverpool"],
+      "lat": 53.4128,
+      "lng": -2.8729,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106044699436531",
+      "name": "Preston, Lancashire",
+      "towns": ["Preston"],
+      "lat": 53.7698,
+      "lng": -2.6862,
+      "listingsSeen": 46,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108616202496279",
+      "name": "Prestwich",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111979765485187",
+      "name": "Prudhoe",
+      "towns": ["Prudhoe"],
+      "lat": 54.9619,
+      "lng": -1.8512,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107799659243502",
+      "name": "Pudsey",
+      "towns": ["Bradford"],
+      "lat": 53.7918,
+      "lng": -1.7523,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105646602801261",
+      "name": "Pulborough",
+      "towns": ["Pulborough"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104057582964092",
+      "name": "Purfleet",
+      "towns": ["Purfleet"],
+      "lat": 51.4792,
+      "lng": 0.2472,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107831212578758",
+      "name": "Purley, London",
+      "towns": ["Purley"],
+      "lat": 51.3364,
+      "lng": -0.1154,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111419375553454",
+      "name": "Quedgeley, Gloucestershire, United Kingdom",
+      "towns": ["Gloucester"],
+      "lat": 51.8637,
+      "lng": -2.2357,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113223748691315",
+      "name": "Queniborough",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108902529132744",
+      "name": "Radcliffe, Bury, United Kingdom",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105603576139527",
+      "name": "Radlett",
+      "towns": ["Radlett"],
+      "lat": 51.6824,
+      "lng": -0.3241,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112751922083842",
+      "name": "Radstock, Bath And North East Somerset, United Kingdom",
+      "towns": ["Radstock"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103091479730806",
+      "name": "Rainford",
+      "towns": ["St Helens"],
+      "lat": 53.4512,
+      "lng": -2.7631,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109305879096299",
+      "name": "Ramsgate",
+      "towns": ["Ramsgate"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108479315842894",
+      "name": "Rawmarsh",
+      "towns": ["Rotherham"],
+      "lat": 53.4732,
+      "lng": -1.3019,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107953925892635",
+      "name": "Rawtenstall",
+      "towns": ["Rossendale"],
+      "lat": 53.6929,
+      "lng": -2.3016,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108448819185154",
+      "name": "Rayleigh, Southend-On-Sea, United Kingdom",
+      "towns": ["Rayleigh"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115162068494946",
+      "name": "Reading, England",
+      "towns": ["Reading"],
+      "lat": 51.4517,
+      "lng": -0.9723,
+      "listingsSeen": 77,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107976835891211",
+      "name": "Redbourn",
+      "towns": ["St Albans"],
+      "lat": 51.7538,
+      "lng": -0.3131,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112236622122442",
+      "name": "Redditch",
+      "towns": ["Redditch"],
+      "lat": 52.3087,
+      "lng": -1.9611,
+      "listingsSeen": 28,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104686699570231",
+      "name": "Redhill, United Kingdom",
+      "towns": ["Redhill"],
+      "lat": 51.2375,
+      "lng": -0.1703,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106502532719923",
+      "name": "Reigate, Surrey",
+      "towns": ["Reigate"],
+      "lat": 51.2375,
+      "lng": -0.2032,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112913732056759",
+      "name": "Rhondda",
+      "towns": ["Porth"],
+      "lat": 51.611,
+      "lng": -3.4003,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108088215886662",
+      "name": "Ribchester",
+      "towns": ["Preston"],
+      "lat": 53.7698,
+      "lng": -2.6862,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103981616304298",
+      "name": "Rickmansworth",
+      "towns": ["Rickmansworth"],
+      "lat": 51.6385,
+      "lng": -0.4669,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104171412953644",
+      "name": "Ringwood",
+      "towns": ["Ringwood"],
+      "lat": 50.8475,
+      "lng": -1.7963,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109321562421297",
+      "name": "Ripley, Nottinghamshire, United Kingdom",
+      "towns": ["Ripley"],
+      "lat": 53.0447,
+      "lng": -1.4008,
+      "listingsSeen": 19,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112319735446400",
+      "name": "Rishton",
+      "towns": ["Blackburn"],
+      "lat": 53.7479,
+      "lng": -2.4774,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107718175917592",
+      "name": "Robertsbridge",
+      "towns": ["Robertsbridge"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110492952310735",
+      "name": "Roby, Knowsley, United Kingdom",
+      "towns": ["Liverpool"],
+      "lat": 53.4128,
+      "lng": -2.8729,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108023932551149",
+      "name": "Rochdale",
+      "towns": ["Rochdale"],
+      "lat": 53.6105,
+      "lng": -2.1588,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106268452743048",
+      "name": "Rochester, Medway",
+      "towns": ["Rochester"],
+      "lat": 51.4023,
+      "lng": 0.5109,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112444018768004",
+      "name": "Rochford",
+      "towns": ["Rochford"],
+      "lat": 51.5945,
+      "lng": 0.6976,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106596109376271",
+      "name": "Romford, United Kingdom",
+      "towns": ["Romford"],
+      "lat": 51.5836,
+      "lng": 0.1813,
+      "listingsSeen": 55,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109476785744478",
+      "name": "Romsey",
+      "towns": ["Romsey"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110056669016866",
+      "name": "Ross On Wye",
+      "towns": ["Ross-on-Wye"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112991942045237",
+      "name": "Rotherham",
+      "towns": ["Rotherham"],
+      "lat": 53.4732,
+      "lng": -1.3019,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112302772114955",
+      "name": "Rothersthorpe",
+      "towns": ["Northampton"],
+      "lat": 52.2427,
+      "lng": -0.8954,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106099276089059",
+      "name": "Rowley Regis",
+      "towns": ["Rowley Regis"],
+      "lat": 52.4844,
+      "lng": -2.049,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108990629121644",
+      "name": "Rowley, Dudley, United Kingdom",
+      "towns": ["Cradley Heath"],
+      "lat": 52.4734,
+      "lng": -2.0819,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110347002320343",
+      "name": "Royal Borough of Kingston upon Thames",
+      "towns": ["Surbiton"],
+      "lat": 51.3858,
+      "lng": -0.3021,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106215869410302",
+      "name": "Royal Tunbridge Wells",
+      "towns": ["Tunbridge Wells"],
+      "lat": 51.1331,
+      "lng": 0.2582,
+      "listingsSeen": 56,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104047362964407",
+      "name": "Royston, Hertfordshire",
+      "towns": ["Royston"],
+      "lat": 52.0395,
+      "lng": -0.0165,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105548172812498",
+      "name": "Rugby, Warwickshire",
+      "towns": ["Rugby"],
+      "lat": 52.3746,
+      "lng": -1.2579,
+      "listingsSeen": 29,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108077132553457",
+      "name": "Rugeley",
+      "towns": ["Rugeley"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109396735757282",
+      "name": "Ruislip, Slough, United Kingdom",
+      "towns": ["Ruislip"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107755265921139",
+      "name": "Runcorn",
+      "towns": ["Runcorn"],
+      "lat": 53.3139,
+      "lng": -2.6862,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111839245498487",
+      "name": "Rushden",
+      "towns": ["Rushden"],
+      "lat": 52.3087,
+      "lng": -0.5878,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115983031746925",
+      "name": "Ryde, Portsmouth, United Kingdom",
+      "towns": ["Ryde"],
+      "lat": 50.7266,
+      "lng": -1.17,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114703158546342",
+      "name": "Saint Albans",
+      "towns": ["St Albans"],
+      "lat": 51.7538,
+      "lng": -0.3131,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115508558462913",
+      "name": "Sale, Cheshire",
+      "towns": ["Sale"],
+      "lat": 53.4238,
+      "lng": -2.3236,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115310288482810",
+      "name": "Salisbury, Wiltshire",
+      "towns": ["Salisbury"],
+      "lat": 51.0672,
+      "lng": -2.0819,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112681132079626",
+      "name": "Sandhurst",
+      "towns": ["Sandhurst"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112180878793824",
+      "name": "Sandiacre",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113478325334096",
+      "name": "Sandown, England",
+      "towns": ["Sandown"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113596678654869",
+      "name": "Sandwell, Sandwell, United Kingdom",
+      "towns": ["Birmingham"],
+      "lat": 52.4734,
+      "lng": -1.8512,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105978386101385",
+      "name": "Sandy, Bedfordshire",
+      "towns": ["Sandy"],
+      "lat": 52.1439,
+      "lng": -0.2911,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109400859078563",
+      "name": "Saxilby",
+      "towns": ["Lincoln"],
+      "lat": 53.2095,
+      "lng": -0.5109,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108201152541160",
+      "name": "Scarborough, North Yorkshire",
+      "towns": ["Scarborough"],
+      "lat": 54.2807,
+      "lng": -0.412,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112656948747033",
+      "name": "Scunthorpe",
+      "towns": ["Scunthorpe"],
+      "lat": 53.5831,
+      "lng": -0.6537,
+      "listingsSeen": 39,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105577986141583",
+      "name": "Seaford, East Sussex",
+      "towns": ["Seaford"],
+      "lat": 50.7761,
+      "lng": 0.1044,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104044036298111",
+      "name": "Selby",
+      "towns": ["Selby"],
+      "lat": 53.7753,
+      "lng": -1.1151,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104125466291643",
+      "name": "Selston",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115572688456691",
+      "name": "Sevenoaks, Kent",
+      "towns": ["Sevenoaks"],
+      "lat": 51.3528,
+      "lng": 0.2582,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108299645860446",
+      "name": "Sheffield",
+      "towns": ["Sheffield"],
+      "lat": 53.3853,
+      "lng": -1.4667,
+      "listingsSeen": 104,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110291622322027",
+      "name": "Shefford, Norfolk, United Kingdom",
+      "towns": ["Shefford"],
+      "lat": 52.0395,
+      "lng": -0.3351,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113449995334329",
+      "name": "Shelsley Beauchamp, Worcestershire, United Kingdom",
+      "towns": ["Worcester"],
+      "lat": 52.2043,
+      "lng": -2.2028,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107852505903928",
+      "name": "Shepton Mallet",
+      "towns": ["Shepton Mallet"],
+      "lat": 51.188,
+      "lng": -2.4884,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112917192055739",
+      "name": "Sherborne",
+      "towns": ["Sherborne"],
+      "lat": 50.9409,
+      "lng": -2.5323,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103743616331221",
+      "name": "Shifnal",
+      "towns": ["Shifnal"],
+      "lat": 52.6767,
+      "lng": -2.3566,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106364402727199",
+      "name": "Shinfield",
+      "towns": ["Reading"],
+      "lat": 51.4517,
+      "lng": -0.9723,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105701586131503",
+      "name": "Shoreham-by-Sea",
+      "towns": ["Shoreham-by-Sea"],
+      "lat": 50.8365,
+      "lng": -0.2472,
+      "listingsSeen": 25,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106492536052720",
+      "name": "Shrewsbury, Shropshire",
+      "towns": ["Shrewsbury"],
+      "lat": 52.7042,
+      "lng": -2.7521,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111898262161122",
+      "name": "Shurdington",
+      "towns": ["Cheltenham"],
+      "lat": 51.9022,
+      "lng": -2.0819,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "117031668310451",
+      "name": "Sidcup, Bexley, United Kingdom",
+      "towns": ["Sidcup"],
+      "lat": 51.4188,
+      "lng": 0.1263,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105634866135802",
+      "name": "Sittingbourne",
+      "towns": ["Sittingbourne"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112033435474594",
+      "name": "Skelmersdale",
+      "towns": ["Skelmersdale"],
+      "lat": 53.5501,
+      "lng": -2.7631,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111696385513962",
+      "name": "Skipton",
+      "towns": ["Skipton"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103809346324080",
+      "name": "Sleaford",
+      "towns": ["Sleaford"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112413378770132",
+      "name": "Slough",
+      "towns": ["Slough"],
+      "lat": 51.5121,
+      "lng": -0.5878,
+      "listingsSeen": 47,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106818182681750",
+      "name": "Solihull",
+      "towns": ["Solihull"],
+      "lat": 52.3856,
+      "lng": -1.7853,
+      "listingsSeen": 18,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112115632148617",
+      "name": "Somerton, Somerset",
+      "towns": ["Somerton"],
+      "lat": 51.0562,
+      "lng": -2.7411,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109173622434047",
+      "name": "South Benfleet",
+      "towns": ["Benfleet"],
+      "lat": 51.5671,
+      "lng": 0.5658,
+      "listingsSeen": 26,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104073739627800",
+      "name": "South Milford",
+      "towns": ["Leeds"],
+      "lat": 53.7973,
+      "lng": -1.5436,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104061962962643",
+      "name": "South Shields",
+      "towns": ["South Shields"],
+      "lat": 54.9728,
+      "lng": -1.4117,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111013198928641",
+      "name": "Southall, Slough, United Kingdom",
+      "towns": ["Southall"],
+      "lat": 51.5121,
+      "lng": -0.379,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108426499181164",
+      "name": "Southampton",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 143,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107950942566931",
+      "name": "Southend-on-Sea",
+      "towns": ["Westcliff-on-Sea", "Southend-on-Sea"],
+      "lat": 51.5616,
+      "lng": 0.6757,
+      "listingsSeen": 27,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108307705859616",
+      "name": "Spalding, Lincolnshire",
+      "towns": ["Spalding"],
+      "lat": 52.8085,
+      "lng": -0.1483,
+      "listingsSeen": 18,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109399939078428",
+      "name": "Spilsby",
+      "towns": ["Spilsby"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107436029293248",
+      "name": "Spofforth, North Yorkshire, United Kingdom",
+      "towns": ["Wetherby"],
+      "lat": 53.9291,
+      "lng": -1.3898,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112358372113333",
+      "name": "St Helens, Merseyside",
+      "towns": ["St Helens"],
+      "lat": 53.4512,
+      "lng": -2.7631,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105914716106621",
+      "name": "St Neots",
+      "towns": ["St Neots"],
+      "lat": 52.2922,
+      "lng": -0.2582,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106107796087892",
+      "name": "Stafford",
+      "towns": ["Stafford"],
+      "lat": 52.803,
+      "lng": -2.1259,
+      "listingsSeen": 75,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115041861844988",
+      "name": "Staines, United Kingdom",
+      "towns": ["Staines"],
+      "lat": 51.4188,
+      "lng": -0.5219,
+      "listingsSeen": 22,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113919151951734",
+      "name": "Stalybridge",
+      "towns": ["Stalybridge"],
+      "lat": 53.4787,
+      "lng": -2.0709,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108126319208135",
+      "name": "Stamford, Lincolnshire",
+      "towns": ["Stamford"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113217385358180",
+      "name": "Standish, Wigan, United Kingdom",
+      "towns": ["Wigan"],
+      "lat": 53.5281,
+      "lng": -2.6312,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108561495842724",
+      "name": "Stanford le Hope",
+      "towns": ["Stanford le Hope"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103721409666020",
+      "name": "Stanmore",
+      "towns": ["Edgware", "Stanmore"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110797718942363",
+      "name": "Stapleford, Nottingham",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110160695668845",
+      "name": "Staveley, Sheffield, United Kingdom",
+      "towns": ["Chesterfield"],
+      "lat": 53.248,
+      "lng": -1.4337,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106118689420289",
+      "name": "Stevenage",
+      "towns": ["Stevenage"],
+      "lat": 51.9022,
+      "lng": -0.1923,
+      "listingsSeen": 48,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113076558703683",
+      "name": "Stockport",
+      "towns": ["Stockport"],
+      "lat": 53.3963,
+      "lng": -2.1588,
+      "listingsSeen": 40,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107877565901750",
+      "name": "Stockton-on-Tees, United Kingdom",
+      "towns": ["Stockton-on-Tees"],
+      "lat": 54.5828,
+      "lng": -1.2909,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112900938723508",
+      "name": "Stoke-on-Trent",
+      "towns": ["Stoke-on-Trent"],
+      "lat": 53.0667,
+      "lng": -2.1918,
+      "listingsSeen": 31,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105547889479201",
+      "name": "Stokenchurch",
+      "towns": ["High Wycombe"],
+      "lat": 51.6275,
+      "lng": -0.7526,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108471209182171",
+      "name": "Stone, Stoke-On-Trent, United Kingdom",
+      "towns": ["Stone"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108333355861211",
+      "name": "Stonehouse, Gloucestershire",
+      "towns": ["Stonehouse"],
+      "lat": 51.7593,
+      "lng": -2.3126,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107642315924995",
+      "name": "Stourbridge",
+      "towns": ["Stourbridge"],
+      "lat": 52.457,
+      "lng": -2.1478,
+      "listingsSeen": 44,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106027109438276",
+      "name": "Stourport",
+      "towns": ["Stourport-on-Severn"],
+      "lat": 52.3416,
+      "lng": -2.2797,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108385269186737",
+      "name": "Stowmarket",
+      "towns": ["Stowmarket"],
+      "lat": 52.1878,
+      "lng": 0.9943,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111716088855442",
+      "name": "Stratford-upon-Avon, Warwickshire",
+      "towns": ["Stratford upon Avon"],
+      "lat": 52.2043,
+      "lng": -1.7413,
+      "listingsSeen": 5,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104069959629600",
+      "name": "Strathfoyle",
+      "towns": ["Londonderry"],
+      "lat": 55.0333,
+      "lng": -7.2675,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107017672663764",
+      "name": "Stratton, Swindon, United Kingdom",
+      "towns": ["Swindon"],
+      "lat": 51.5616,
+      "lng": -1.7523,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109363965750760",
+      "name": "Strawberry Hill, Slough, United Kingdom",
+      "towns": ["Richmond"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107543785941424",
+      "name": "Street, Somerset",
+      "towns": ["Street"],
+      "lat": 51.1166,
+      "lng": -2.7411,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109103882442607",
+      "name": "Stroud, Gloucestershire",
+      "towns": ["Stroud"],
+      "lat": 51.7429,
+      "lng": -2.2137,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108218445873743",
+      "name": "Sturminster Newton",
+      "towns": ["Sturminster Newton"],
+      "lat": 50.9738,
+      "lng": -2.3236,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104046336299820",
+      "name": "Sudbury, Suffolk",
+      "towns": ["Sudbury"],
+      "lat": 52.045,
+      "lng": 0.7306,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108099999218919",
+      "name": "Sutton Coldfield",
+      "towns": ["Sutton Coldfield"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106253279413949",
+      "name": "Sutton in Ashfield",
+      "towns": ["Sutton in Ashfield"],
+      "lat": 53.1326,
+      "lng": -1.2579,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112540925425045",
+      "name": "Sutton, London",
+      "towns": ["Sutton"],
+      "lat": 51.3638,
+      "lng": -0.1923,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104128186289025",
+      "name": "Swadlincote",
+      "towns": ["Swadlincote"],
+      "lat": 52.7591,
+      "lng": -1.5765,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106144939417183",
+      "name": "Swanley",
+      "towns": ["Dartford", "Swanley"],
+      "lat": 51.4462,
+      "lng": 0.2252,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "117121638301587",
+      "name": "Swanmore, Hampshire, United Kingdom",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110997062258309",
+      "name": "Swansea, United Kingdom",
+      "towns": ["Swansea"],
+      "lat": 51.622,
+      "lng": -3.9386,
+      "listingsSeen": 28,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113609965318017",
+      "name": "Swinderby, Lincolnshire, United Kingdom",
+      "towns": ["Lincoln"],
+      "lat": 53.2095,
+      "lng": -0.5109,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104049172966135",
+      "name": "Swindon",
+      "towns": ["Swindon"],
+      "lat": 51.5616,
+      "lng": -1.7523,
+      "listingsSeen": 95,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108614599170554",
+      "name": "Swinton, Lancashire",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109126125773465",
+      "name": "Tamworth",
+      "towns": ["Tamworth"],
+      "lat": 52.6328,
+      "lng": -1.7194,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114481921897649",
+      "name": "Taunton, Somerset",
+      "towns": ["Taunton"],
+      "lat": 51.0123,
+      "lng": -3.1146,
+      "listingsSeen": 25,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104029316301605",
+      "name": "Tavistock",
+      "towns": ["Tavistock"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113384852009578",
+      "name": "Teignmouth, England",
+      "towns": ["Teignmouth"],
+      "lat": 50.5563,
+      "lng": -3.5321,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112496712098869",
+      "name": "Telford",
+      "towns": ["Telford"],
+      "lat": 52.6492,
+      "lng": -2.4445,
+      "listingsSeen": 28,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112473412100167",
+      "name": "Tetbury",
+      "towns": ["Tetbury"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105526516148015",
+      "name": "Teversham",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107848609237915",
+      "name": "Tewkesbury",
+      "towns": ["Tewkesbury"],
+      "lat": 51.9901,
+      "lng": -2.1149,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115066808503351",
+      "name": "Theale, Reading, United Kingdom",
+      "towns": ["Reading"],
+      "lat": 51.4517,
+      "lng": -0.9723,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110904198933356",
+      "name": "Thetford, Norfolk",
+      "towns": ["Thetford"],
+      "lat": 52.4734,
+      "lng": 0.5548,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114706351879033",
+      "name": "Thornaby",
+      "towns": ["Stockton-on-Tees"],
+      "lat": 54.5828,
+      "lng": -1.2909,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112539142095615",
+      "name": "Thornbury, Gloucestershire",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111560855531417",
+      "name": "Thornton Heath, Bromley, United Kingdom",
+      "towns": ["Thornton Heath"],
+      "lat": 51.4078,
+      "lng": -0.1044,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112294842115656",
+      "name": "Thorrington",
+      "towns": ["Colchester"],
+      "lat": 51.8857,
+      "lng": 0.8954,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112662365413505",
+      "name": "Thrybergh",
+      "towns": ["Rotherham"],
+      "lat": 53.4732,
+      "lng": -1.3019,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112144245463828",
+      "name": "Thundersley",
+      "towns": ["Benfleet"],
+      "lat": 51.5671,
+      "lng": 0.5658,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112292115450513",
+      "name": "Thurmaston",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109740095718372",
+      "name": "Thurnby",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103336219707502",
+      "name": "Tilehurst, Reading, United Kingdom",
+      "towns": ["Reading"],
+      "lat": 51.4517,
+      "lng": -0.9723,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112555142089558",
+      "name": "Tipton",
+      "towns": ["Tipton"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104291976277070",
+      "name": "Tollerton, Nottingham, United Kingdom",
+      "towns": ["Nottingham"],
+      "lat": 52.9733,
+      "lng": -1.192,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106038522769760",
+      "name": "Tonbridge, Kent",
+      "towns": ["Tonbridge"],
+      "lat": 51.1935,
+      "lng": 0.2802,
+      "listingsSeen": 48,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106006322765024",
+      "name": "Torquay",
+      "towns": ["Torquay"],
+      "lat": 50.4684,
+      "lng": -3.5431,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108610875830442",
+      "name": "Totnes",
+      "towns": ["Totnes"],
+      "lat": 50.4355,
+      "lng": -3.6859,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109329362422062",
+      "name": "Totton, Southampton, United Kingdom",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "102195163155082",
+      "name": "Trowbridge, Wiltshire",
+      "towns": ["Trowbridge"],
+      "lat": 51.2979,
+      "lng": -2.2467,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107021579337661",
+      "name": "Trumpington, Cambridgeshire, United Kingdom",
+      "towns": ["Cambridge"],
+      "lat": 52.2098,
+      "lng": 0.1263,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110390172322905",
+      "name": "Truro, Cornwall",
+      "towns": ["Truro"],
+      "lat": 50.2652,
+      "lng": -5.0482,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113284728682222",
+      "name": "Twickenham",
+      "towns": ["Twickenham"],
+      "lat": 51.4517,
+      "lng": -0.3351,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115032291841797",
+      "name": "Twyford, Wokingham",
+      "towns": ["Reading"],
+      "lat": 51.4517,
+      "lng": -0.9723,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106071576090775",
+      "name": "Tyldesley",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103316463043185",
+      "name": "Urmston, Lancashire, United Kingdom",
+      "towns": ["Manchester"],
+      "lat": 53.4787,
+      "lng": -2.2467,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112135012131788",
+      "name": "Uttoxeter",
+      "towns": ["Uttoxeter"],
+      "lat": 52.9074,
+      "lng": -1.8732,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107852309243134",
+      "name": "Uxbridge",
+      "towns": ["Uxbridge"],
+      "lat": 51.5341,
+      "lng": -0.4559,
+      "listingsSeen": 83,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110954625598811",
+      "name": "Ventnor, Isle of Wight",
+      "towns": ["Ventnor"],
+      "lat": 50.6607,
+      "lng": -1.2909,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106503902720063",
+      "name": "Verwood, Dorset",
+      "towns": ["Verwood"],
+      "lat": 50.8804,
+      "lng": -1.8732,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103755839663515",
+      "name": "Virginia Water",
+      "towns": ["Virginia Water"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112372102112762",
+      "name": "Wakefield",
+      "towns": ["Wakefield"],
+      "lat": 53.6819,
+      "lng": -1.4996,
+      "listingsSeen": 75,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109347995757516",
+      "name": "Wallingford, Oxfordshire",
+      "towns": ["Wallingford"],
+      "lat": 51.622,
+      "lng": -1.1151,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112078935471687",
+      "name": "Wallington, London",
+      "towns": ["Wallington"],
+      "lat": 51.3638,
+      "lng": -0.1373,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105653399469229",
+      "name": "Wallsend",
+      "towns": ["Wallsend"],
+      "lat": 54.9893,
+      "lng": -1.5216,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112241808790388",
+      "name": "Walsall",
+      "towns": ["Walsall", "Willenhall"],
+      "lat": 52.5833,
+      "lng": -1.983,
+      "listingsSeen": 53,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113821511964835",
+      "name": "Walsden",
+      "towns": ["Todmorden"],
+      "lat": 53.7204,
+      "lng": -2.0929,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "114941788521588",
+      "name": "Waltham Abbey, United Kingdom",
+      "towns": ["Waltham Abbey"],
+      "lat": 51.6879,
+      "lng": 0.0055,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107549342601739",
+      "name": "Waltham Cross",
+      "towns": ["Waltham Cross"],
+      "lat": 51.7044,
+      "lng": -0.0385,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109080102453113",
+      "name": "Wanborough, Swindon, United Kingdom",
+      "towns": ["Swindon"],
+      "lat": 51.5616,
+      "lng": -1.7523,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107585439264400",
+      "name": "Wantage",
+      "towns": ["Wantage"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109499785736161",
+      "name": "Wareham, Dorset",
+      "towns": ["Wareham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109631815729826",
+      "name": "Warlingham",
+      "towns": ["Warlingham"],
+      "lat": 51.3089,
+      "lng": -0.0714,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108345155860601",
+      "name": "Warminster",
+      "towns": ["Warminster"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105680032800256",
+      "name": "Warmley",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "215916278565212",
+      "name": "Warrington, England",
+      "towns": ["Warrington", "Lymm"],
+      "lat": 53.4183,
+      "lng": -2.5763,
+      "listingsSeen": 37,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106058636091557",
+      "name": "Warsash",
+      "towns": ["Southampton", "Fareham"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110577935629304",
+      "name": "Warwick, Warwickshire",
+      "towns": ["Warwick"],
+      "lat": 52.2812,
+      "lng": -1.5546,
+      "listingsSeen": 17,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104070546297031",
+      "name": "Waterlooville",
+      "towns": ["Waterlooville"],
+      "lat": 50.8804,
+      "lng": -1.0272,
+      "listingsSeen": 34,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "101905629850654",
+      "name": "Watford, United Kingdom",
+      "towns": ["Watford"],
+      "lat": 51.6714,
+      "lng": -0.401,
+      "listingsSeen": 43,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107963702559294",
+      "name": "Wednesbury",
+      "towns": ["Wednesbury"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109444302408735",
+      "name": "Wednesfield",
+      "towns": ["Wolverhampton"],
+      "lat": 52.5833,
+      "lng": -2.1149,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113035565389088",
+      "name": "Welling, Bexley, United Kingdom",
+      "towns": ["Welling", "Bexleyheath"],
+      "lat": 51.4682,
+      "lng": 0.0934,
+      "listingsSeen": 33,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105859466121382",
+      "name": "Wellingborough, Northamptonshire",
+      "towns": ["Wellingborough"],
+      "lat": 52.3196,
+      "lng": -0.6866,
+      "listingsSeen": 27,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105686602798917",
+      "name": "Wellington, Somerset",
+      "towns": ["Wellington"],
+      "lat": 50.9738,
+      "lng": -3.2135,
+      "listingsSeen": 23,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111157562241599",
+      "name": "Welwyn Garden City, Hertfordshire",
+      "towns": ["Welwyn Garden City"],
+      "lat": 51.7868,
+      "lng": -0.2142,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110953522261106",
+      "name": "Wembley, Brent, United Kingdom",
+      "towns": ["Wembley", "Greenford"],
+      "lat": 51.5561,
+      "lng": -0.2802,
+      "listingsSeen": 139,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108121432542655",
+      "name": "West Bromwich",
+      "towns": ["West Bromwich"],
+      "lat": 52.5174,
+      "lng": -1.994,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108224505874415",
+      "name": "West End, Southampton, United Kingdom",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110247768995725",
+      "name": "West Malling, Kent",
+      "towns": ["West Malling"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "115288651815595",
+      "name": "West Molesey",
+      "towns": ["West Molesey"],
+      "lat": 51.3968,
+      "lng": -0.368,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111460275549705",
+      "name": "West Wickham, Bromley, United Kingdom",
+      "towns": ["West Wickham"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113152948694814",
+      "name": "Westbury, Wiltshire",
+      "towns": ["Westbury"],
+      "lat": 51.2595,
+      "lng": -2.1808,
+      "listingsSeen": 4,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110049582347449",
+      "name": "Westerleigh, South Gloucestershire, United Kingdom",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109213595772556",
+      "name": "Weston-super-Mare",
+      "towns": ["Weston-super-Mare"],
+      "lat": 51.3528,
+      "lng": -2.9828,
+      "listingsSeen": 18,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103133959727480",
+      "name": "Weybridge",
+      "towns": ["Weybridge"],
+      "lat": 51.3748,
+      "lng": -0.4559,
+      "listingsSeen": 18,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108451039178633",
+      "name": "Weymouth, Dorset",
+      "towns": ["Weymouth"],
+      "lat": 50.6058,
+      "lng": -2.4774,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113036518722756",
+      "name": "Wherstead, Suffolk, United Kingdom",
+      "towns": ["Ipswich"],
+      "lat": 52.056,
+      "lng": 1.181,
+      "listingsSeen": 6,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113871255294301",
+      "name": "Whetstone, Leicester, United Kingdom",
+      "towns": ["Leicester"],
+      "lat": 52.6382,
+      "lng": -1.1371,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113167232031420",
+      "name": "Whitchurch, Hampshire",
+      "towns": ["Whitchurch"],
+      "lat": 51.2265,
+      "lng": -1.3348,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108112092543376",
+      "name": "Whiteley",
+      "towns": ["Southampton"],
+      "lat": 50.9134,
+      "lng": -1.4008,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104997372870698",
+      "name": "Whitmore, Stoke-On-Trent, United Kingdom",
+      "towns": ["Newcastle"],
+      "lat": 52.9678,
+      "lng": -2.3016,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "103972799639993",
+      "name": "Whittlesey",
+      "towns": ["Peterborough"],
+      "lat": 52.5833,
+      "lng": -0.2472,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111117058912028",
+      "name": "Wickford, Essex",
+      "towns": ["Wickford"],
+      "lat": 51.622,
+      "lng": 0.5219,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105522439481546",
+      "name": "Widnes",
+      "towns": ["Widnes"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104010576301667",
+      "name": "Wigan",
+      "towns": ["Wigan"],
+      "lat": 53.5281,
+      "lng": -2.6312,
+      "listingsSeen": 21,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104213542948753",
+      "name": "Wilmslow",
+      "towns": ["Wilmslow"],
+      "lat": 53.3524,
+      "lng": -2.2247,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104275032945738",
+      "name": "Wimborne, Dorset, United Kingdom",
+      "towns": ["Wimborne"],
+      "lat": 50.8035,
+      "lng": -1.994,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106070812766404",
+      "name": "Winchester, Hampshire",
+      "towns": ["Winchester"],
+      "lat": 51.0178,
+      "lng": -1.3129,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "107564122597857",
+      "name": "Windlesham",
+      "towns": ["Woking"],
+      "lat": 51.3309,
+      "lng": -0.5328,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109125829106939",
+      "name": "Windsor, Berkshire",
+      "towns": ["Windsor"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104676076237367",
+      "name": "Wingate, Durham, United Kingdom",
+      "towns": ["Wingate"],
+      "lat": 54.7311,
+      "lng": -1.3788,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105631069469671",
+      "name": "Wingerworth",
+      "towns": ["Chesterfield"],
+      "lat": 53.248,
+      "lng": -1.4337,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104143249621842",
+      "name": "Wisbech",
+      "towns": ["Wisbech"],
+      "lat": 52.6767,
+      "lng": 0.1923,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111785758841209",
+      "name": "Witham, Essex",
+      "towns": ["Witham"],
+      "lat": 51.7978,
+      "lng": 0.6427,
+      "listingsSeen": 9,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108395625858192",
+      "name": "Witney, Oxfordshire",
+      "towns": ["Witney"],
+      "lat": 51.8362,
+      "lng": -1.5326,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112324528783887",
+      "name": "Woking",
+      "towns": ["Woking"],
+      "lat": 51.3309,
+      "lng": -0.5328,
+      "listingsSeen": 38,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113535295323680",
+      "name": "Wokingham",
+      "towns": ["Wokingham"],
+      "lat": 51.3968,
+      "lng": -0.8514,
+      "listingsSeen": 15,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108243952533545",
+      "name": "Wolverhampton",
+      "towns": ["Wolverhampton"],
+      "lat": 52.5833,
+      "lng": -2.1149,
+      "listingsSeen": 55,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109905365699669",
+      "name": "Wolverton, Milton Keynes",
+      "towns": ["Milton Keynes"],
+      "lat": 52.0395,
+      "lng": -0.7635,
+      "listingsSeen": 10,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112144485469783",
+      "name": "Woodbridge, Suffolk",
+      "towns": ["Woodbridge"],
+      "lat": 52.1439,
+      "lng": 1.4447,
+      "listingsSeen": 14,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "113752491970042",
+      "name": "Woodford, Redbridge, United Kingdom",
+      "towns": ["Woodford Green"],
+      "lat": 51.5945,
+      "lng": 0.0385,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112409618771165",
+      "name": "Woodstock, Oxfordshire",
+      "towns": ["Woodstock"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "104273756274776",
+      "name": "Woolacombe",
+      "towns": ["Woolacombe"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106180112747624",
+      "name": "Wootton, Northamptonshire",
+      "towns": ["Northampton"],
+      "lat": 52.2427,
+      "lng": -0.8954,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "108325692529205",
+      "name": "Worcester Park",
+      "towns": ["Worcester Park"],
+      "lat": 51.3748,
+      "lng": -0.2362,
+      "listingsSeen": 2,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110968245597636",
+      "name": "Worcester, Worcestershire",
+      "towns": ["Worcester"],
+      "lat": 52.2043,
+      "lng": -2.2028,
+      "listingsSeen": 11,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111854322160765",
+      "name": "Worksop",
+      "towns": ["Worksop"],
+      "lat": 53.2864,
+      "lng": -1.181,
+      "listingsSeen": 8,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "111126958910952",
+      "name": "Worthing, West Sussex",
+      "towns": ["Worthing"],
+      "lat": 50.831,
+      "lng": -0.423,
+      "listingsSeen": 24,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105647356134958",
+      "name": "Wrexham",
+      "towns": ["Wrexham"],
+      "lat": 53.0338,
+      "lng": -3.0267,
+      "listingsSeen": 13,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109057635780290",
+      "name": "Wrington",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 7,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "106256396080344",
+      "name": "Wymondham, Norfolk",
+      "towns": ["Wymondham"],
+      "lat": 52.5778,
+      "lng": 1.1371,
+      "listingsSeen": 16,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "112618725417740",
+      "name": "Wythall",
+      "towns": ["Birmingham"],
+      "lat": 52.4734,
+      "lng": -1.8512,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "105586096142596",
+      "name": "Yarm",
+      "towns": ["Yarm"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109178752435409",
+      "name": "Yate",
+      "towns": ["Bristol"],
+      "lat": 51.4572,
+      "lng": -2.5763,
+      "listingsSeen": 12,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "109641352395056",
+      "name": "Yateley",
+      "towns": ["Yateley"],
+      "lat": null,
+      "lng": null,
+      "listingsSeen": 1,
+      "verifiedAsSearchCentre": false
+    },
+    {
+      "cityPageId": "110114372342955",
+      "name": "Yeovil, Somerset",
+      "towns": ["Yeovil"],
+      "lat": 50.9464,
+      "lng": -2.6422,
+      "listingsSeen": 3,
+      "verifiedAsSearchCentre": false
+    }
+  ]
+}
