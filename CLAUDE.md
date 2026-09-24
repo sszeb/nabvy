@@ -41,8 +41,8 @@ The owner asked to cut token use without weakening the work. Measured that day: 
 - **Tight briefs.** Name the exact files a session or agent reads; never "read the whole build pack".
 - **Events, not polling.**
   - **Build sessions.** Subscribe to your pull request's activity and let its events wake you. Keep a fallback check-in no more often than hourly, and none while you wait only on the owner. When you open a pull request, wake the reviewer with a one-shot trigger. Stop re-arming once it is merged or closed.
-  - **Reviewer.** Applies a merged pull request's module migrations straight after merging it.
-  - **Coordinator.** Sweeps every two hours.
+  - **Reviewer.** Never touches Supabase. Wakes the coordinator with a one-shot trigger when a merged pull request carries a migration.
+  - **Coordinator.** Applies every merged migration, module or gateway, soon after the merge, reading `docs/security.md` first, and names any it could not apply in its message to the owner (owner, 2026-09-24). Sweeps every two hours.
 - **Batch pushes.** Collect small docs changes and push them together, at most about every 30–60 minutes, so each push costs one review.
 - **Incremental reviews.** The reviewer reviews only the commits since the head it last reviewed. For a docs-only delta, it relies on CI instead of re-running install, typecheck and tests.
 - **Short sessions: hand off on your own** (owner, 2026-09-24). A long-running session (the coordinator, the reviewer, or a build session that takes on more work) hands off to a fresh one without asking the owner first. The trigger is `get_session` showing `external_metadata.context_usage.used_tokens` above 300,000, or the session's context having been summarised once, whichever comes first. Hand off at the next point where no edit is half done:

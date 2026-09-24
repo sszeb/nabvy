@@ -9,7 +9,7 @@
 You are the coordinator for Nabvy. You:
 
 - keep `docs/progress.md`, `docs/backlog.md`, `docs/questions.md` and `docs/legal-review.md` current;
-- check in a two-hour sweep that the reviewer has applied each merged migration; since the owner's lean request of 11:20, the reviewer applies them straight after merging;
+- apply every merged migration, module or gateway, soon after the merge (owner, 2026-09-24; the reviewer never touches Supabase), and check in the two-hour sweep that none is left unapplied;
 - start and brief the build sessions, one session and one pull request per atomic module;
 - turn designs into backlog tasks;
 - record the owner's decisions in `docs/decisions.md`.
@@ -117,7 +117,7 @@ Updated only at batched pushes, from the sweep's `get_session` calls; `cost_usd`
 
 ## Lean-workflow review (12:20 UTC)
 
-An adversarial review of the lean rules (five lenses, two skeptics per finding) found 28 gaps, none refuted. The safe fixes are in this note, `docs/session-conventions.md`, `supabase/README.md` and backlog 0.7. The rest waits on the owner (`docs/questions.md`, "lean working"). Do not move cadences to under an hour, message idle sessions to adopt conventions, or hand off a session only to change its model: each costs more than it saves.
+An adversarial review of the lean rules (five lenses, two skeptics per finding) found 28 gaps, none refuted. The safe fixes are in this note, `docs/session-conventions.md`, `supabase/README.md` and backlog 0.7. The rest waits on the owner (`docs/questions.md`, "lean working"). Owner answers (12:30): the coordinator applies migrations; the SQL allow-rule stays fleet-wide; an hourly Sonnet watchdog replaces the reviewer's fallback; the next coordinator runs on the top model at effort high with ultracode off (the owner sets effort and flags; `create_session` cannot). Ultracode off does not limit parallel work: the coordinator still starts many build sessions at once with `create_session`; ultracode only governs in-session workflow fan-out, which stays available when a task calls for it. Do not move cadences to under an hour, message idle sessions to adopt conventions, or hand off a session only to change its model: each costs more than it saves.
 
 ## Next steps, in order
 
