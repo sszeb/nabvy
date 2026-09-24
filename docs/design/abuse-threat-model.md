@@ -6,7 +6,7 @@ From `docs/decisions.md`, "Sign-up throttle and surge stop" (owner, 2026-09-24, 
 
 **The money bound is the caps, not identity checks.** Residential proxies, fresh browsers and Gmail get past per-identity limits, which only raise the cost of each account. The cost is bounded by the chain behind them: admission rate, breakers, free pool, the £2 lifetime cap, the synchronous daily, weekly and monthly caps, the gateway cap and Apify's platform limit.
 
-**Paid is never throttled** (owner, 2026-09-24): only the free tier is limited. A paid sign-up or an upgrade from free is never queued, held or refused by the sign-up throttle, admission, the breakers, the free pool or the farm ladder. It is checked only by Stripe (Radar, B2) and the spend caps, and paid watchers keep their headroom inside the provider cap (G7).
+**Paid is never throttled** (owner, 2026-09-24): only the free tier is limited. A paid sign-up or an upgrade from free is never queued, held or refused by the sign-up throttle, admission, the breakers, the free pool or the farm ladder. Only Stripe (Radar, B2) and the spend caps apply; paid watchers keep headroom in the provider cap (G7).
 
 **The first line: 100 accounts, not thousands.** With the chain built as designed (4.3s, 1.6c–1.6e, 4.9a), 100 burner accounts that sign up in one minute cost at most the day's free pool plus the reservations in flight: **£20 + ≤ £2 a day**. The breaker trips inside the first minute, and admission pauses until an admin resets it. The real damage is not money. The attacker **drains the free pool**, so genuine free users wait (lost revenue), and on current numbers can **drain paid headroom** too (gap G7).
 
