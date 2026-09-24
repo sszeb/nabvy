@@ -1,0 +1,27 @@
+{
+  "steps": [
+    {
+      "details": 20,
+      "versionsWritten": 20,
+      "fetchesWritten": 20,
+      "changed": 20,
+      "unresolved": 0
+    },
+    {
+      "details": 20,
+      "versionsWritten": 0,
+      "fetchesWritten": 20,
+      "changed": 0,
+      "unresolved": 0
+    }
+  ],
+  "last": {
+    "changed": [],
+    "unresolved": []
+  },
+  "versions": {
+    "versions": 20,
+    "full_verified": 20
+  },
+  "current": 20
+}

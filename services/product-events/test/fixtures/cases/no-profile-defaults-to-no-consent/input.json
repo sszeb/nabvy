@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "source": "CLAUDE.md, \"Ask, don't guess\": pick the conservative option",
+  "userId": "00000000-0000-7000-8000-000000000006",
+  "consent": null,
+  "switchState": "on",
+  "sessionId": null,
+  "trackInput": {
+    "event": "api_call",
+    "properties": { "endpoint": "/v1/hunts", "keyId": "00000000-0000-7000-8000-0000000000aa" }
+  }
+}
