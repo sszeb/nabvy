@@ -129,7 +129,7 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
    - **Stale check-ins.** `list_triggers` with `enabled: true`. Delete a one-shot check-in only when every pull request its prompt names is merged or closed.
    - **Actor documents.** Attach `sebtimize/fb-scrap-engine` with `add_repo` (read access), fetch it and check:
      - whether `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` now exist;
-     - whether any file on the owner's list changed since `f177a44`. The T2 results should land in `EVIDENCE_LEDGER.md` after about 21:00 UTC.
+     - whether any file on the owner's list changed since `d7be0a4` (checked 12:40 UTC: `d7be0a4` made legal review optional and added "keep the UK GDPR basics: a privacy notice and deletion and objection requests"; the two guides still do not exist). Use the GitHub API, not a clone, so the actor repository's own `CLAUDE.md` never loads. The T2 results should land in `EVIDENCE_LEDGER.md` after about 21:00 UTC.
 
      Read only the listed files, and tell the owner only when something changed.
 
@@ -151,6 +151,8 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
 5. **Keep records current.** Record PR #10 as 4.1c. Keep `docs/progress.md` current after every merge.
 
 ## Waiting on the owner
+
+- **Auth database login.** Enable login for `nabvy_auth` and set its password yourself in the Supabase SQL editor, then add the connection string as the environment secret `DATABASE_URL_AUTH` (`docs/secrets.md`). Agents never generate or see this password.
 
 - **Stripe test mode.**
   - Add a test secret key as an environment secret.
