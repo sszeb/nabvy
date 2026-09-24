@@ -38,14 +38,27 @@ afterAll(async () => {
 
 describe('handleRunCollected idempotency', () => {
   it('a replayed job (same jobId) writes no new totals and returns the same result', async () => {
-    const reader = fakeReader('chichester', ['http', 'browser-fallback'])
+    const reader = fakeReader('chichester', ['http', 'http'])
     const at = '2026-09-24T12:00:00.000Z'
-    const first = await handleRunCollected(harness.db, { jobId: 101, apifyRunId: 'r1', kind: 'search' }, at, reader)
-    const second = await handleRunCollected(harness.db, { jobId: 101, apifyRunId: 'r1', kind: 'search' }, at, reader)
+    const first = await handleRunCollected(
+      harness.db,
+      { jobId: 101, apifyRunId: 'r1', kind: 'search' },
+      at,
+      reader,
+    )
+    const second = await handleRunCollected(
+      harness.db,
+      { jobId: 101, apifyRunId: 'r1', kind: 'search' },
+      at,
+      reader,
+    )
     expect(first).toEqual(second)
 
     const [row] = await harness.db
-      .select({ totalSearches: healthDaily.totalSearches, processedJobIds: healthDaily.processedJobIds })
+      .select({
+        totalSearches: healthDaily.totalSearches,
+        processedJobIds: healthDaily.processedJobIds,
+      })
       .from(healthDaily)
       .where(eq(healthDaily.day, '2026-09-24'))
     expect(row?.totalSearches).toBe(2)

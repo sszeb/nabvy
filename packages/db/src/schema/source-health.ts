@@ -21,7 +21,7 @@ export const healthDaily = schema.table('health_daily', {
   degradedSearches: integer('degraded_searches').notNull().default(0),
   breakerTrips: integer('breaker_trips').notNull().default(0),
   newOperationIds: jsonb('new_operation_ids').$type<string[]>().notNull().default([]),
-  sellerBlockPages: jsonb('seller_block_pages').$type<boolean[]>().notNull().default([]),
+  blockedPages: jsonb('blocked_pages').$type<boolean[]>().notNull().default([]),
   alerted: jsonb('alerted').$type<string[]>().notNull().default([]),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
@@ -53,7 +53,7 @@ export const vHealth = schema
     pctDegraded: numeric('pct_degraded', { precision: 5, scale: 4 }).notNull(),
     breakerTrips: integer('breaker_trips').notNull(),
     newOperationIds: jsonb('new_operation_ids').$type<string[]>().notNull(),
-    sellerBlockPages: jsonb('seller_block_pages').$type<boolean[]>().notNull(),
+    blockedPages: jsonb('blocked_pages').$type<boolean[]>().notNull(),
     alerted: jsonb('alerted').$type<string[]>().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
   })

@@ -83,7 +83,9 @@ export async function handleRunCollected(
   payload: RunCollectedPayload,
   at: string,
   reader: RunCollectedReader = realRunCollectedReader,
-): Promise<Result<RunCollectedResult | undefined, { code: SourceHealthErrorCode; message: string }>> {
+): Promise<
+  Result<RunCollectedResult | undefined, { code: SourceHealthErrorCode; message: string }>
+> {
   if ((await state(db, MODULE)) === 'off') return ok(undefined)
 
   if (!(await reader.jobExists(db, payload.jobId))) {
@@ -180,15 +182,11 @@ export async function assessRamp(db: Queryable, now: Date): Promise<RampAssessme
     dayBeforePct ?? null,
     SOURCE_HEALTH_RAMP_STAGES,
   )
-  if (!decision.advance || decision.nextStage === undefined) {
+  const nextConfig =
+    decision.nextStage !== undefined ? SOURCE_HEALTH_RAMP_STAGES[decision.nextStage] : undefined
+  if (!decision.advance || decision.nextStage === undefined || !nextConfig) {
     return { day: yesterday, advanced: false, stage: current.stage }
   }
-  await insertRampStage(
-    db,
-    decision.nextStage,
-    now,
-    SOURCE_HEALTH_RAMP_STAGES[decision.nextStage].maxChecksPerDay,
-    yesterday,
-  )
+  await insertRampStage(db, decision.nextStage, now, nextConfig.maxChecksPerDay, yesterday)
   return { day: yesterday, advanced: true, stage: decision.nextStage }
 }

@@ -12,6 +12,16 @@ import type { SourceHealthAlertReason } from '@nabvy/contracts/modules/source-he
 /** Routes run-coverage reports that count as degraded (card: "searches on browser-fallback or failed"). */
 const DEGRADED_ROUTES = new Set(['browser-fallback', 'failed'])
 
+/** A configured ramp stage by index, or throws — `SOURCE_HEALTH_RAMP_STAGES` is validated non-empty by config. */
+export function rampStageAt(
+  stages: readonly SourceHealthRampStageConfig[],
+  index: number,
+): SourceHealthRampStageConfig {
+  const stage = stages[index]
+  if (!stage) throw new Error(`source-health: no ramp stage configured at index ${index}`)
+  return stage
+}
+
 /** Europe/London calendar day of a timestamp, `YYYY-MM-DD` (en-CA gives that format directly). */
 const LONDON_DAY = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Europe/London',
@@ -71,7 +81,7 @@ export interface HealthDayTotals {
   degradedSearches: number
   breakerTrips: number
   newOperationIds: string[]
-  sellerBlockPages: boolean[]
+  blockedPages: boolean[]
   alerted: SourceHealthAlertReason[]
 }
 
@@ -81,7 +91,7 @@ export const emptyHealthDay = (): HealthDayTotals => ({
   degradedSearches: 0,
   breakerTrips: 0,
   newOperationIds: [],
-  sellerBlockPages: [],
+  blockedPages: [],
   alerted: [],
 })
 
@@ -111,7 +121,7 @@ export function mergeHealthDay(existing: HealthDayTotals, batch: HealthDayBatch)
     degradedSearches: existing.degradedSearches + degraded,
     breakerTrips: existing.breakerTrips + (batch.breakerTripped ? 1 : 0),
     newOperationIds: Array.from(new Set([...existing.newOperationIds, ...batch.newOperationIds])),
-    sellerBlockPages: [...existing.sellerBlockPages, ...pagesOf(batch.sellerPresence)],
+    blockedPages: [...existing.blockedPages, ...pagesOf(batch.sellerPresence)],
     alerted: existing.alerted,
   }
 }
@@ -163,9 +173,10 @@ export function decideRampAdvance(
   previousPctDegraded: number | null,
   stages: readonly SourceHealthRampStageConfig[] = SOURCE_HEALTH_RAMP_STAGES,
 ): RampAdvanceDecision {
-  if (current.stage >= stages.length - 1) return { advance: false, reason: 'max-stage' }
+  const config = stages[current.stage]
+  if (current.stage >= stages.length - 1 || !config) return { advance: false, reason: 'max-stage' }
   const hoursAtStage = (now.getTime() - current.startedAt.getTime()) / 3_600_000
-  if (hoursAtStage < stages[current.stage].minHoursAtStage) {
+  if (hoursAtStage < config.minHoursAtStage) {
     return { advance: false, reason: 'too-soon' }
   }
   if (previousPctDegraded !== null && todayPctDegraded > previousPctDegraded) {

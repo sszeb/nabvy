@@ -65,7 +65,7 @@ $$;
 set local role nabvy_pipeline;
 insert into source_health.health_daily (
   day, processed_job_ids, total_searches, degraded_searches, breaker_trips, new_operation_ids,
-  seller_block_pages, alerted
+  blocked_pages, alerted
 ) values (
   'probe-day', '[1,2]'::jsonb, 10, 2, 1, '["q1"]'::jsonb, '[true,false]'::jsonb, '["degraded-spike"]'::jsonb
 );
@@ -89,7 +89,7 @@ begin
   select string_agg(column_name, ',' order by ordinal_position) into cols
   from information_schema.columns
   where table_schema = 'source_health' and table_name = 'v_health';
-  if cols <> 'day,total_searches,degraded_searches,pct_degraded,breaker_trips,new_operation_ids,seller_block_pages,alerted,updated_at' then
+  if cols <> 'day,total_searches,degraded_searches,pct_degraded,breaker_trips,new_operation_ids,blocked_pages,alerted,updated_at' then
     raise exception 'v_health column list changed: %', cols;
   end if;
 

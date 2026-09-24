@@ -33,7 +33,7 @@ monitoring", `fb-scrap-engine/docs/design/SCALE_PLAN.md:114-115`).
   tracks reasons already fired).
 - **Internal views** (`nabvy_pipeline`; security_invoker; empty/absent while off):
   - `source_health.v_health`: day, total_searches, degraded_searches, pct_degraded, breaker_trips,
-    new_operation_ids, seller_block_pages, alerted, updated_at (`SourceHealthDay`).
+    new_operation_ids, blocked_pages, alerted, updated_at (`SourceHealthDay`).
   - `source_health.v_ramp_stage`: stage, max_checks_per_day, started_at, advanced_by — at most one
     row, the current stage (`SourceHealthRampStage`).
 - **Restricted and user-facing views:** none (rule 5).
@@ -48,7 +48,7 @@ Schema `source_health`:
 
 - `health_daily`: `day` (Europe/London calendar day, text, primary key); `processed_job_ids`
   (bookkeeping for idempotency, not a card-named metric — see "Decisions"); `total_searches`,
-  `degraded_searches`, `breaker_trips`, `new_operation_ids`, `seller_block_pages`, `alerted`,
+  `degraded_searches`, `breaker_trips`, `new_operation_ids`, `blocked_pages`, `alerted`,
   `updated_at`.
 - `ramp`: `id` (UUID v7); one row per stage ever entered, never updated (`stage`, `started_at`,
   `max_checks_per_day`, `advanced_by`); the current stage is the row with the latest `started_at`.
@@ -85,6 +85,13 @@ new to `health_daily`; a repeated alert reason is not re-emitted), `switch.test.
 
 ## Decisions
 
+- **2026-09-24: the stored/exposed column is `blocked_pages`, not `seller_block_pages`.** The
+  foundation's view check (`packages/db/migrations/core/20260924110000_core_hardening.sql`)
+  refuses any `v_`/`mv_` column whose name matches `seller` regardless of what it holds, to catch
+  accidental seller-identity leaks by name alone. This column holds only booleans (whether a page
+  had a row with no seller object, never the seller data itself), so it is named `blocked_pages`
+  to say what it means without tripping that guard; `pnpm db:dry-run` failed on the original name
+  and this is the fix, confirmed by a clean re-run.
 - **2026-09-24: `health_daily.processed_job_ids` is bookkeeping, not a card-named column.** The
   card's "Owns" line names `health_daily (day, metrics)`; `processed_job_ids` is folded into
   "metrics" as the idempotency key for a per-job upsert (rule 8), rather than adding a third

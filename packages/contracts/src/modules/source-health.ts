@@ -22,7 +22,7 @@ export type SourceHealthAlertReason = z.infer<typeof SourceHealthAlertReason>
 /**
  * One row of `source_health.v_health`: the day's tally (card, "Does / does not": "tracks per
  * day: searches on browser-fallback or failed, breaker trips, new Facebook operation IDs ...,
- * and whether seller blocks were present on each search page"). `sellerBlockPages` is ordered:
+ * and whether seller blocks were present on each search page"). `blockedPages` is ordered:
  * one entry per page of apify-gateway rows processed that day, in the order they were collected
  * (apify-gateway's `v_seller_presence` rows carry no page field, so pages come from row order,
  * `fb-scrap-engine/docs/design/SELLER_DATA.md:38-41`; see README.md, "Decisions"). `alerted`
@@ -35,7 +35,7 @@ export const SourceHealthDay = z.strictObject({
   pctDegraded: z.number().min(0).max(1),
   breakerTrips: z.int().nonnegative(),
   newOperationIds: z.array(z.string()),
-  sellerBlockPages: z.array(z.boolean()),
+  blockedPages: z.array(z.boolean()),
   alerted: z.array(SourceHealthAlertReason),
   updatedAt: IsoTimestamp,
 })

@@ -8,7 +8,7 @@ import { vDecisions } from '@nabvy/db/schema/route-health'
 import { vSearchCoverage } from '@nabvy/db/schema/run-coverage'
 import { healthDaily, ramp, vHealth } from '@nabvy/db/schema/source-health'
 import { asc, desc, eq } from 'drizzle-orm'
-import { emptyHealthDay, type HealthDayTotals, type SearchOutcome } from '../domain'
+import { emptyHealthDay, type HealthDayTotals, rampStageAt, type SearchOutcome } from '../domain'
 
 /** The region an apify-gateway job was tagged with (every submitted run carries one, rule 12). */
 export async function selectJobRegion(db: Queryable, jobId: number): Promise<string | undefined> {
@@ -67,7 +67,7 @@ function toTotals(row: typeof healthDaily.$inferSelect): HealthDayTotals {
     degradedSearches: row.degradedSearches,
     breakerTrips: row.breakerTrips,
     newOperationIds: row.newOperationIds,
-    sellerBlockPages: row.sellerBlockPages,
+    blockedPages: row.blockedPages,
     alerted: row.alerted as HealthDayTotals['alerted'],
   }
 }
@@ -91,7 +91,7 @@ export async function upsertHealthDay(
     degradedSearches: totals.degradedSearches,
     breakerTrips: totals.breakerTrips,
     newOperationIds: totals.newOperationIds,
-    sellerBlockPages: totals.sellerBlockPages,
+    blockedPages: totals.blockedPages,
     alerted: totals.alerted,
     updatedAt: at,
   }
@@ -103,7 +103,10 @@ export async function upsertHealthDay(
 
 /** A day's degraded share, read back from `v_health`; undefined while there is no row (or off). */
 export async function selectPctDegraded(db: Queryable, day: string): Promise<number | undefined> {
-  const [row] = await db.select({ pct: vHealth.pctDegraded }).from(vHealth).where(eq(vHealth.day, day))
+  const [row] = await db
+    .select({ pct: vHealth.pctDegraded })
+    .from(vHealth)
+    .where(eq(vHealth.day, day))
   return row ? Number(row.pct) : undefined
 }
 
@@ -136,7 +139,7 @@ export async function seedRampIfMissing(db: Queryable, at: Date): Promise<void> 
   await db.insert(ramp).values({
     stage: 0,
     startedAt: at,
-    maxChecksPerDay: SOURCE_HEALTH_RAMP_STAGES[0].maxChecksPerDay,
+    maxChecksPerDay: rampStageAt(SOURCE_HEALTH_RAMP_STAGES, 0).maxChecksPerDay,
     advancedBy: null,
   })
 }

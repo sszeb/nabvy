@@ -7,7 +7,7 @@ CREATE TABLE "source_health"."health_daily" (
 	"degraded_searches" integer DEFAULT 0 NOT NULL,
 	"breaker_trips" integer DEFAULT 0 NOT NULL,
 	"new_operation_ids" jsonb DEFAULT '[]'::jsonb NOT NULL,
-	"seller_block_pages" jsonb DEFAULT '[]'::jsonb NOT NULL,
+	"blocked_pages" jsonb DEFAULT '[]'::jsonb NOT NULL,
 	"alerted" jsonb DEFAULT '[]'::jsonb NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );

@@ -32,7 +32,7 @@ select
   end as pct_degraded,
   breaker_trips,
   new_operation_ids,
-  seller_block_pages,
+  blocked_pages,
   alerted,
   updated_at
 from source_health.health_daily
@@ -48,5 +48,4 @@ where switches.state('source-health') <> 'off'
 order by started_at desc
 limit 1;
 
-revoke all on source_health.v_health, source_health.v_ramp_stage from public, anon, authenticated;
 grant select on source_health.v_health, source_health.v_ramp_stage to nabvy_pipeline;

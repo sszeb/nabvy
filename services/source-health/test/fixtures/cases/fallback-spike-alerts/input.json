@@ -5,8 +5,16 @@
     {
       "jobId": 1,
       "routes": [
-        "http", "http", "http", "http", "http",
-        "browser-fallback", "browser-fallback", "browser-fallback", "browser-fallback", "browser-fallback"
+        "http",
+        "http",
+        "http",
+        "http",
+        "http",
+        "browser-fallback",
+        "browser-fallback",
+        "browser-fallback",
+        "browser-fallback",
+        "browser-fallback"
       ],
       "sellerPresence": [],
       "newOperationIds": [],

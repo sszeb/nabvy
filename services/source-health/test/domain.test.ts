@@ -4,6 +4,7 @@ import {
   decideRampAdvance,
   emptyHealthDay,
   evaluateAlert,
+  type HealthDayTotals,
   isDegradedSpike,
   londonDay,
   mergeHealthDay,
@@ -84,7 +85,7 @@ describe('mergeHealthDay (CLAUDE.md, "Idempotent handlers")', () => {
       degradedSearches: 1,
       breakerTrips: 0,
       newOperationIds: ['q1'],
-      sellerBlockPages: [false],
+      blockedPages: [false],
       alerted: [],
     })
   })
@@ -138,12 +139,12 @@ describe('evaluateAlert', () => {
   })
 
   it('does not repeat a reason already in `alerted`', () => {
-    const totals = {
+    const totals: HealthDayTotals = {
       ...emptyHealthDay(),
       totalSearches: 10,
       degradedSearches: 3,
       newOperationIds: ['q1'],
-      alerted: ['degraded-spike'] as const,
+      alerted: ['degraded-spike'],
     }
     expect(evaluateAlert(totals, 0.1)).toEqual(['new-operation-id'])
   })

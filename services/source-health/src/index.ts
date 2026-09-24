@@ -4,6 +4,7 @@ import { SOURCE_HEALTH_RAMP_STAGES } from '@nabvy/config/modules/source-health'
 import type { SourceHealthRampStage } from '@nabvy/contracts/modules/source-health'
 import type { Queryable } from '@nabvy/db'
 import { state as switchState } from '@nabvy/switches'
+import { rampStageAt } from './domain'
 import { selectCurrentRamp } from './repo'
 
 export type {
@@ -31,7 +32,7 @@ const MODULE = 'source-health'
  */
 const LOWEST_STAGE: Omit<SourceHealthRampStage, 'advancedBy'> = {
   stage: 0,
-  maxChecksPerDay: SOURCE_HEALTH_RAMP_STAGES[0].maxChecksPerDay,
+  maxChecksPerDay: rampStageAt(SOURCE_HEALTH_RAMP_STAGES, 0).maxChecksPerDay,
   startedAt: new Date(0).toISOString(),
 }
 

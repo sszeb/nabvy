@@ -15,7 +15,7 @@ const sampleDay = {
   pctDegraded: 0.05,
   breakerTrips: 1,
   newOperationIds: ['q1'],
-  sellerBlockPages: [false, true],
+  blockedPages: [false, true],
   alerted: ['new-operation-id'],
   updatedAt: '2026-09-24T00:00:00.000Z',
 }
