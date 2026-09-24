@@ -100,6 +100,7 @@ Treat the drafts as design notes, not decisions. A product choice in them goes t
 
 ## Next steps, in order
 
+0. **Pull request subscriptions** are per session and do not carry over. Subscribe with `subscribe_pr_activity` to your own pull requests only. Build sessions and the reviewer subscribe to theirs, so you do not need events from #7, #9 or #10.
 1. **Set one scheduled sweep, every two hours from about 12:30 UTC,** with `send_later`. This replaces the old hourly fleet check and the separate actor-documents check. Each sweep does the following:
    - **Fleet.** Call `get_session` by ID for each session in the fleet table.
    - **Pull requests.** List them using the `fields` filter. For each merge, update `docs/progress.md` and check the migration ledger.
@@ -125,13 +126,13 @@ Treat the drafts as design notes, not decisions. A product choice in them goes t
    - scan (vision AI per scan, capped per user);
    - account-integrity;
    - billing, once Stripe is set up.
-5. **Keep records current.** Record PR #10 as 4.1c. Keep `docs/progress.md` current after every merge.
+5. **Keep records current.** Add a 4.1c task to `docs/backlog.md` for PR #10's scope: branded error pages and the restricted-account notice, stacked on PR #7. Then record PR #10 against it in `docs/progress.md`. Keep `docs/progress.md` current after every merge.
 
 ## Waiting on the owner
 
 - **Stripe test mode.**
   - Add a test secret key as an environment secret.
-  - Allow `api.stripe.com` in the environment's network policy.
+  - Allow Stripe in the environment's network policy: `*.stripe.com` and `*.stripe.network`. If wildcards are not accepted, add `api.stripe.com`, `checkout.stripe.com`, `js.stripe.com` and `m.stripe.network`.
   - Enable Stripe Tax.
 
   Until then 4.3 is blocked. When explaining how, use `read_documentation` with the `environment.secrets` and `environment.network` topics.
