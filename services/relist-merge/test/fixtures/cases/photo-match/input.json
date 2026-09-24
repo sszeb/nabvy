@@ -1,0 +1,21 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "builtFrom": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k, row 1816901372840238",
+  "steps": [
+    {
+      "recorded": true
+    },
+    {
+      "relists": [
+        {
+          "of": "1816901372840238",
+          "as": "9100000000000001",
+          "days": 2,
+          "description": "Gaming tower for sale, i7 and GTX 970, all working, collection from Epsom only please."
+        }
+      ]
+    }
+  ],
+  "photoMatches": [["1816901372840238", "9100000000000001"]]
+}

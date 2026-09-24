@@ -74,8 +74,35 @@ Schema `relist_merge`:
 
 Stage `merge` (`test/fixtures/merge.fixtures.ts`), on the real migrations in PGlite, from the
 recorded run `fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/` stored as collected
-gateway jobs, ingested by `listing-ingest` and recorded by `detail-evidence`. Cases are listed in
-`test/fixtures/cases/`; see the latest pass rate there and in `pass-rates.json`.
+gateway jobs, ingested by `listing-ingest` and recorded by `detail-evidence`. Synthetic relists are
+recorded rows under a new listing ID, listed some days later (`test/support/database.ts`,
+`relist`); seller keys and photo matches are injected from the case.
+
+- `recorded-run`: 20 listings, 20 distinct descriptions (checked by hand): no group, nothing
+  announced.
+- `relist-within-window` (synthetic, 3 days): one group, the original as origin.
+- `relist-outside-window` (10 days), `relist-other-city`, `short-description` (28 characters):
+  no group.
+- `relist-reformatted` (upper case, doubled spaces): merges on the normalised fingerprint.
+- `relist-chain` (3 and 8 days): the second relist is out of the original's reach and joins
+  through the first; the group of three is announced.
+- `seller-key-block` (different numeric IDs): no group. `seller-tokens-other-runs`: merges.
+- `seller-key-tiebreak`: a listing reaching two unmergeable earlier ones joins the one sharing its
+  seller token, not the nearer one.
+- `photo-match` (new text, injected photo match): merges on photo.
+
+Pass rate 11/11 (2026-09-24). Every merged group in these cases was checked by hand against its
+`notes.md`. Other tests: `domain.test.ts` (the window boundary at exactly 7 days, city page and
+source, every seller-key rule, the ranking, stable members, the group version, and the synthetic
+index case: PC 4070's median moving from £1,050 to £1,000 when n goes from 26 to 25,
+`SELLER_DATA.md:66-68`), `idempotency.test.ts` (a replay writes nothing and returns the same keys;
+the pair reached from either side makes one group; a grown group announces a new version; bad
+input refused; both handlers publish once), `switch.test.ts` (off, paused pipeline, shadow,
+detail-evidence off, erase, upstream modules carry on with this module off; no reader module
+exists yet), `contracts.test.ts` (the event and every view row parse; no seller-like or key
+column) and `packages/db/tests/relist-merge.test.sql` (grants, the unique key and checks, the
+view's columns, empty while off, the foundation's view check). `pnpm db:dry-run` passes on
+Postgres 16 locally.
 
 ## Decisions
 
@@ -92,6 +119,10 @@ gateway jobs, ingested by `listing-ingest` and recorded by `detail-evidence`. Ca
   listing, `erase` removes every group that holds one; its other listings stand alone again.
 - **2026-09-24: view rows are Zod in contracts.** `drizzle-zod` is not a dependency yet, as in
   `detail-evidence`.
+- **2026-09-24: the gateway's conventions test lists this module's test support** beside
+  listing-ingest's and detail-evidence's, since it seeds collected jobs into the gateway's tables
+  in PGlite (never a live database). A one-line change in
+  `services/apify-gateway/test/conventions.test.ts`.
 - **2026-09-24: no RLS.** No user rows; the pipeline role alone has grants, `delete` only for
   `erase` (rule 12). The module is outside the T-stamp chain: it stores the T1 of its input and
   its own `merged_at` (rule 10).
