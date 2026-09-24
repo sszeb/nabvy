@@ -1,0 +1,292 @@
+{
+  "id": "845fd37a-7a36-48bf-bd69-e10d10d49a5b",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "cost_meter.provider_calls": {
+      "name": "provider_calls",
+      "schema": "cost_meter",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "module": {
+          "name": "module",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ref_id": {
+          "name": "ref_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reserved_micros": {
+          "name": "reserved_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "settled_micros": {
+          "name": "settled_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "usd_gbp_rate": {
+          "name": "usd_gbp_rate",
+          "type": "numeric(12, 6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reserved_gbp_micros": {
+          "name": "reserved_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "settled_gbp_micros": {
+          "name": "settled_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "settled_at": {
+          "name": "settled_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "latency_ms": {
+          "name": "latency_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "provider_calls_at_idx": {
+          "name": "provider_calls_at_idx",
+          "columns": [
+            {
+              "expression": "at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "provider_calls_provider_ref_id_key": {
+          "name": "provider_calls_provider_ref_id_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "provider",
+            "ref_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "provider_calls_provider_check": {
+          "name": "provider_calls_provider_check",
+          "value": "\"cost_meter\".\"provider_calls\".\"provider\" in ('apify', 'anthropic', 'ebay', 'cex')"
+        },
+        "provider_calls_kind_check": {
+          "name": "provider_calls_kind_check",
+          "value": "\"cost_meter\".\"provider_calls\".\"kind\" in ('actor_run', 'model_call', 'api_call')"
+        },
+        "provider_calls_currency_check": {
+          "name": "provider_calls_currency_check",
+          "value": "\"cost_meter\".\"provider_calls\".\"currency\" in ('USD', 'GBP')"
+        },
+        "provider_calls_status_check": {
+          "name": "provider_calls_status_check",
+          "value": "\"cost_meter\".\"provider_calls\".\"status\" in ('pending', 'succeeded', 'failed')"
+        },
+        "provider_calls_amounts_check": {
+          "name": "provider_calls_amounts_check",
+          "value": "\"cost_meter\".\"provider_calls\".\"reserved_micros\" >= 0 and \"cost_meter\".\"provider_calls\".\"reserved_gbp_micros\" >= 0 and coalesce(\"cost_meter\".\"provider_calls\".\"settled_micros\", 0) >= 0 and coalesce(\"cost_meter\".\"provider_calls\".\"settled_gbp_micros\", 0) >= 0 and \"cost_meter\".\"provider_calls\".\"usd_gbp_rate\" > 0"
+        },
+        "provider_calls_settlement_check": {
+          "name": "provider_calls_settlement_check",
+          "value": "(\"cost_meter\".\"provider_calls\".\"settled_at\" is null) = (\"cost_meter\".\"provider_calls\".\"settled_micros\" is null) and (\"cost_meter\".\"provider_calls\".\"settled_at\" is null) = (\"cost_meter\".\"provider_calls\".\"settled_gbp_micros\" is null)"
+        },
+        "provider_calls_latency_check": {
+          "name": "provider_calls_latency_check",
+          "value": "\"cost_meter\".\"provider_calls\".\"latency_ms\" is null or \"cost_meter\".\"provider_calls\".\"latency_ms\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "cost_meter": "cost_meter"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "cost_meter.v_costs": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "module": {
+          "name": "module",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ref_id": {
+          "name": "ref_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reserved_micros": {
+          "name": "reserved_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "settled_micros": {
+          "name": "settled_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reserved_gbp_micros": {
+          "name": "reserved_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "settled_gbp_micros": {
+          "name": "settled_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "counted_gbp_micros": {
+          "name": "counted_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latency_ms": {
+          "name": "latency_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "settled_at": {
+          "name": "settled_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_costs",
+      "schema": "cost_meter",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

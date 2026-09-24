@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md: suspensions and bans are admin actions",
+  "role": "nabvy_app",
+  "sessionUserId": "00000000-0000-4000-8000-0000000000a1",
+  "entry": {
+    "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+    "action": "account.suspended",
+    "target": "user:00000000-0000-4000-8000-0000000000b2",
+    "before": { "standing": "active" },
+    "after": { "standing": "suspended" },
+    "reason": "fair-use: repeated scans over cap"
+  }
+}

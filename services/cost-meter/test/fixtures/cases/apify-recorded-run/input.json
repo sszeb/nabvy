@@ -1,0 +1,54 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "usdGbpRate": 0.75,
+  "steps": [
+    {
+      "op": "record",
+      "input": {
+        "module": "apify-gateway",
+        "provider": "apify",
+        "refId": "$run:apifyRunId",
+        "currency": "USD",
+        "reservedUsd": "$run:reserveUsd",
+        "status": "pending",
+        "at": "$run:run.startedAt"
+      }
+    },
+    {
+      "op": "settle",
+      "input": {
+        "provider": "apify",
+        "refId": "$run:apifyRunId",
+        "currency": "USD",
+        "settledUsd": "$run:run.usageTotalUsd",
+        "status": "succeeded",
+        "finishedAt": "$run:run.finishedAt",
+        "readAt": "$run:run.finishedAt"
+      }
+    },
+    {
+      "op": "settle",
+      "input": {
+        "provider": "apify",
+        "refId": "$run:apifyRunId",
+        "currency": "USD",
+        "settledUsd": "$run:settledCostUsd",
+        "status": "succeeded",
+        "finishedAt": "$run:run.finishedAt",
+        "readAt": "2026-09-24T01:50:44.010Z"
+      }
+    },
+    {
+      "op": "settle",
+      "input": {
+        "provider": "apify",
+        "refId": "$run:apifyRunId",
+        "currency": "USD",
+        "settledUsd": "$run:settledCostUsd",
+        "status": "succeeded",
+        "finishedAt": "$run:run.finishedAt",
+        "readAt": "2026-09-24T02:40:44.010Z"
+      }
+    }
+  ]
+}

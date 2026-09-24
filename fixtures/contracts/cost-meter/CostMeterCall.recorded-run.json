@@ -1,0 +1,17 @@
+{
+  "id": "0192f3a0-0000-7000-8000-000000000001",
+  "module": "apify-gateway",
+  "provider": "apify",
+  "kind": "actor_run",
+  "refId": "VkryjpwS6U2GBDh3k",
+  "currency": "USD",
+  "reservedMicros": 336300,
+  "settledMicros": 17700,
+  "reservedGbpMicros": 252225,
+  "settledGbpMicros": 13275,
+  "countedGbpMicros": 13275,
+  "status": "succeeded",
+  "latencyMs": null,
+  "settledAt": "2026-09-24T01:50:44.010Z",
+  "at": "2026-09-24T01:40:18.718Z"
+}

@@ -1,0 +1,6 @@
+{
+  "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+  "action": "auth.role-changed",
+  "target": "user:1",
+  "at": "2026-09-24T12:00:00.000Z"
+}

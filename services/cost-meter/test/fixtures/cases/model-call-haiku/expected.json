@@ -1,0 +1,8 @@
+{
+  "steps": [
+    { "ok": true, "changed": true, "countedMicros": 2900, "countedGbpMicros": 2175 },
+    { "ok": true, "changed": true, "countedMicros": 21000, "countedGbpMicros": 15750 },
+    { "ok": false, "code": "cost-meter.unknown_model" }
+  ],
+  "rows": 2
+}

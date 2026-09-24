@@ -16,6 +16,7 @@ Node 22 LTS (`.nvmrc`), pnpm 10 (`packageManager` in `package.json`), TypeScript
 | `@nabvy/packs` | `packages/packs` | Category packs as data |
 | `@nabvy/<module>` | `services/<module>` | One per module in `docs/modules.md` |
 | `apps/web` | `apps/web` | Next.js app: routes, oRPC router in `src/rpc/`, components, legal content in `content/legal/*.mdx` with `TODO-LEGAL` markers |
+| `@nabvy/transport` | `packages/transport` | Event publisher (Trigger.dev and in-memory) and the handler wrapper: validation, stamps, retries, dead letters (task 0.9) |
 | `trigger/` | `trigger/` | Trigger.dev task files, thin |
 
 Rule of two: an entity is defined once as a Drizzle table (source of persistence) and once as a contracts schema only if it crosses a boundary (event payload, API, model output). Do not hand-write a Zod schema that mirrors a table; derive it.

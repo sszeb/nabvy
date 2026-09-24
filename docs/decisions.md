@@ -73,8 +73,8 @@ The build pack's larger modules (`docs/modules.md`) are split to match; the modu
    - an event registry with one file per module;
    - a scaffold script for the module shape;
    - the rule that a module session touches only its own folder, contract file and migration file.
-2. **Waves.** Every module whose inputs and owner decisions are ready starts at the same time, each in its own session, on its own branch `task/<id>-<module>`, with one pull request per module. Each module is built and tested against fixtures. Migrations are tested only on a local throwaway Postgres (`pnpm db:dry-run`); the coordinator session applies them to Supabase after the pull request is merged. A module waiting on an owner decision or a legal gate waits for a later wave.
-3. **One coordinator session.** It writes each module session's brief, checks each pull request for consistency with the contracts, keeps `docs/progress.md` itself so branches do not conflict over it, and applies merged migrations to Supabase.
+2. **Waves.** Every module whose inputs and owner decisions are ready starts at the same time, each in its own session, on its own branch `task/<id>-<module>`, with one pull request per module. Each module is built and tested against fixtures. Migrations are tested only on a local throwaway Postgres (`pnpm db:dry-run`); the coordinator applies them to Supabase soon after the merge, module and gateway migrations alike, reading `docs/security.md` first; the reviewer never touches Supabase, and its merge wakes the coordinator; the coordinator's two-hour sweep also checks the ledger and `list_migrations` (owner, 2026-09-24). A module waiting on an owner decision or a legal gate waits for a later wave.
+3. **One coordinator session.** It writes each module session's brief, checks each pull request for consistency with the contracts, and keeps `docs/progress.md` itself, so that branches do not conflict over it. It updates the file in a sweep every two hours.
 4. **One reviewer session reviews, approves and merges every pull request** (owner, 2026-09-24, for the production MVP). It merges only when its review passes and CI is green on the exact commit it reviewed. GitHub does not let an account approve its own pull request, and every session acts as the owner's account, so the approval is recorded as a review comment whose verdict reads "Approved". It never pushes to a pull request's branch; the authoring session fixes what the review finds. A pull request that needs an owner decision (pricing, tiers, categories, wording shown to users) waits for the owner.
 
 For module work this replaces `CLAUDE.md`'s "one task at a time".
@@ -237,6 +237,21 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 | Median freshness per source (listed to delivered) | Guardrail | Within 2 minutes of the source's measured floor on the fast tier |
 | Cost per delivered alert | Guardrail | Under £0.05 |
 | Week-4 retention of paying users | Guardrail | ≥40% |
+
+## Quote masks shown to users (owner, 2026-09-24)
+
+The owner approved the wording `quote-redaction` shows in place of contact details: `[phone redacted]`, `[email redacted]`, `[handle redacted]`, `[link redacted]`, and a full postcode cut to its outward half plus `[redacted]` (for example `PO19 [redacted]`). Approved as "Approve and carry on" on PR #17.
+
+## Watching is metered, prices are dynamic (owner, 2026-09-24)
+
+The owner, after missing a £350 RTX 3090 Ti in Redhill that sold within hours:
+- **Radius.** The user sets each want's radius freely and can change it at any time; there is no fixed cap (the owner would drive up to about three hours, and Redhill from Chichester is well inside that). A wider radius covers more areas, so its estimated credits rise and the want screen shows the new estimate before saving. Nabvy never changes the radius itself; from its own data it only hints, for example "Widen to 45 mi to see 12 more matching deals this week", with one tap to accept.
+- **Deal hot spots on the map.** The map can show where deals concentrate: a heat layer built only from town display points (never a listing's coordinates, per "Location precision"), weighted by how many clean, matching listings ask below their comparable median, over a chosen period. Hot spots just outside the user's ring feed the "widen your radius" hint.
+- **Speed is the user's choice and is paid for.** Each want has a check interval the user picks (for example 1, 5, 15 or 60 minutes) and a delivery speed (Instant, Batched, Daily digest). The app shows the estimated monthly cost in credits before saving and suggests a top-up when the balance will not cover it. This replaces the flat "watching" entitlement in "Pricing and cadence" for check speed; tiers become included credit and bundle discounts.
+- **Always profitable.** Every price is measured cost times a margin, with a floor that refuses any price, bundle or offer below cost plus the minimum margin.
+- **Bundles.** Credit bundles with volume discounts, in the style of Claude's and ChatGPT's usage packs, scaled to Nabvy's costs.
+- **Dynamic pricing.** An admin page (`pricing-console`) with sliders for margins, bundles and discounts, and per-user or per-segment offers and promotions.
+- **Precedence.** How fast Facebook can actually be checked still follows the actor brief and test T2; the price of a faster interval follows from its measured cost.
 
 ## Open questions a human must answer
 

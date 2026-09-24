@@ -68,3 +68,5 @@ The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable u
 | LR-31 | terms.md | 2.2 Where listings come from | Is the description of the listing source and the third-party provider suitable? |
 | LR-32 | terms.md 10.3, 10.8; fair-use.md 6.3 | No reasons and requests for a copy of personal data | How are requests for a copy of personal data answered where they cover enforcement reasons, evidence, signals or scores? |
 | LR-33 | acceptable-use.md 5.3; fair-use.md 3.2 | Linked accounts, devices, VPNs and proxies | Is treating linked accounts as one, and the rule against using devices, VPNs or proxies to hide activity, suitable? |
+| LR-34 | fb-scrap-engine `docs/HANDOFF.md` (`d7be0a4`) | UK GDPR basics for the app's own data | Do Nabvy's privacy notice and its deletion and objection request routes cover what the brief now lists? |
+- Per-user dynamic prices and targeted offers (`pricing-console`, 2026-09-24).

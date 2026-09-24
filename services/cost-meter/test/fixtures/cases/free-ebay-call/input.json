@@ -1,0 +1,45 @@
+{
+  "synthetic": true,
+  "source": "docs/engineering.md \"Cost metering\": eBay and CeX cost 0 but are counted",
+  "usdGbpRate": 0.75,
+  "steps": [
+    {
+      "op": "record",
+      "input": {
+        "module": "ebay-sold",
+        "provider": "ebay",
+        "refId": "ebay-request-1",
+        "currency": "GBP",
+        "reservedUsd": 0,
+        "status": "succeeded",
+        "latencyMs": 420,
+        "at": "2026-09-24T12:00:00.000Z"
+      }
+    },
+    {
+      "op": "record",
+      "input": {
+        "module": "ebay-sold",
+        "provider": "ebay",
+        "refId": "ebay-request-1",
+        "currency": "GBP",
+        "reservedUsd": 0,
+        "status": "succeeded",
+        "latencyMs": 420,
+        "at": "2026-09-24T12:00:00.000Z"
+      }
+    },
+    {
+      "op": "record",
+      "input": {
+        "module": "cex-prices",
+        "provider": "cex",
+        "refId": "cex-request-1",
+        "currency": "GBP",
+        "reservedUsd": 0,
+        "status": "failed",
+        "at": "2026-09-24T12:00:01.000Z"
+      }
+    }
+  ]
+}
