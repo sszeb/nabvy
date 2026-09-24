@@ -86,6 +86,30 @@ describe('idempotency', () => {
     expect(kept?.item_job_id).toBe(older)
   })
 
+  it('a later full_verified fetch of the same text marks a partial version complete', async () => {
+    const partial = withFields(recorded.dataset, '1756692548940192', {
+      descriptionStatus: 'partial',
+    })
+    await record(t.db, { jobId: await collectedAndIngested(t, recorded, partial) })
+    const next = await collectedAndIngested(
+      t,
+      recorded,
+      later(recorded.dataset, '2026-09-25T00:00:00.000Z'),
+    )
+    const result = await record(t.db, { jobId: next })
+    if (!result.ok) throw new Error('record failed')
+    expect(result.value.versionsWritten).toBe(0)
+    expect(result.value.changed).toEqual([])
+    const [row] = await t.asPipeline(
+      `select description_status from detail_evidence.v_current
+       where source_listing_id = '1756692548940192'`,
+    )
+    expect(row?.description_status).toBe('full_verified')
+    const after = await counts()
+    await record(t.db, { jobId: next })
+    expect(await counts()).toEqual(after)
+  })
+
   it('the handler publishes once; a redelivery publishes nothing new', async () => {
     const jobId = await collectedAndIngested(t, recorded)
     const publisher = createMemoryPublisher()

@@ -125,7 +125,8 @@ export async function insertVersions(
  * A version seen again: a later fetch moves `last_seen_at` and, if it carries a gallery, replaces
  * the gallery and its link expiry (the graphql route returns none, which never erases one); an
  * earlier fetch (a late replay) moves `first_seen_at` and the raw-row reference; a fresh fetch
- * clears `stale_fallback`. A row that would not change is not written, so a replay writes nothing.
+ * clears `stale_fallback`; a `full_verified` fetch of the same text marks a `partial` or
+ * `missing` version complete (the text is identical, so the later status holds for it). A row that would not change is not written, so a replay writes nothing.
  */
 export async function touchVersions(
   q: Queryable,
@@ -145,6 +146,7 @@ export async function touchVersions(
     complete: e.galleryComplete,
     photos: e.photoIds,
     expires: e.linksExpireAt,
+    verified: detail.descriptionStatus === 'full_verified',
   }))
   await q.execute(sql`
     update detail_evidence.evidence e
@@ -154,6 +156,7 @@ export async function touchVersions(
       item_job_id = case when x.seen < e.first_seen_at then ${jobId} else e.item_job_id end,
       item_seq = case when x.seen < e.first_seen_at then x.seq else e.item_seq end,
       stale_fallback = e.stale_fallback and x.stale,
+      description_status = case when x.verified then 'full_verified' else e.description_status end,
       gallery_total = case when x.gallery and x.seen > e.last_seen_at then x.total
                            else e.gallery_total end,
       gallery_complete = case when x.gallery and x.seen > e.last_seen_at then x.complete
@@ -165,10 +168,11 @@ export async function touchVersions(
                              else e.links_expire_at end
     from jsonb_to_recordset(${JSON.stringify(payload)}::jsonb) as x (
       id text, hash text, seen timestamptz, seq integer, stale boolean, gallery boolean,
-      total integer, complete boolean, photos jsonb, expires timestamptz)
+      total integer, complete boolean, photos jsonb, expires timestamptz, verified boolean)
     where e.source = ${source} and e.source_listing_id = x.id and e.evidence_hash = x.hash
       and (x.seen > e.last_seen_at or x.seen < e.first_seen_at
-           or (e.stale_fallback and not x.stale))`)
+           or (e.stale_fallback and not x.stale)
+           or (x.verified and e.description_status is distinct from 'full_verified'))`)
 }
 
 /** One fetch per listing and job; a replayed job inserts nothing. */
@@ -252,7 +256,22 @@ export async function selectUnresolved(q: Queryable, jobId: number): Promise<str
 /** Removes the versions and fetches of these listings (rule 12, for seller-rights erasure). */
 export async function deleteListings(q: Queryable, listingIds: string[]): Promise<number> {
   if (listingIds.length === 0) return 0
-  await q.delete(fetches).where(inArray(fetches.listingId, listingIds))
+  // Fetches recorded before the listing was ingested (unresolved ones) carry no listing ID, so
+  // they are matched by the source listing IDs the erased listings are known by.
+  await q.execute(sql`
+    with ids as (
+      select (jsonb_array_elements_text(${JSON.stringify(listingIds)}::jsonb))::uuid as id
+    ), keys as (
+      select k.source, k.source_listing_id from detail_evidence.fetches k
+      where k.listing_id in (select id from ids)
+      union
+      select e.source, e.source_listing_id from detail_evidence.evidence e
+      where e.listing_id in (select id from ids)
+    )
+    delete from detail_evidence.fetches f
+    where f.listing_id in (select id from ids)
+       or (f.listing_id is null
+           and (f.source, f.source_listing_id) in (select source, source_listing_id from keys))`)
   const deleted = await q
     .delete(evidence)
     .where(inArray(evidence.listingId, listingIds))

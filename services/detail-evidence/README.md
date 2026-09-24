@@ -108,8 +108,9 @@ Pass rate 6/6 (2026-09-24). Other tests: `domain.test.ts` (normalisation, each a
 attribute order, the recorded whitespace pair, condition, link expiry, unresolved, stale, seller
 conflicts), `idempotency.test.ts` (a replayed job writes nothing and returns the same keys; a late
 older run announces nothing; the handler publishes once; a job whose listings are not ingested yet
-fails before writing; a job the gateway does not show fails), `switch.test.ts` (off, paused
-pipeline, shadow, erase, and `listing-ingest` carrying on with this module off),
+fails before writing; a job the gateway does not show fails; a later `full_verified` fetch of the
+same text marks a partial version complete), `switch.test.ts` (off, paused
+pipeline, shadow, erase (including fetches recorded before ingestion), and `listing-ingest` carrying on with this module off),
 `contracts.test.ts` (both events and every view row parse; no seller-like column; the text only in
 `v_text`) and `packages/db/tests/detail-evidence.test.sql` (grants, unique keys, checks, the
 current-version rule, views empty while off, the foundation's view check).
@@ -133,7 +134,15 @@ current-version rule, views empty while off, the foundation's view check).
 - **2026-09-24: a version seen again is touched, not rewritten.** A later fetch moves
   `last_seen_at`, and if it carries a gallery, replaces the gallery and link expiry (the graphql
   route returns none, which never erases one); an earlier one moves `first_seen_at` and the raw-row
-  reference; a fresh one clears `stale_fallback`. A row that would not change is not written.
+  reference; a fresh one clears `stale_fallback`; a `full_verified` fetch of the same text marks a
+  `partial` or `missing` version complete (review of PR #40: `descriptionStatus` is not in the
+  hash, so identical text keeps one version). A row that would not change is not written.
+- **2026-09-24: erase reaches every fetch of an erased listing** (review of PR #40), including
+  fetches recorded before listing-ingest stored it (unresolved, no listing ID), matched by source
+  listing ID.
+- **2026-09-24: test timeout 30 s** (review of PR #40), as in `account`: the PGlite suites run
+  past vitest's default 5 s on a busy CI runner. The same line was added to listing-ingest's
+  config as a CI fix.
 - **2026-09-24: text is stored as the actor gave it.** Only the hash normalises; the first text
   seen of a version is kept. The recorded row with `+` for spaces (`1756692548940192`) is stored
   as is: the module interprets nothing.

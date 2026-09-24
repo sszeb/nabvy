@@ -87,6 +87,30 @@ describe('switch', () => {
     expect(await tableCount()).toBe(0)
   })
 
+  it('erase also removes fetches recorded before the listing was ingested', async () => {
+    const id = '1816901372840238'
+    const early = await t.collected(recorded, [
+      {
+        recordType: 'listing',
+        listingId: id,
+        collectedAt: '2026-09-23T00:00:00.000Z',
+        detailAttempted: true,
+        detailOutcome: 'extraction-error',
+        directItemUnresolved: true,
+      },
+    ])
+    expect((await record(t.db, { jobId: early })).ok).toBe(true)
+    await record(t.db, { jobId: await collectedAndIngested(t, recorded) })
+    const [row] = await t.sql(
+      `select listing_id from detail_evidence.evidence where source_listing_id = '${id}'`,
+    )
+    expect(await erase(t.db, [String(row?.listing_id)])).toBe(1)
+    const [left] = await t.sql(
+      `select count(*)::int as n from detail_evidence.fetches where source_listing_id = '${id}'`,
+    )
+    expect(left?.n).toBe(0)
+  })
+
   it('erase removes versions and fetches whatever the switch', async () => {
     await record(t.db, { jobId: await collectedAndIngested(t, recorded) })
     await t.switches({ 'detail-evidence': 'off' })
