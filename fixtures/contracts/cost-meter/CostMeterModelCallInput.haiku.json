@@ -1,0 +1,15 @@
+{
+  "module": "listing-assessment",
+  "refId": "msg_synthetic_0001",
+  "usage": {
+    "model": "claude-haiku-4-5-20251001",
+    "inputTokens": 1200,
+    "outputTokens": 300,
+    "cacheWrite5mTokens": 0,
+    "cacheWrite1hTokens": 0,
+    "cacheReadTokens": 2000
+  },
+  "status": "succeeded",
+  "latencyMs": 900,
+  "at": "2026-09-24T12:00:00.000Z"
+}

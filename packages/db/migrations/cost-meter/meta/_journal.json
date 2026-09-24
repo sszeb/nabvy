@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790254131672,
+      "tag": "20260924124851_cost_meter_ledger",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790254142858,
+      "tag": "20260924124902_cost_meter_access",
+      "breakpoints": true
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import { APIError } from 'better-auth/api'
 import { admin, captcha, magicLink } from 'better-auth/plugins'
 import { createAccessControl } from 'better-auth/plugins/access'
 import { defaultStatements } from 'better-auth/plugins/admin/access'
+import { sql } from 'drizzle-orm'
 import { isFounderEmail, normaliseEmail } from './domain/founders'
 import { restrictionOf } from './domain/standing'
 import { type MagicLinkSender, magicLinkText } from './email/magic-link'
@@ -125,43 +126,33 @@ export function guardSessionCreation(
   }
 }
 
-type RateLimitRow = { id: string; key: string; count: number; lastRequest: number }
-type LimitAdapter = {
-  findOne<T>(query: { model: string; where: { field: string; value: string }[] }): Promise<T | null>
-  create<T>(query: { model: string; data: Record<string, unknown> }): Promise<T>
-  update<T>(query: {
-    model: string
-    where: { field: string; value: string }[]
-    update: Record<string, unknown>
-  }): Promise<T | null>
-}
-
 /**
  * Magic-link emails per address (docs/engineering.md: 5 an hour), counted in Better Auth's
  * Postgres rate-limit table under a key that holds a hash of the address, never the address.
- * `lastRequest` is the start of the current window.
+ * `last_request` is the start of the current window. One `insert … on conflict do update`
+ * statement takes the row lock, so requests arriving together are counted one after another and
+ * exactly `max` get through; a refused request still counts, which only keeps the window shut.
+ * Returns whether this request is within the limit.
  */
-async function consumeMagicLinkQuota(adapter: LimitAdapter, email: string): Promise<void> {
+export async function consumeMagicLinkQuota(
+  db: AuthDatabase,
+  email: string,
+  now: number = Date.now(),
+): Promise<boolean> {
   const { max, windowSeconds } = rateLimits.magicLinkPerEmail
   const key = `nabvy:magic-link-email:${createHash('sha256').update(normaliseEmail(email)).digest('hex')}`
-  const now = Date.now()
-  const where = [{ field: 'key', value: key }]
-  const row = await adapter.findOne<RateLimitRow>({ model: 'rateLimit', where })
-  if (!row) {
-    await adapter.create({ model: 'rateLimit', data: { key, count: 1, lastRequest: now } })
-    return
-  }
-  if (now - row.lastRequest >= windowSeconds * 1000) {
-    await adapter.update({ model: 'rateLimit', where, update: { count: 1, lastRequest: now } })
-    return
-  }
-  if (row.count >= max) {
-    throw APIError.from('TOO_MANY_REQUESTS', {
-      code: 'TOO_MANY_MAGIC_LINKS',
-      message: 'Too many sign-in links for this address. Try again later.',
-    })
-  }
-  await adapter.update({ model: 'rateLimit', where, update: { count: row.count + 1 } })
+  const windowStart = now - windowSeconds * 1000
+  const result = await db.execute(sql`
+    insert into better_auth.rate_limit (key, count, last_request)
+    values (${key}, 1, ${now})
+    on conflict (key) do update set
+      count = case when better_auth.rate_limit.last_request <= ${windowStart}
+                   then 1 else better_auth.rate_limit.count + 1 end,
+      last_request = case when better_auth.rate_limit.last_request <= ${windowStart}
+                          then ${now} else better_auth.rate_limit.last_request end
+    returning count`)
+  const rows = (result as { rows: { count: number | string }[] }).rows
+  return Number(rows[0]?.count) <= max
 }
 
 /** The Better Auth server instance (docs/decisions.md, "Authentication and authorisation"). */
@@ -244,7 +235,12 @@ export function createAuth(options: AuthOptions) {
         storeToken: 'hashed',
         sendMagicLink: async ({ email, url }, ctx) => {
           if (!ctx) throw new Error('magic link requested outside a request')
-          await consumeMagicLinkQuota(ctx.context.adapter as unknown as LimitAdapter, email)
+          if (!(await consumeMagicLinkQuota(options.db, email))) {
+            throw APIError.from('TOO_MANY_REQUESTS', {
+              code: 'TOO_MANY_MAGIC_LINKS',
+              message: 'Too many sign-in links for this address. Try again later.',
+            })
+          }
           await options.magicLinkSender.send({
             email,
             url,
