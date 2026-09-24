@@ -58,6 +58,11 @@ Apify-like and project-added secret names exist (names only), so a token saved u
 name can be found. Until the owner added `APIFY_TOKEN`, the token was held briefly in Supabase Vault;
 that copy was deleted on 2026-09-24 once the secret was confirmed working.
 
+**Tests.** `pnpm db:dry-run` applies every migration to a local throwaway Postgres (with stand-ins
+for Supabase's roles and `pg_net` from `tests/supabase-stubs.sql`) and runs `tests/*.test.sql`:
+input validation, reservations, the spend cap, cost settlement, redaction and privileges. CI runs it
+on every pull request. The script refuses any non-local database.
+
 **Operating it.**
 
 ```sql

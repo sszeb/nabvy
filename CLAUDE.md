@@ -45,6 +45,7 @@ pnpm lint
 pnpm test            # runs fixture tests
 pnpm db:generate     # generate a Drizzle migration from schema changes
 pnpm db:migrate      # apply migrations
+pnpm db:dry-run      # apply supabase/migrations + run supabase/tests on a local throwaway Postgres (PG* env)
 pnpm auth:generate   # regenerate Better Auth schema after plugin changes
 pnpm dev:web         # Next.js app
 pnpm trigger:dev     # Trigger.dev local runner
