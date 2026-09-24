@@ -1,0 +1,5 @@
+{
+  "module": "relist-merge",
+  "schema": "relist_merge",
+  "dependsOn": ["core", "switches", "listing-ingest", "detail-evidence"]
+}
