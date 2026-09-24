@@ -164,3 +164,4 @@ The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable u
 | LR-33 | acceptable-use.md 5.3; fair-use.md 3.2 | Linked accounts, devices, VPNs and proxies | Is treating linked accounts as one, and the rule against using devices, VPNs or proxies to hide activity, suitable? |
 | LR-34 | fb-scrap-engine `docs/HANDOFF.md` (`d7be0a4`) | UK GDPR basics for the app's own data | Do Nabvy's privacy notice and its deletion and objection request routes cover what the brief now lists? |
 - Per-user dynamic prices and targeted offers (`pricing-console`, 2026-09-24).
+- 2026-09-24, abuse threat model (4.3t): keeping hashed trial keys (canonical email, card fingerprint, device) after account deletion, to stop rejoining for a fresh free tier.
