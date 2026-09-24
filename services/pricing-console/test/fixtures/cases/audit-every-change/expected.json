@@ -1,0 +1,34 @@
+{
+  "outcomes": [
+    {
+      "changed": true
+    },
+    {
+      "changed": true
+    },
+    {
+      "changed": true
+    },
+    {
+      "changed": true
+    },
+    {
+      "changed": false
+    },
+    {
+      "refused": "pricing-console.below_floor"
+    },
+    {
+      "audit": ["pricing-console.policy-changed"]
+    },
+    {
+      "audit": ["pricing-console.policy-changed"]
+    },
+    {
+      "audit": ["pricing-console.policy-changed", "pricing-console.policy-retired"]
+    },
+    {
+      "audit": []
+    }
+  ]
+}

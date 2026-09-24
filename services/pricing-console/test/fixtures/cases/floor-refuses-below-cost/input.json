@@ -1,0 +1,39 @@
+{
+  "synthetic": true,
+  "source": "Card pricing-console: the floor refuses a price below cost plus margin (docs/decisions.md, \"Always profitable\"); costs from the seeded cost bases",
+  "steps": [
+    {
+      "patch": {
+        "kind": "price",
+        "key": "photo-scan",
+        "fields": {
+          "credits": 10
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "price",
+        "key": "live-lookup",
+        "fields": {
+          "credits": 9
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "price",
+        "key": "live-lookup",
+        "fields": {
+          "credits": 10
+        }
+      }
+    },
+    {
+      "price": {
+        "user": "A",
+        "item": "price:live-lookup"
+      }
+    }
+  ]
+}
