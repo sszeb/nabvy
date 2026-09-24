@@ -65,7 +65,8 @@ describe('who may reach the gateway', () => {
   it('only this package queues jobs or reads the gateway tables', () => {
     const pattern =
       /apify_gateway\s*\.\s*(enqueue_run|jobs|items|settings|claim_next_job)\b|from\s+['"]@nabvy\/db\/schema\/apify-gateway['"]/
-    // Readers' test support (listing-ingest, detail-evidence, run-coverage, listing-lifecycle)
+    // Readers' test support (listing-ingest, detail-evidence, run-coverage, listing-lifecycle,
+    // listing-suppression)
     // seeds collected jobs into the gateway's tables in PGlite (never a live database), so their
     // fixtures read the real views.
     const seeders = [
@@ -73,6 +74,7 @@ describe('who may reach the gateway', () => {
       'services/detail-evidence/test/support/',
       'services/run-coverage/test/support/',
       'services/listing-lifecycle/test/support/',
+      'services/listing-suppression/test/support/',
     ]
     const found = offenders(
       pattern,
