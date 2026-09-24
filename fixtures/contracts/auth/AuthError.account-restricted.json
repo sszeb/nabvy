@@ -1,4 +1,7 @@
 {
   "code": "auth.account_restricted",
-  "message": "Your account has been restricted under our terms."
+  "message": "Your account has been suspended under our Fair Use Policy.",
+  "step": "suspended",
+  "policy": "fair-use",
+  "reviewWithinDays": 30
 }
