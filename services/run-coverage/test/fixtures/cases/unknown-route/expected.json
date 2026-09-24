@@ -1,0 +1,29 @@
+{
+  "steps": [
+    {
+      "written": 1,
+      "statuses": ["degraded"],
+      "degraded": 1,
+      "events": 1
+    }
+  ],
+  "outcomes": [
+    {
+      "step": 1,
+      "kind": "newest",
+      "route": "unknown",
+      "stopReason": "results-limit",
+      "reportedRoute": "graphql",
+      "reportedStopReason": "results-limit",
+      "pages": 1,
+      "listings": 20,
+      "feedType": null,
+      "binding": "verified",
+      "pageOneOverlap": null,
+      "previousStep": null,
+      "status": "degraded",
+      "reasons": ["route-unknown"]
+    }
+  ],
+  "baselines": []
+}
