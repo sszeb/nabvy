@@ -237,6 +237,9 @@ importers:
 
   services/auth:
     dependencies:
+      '@nabvy/audit-log':
+        specifier: workspace:*
+        version: link:../audit-log
       '@nabvy/config':
         specifier: workspace:*
         version: link:../../packages/config
