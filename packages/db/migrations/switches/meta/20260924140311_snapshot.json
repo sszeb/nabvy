@@ -1,0 +1,146 @@
+{
+  "id": "b40acfe3-4255-4a4f-bf66-00f012e20447",
+  "prevId": "69476ade-9931-49e4-a50f-b14a6f604650",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "switches.switches": {
+      "name": "switches",
+      "schema": "switches",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'off'"
+        },
+        "allow_list": {
+          "name": "allow_list",
+          "type": "uuid[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "changed_at": {
+          "name": "changed_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "changed_by": {
+          "name": "changed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "switches_name_format": {
+          "name": "switches_name_format",
+          "value": "\"switches\".\"switches\".\"name\" ~ '^[a-z][a-z0-9]*(-[a-z0-9]+)*$' and length(\"switches\".\"switches\".\"name\") <= 100"
+        },
+        "switches_kind": {
+          "name": "switches_kind",
+          "value": "\"switches\".\"switches\".\"kind\" in ('module', 'provider', 'gate', 'flag', 'global')"
+        },
+        "switches_state": {
+          "name": "switches_state",
+          "value": "\"switches\".\"switches\".\"state\" in ('off', 'shadow', 'on')"
+        },
+        "switches_shadow_modules_only": {
+          "name": "switches_shadow_modules_only",
+          "value": "\"switches\".\"switches\".\"kind\" = 'module' or \"switches\".\"switches\".\"state\" <> 'shadow'"
+        },
+        "switches_allow_list_gates_only": {
+          "name": "switches_allow_list_gates_only",
+          "value": "\"switches\".\"switches\".\"kind\" = 'gate' or \"switches\".\"switches\".\"allow_list\" is null"
+        },
+        "switches_allow_list_size": {
+          "name": "switches_allow_list_size",
+          "value": "\"switches\".\"switches\".\"allow_list\" is null or cardinality(\"switches\".\"switches\".\"allow_list\") between 1 and 1000"
+        },
+        "switches_always_on": {
+          "name": "switches_always_on",
+          "value": "\"switches\".\"switches\".\"name\" not in ('audit-log', 'incidents', 'switches') or \"switches\".\"switches\".\"state\" = 'on'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "switches": "switches"
+  },
+  "views": {
+    "switches.v_state": {
+      "name": "v_state",
+      "schema": "switches",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "allow_list": {
+          "name": "allow_list",
+          "type": "uuid[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "changed_at": {
+          "name": "changed_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "changed_by": {
+          "name": "changed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

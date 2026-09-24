@@ -1,0 +1,6 @@
+{
+  "states": { "facebook-alerts": "on" },
+  "audits": { "facebook-alerts": 1 },
+  "refused": [],
+  "gates": [true, false]
+}

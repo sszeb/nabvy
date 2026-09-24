@@ -1,0 +1,5 @@
+{
+  "states": { "anthropic": "off" },
+  "audits": { "anthropic": 0 },
+  "refused": ["switches.invalid_input"]
+}

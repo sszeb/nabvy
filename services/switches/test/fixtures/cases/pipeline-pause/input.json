@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "source": "switches card: a global pipeline pause",
+  "changes": [
+    {
+      "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+      "name": "pipeline",
+      "kind": "global",
+      "state": "off",
+      "reason": "incident"
+    }
+  ]
+}
