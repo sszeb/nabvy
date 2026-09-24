@@ -31,7 +31,7 @@ Each of these is subject to the words "except where required by law".
 
 ## 3. Your right to cancel within 14 days
 
-3.1 When you start a paid plan or a free trial, or buy usage, Checkout asks you to confirm that you want it to start straight away. By confirming, you agree that, where the law allows, you lose your right to cancel within 14 days and get your money back once we have started providing it. [OWNER TO CONFIRM: `docs/billing.md` has no such Checkout confirmation yet. It must be added to the billing task before this sentence is published.]
+3.1 When you start a paid plan or a free trial, or buy usage, Checkout asks you to confirm that you want it to start straight away. By confirming, you agree that, where the law allows, you lose your right to cancel within 14 days and get your money back once we have started providing it.
 
 3.2 If the law gives you a right to cancel and receive money back in your situation, we will honour it. Contact us at [CONTACT EMAIL].
 
