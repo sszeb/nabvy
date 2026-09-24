@@ -4,7 +4,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 
 | Task | Title | Status | Date | PR / notes |
 | --- | --- | --- | --- | --- |
-| 0.1 | Scaffold the monorepo | not started | | |
+| 0.1 | Scaffold the monorepo | done | 2026-09-24 | Awaiting review on branch `claude/hopeful-wright-r5ygps`. pnpm 10 + Turborepo, Biome (`noProcessEnv` outside `packages/config`), Vitest, TypeScript 5.9 strict (pinned to 5 per `docs/engineering.md`; 7.x exists), Node 22. `@nabvy/config` validates env by group and fails fast (`packages/config/README.md`). Empty `contracts`, `db`, `packs` packages; root scripts for later tasks say which task adds them. Precedence of the actor brief recorded in `docs/decisions.md` |
 | 0.2 | Contracts package | not started | | |
 | 0.3 | Database schema | not started | | |
 | 0.4 | Pack loader | not started | | |
