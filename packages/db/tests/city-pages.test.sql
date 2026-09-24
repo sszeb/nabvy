@@ -26,8 +26,9 @@ select pg_temp.check(
   (select active from city_pages.centres where city_page_id = '110769888951990') = false,
   'Dublin stays inactive while the beta is UK only');
 select pg_temp.check(
-  (select country, currency from city_pages.centres where city_page_id = '110769888951990')
-    is not distinct from row('IE', 'EUR'), 'Dublin is IE/EUR');
+  (select country from city_pages.centres where city_page_id = '110769888951990') = 'IE'
+  and (select currency from city_pages.centres where city_page_id = '110769888951990') = 'EUR',
+  'Dublin is IE/EUR');
 
 -- Only the pipeline role writes, and never deletes; nabvy_app, anon and authenticated cannot
 -- even use the schema.
@@ -72,6 +73,8 @@ values
 insert into city_pages.centres
   (city_page_id, active, verified, country, currency, reported_lat, reported_lng, area_km)
 values ('9001', true, false, 'GB', 'GBP', null, null, 100);
+-- Isolate the distance check from the seed's own grid: only the synthetic centre is active.
+update city_pages.centres set active = false where city_page_id <> '9001';
 reset role;
 
 select pg_temp.check(
