@@ -164,6 +164,13 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
     - no numeric score shown.
 
     Seller-level signals stay internal (Precedence row "Seller-derived flags"). It runs in shadow mode during the rtx3090 test hunt to set its thresholds, then goes live.
+  - **Every listing is reused** (owner, 2026-09-24). A run returns far more than the product it searched for. For example, an "rtx3090" search also returns RTX 2080s, 3070s and whole PCs. All of it goes into one shared pool:
+    - each listing is stored once and identified from its title and description (the parts record), whichever hunt triggered the run;
+    - every listing adds to the asking-price picture for its own product;
+    - every listing is matched against every user's hunts, not only the hunt that triggered the run;
+    - a listing far below its own product's comparable asks (asking-price position, n>=10) is a gem candidate. It is checked against the "Too good to be true" rules, and may be given a detail fetch to confirm it, before it is shown as a top pick, to users hunting that product, or as a similar alternative ("while hunting your RTX 3090 we also found ...").
+
+    Reuse costs no extra Apify spend: no search runs for by-catch alone.
   - **Pickup route planning:** the user records each pickup they have arranged with a seller (where, and the agreed time or window). The app plans an optimal route to collect the whole haul in one day. The addresses and times come from the user, stay private to that user, and are never taken from listing data or shown to anyone else. They are stored under row-level security in the owning module's schema, appear in no `v_` view, and fall under the retention question.
 - **Legal gates lifted** (owner, 2026-09-24): "Lift the gates. The operational instruction is to have the production app fully working as intended." The gates are:
   - further data collection through Apify no longer waits for an LIA and a DPIA. Nabvy never deals with Facebook directly: it uses third-party data that comes from Apify runs (owner, 2026-09-24);
