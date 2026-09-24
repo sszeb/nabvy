@@ -1,0 +1,56 @@
+{
+  "source": "facebook",
+  "sourceListingId": "1816901372840238",
+  "url": "https://www.facebook.com/marketplace/item/1816901372840238/",
+  "title": "PCSpecialist Gaming PC Tower - i7-4790, GTX 970 4GB, 8GB RAM, Wi-Fi (£200)",
+  "price": null,
+  "priceKind": "fixed",
+  "locationText": "Epsom",
+  "lat": 51.363830566406,
+  "lng": -0.2362060546875,
+  "thumbnailUrl": "https://redacted.invalid/media/b4e7861f90e1.jpg",
+  "listedAt": "2026-09-23T09:02:45.000Z",
+  "listedAtPrecision": "exact",
+  "fetchedAt": "2026-09-24T01:40:43.415Z",
+  "isSold": false,
+  "isPending": false,
+  "deliveryMethod": "collection",
+  "categoryId": "1792291877663080",
+  "sellerId": "redacted-token-1",
+  "raw": {
+    "recordType": "listing",
+    "listingId": "1816901372840238",
+    "listingUrl": "https://www.facebook.com/marketplace/item/1816901372840238/",
+    "title": "PCSpecialist Gaming PC Tower - i7-4790, GTX 970 4GB, 8GB RAM, Wi-Fi (£200)",
+    "money": {
+      "kind": "fixed",
+      "display": "£200",
+      "currency": "GBP",
+      "exponent": 2,
+      "rawAmount": "200.00",
+      "amountMinor": 20000
+    },
+    "price": 200,
+    "currency": "GBP",
+    "imageUrl": "https://redacted.invalid/media/b4e7861f90e1.jpg",
+    "listedAt": 1790154165,
+    "location": "Epsom",
+    "categoryId": "1792291877663080",
+    "seller": {
+      "id": "redacted-token-1",
+      "name": "[redacted]",
+      "profile_picture": {
+        "uri": "https://redacted.invalid/seller.jpg"
+      }
+    },
+    "availability": {
+      "live": true,
+      "sold": false,
+      "hidden": false,
+      "pending": false
+    },
+    "deliveryTypes": ["IN_PERSON"],
+    "shippingOffered": false,
+    "condition": "Used – good"
+  }
+}
