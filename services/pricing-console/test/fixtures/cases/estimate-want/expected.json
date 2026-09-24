@@ -1,0 +1,23 @@
+{
+  "outcomes": [
+    {
+      "included": true,
+      "creditsPerMonth": 0
+    },
+    {
+      "included": false,
+      "creditsPerMonth": 1800
+    },
+    {
+      "included": false,
+      "creditsPerMonth": 2000
+    },
+    {
+      "refused": "pricing-console.below_plan_floor"
+    },
+    {
+      "included": false,
+      "creditsPerMonth": 1350
+    }
+  ]
+}

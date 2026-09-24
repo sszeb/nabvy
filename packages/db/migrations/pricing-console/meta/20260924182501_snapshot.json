@@ -1,0 +1,513 @@
+{
+  "id": "d89c5b82-db55-4b68-b8a5-f2d17c693b0b",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "pricing_console.policy_rows": {
+      "name": "policy_rows",
+      "schema": "pricing_console",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "retired": {
+          "name": "retired",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "target_user_id": {
+          "name": "target_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "effective_at": {
+          "name": "effective_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "policy_rows_kind_key_version_key": {
+          "name": "policy_rows_kind_key_version_key",
+          "columns": [
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "version",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "policy_rows_target_user_id_idx": {
+          "name": "policy_rows_target_user_id_idx",
+          "columns": [
+            {
+              "expression": "target_user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "policy_rows_kind": {
+          "name": "policy_rows_kind",
+          "value": "\"pricing_console\".\"policy_rows\".\"kind\" in ('tier', 'price', 'bundle', 'offer', 'free-tier', 'setting', 'cost-basis')"
+        },
+        "policy_rows_key": {
+          "name": "policy_rows_key",
+          "value": "\"pricing_console\".\"policy_rows\".\"key\" ~ '^[a-z][a-z0-9-]{0,62}$'"
+        },
+        "policy_rows_version": {
+          "name": "policy_rows_version",
+          "value": "\"pricing_console\".\"policy_rows\".\"version\" >= 1"
+        },
+        "policy_rows_value": {
+          "name": "policy_rows_value",
+          "value": "jsonb_typeof(\"pricing_console\".\"policy_rows\".\"value\") = 'object'"
+        },
+        "policy_rows_target": {
+          "name": "policy_rows_target",
+          "value": "\"pricing_console\".\"policy_rows\".\"target_user_id\" is null or \"pricing_console\".\"policy_rows\".\"kind\" = 'offer'"
+        },
+        "policy_rows_reason": {
+          "name": "policy_rows_reason",
+          "value": "\"pricing_console\".\"policy_rows\".\"reason\" is null or length(\"pricing_console\".\"policy_rows\".\"reason\") <= 1000"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "pricing_console": "pricing_console"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "pricing_console.v_free_policy": {
+      "columns": {
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "want_count": {
+          "name": "want_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_count": {
+          "name": "window_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_minutes": {
+          "name": "window_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reset_hours": {
+          "name": "reset_hours",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bursts": {
+          "name": "bursts",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lifetime_cap_pence": {
+          "name": "lifetime_cap_pence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_week_cap_pence": {
+          "name": "user_week_cap_pence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_month_cap_pence": {
+          "name": "user_month_cap_pence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pool_day_floor_pence": {
+          "name": "pool_day_floor_pence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pool_revenue_share_bps": {
+          "name": "pool_revenue_share_bps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pool_week_pence": {
+          "name": "pool_week_pence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pool_month_pence": {
+          "name": "pool_month_pence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signups_per_ip_day": {
+          "name": "signups_per_ip_day",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signups_per_device_day": {
+          "name": "signups_per_device_day",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signups_per_email_domain_day": {
+          "name": "signups_per_email_domain_day",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "effective_at": {
+          "name": "effective_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_free_policy",
+      "schema": "pricing_console",
+      "isExisting": true,
+      "materialized": false
+    },
+    "pricing_console.v_ladder": {
+      "columns": {
+        "tier": {
+          "name": "tier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "base_cadence_minutes": {
+          "name": "base_cadence_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "floor_cadence_minutes": {
+          "name": "floor_cadence_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bundled_credits": {
+          "name": "bundled_credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "monthly_price_minor": {
+          "name": "monthly_price_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "yearly_price_minor": {
+          "name": "yearly_price_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "topup_gross_micros_per_credit": {
+          "name": "topup_gross_micros_per_credit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "topup_net_micros_per_credit": {
+          "name": "topup_net_micros_per_credit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "areas": {
+          "name": "areas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wants": {
+          "name": "wants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "round_the_clock": {
+          "name": "round_the_clock",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "effective_at": {
+          "name": "effective_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_ladder",
+      "schema": "pricing_console",
+      "isExisting": true,
+      "materialized": false
+    },
+    "pricing_console.v_offers": {
+      "columns": {
+        "offer": {
+          "name": "offer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "segment": {
+          "name": "segment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "item": {
+          "name": "item",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discount_bps": {
+          "name": "discount_bps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "starts_at": {
+          "name": "starts_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ends_at": {
+          "name": "ends_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_offers",
+      "schema": "pricing_console",
+      "isExisting": true,
+      "materialized": false
+    },
+    "pricing_console.v_prices": {
+      "columns": {
+        "item": {
+          "name": "item",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit": {
+          "name": "unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credits": {
+          "name": "credits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cadence_minutes": {
+          "name": "cadence_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cost_basis": {
+          "name": "cost_basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cost_units": {
+          "name": "cost_units",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "effective_at": {
+          "name": "effective_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_prices",
+      "schema": "pricing_console",
+      "isExisting": true,
+      "materialized": false
+    },
+    "pricing_console.v_settings": {
+      "columns": {
+        "setting": {
+          "name": "setting",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "effective_at": {
+          "name": "effective_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_settings",
+      "schema": "pricing_console",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
