@@ -72,7 +72,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | Module | Round | Status | Session | Model |
 | --- | --- | --- | --- | --- |
 | audit-log | 0 | in progress | `session_01SUaJRBg87fChhAHgCmYrGb` | top |
-| cost-meter | 0 | in progress | `session_01P7EwgNXQxqDq16uiLsSEVg` | top |
+| cost-meter | 0 | done: PR #16 merged 13:00; both migrations applied 13:05 (ledger checked) | `session_01P7EwgNXQxqDq16uiLsSEVg` | top |
 | incidents | 0 | in progress | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
 | quote-redaction | 0 | in progress | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
 
