@@ -122,7 +122,9 @@ TODO: what stops, and how modules reading this one's output carry on without it.
 
 ## Tests
 
-TODO: the fixtures used and what the tests prove. \`pnpm --filter @nabvy/${name} test\`.
+TODO: the fixtures used and what the tests prove. Unit tests: \`pnpm --filter @nabvy/${name} test\`.
+Fixture stages go in \`test/fixtures/<stage>.fixtures.ts\` with their recorded pass rates in
+\`test/fixtures/pass-rates.json\` (\`fixtures/README.md\`, "Runner"); \`pnpm test:fixtures\` runs them.
 
 ## Decisions
 

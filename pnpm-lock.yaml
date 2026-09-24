@@ -79,6 +79,12 @@ importers:
         specifier: 22.6.2
         version: 22.6.2(@types/node@22.20.4)
 
+  packages/fixtures:
+    dependencies:
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+
   packages/packs: {}
 
   services/source-adapters: {}

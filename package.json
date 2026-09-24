@@ -14,7 +14,7 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "test": "turbo run test",
-    "test:fixtures": "node scripts/pending.mjs test:fixtures 0.6",
+    "test:fixtures": "node --experimental-strip-types --disable-warning=ExperimentalWarning packages/fixtures/src/cli.ts",
     "db:generate": "pnpm --filter @nabvy/db db:generate",
     "db:migrate": "node packages/db/scripts/migrate.mjs apply",
     "db:dry-run": "bash scripts/db-dry-run.sh",
