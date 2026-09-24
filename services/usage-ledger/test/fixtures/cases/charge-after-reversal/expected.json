@@ -1,0 +1,10 @@
+{
+  "outcomes": [
+    { "changed": true },
+    { "changed": true },
+    { "changed": true },
+    { "refused": "usage-ledger.reversed" }
+  ],
+  "buckets": { "pi_20": 20 },
+  "balance": 20
+}

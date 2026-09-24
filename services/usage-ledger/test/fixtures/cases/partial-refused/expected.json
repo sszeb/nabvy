@@ -1,0 +1,8 @@
+{
+  "outcomes": [
+    { "changed": true },
+    { "refused": "usage-ledger.insufficient", "balance": 30, "required": 31 }
+  ],
+  "buckets": { "allowance:1": 30 },
+  "balance": 30
+}

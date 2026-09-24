@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "module card, \"When off\": no marketing sends (fail closed)",
+  "moduleState": "off",
+  "banned": false,
+  "granted": true,
+  "paused": false,
+  "suppressed": false
+}
