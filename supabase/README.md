@@ -108,3 +108,5 @@ The names and content match the repository files `20260924020000` to `025000`. T
 would see the repository files as unapplied; reconcile with `supabase migration repair` before
 anyone uses the CLI against `fbapfy`. Versions 4 and 6 were not deployed from this repository (most likely
 the dashboard redeploying when secrets changed); each later deploy replaced them.
+Until this is reconciled, point neither the Supabase CLI nor Supabase's GitHub or branching
+integration at `fbapfy`; apply migrations only through `migrate.mjs emit` or the connector.

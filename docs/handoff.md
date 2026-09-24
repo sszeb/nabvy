@@ -49,7 +49,9 @@ Do not read the whole build pack. Read a file when a task needs it.
 - **Product choices.** Ask when something is unclear; never assume a product choice.
 - **Commits.** No model identifiers in commits or pull requests.
 
-## Fleet at handoff (11:20 UTC)
+## Fleet at handoff (11:20 UTC, snapshot)
+
+Check each row with `get_session` by ID and `list_triggers` before acting; sessions and blocks after this time are not listed. At each hand-off, fill in what each session is blocked on from a fresh `get_session` sweep. Since 11:32 the reviewer is `session_01N9Z7KMkngJHEJBjDEReGo3` ("Nabvy PR reviewer (2)"); reviewer 1 below has handed off. Find a later reviewer with `get_session` on that ID, else `list_sessions` with `mine: true` and no `tags` filter (the filter errors inside a session), taking the newest non-archived row titled "Nabvy PR reviewer".
 
 | Session | ID | Role and state | Its scheduled check-ins |
 | --- | --- | --- | --- |
@@ -77,7 +79,7 @@ Do not read the whole build pack. Read a file when a task needs it.
 3. Apply the emitted SQL with the Supabase MCP `apply_migration`.
 4. Check the ledger row and checksum.
 
-Before a migration that touches auth or roles, read `docs/security.md`.
+Before applying any migration, read `docs/security.md` (CLAUDE.md requires it for every migration).
 
 **Apify gateway.** The Edge Function `apify-gateway` is at version 9, matching `main`. Paid use so far is one run, job 6: run `VkryjpwS6U2GBDh3k`, 20 listings, $0.0177. Job 15 was a free re-collect of the same data.
 
@@ -105,22 +107,36 @@ Treat the drafts as design notes, not decisions. A product choice in them goes t
 - Step 2 done: cards in `docs/design/modules/` (re-run `node scripts/split-module-cards.mjs` when the draft changes), catalogue page https://claude.ai/artifact/TYppyezuT2g3Nmv2CGSxbD. It proposes starting each module when its hard dependencies are merged, rounds 0 to 2 first, so the earlier wave-1 list below moves to rounds 3 to 16. Model tiers are set in the page (top model for 40 modules: pipeline core, security, money; Sonnet for the rest).
 - Step 5: PR #10 recorded as 4.1c, PR #11 as 1.1a in `docs/progress.md`.
 
+## Spend
+
+Updated only at batched pushes, from the sweep's `get_session` calls; `cost_usd` is cumulative per session.
+
+| Date | Fleet total | Largest |
+| --- | --- | --- |
+| 2026-09-24 11:40 UTC | about $885 | coordinator 1 $579, reviewer 1 $206, 1.1a $40, 4.1a $21, 0.4 $16, 4.0 $11, 0.6 $7 |
+
+## Lean-workflow review (12:20 UTC)
+
+An adversarial review of the lean rules (five lenses, two skeptics per finding) found 28 gaps, none refuted. The safe fixes are in this note, `docs/session-conventions.md`, `supabase/README.md` and backlog 0.7. The rest waits on the owner (`docs/questions.md`, "lean working"). Do not move cadences to under an hour, message idle sessions to adopt conventions, or hand off a session only to change its model: each costs more than it saves.
+
 ## Next steps, in order
 
 1. **Set one scheduled sweep, every two hours from about 12:30 UTC,** with `send_later`. This replaces the old hourly fleet check and the separate actor-documents check. Each sweep does the following:
-   - **Fleet.** Call `get_session` by ID for each session in the fleet table.
-   - **Pull requests.** List them using the `fields` filter. For each merge, update `docs/progress.md` and check the migration ledger.
-   - **Reviewer.** If a pull request has sat unreviewed for over an hour, wake the reviewer with a one-shot trigger.
+   - **Re-arm first.** Before any other call, re-arm the next sweep two hours ahead, so a sweep that fails part-way still leaves one armed. Record its trigger ID in this note.
+   - **Fleet.** Call `get_session` by ID for each session in the fleet table. In the message to the owner, name any session that is blocked or has `needs_action` set (session ID and what it waits on), and any idle session over 300k used tokens; do not wake them. Keep each session's `cost_usd` and `used_tokens` for **Spend** below, written at the next batched push only.
+   - **Pull requests.** List them with the `fields` filter and a small `perPage`. For each merge, update `docs/progress.md` and check its migrations are applied: module migrations in the `nabvy_core.schema_migrations` ledger, gateway files in `supabase/migrations` against `list_migrations` (read only; live versions differ, see `supabase/README.md`). Name any merged migration still unapplied in the message to the owner.
+   - **Reviewer.** If a pull request has sat unreviewed for over an hour, wake the reviewer (by session ID, never by tag) with a one-shot trigger.
+   - **Stale check-ins.** `list_triggers` with `enabled: true`. Delete a one-shot check-in only when every pull request its prompt names is merged or closed.
    - **Actor documents.** Attach `sebtimize/fb-scrap-engine` with `add_repo` (read access), fetch it and check:
      - whether `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` now exist;
      - whether any file on the owner's list changed since `f177a44`. The T2 results should land in `EVIDENCE_LEDGER.md` after about 21:00 UTC.
 
      Read only the listed files, and tell the owner only when something changed.
 
-   If nothing changed, re-arm without comment.
+   If nothing changed, end without comment; the sweep is already re-armed.
 2. **Publish a condensed module catalogue for the owner's approval,** as one page (an Artifact). For each module, show its job, its wave, its dependencies and the model tier the job needs. First split `docs/design/drafts/modules.md` into one card per module under `docs/design/modules/`, with a script rather than an agent, so a build session reads only its own card. Build the page from the cards. Wave 1 does not start until the owner approves.
 3. **Integrate each draft as it lands.** Condense it into `docs/design/<name>.md`. Add backlog tasks, using letter suffixes, and rows in `docs/progress.md`. Put the owner questions in `docs/questions.md`. Open one batched pull request.
-4. **Launch wave 1** after approval, one session per module. Each session gets a brief naming its card and the few files it needs, and the model its job needs: the top model for the pipeline core, security and money; Sonnet for web wiring, UI and CRUD-shaped work. Tell each session to wake the reviewer with a one-shot trigger when it opens its pull request. The modules:
+4. **Launch wave 1** after approval, one session per module. Each session gets a brief naming its card and the few files it needs, and the model its job needs: the top model for the pipeline core, security and money; Sonnet for web wiring, UI and CRUD-shaped work. Tell each session to wake the reviewer with a one-shot trigger when it opens its pull request. Every `create_session` passes `model` from the card's tier (never inherit the caller's) and the caller checks `configured_model` in the response. Each brief gives the reviewer's session ID and points to `docs/session-conventions.md`; do not restate the rules. The modules:
    - region planning;
    - demand-driven scheduling;
    - spend governor, with the $150-a-month cap migration;

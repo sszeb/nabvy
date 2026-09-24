@@ -13,6 +13,7 @@ Check-in points are marked **[CHECK-IN]**: stop and wait for a human before cont
 - **0.5 CI pipeline.** GitHub Actions per `docs/operations.md`: typecheck, lint, test, fixtures, gitleaks, audit, migration dry-run, Vercel preview. Done: a pull request shows all checks green.
 - **0.5a Waitlist and marketing site skeleton.** nabvy.com with the landing page, `/waitlist` (email, postcode, products) into the `waitlist` table, `/freshness` placeholder, UTM capture, SPF/DKIM/DMARC for both sending subdomains. Done: a waitlist entry lands in the database with its UTM; the domain passes an email authentication check.
 - **0.6 Fixtures harness.** `fixtures/` layout from `docs/fixtures.md` and a test runner that reports pass rate per stage. Done: runner executes on the placeholder fixture and prints a report.
+- **0.7 Module boundary check.** A Node script beside `scripts/split-module-cards.mjs` compares each `services/<m>/package.json` `@nabvy/*` dependency with the module card's "Depends on" line (soft dependencies only through `@nabvy/contracts`), and runs as a non-blocking step in the existing CI job for services that have a card. Until it runs, the reviewer checks this by hand. Done: it flags a planted bad dependency in a fixture.
 
 **[CHECK-IN]**
 
