@@ -101,8 +101,9 @@ const BASIS_RANK: Record<Evidence['basis'], number> = { description: 0, photo: 1
 /**
  * Plans the merges for a batch. Listings are taken earliest first; a listing already in a group
  * is never moved. Each listing's candidates are filtered by `withinReach` and `blocked` (against
- * the candidate and every member of the candidate's group), then ranked: a shared seller key
- * first (the tie-break), description before photo, the smallest gap, the lowest listing ID. The
+ * the candidate and every member of the candidate's group), then ranked: description before
+ * photo, then a shared seller key (the tie-break between equal evidence), the smallest gap, the
+ * lowest listing ID. The
  * best candidate's group is joined; if it has none, a group is opened with the earlier of the two
  * as its origin. Deterministic for the same inputs, so a replay plans nothing new.
  */
@@ -160,8 +161,8 @@ export function plan(input: {
     })
     options.sort(
       (a, b) =>
-        Number(b.shared) - Number(a.shared) ||
         BASIS_RANK[a.basis] - BASIS_RANK[b.basis] ||
+        Number(b.shared) - Number(a.shared) ||
         a.gap - b.gap ||
         (a.other.listingId < b.other.listingId ? -1 : 1),
     )

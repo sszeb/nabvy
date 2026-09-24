@@ -31,10 +31,11 @@ internal (`fb-scrap-engine/docs/design/SELLER_DATA.md:144`).
 
 ## Outputs
 
-- **Event** `relist-merge.merged` v1, payload `{ listingIds }` (1–500 listing UUIDs): every member
-  of every group that holds a listing of the batch, so readers reload whole groups. Key
-  `relist-merge.merged:<version>:<batch>`, where the version hashes each group's ID with the hash
-  of its sorted member IDs (rule 8), read back from stored rows.
+- **Event** `relist-merge.merged` v1, payload `{ listingIds }` (1–500 listing UUIDs): one event
+  per group that holds a listing of the batch, carrying every member, so readers reload whole
+  groups. Key `relist-merge.merged:<groupId>@<version>:<batch>`, where the version hashes the
+  group's ID with the hash of its sorted member IDs (rule 8), read back from stored rows; an
+  unchanged group named again repeats a key the transport has already seen.
 - **Internal view** (`nabvy_pipeline`; security_invoker; empty while off):
   `relist_merge.v_groups`: group_id, listing_id, basis, matched_listing_id, input_fetched_at,
   merged_at, group_created_at (`RelistMergeGroup`).
@@ -64,7 +65,7 @@ Schema `relist_merge`:
 | Reach | Same source, same known city page, gap between sighting intervals ≤ 7 days (`RELIST_MERGE_WINDOW_DAYS`), for both kinds of evidence | `SELLER_DATA.md:148-149`; the card | Starting value (questions file) |
 | Short text | A description under 40 characters never merges (`RELIST_MERGE_MIN_DESCRIPTION_CHARS`) | This module: stock lines are shared by different items | Starting value |
 | Seller key | Only breaks ties; different keys block only when both numeric or seen in the same run; checked against every member of the group joined | `SELLER_DATA.md:150-152` | Fixed by the brief |
-| Choice | A shared key, then description before photo, then the smallest gap, then the lowest listing ID | The card: "description matching first" | Starting value |
+| Choice | Description before photo, then a shared seller key (the tie-break between equal evidence), then the smallest gap, then the lowest listing ID | The card: "description matching first", "the seller key only breaks ties"; review of PR #56 | Starting value |
 | Origin | The earlier listing (listed time, else first fetch) of the first pair | This module | Fixed |
 | Stability | A member never moves; two groups never merge | This module (questions file) | Starting value |
 | Event batch | 500 listing IDs (`RELIST_MERGE_EVENT_BATCH_SIZE`) | Rule 7 | Fixed |
@@ -123,6 +124,9 @@ Postgres 16 locally.
   listing-ingest's and detail-evidence's, since it seeds collected jobs into the gateway's tables
   in PGlite (never a live database). A one-line change in
   `services/apify-gateway/test/conventions.test.ts`.
+- **2026-09-24: one `merged` event per group** (review of PR #56), keyed by the group and its
+  member set, so a later `detail-evidence.changed` for listings already grouped re-announces
+  nothing new.
 - **2026-09-24: no RLS.** No user rows; the pipeline role alone has grants, `delete` only for
   `erase` (rule 12). The module is outside the T-stamp chain: it stores the T1 of its input and
   its own `merged_at` (rule 10).

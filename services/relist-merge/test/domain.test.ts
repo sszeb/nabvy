@@ -141,7 +141,7 @@ describe('plan', () => {
     expect(steps).toEqual([])
   })
 
-  it('prefers a shared key, then description over photo, then the smaller gap', () => {
+  it('prefers description over photo, then a shared key, then the smaller gap', () => {
     const run = (keysOf: Map<string, SellerKey[]>, basisA: 'description' | 'photo') =>
       plan({
         ...base,

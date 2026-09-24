@@ -120,18 +120,22 @@ export async function merge(
   report.groupsOpened = steps.filter((s) => s.kind === 'open').length
   report.membersWritten = await applySteps(q, steps)
 
+  // One event per group, keyed by the group and its member set (rule 8): a batch that names an
+  // unchanged group again repeats a key the transport has already seen.
   const stored = await selectGroups(q, listingIds)
-  const version = groupsVersion(stored.membersOf)
   report.merged = [...stored.membersOf.values()].flat()
-  report.events = chunk(report.merged, RELIST_MERGE_EVENT_BATCH_SIZE).map((batch, i) =>
-    createEvent(
-      events,
-      'relist-merge.merged',
-      1,
-      { listingIds: batch },
-      { key: `relist-merge.merged:${version}:${i}` },
-    ),
-  ) as EventEnvelope[]
+  report.events = [...stored.membersOf].flatMap(([groupId, members]) => {
+    const version = groupsVersion(new Map([[groupId, members]]))
+    return chunk(members, RELIST_MERGE_EVENT_BATCH_SIZE).map((batch, i) =>
+      createEvent(
+        events,
+        'relist-merge.merged',
+        1,
+        { listingIds: batch },
+        { key: `relist-merge.merged:${groupId}@${version}:${i}` },
+      ),
+    )
+  }) as EventEnvelope[]
   return ok(report)
 }
 
