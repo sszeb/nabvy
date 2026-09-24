@@ -2,7 +2,7 @@ import { createEvent } from '@nabvy/contracts'
 import { events as detailEvidenceEvents } from '@nabvy/contracts/modules/detail-evidence'
 import { createMemoryPublisher } from '@nabvy/transport'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { detailEvidenceChangedHandler, RULE_VERSION, run } from '../src'
+import { currentRuleVersion, detailEvidenceChangedHandler, run } from '../src'
 import {
   ALL_ON,
   createTestDatabase,
@@ -70,11 +70,23 @@ describe('idempotency', () => {
     expect(row?.n).toBe(2)
   })
 
-  it('the rule version is part of the key', async () => {
+  it('the rule version is part of the key, and follows the catalogue negatives in force', async () => {
     const listingIds = await detailed(t, recorded)
-    await run(t.db, { listingIds })
+    const on = await run(t.db, { listingIds })
     const [row] = await t.sql('select distinct rule_version from parts_rules.runs')
-    expect(row?.rule_version).toBe(RULE_VERSION)
+    expect(row?.rule_version).toBe(await currentRuleVersion(t.db))
+    expect(on.ok && on.value.ruleVersion).toBe(row?.rule_version)
+
+    // With product-catalogue off its negative contexts are not in force: a new version, and the
+    // same listings run again (and again once it is back on, under the first version: nothing new).
+    await t.switches({ 'product-catalogue': 'off' })
+    const off = await run(t.db, { listingIds })
+    if (!on.ok || !off.ok) throw new Error('run failed')
+    expect(off.value.ruleVersion).not.toBe(on.value.ruleVersion)
+    expect(off.value.runsWritten).toBe(20)
+    await t.switches({ 'product-catalogue': 'on' })
+    const back = await run(t.db, { listingIds })
+    expect(back.ok && back.value.runsWritten).toBe(0)
   })
 
   it('the handler publishes once; a redelivery publishes nothing new', async () => {

@@ -47,7 +47,7 @@ whatever the switch says. Priority: first; rules run first (`fb-scrap-engine/doc
 - **Restricted and user-facing views:** none (rule 5). No seller field is read or stored.
 - **Functions** (`@nabvy/parts-rules`): `run(q, { listingIds })`, `applyCorrection(q,
   correction)` for `review-console`, `erase(q, listingIds)`, `detailEvidenceChangedHandler(deps)`,
-  `RULE_VERSION`, and the pure `analyse`, `compileRules`, `workingCopy`, `readsPlusAsSpace`.
+  `currentRuleVersion(q)`, and the pure `analyse`, `compileRules`, `workingCopy`, `readsPlusAsSpace`.
 
 ## Tables
 
@@ -75,10 +75,10 @@ Schema `parts_rules`:
 | GPU model | `gpuModels` matched only inside a GPU hit | The card; `part-patterns.json:22-99` | Fixed |
 | Graphics memory | A RAM size reading "GDDR", or a "RAM … 12gb" reading running into a GPU model, is not system RAM | `part-patterns.json:16`; recorded row `1397200465308431` | Starting value |
 | Catalogue | `resolve()` on the reading plus 24 characters of its line; kept only when the match starts inside the reading, is of the hit's kind, and its model numbers are quoted (a series number such as "2000" agrees with "2700X") | The card; "never a guess" (`product-catalogue` README) | Starting value |
-| Inclusion candidate | 80 characters each side, same line (`PARTS_RULES_CONTEXT_CHARS`); mention and not-included phrases anchored at the quote, at most two words between | `CONTAINER_LISTINGS.md:177-180`; `EVIDENCE_LEDGER.md:556-559` | Starting value |
+| Inclusion candidate | 80 characters each side, same line (`PARTS_RULES_CONTEXT_CHARS`); mention and not-included phrases anchored at the quote, with only an article, possessive or maker's name between before it ("looking for quick sale RTX 3080" stays an offer) and only the card's size or name between after it ("RTX 3080 and monitor not included" stays an offer) | `CONTAINER_LISTINGS.md:177-180`; `EVIDENCE_LEDGER.md:556-559`; review of PR #53 | Starting value |
 | Listing kind | `listingKind` title patterns; wanted-description pattern on the first 400 characters (`PARTS_RULES_WANTED_DESCRIPTION_CHARS`); box-only wording; settled only when the signals agree (Decisions) | `part-patterns.json:4-11` | Starting value |
 | Gaps | Core parts GPU, CPU, RAM size, storage size of a PC, laptop or open kind: `not_stated`, `mention_only`, `unresolved`, `conflict` | The card ("parts or kind the rules could not settle") | Starting value |
-| Rule version | `r<revision>.<first 8 hex of the patterns' sha256>`, now `r1.25d64b70` | Idempotency key (brief) | Fixed |
+| Rule version | `r<revision>.<8 hex of a SHA-256 over the patterns' checksum, the thresholds, this module's labels and phrase patterns, and the negative contexts in force>` | Idempotency key (brief); review of PR #53 | Fixed |
 | Batch | 500 listing IDs (`PARTS_RULES_EVENT_BATCH_SIZE`) | Rule 7 | Fixed |
 
 ## Fixtures and pass rate
@@ -95,6 +95,15 @@ product-catalogue's seeded catalogue, from the recorded run
 - Synthetic, built from recorded rows: `tag-blocks` (hashtags, a "Tags:" block, a model list),
   `optiplex-trap` (an OptiPlex 3090/3080 office PC: no GPU read), `mentions-5080` (the ledger's
   "upgraded to", "equivalent to", "waiting for", swap and "not included" phrasings).
+
+Every case also checks each hit's quote against the stored title, description or attribute value
+at its offsets.
+
+**Not yet scored:** the card's labelled set of about 100 PC descriptions, scored for precision and
+recall per field (`PARTS_INTELLIGENCE.md:380-385`; backlog 1.5d). `fixtures/` has one recorded run
+of 20 listings, so the set follows once about 100 labelled descriptions exist, as a second suite
+of this stage; until then every rule is a starting value and the model pass sees every gap
+(`docs/questions/parts-rules.md`).
 
 Pass rate 9/9 (2026-09-24). Other tests: `domain.test.ts` (working copy and offsets, `+`, NFKC,
 tag blocks, OptiPlex, GDDR, bare numbers, spec-line labels, attributes first, 12 inclusion
@@ -113,6 +122,25 @@ empty while off, the foundation's view check).
   `quote` is always `stored.slice(start, end)` (the `+` row quotes "GTX+1660") and a reader can
   check it against `v_text`. For an attribute hit the offsets are into the attribute's value and
   `attrs.attributeName` names it.
+- **2026-09-24: offsets are UTF-16, not Postgres characters.** They match JavaScript's
+  `String.slice`; Postgres `substr` counts code points, so an emoji before a quote shifts it
+  there. NFKC is applied one stored code point at a time (so each working character maps back);
+  a decomposed accent is not composed with its letter, which no part pattern needs. Two
+  attributes with the same name are told apart only by their values.
+- **2026-09-24: readers pick the current run.** The views keep every rule version and every
+  evidence hash a listing has had. `parts-record` joins `v_gaps` and `v_rule_parts` to
+  `detail_evidence.v_current` on (listing_id, evidence_hash) and takes the latest `done_at` for
+  that hash (review of PR #53).
+- **2026-09-24: the rule version covers everything that shapes the output** (review of PR #53):
+  the patterns' checksum, the thresholds, this module's label and phrase patterns and the
+  catalogue's negative contexts in force (none while product-catalogue is off), hashed. A change
+  to any of them runs stored versions again; `currentRuleVersion(q)` returns it. Catalogue
+  aliases are not in it (`docs/questions/parts-rules.md`).
+- **2026-09-24: CPUs resolve to the catalogue's series or generation IDs** ("Ryzen 7 2700X" →
+  `cpu:amd:ryzen-7-2000`, "i5 10600KF" → `cpu:intel:core-i5-gen10`), because the gpu-pc pack
+  catalogues CPUs by series; the exact model stays in the quote.
+- **2026-09-24: one `resolve()` call per distinct text per batch.** Hundreds of short queries
+  for a 500-listing batch at worst; batching them into one call is a later optimisation.
 - **2026-09-24: spec lines, line by line.** Patterns run per line, so a match never spans a line
   break ("GTX 970 4GB⏎RAM" is not "4GB RAM"), and a labelled line keeps only its own part.
 - **2026-09-24: the kind the rules settle.** Wanted or swap wins; an explicit laptop word is a
@@ -146,7 +174,7 @@ empty while off, the foundation's view check).
 
 `docs/questions/parts-rules.md` (folded into `docs/questions.md` by the coordinator): re-running
 after a catalogue change; signals and tag blocks as columns; which kinds the rules settle; how a
-correction is recorded. Card: open question 14.
+correction is recorded; the labelled set of about 100 descriptions. Card: open question 14.
 
 ## Incidents
 

@@ -4,6 +4,7 @@
 // position and an inclusion candidate, and the listing-kind signals. Catalogue resolution and the
 // gaps come after (index.ts, gaps.ts). No model, no price, no guess.
 
+import { createHash } from 'node:crypto'
 import type { DetailEvidenceAttribute } from '@nabvy/contracts/modules/detail-evidence'
 import type { PartPatterns } from '@nabvy/contracts/modules/packs'
 import type {
@@ -17,11 +18,32 @@ import type {
 } from '@nabvy/contracts/modules/parts-rules'
 import { blank, lines, located, type Working, workingCopy } from './text'
 
-/** Bumped when this file's rules change; the patterns' checksum is added to it (`ruleVersion`). */
+/** Bumped when this file's rules change in a way the fingerprint below cannot see. */
 export const RULES_REVISION = 1
 
-export function ruleVersion(patternsSha256: string): string {
-  return `r${RULES_REVISION}.${patternsSha256.slice(0, 8)}`
+/**
+ * The rule version: `r<revision>.<8 hex>`, the hex a SHA-256 over everything that shapes the
+ * output: the patterns' checksum, the thresholds, this file's own labels and phrase patterns, and
+ * the catalogue's negative contexts in force (review of PR #53). Any change is a new version, so
+ * stored runs are run again.
+ */
+export function ruleVersion(
+  patternsSha256: string,
+  settings: RuleSettings,
+  negativeContexts: string[],
+): string {
+  const fingerprint = JSON.stringify({
+    patternsSha256,
+    settings,
+    labels: LABEL_GROUPS,
+    phrases: [BEFORE_MENTION, BEFORE_NOT_INCLUDED, AFTER_NOT_INCLUDED, AFTER_MENTION, BOX_ONLY].map(
+      (r) => r.source,
+    ),
+    laptop: EXPLICIT_LAPTOP.source,
+    optiplex: OPTIPLEX,
+    negativeContexts: [...negativeContexts].sort(),
+  })
+  return `r${RULES_REVISION}.${createHash('sha256').update(fingerprint).digest('hex').slice(0, 8)}`
 }
 
 /** `part-patterns.json` field name → part type (fb-scrap-engine/docs/data/part-patterns.json:12-21). */
@@ -213,12 +235,21 @@ export function attributeLabel(name: string): PartsRulesPartType[] | null {
 // "waiting for my 5080", swap or "I buy" adverts, and "equivalent to RTX 5080" are mentions;
 // CONTAINER_LISTINGS.md:177-180: "RTX 4090 not included" is demoted). Anchored at the quote,
 // with at most two words between, so a mention elsewhere in the window does not demote an offer.
-const BEFORE_MENTION =
-  /\b(upgrad(?:ed|ing) (?:to|from)|waiting (?:for|on)|equivalent (?:to|of)|similar to|comparable to|on par with|swap(?:s|ped|ping)? (?:for|to|with)|trade (?:for|with)|px (?:for|with)|i buy|we buy|i'?m buying|we'?re buying|looking for|in need of|replaced (?:with|by)|used to (?:have|run))\s+(?:[\w'.-]+\s+){0,2}$/iu
-const BEFORE_NOT_INCLUDED =
-  /\b(without|minus|excluding|excludes|not including|doesn'?t (?:come with|include))\s+(?:an?\s+|the\s+|my\s+)?(?:[\w'.-]+\s+){0,1}$/iu
+// Between a phrase and the quote only an article, a possessive or a maker's name may stand, so
+// "looking for quick sale RTX 3080" and "RTX 3080 and monitor not included" stay offers.
+const FILLER = String.raw`(?:(?:an?|the|my|your|his|her|their|any|nvidia|geforce|amd|radeon|intel)\s+){0,2}`
+const BEFORE_MENTION = new RegExp(
+  String.raw`\b(upgrad(?:ed|ing) (?:to|from)|waiting (?:for|on)|equivalent (?:to|of)|similar to|comparable to|on par with|swap(?:s|ped|ping)? (?:for|to|with)|trade (?:for|with)|px (?:for|with)|i buy|we buy|i'?m buying|we'?re buying|looking for|in need of|replaced (?:with|by)|used to (?:have|run))\s+${FILLER}$`,
+  'iu',
+)
+const BEFORE_NOT_INCLUDED = new RegExp(
+  String.raw`\b(without|minus|excluding|excludes|not including|doesn'?t (?:come with|include))\s+${FILLER}$`,
+  'iu',
+)
+// After the quote only the card's own size or name may stand before the phrase ("RTX 3080 10GB
+// (not included)").
 const AFTER_NOT_INCLUDED =
-  /^\s*(?:[\w'.-]+\s+){0,3}?[(\-–,]?\s*(not included|isn'?t included|not inc|sold separately|box only|empty box|not for sale)\b/iu
+  /^\s*(?:(?:\d+\s*gb|card|gpu|graphics card|founders(?: edition)?|fe|ti|super)\s+){0,2}[(\-–,]?\s*(not included|isn'?t included|not inc|sold separately|box only|empty box|not for sale)\b/iu
 const AFTER_MENTION = /^\s*[-\s]?(equivalent|level|class)\b/iu
 
 export function inclusionOf(before: string, after: string): PartsRulesInclusion {

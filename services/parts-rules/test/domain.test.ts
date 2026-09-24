@@ -171,6 +171,10 @@ describe('inclusion candidates', () => {
     ['RTX 5080-level performance', 'mention'],
     ['Upgraded to a 4090 so selling my RTX 5080', 'offered'],
     ['GPU: RTX 5080 16GB Founders', 'offered'],
+    ['Looking for quick sale RTX 5080 gaming PC', 'offered'],
+    ['Looking for an RTX 5080', 'mention'],
+    ['RTX 5080 and monitor not included', 'offered'],
+    ['RTX 5080 16GB (not included)', 'not_included'],
   ]
   it.each(cases)('%s → %s', (text, expected) => {
     const a = run('x', text)
@@ -257,7 +261,13 @@ describe('gaps and keys', () => {
   })
 
   it('derives the rule version and a replay-stable event key', () => {
-    expect(ruleVersion(pack.partPatternsSource.sha256)).toMatch(/^r\d+\.[0-9a-f]{8}$/)
+    const sha = pack.partPatternsSource.sha256
+    const v = ruleVersion(sha, SETTINGS, [])
+    expect(v).toMatch(/^r\d+\.[0-9a-f]{8}$/)
+    expect(ruleVersion(sha, SETTINGS, [])).toBe(v)
+    expect(ruleVersion(sha, { ...SETTINGS, contextChars: 81 }, [])).not.toBe(v)
+    expect(ruleVersion(sha, SETTINGS, ['x'])).not.toBe(v)
+    expect(ruleVersion(sha, SETTINGS, ['a', 'b'])).toBe(ruleVersion(sha, SETTINGS, ['b', 'a']))
     const runs = [
       { listingId: 'b', evidenceHash: '2' },
       { listingId: 'a', evidenceHash: '1' },
