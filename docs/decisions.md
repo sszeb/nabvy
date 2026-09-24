@@ -334,6 +334,10 @@ The owner, on the coordinator's speed-up findings ("Go ahead implement your find
 - **A merge clerk Routine may apply merged migrations** (backlog 0.15): a Sonnet fresh session that reads `docs/security.md`, applies the merge's pending migrations, checks the ledger and records the merge, so the coordinator wakes only for exceptions and the sweep. This amends "the coordinator applies every merged migration" in `CLAUDE.md`; the coordinator remains accountable and checks the ledger at each sweep.
 - **Pauses.** When the owner says pause, the coordinator interrupts every running session, disables the watchdog, and re-wakes them with one-shot triggers at the resume time.
 
+## Stripe scope (owner, 2026-09-24, 19:50)
+
+The owner asked to get started on Stripe for Billing, Invoicing, Tax, Connect and Payments, using the Stripe plugin and its implementation planner where available, and to review the integration already in progress against that plan. Recorded as backlog 4.10c: a plan document (`docs/design/stripe-integration.md`) that maps each Stripe product to the subscriptions, pricing-console and usage-ledger modules and reviews PR #54, with the gaps as backlog tasks. Connect has no consumer in the current design (Nabvy pays no sellers through Stripe); it is a question, not a build. Keys stay in the environment's secrets, never in chat.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
