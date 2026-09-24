@@ -82,7 +82,14 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 ## MVP scope and pipeline runtime
 
 **Owner's decisions, 2026-09-24.**
-- **Scope.** The production MVP for this push is a **public beta with the web app**: invited users sign up, set hunts and see a deal feed and alerts. There is no charging. The legal gates in the Precedence table still apply: no charging before legal advice, and an LIA and a DPIA before further collection (row "Legal gates").
+- **Scope.** The production MVP for this push is a **public beta with full functionality and one source: Facebook Marketplace through Nabvy's actor**. eBay, CeX, Gumtree and the other sources come later. Features that the build pack fed from other sources work from Facebook data alone. For example, price information is the asking-price position from Facebook asks (the Precedence row "Price wording"), with no eBay sold prices or CeX prices. The legal gates in the Precedence table still apply: no charging before legal advice, and an LIA and a DPIA before further collection (row "Legal gates").
+- **Frontend.** A modern, professional design, in the spirit of the Apify console, eBay and ChatGPT:
+  - an app shell with a left sidebar;
+  - clean listing cards with the price up front;
+  - a calm, spacious layout with a prominent search box;
+  - light and dark themes.
+
+  Built on the build pack's stack (Next.js, Tailwind, shadcn/ui); the owner lets the build choose the look.
 - **Pipeline runtime.** **Trigger.dev** runs the pipeline modules, as the build pack planned. Apify is still called only through the Supabase `apify-gateway` Edge Function: pipeline tasks queue gateway jobs in the database and read the collected rows back. This answers the runtime question in `docs/questions.md`.
 
 ## Product
