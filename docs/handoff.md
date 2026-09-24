@@ -87,9 +87,10 @@ The predecessor's design workflows write raw drafts. As each finishes, it is com
 
 | Draft | Subject | State at handoff |
 | --- | --- | --- |
-| `modules.md` | The atomic module catalogue (about 290 KB) | Landed |
-| `copy-advert.md` | The copy-advert spam module | Being revised |
-| `actor-integration.md` | How Nabvy uses the actor: planning, scheduling, spend, ingest | Being revised |
+| `modules.md` | The atomic module catalogue (about 320 KB; 89 modules, 15 build rounds, final audited version) | Landed |
+| `catalogue-audit-changes.md` | The final audit's change log. It has three points to take to the owner: five dependencies made soft so the rtx3090 test does not wait for billing or photos; three placeholder modules; task-ID clashes with the account-sharing and listing-reuse drafts | Landed |
+| `copy-advert.md` | The copy-advert spam module | Landed |
+| `actor-integration.md` | How Nabvy uses the actor: planning, scheduling, spend, ingest | Landed |
 | `account-sharing.md` | Account-integrity: sharing protection, bans, ban evasion | Landed |
 | `listing-location.md` | Where an item really is: the location field, "collection from X", autofill mistakes | Landed |
 | `search-map-routes.md` | eBay-style filters, the map with approximate markers, distance with "worth the trip" hints, pickup route planner | Being designed |
