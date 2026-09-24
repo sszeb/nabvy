@@ -1,3 +1,4 @@
+import { SWITCHES_ALWAYS_ON } from '@nabvy/contracts/modules/switches'
 import { createMemoryPublisher } from '@nabvy/transport'
 import { sql } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -51,7 +52,7 @@ describe('reading', () => {
 
   it('shadow is not on', async () => {
     await db.as('nabvy_pipeline', (tx) =>
-      set(tx, createMemoryPublisher(), {
+      set(tx, {
         actorUserId: ADMIN,
         name: 'shadowed',
         kind: 'module',
@@ -92,12 +93,12 @@ describe('set', () => {
       state: 'on' as const,
       reason: 'go live',
     }
-    expect(await db.as('nabvy_pipeline', (tx) => set(tx, publisher, change))).toEqual({
-      changed: true,
-    })
-    expect(await db.as('nabvy_pipeline', (tx) => set(tx, publisher, change))).toEqual({
-      changed: false,
-    })
+    const first = await db.as('nabvy_pipeline', (tx) => set(tx, change))
+    await publisher.publish([first.event])
+    const repeat = await db.as('nabvy_pipeline', (tx) => set(tx, change))
+    await publisher.publish([repeat.event])
+    expect([first.changed, repeat.changed]).toEqual([true, false])
+    expect(repeat.event.key).toBe(first.event.key)
     expect(await stateOf('cost-meter')).toBe('on')
     expect(await audits('switch:cost-meter')).toEqual([
       {
@@ -118,7 +119,7 @@ describe('set', () => {
   it('refuses turning off an always-on switch, in code and in the database', async () => {
     await expect(
       db.as('nabvy_pipeline', (tx) =>
-        set(tx, createMemoryPublisher(), {
+        set(tx, {
           actorUserId: ADMIN,
           name: 'audit-log',
           kind: 'module',
@@ -135,7 +136,7 @@ describe('set', () => {
   it('refuses a kind mismatch', async () => {
     await expect(
       db.as('nabvy_pipeline', (tx) =>
-        set(tx, createMemoryPublisher(), {
+        set(tx, {
           actorUserId: ADMIN,
           name: 'apify',
           kind: 'module',
@@ -146,19 +147,17 @@ describe('set', () => {
   })
 
   it('rolls the change back when the audit row cannot be written', async () => {
-    const publisher = createMemoryPublisher()
     await db.sql('revoke insert on audit_log.entries from nabvy_pipeline')
     try {
       await expect(
         db.as('nabvy_pipeline', (tx) =>
-          set(tx, publisher, { actorUserId: ADMIN, name: 'ebay', kind: 'provider', state: 'on' }),
+          set(tx, { actorUserId: ADMIN, name: 'ebay', kind: 'provider', state: 'on' }),
         ),
       ).rejects.toMatchObject({ code: 'audit-log.unavailable' })
     } finally {
       await db.sql('grant insert on audit_log.entries to nabvy_pipeline')
     }
     expect(await stateOf('ebay')).toBe('off')
-    expect(publisher.published).toEqual([])
   })
 
   it('the web app cannot write or list switches', async () => {
@@ -180,7 +179,7 @@ describe('set', () => {
 describe('gates', () => {
   const gate = (over: Record<string, unknown>) =>
     db.as('nabvy_pipeline', (tx) =>
-      set(tx, createMemoryPublisher(), {
+      set(tx, {
         actorUserId: ADMIN,
         name: 'facebook-alerts',
         kind: 'gate',
@@ -202,8 +201,26 @@ describe('gates', () => {
     expect(await audits('switch:facebook-alerts')).toHaveLength(3)
   })
 
+  it('refuses an empty allow-list, in code and in the database', async () => {
+    await expect(gate({ allowList: [] })).rejects.toMatchObject({ code: 'switches.invalid_input' })
+    await expect(
+      db.sql(`update switches.switches set allow_list = '{}' where name = 'facebook-alerts'`),
+    ).rejects.toThrow(/switches_allow_list_size/)
+  })
+
   it('a non-gate switch never allows', async () => {
     expect(await db.as('nabvy_app', (tx) => gateAllows(tx, 'pipeline', U1))).toBe(false)
+  })
+})
+
+describe('always-on switches', () => {
+  it('the database constraint names exactly SWITCHES_ALWAYS_ON', async () => {
+    const [row] = await db.sql(
+      `select pg_get_constraintdef(oid) as def from pg_constraint where conname = 'switches_always_on'`,
+    )
+    const nameList = String(row?.def).split(/\bOR\b/i)[0] ?? ''
+    const names = [...nameList.matchAll(/'([a-z-]+)'::text/g)].map((m) => m[1]).sort()
+    expect(names).toEqual([...SWITCHES_ALWAYS_ON].sort())
   })
 })
 
@@ -243,7 +260,7 @@ describe('the SQL functions inside a sample view', () => {
     ]).toEqual([0, 0, 2])
     const setSample = (s: 'shadow' | 'on') =>
       db.as('nabvy_pipeline', (tx) =>
-        set(tx, createMemoryPublisher(), {
+        set(tx, {
           actorUserId: ADMIN,
           name: 'sample',
           kind: 'module',

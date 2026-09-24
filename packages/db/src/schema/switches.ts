@@ -34,7 +34,7 @@ export const switches = schema.table(
     check('switches_allow_list_gates_only', sql`${t.kind} = 'gate' or ${t.allowList} is null`),
     check(
       'switches_allow_list_size',
-      sql`${t.allowList} is null or cardinality(${t.allowList}) <= 1000`,
+      sql`${t.allowList} is null or cardinality(${t.allowList}) between 1 and 1000`,
     ),
     check(
       'switches_always_on',

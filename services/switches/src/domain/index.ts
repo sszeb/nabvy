@@ -64,7 +64,8 @@ export function planChange(
 }
 
 function sameValue(a: SwitchValue, b: SwitchValue): boolean {
-  return a.state === b.state && JSON.stringify(a.allowList) === JSON.stringify(b.allowList)
+  const list = (v: SwitchValue) => (v.allowList ? [...v.allowList].sort().join(',') : null)
+  return a.state === b.state && list(a) === list(b)
 }
 
 /** Reads a state returned by the database; anything unexpected reads `off` (fail closed). */

@@ -35,9 +35,9 @@ export const SWITCHES_ALLOW_LIST_MAX = 1000
 
 /**
  * A gate's allow-list: null opens the gate to every user while it is `on`; a list admits only
- * those users. Only gates carry one.
+ * those users. Only gates carry one. An empty list is refused: close a gate by switching it off.
  */
-export const SwitchesAllowList = z.array(Uuid).max(SWITCHES_ALLOW_LIST_MAX).nullable()
+export const SwitchesAllowList = z.array(Uuid).min(1).max(SWITCHES_ALLOW_LIST_MAX).nullable()
 export type SwitchesAllowList = z.infer<typeof SwitchesAllowList>
 
 const stateFitsKind = (s: { kind: SwitchesKind; state: SwitchesState }) =>
@@ -92,8 +92,14 @@ export const SwitchesErrorCode = z.enum([
 ])
 export type SwitchesErrorCode = z.infer<typeof SwitchesErrorCode>
 
+/** The payload of `switches.changed`: switches whose state or allow-list changed. */
+export const SwitchesChangedEvent = z.strictObject({
+  names: z.array(SwitchesName).min(1).max(500),
+})
+export type SwitchesChangedEvent = z.infer<typeof SwitchesChangedEvent>
+
 /** Events this module publishes. A breaking payload change adds a version. */
 export const events = defineEvents(module, {
-  /** Switches whose state or allow-list changed. Readers load the new state by name. */
-  'switches.changed': { 1: z.strictObject({ names: z.array(SwitchesName).min(1).max(500) }) },
+  /** Readers load the new state by name. */
+  'switches.changed': { 1: SwitchesChangedEvent },
 })

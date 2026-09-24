@@ -14,11 +14,13 @@ as $$
   select coalesce((select s.state from switches.switches as s where s.name = switch_name), 'off')
 $$;
 
-create or replace function switches.is_on(switch_name text) returns boolean
+-- The parameter is named m to match the stub in packages/db/tests/quote-redaction.test.sql,
+-- which replaces this function with `create or replace` (that cannot rename a parameter).
+create or replace function switches.is_on(m text) returns boolean
 language sql stable security definer
 set search_path = pg_catalog
 as $$
-  select switches.state(switch_name) = 'on'
+  select switches.state(m) = 'on'
 $$;
 
 create or replace function switches.gate_allows(gate text, user_id uuid) returns boolean

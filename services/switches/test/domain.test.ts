@@ -70,6 +70,8 @@ describe('planChange', () => {
     )
     expect(planChange(change({ ...input, allowList: null }), gate)?.next.allowList).toBeNull()
     expect(planChange(change({ ...input, allowList: [U1] }), gate)).toBeNull()
+    const unsorted = { ...gate, allowList: [U2, U1] }
+    expect(planChange(change({ ...input, allowList: [U1, U2] }), unsorted)).toBeNull()
   })
 
   it('refuses an allow-list on anything but a gate, and bad input', () => {
@@ -79,6 +81,9 @@ describe('planChange', () => {
     expect(refusal(() => planChange(change({ name: 'Bad Name' }), undefined))).toBe(
       'switches.invalid_input',
     )
+    expect(
+      refusal(() => planChange(change({ name: 'g', kind: 'gate', allowList: [] }), undefined)),
+    ).toBe('switches.invalid_input')
     expect(refusal(() => planChange(change({ state: 'maybe' }), undefined))).toBe(
       'switches.invalid_input',
     )

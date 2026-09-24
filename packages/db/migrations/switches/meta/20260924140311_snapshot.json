@@ -75,7 +75,7 @@
         },
         "switches_allow_list_size": {
           "name": "switches_allow_list_size",
-          "value": "\"switches\".\"switches\".\"allow_list\" is null or cardinality(\"switches\".\"switches\".\"allow_list\") <= 1000"
+          "value": "\"switches\".\"switches\".\"allow_list\" is null or cardinality(\"switches\".\"switches\".\"allow_list\") between 1 and 1000"
         },
         "switches_always_on": {
           "name": "switches_always_on",

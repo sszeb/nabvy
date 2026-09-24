@@ -1,5 +1,4 @@
 import { readdirSync, readFileSync } from 'node:fs'
-import { createMemoryPublisher } from '@nabvy/transport'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { gateAllows, set, state } from '../../src'
@@ -7,7 +6,8 @@ import { createTestDatabase, type TestDatabase } from '../support/database'
 
 // Stage `set`: each case is a sequence of admin changes run through set() as the pipeline against
 // the real migrations (PGlite). Expected: each switch's final state read through state(), the
-// number of audit rows per switch, the refusal codes in order, and any gate checks.
+// number of audit rows per switch, the refusal codes in order, and any gate checks. Cases share
+// one database, so each case changes switches no other case touches.
 
 const Input = z.strictObject({
   synthetic: z.literal(true),
@@ -44,7 +44,7 @@ describe('set', () => {
     const refused: string[] = []
     for (const change of input.changes) {
       await db
-        .as('nabvy_pipeline', (tx) => set(tx, createMemoryPublisher(), change as never))
+        .as('nabvy_pipeline', (tx) => set(tx, change as never))
         .catch((error: { code?: string }) => refused.push(String(error.code)))
     }
     expect(refused).toEqual(expected.refused)

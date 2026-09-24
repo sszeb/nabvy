@@ -12,6 +12,6 @@ CREATE TABLE "switches"."switches" (
 	CONSTRAINT "switches_state" CHECK ("switches"."switches"."state" in ('off', 'shadow', 'on')),
 	CONSTRAINT "switches_shadow_modules_only" CHECK ("switches"."switches"."kind" = 'module' or "switches"."switches"."state" <> 'shadow'),
 	CONSTRAINT "switches_allow_list_gates_only" CHECK ("switches"."switches"."kind" = 'gate' or "switches"."switches"."allow_list" is null),
-	CONSTRAINT "switches_allow_list_size" CHECK ("switches"."switches"."allow_list" is null or cardinality("switches"."switches"."allow_list") <= 1000),
+	CONSTRAINT "switches_allow_list_size" CHECK ("switches"."switches"."allow_list" is null or cardinality("switches"."switches"."allow_list") between 1 and 1000),
 	CONSTRAINT "switches_always_on" CHECK ("switches"."switches"."name" not in ('audit-log', 'incidents', 'switches') or "switches"."switches"."state" = 'on')
 );
