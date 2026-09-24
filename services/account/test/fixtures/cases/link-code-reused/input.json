@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "CLAUDE.md: idempotent handlers; a code is single-use",
+  "userId": "00000000-0000-4000-8000-0000000000d3",
+  "sessionId": "session-d3",
+  "chatId": "chat-d3",
+  "tamper": "none",
+  "confirmTimes": 2
+}

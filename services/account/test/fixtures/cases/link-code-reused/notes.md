@@ -1,0 +1,1 @@
+The Telegram bot callback can be delivered twice for one code (at-least-once delivery). The first confirmation links the chat; the second finds the code already used and is refused, leaving exactly one link row rather than a second one or a crash.

@@ -1,0 +1,20 @@
+{
+  "steps": [
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 20, "cardChanged": [] },
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 0, "cardChanged": [] }
+  ],
+  "listings": 20,
+  "sightings": { "search": 40, "detail": 0 },
+  "priceChanges": [],
+  "listing": {
+    "sourceListingId": "1816901372840238",
+    "foundByTerms": ["gaming pc", "gaming computer", "gaming tower"]
+  },
+  "sighting": {
+    "sourceListingId": "1816901372840238",
+    "kind": "search",
+    "terms": ["gaming pc", "gaming computer"],
+    "centreIds": ["115935195086622", "106078429431815"],
+    "rank": 1
+  }
+}

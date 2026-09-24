@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790265128844,
+      "tag": "20260924155208_account_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790265142368,
+      "tag": "20260924155222_account_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790267454871,
+      "tag": "20260924163054_account_purge_grants",
+      "breakpoints": true
+    }
+  ]
+}
