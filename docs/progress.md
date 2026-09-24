@@ -95,7 +95,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | route-health | 3 | done: PR #37 merged 17:08 (`583a4c0`); both migrations applied 17:12 (ledger checked); follow-ups in `docs/questions.md` (retire the source-adapters port; no-description replays) | `session_01DgJ6WG8sK8FmVprvBHT7Ln` | Sonnet |
 | run-coverage | 4 | started 16:55; card `docs/design/modules/run-coverage.md` | `session_01W9G6WWzHRC5ZWWNB5Ud36i` | top |
 | detail-evidence | 4 | started 16:55; card `docs/design/modules/detail-evidence.md` | `session_019oxS7CYEwPHJ2YpQjxK4Gw` | top |
-| product-events | 3 | started 16:56; card `docs/design/modules/product-events.md`; PostHog keys still missing, sending stubbed | `session_01Mb9c2K2KfFYvqLcNQ8ysMD` | Sonnet |
+| product-events | 3 | done: PR #42 merged 17:39 (`61203aa`); both migrations applied 17:42 (ledger 37 rows, checksums checked, no view violations); PostHog keys still missing, forwarder injected; partition rotation needs `pg_cron` (backlog 0.12, `docs/questions.md`); non-blocking review notes: `forwarded` doc comment, unused `@nabvy/switches` dependency | `session_01Mb9c2K2KfFYvqLcNQ8ysMD` | Sonnet |
 | scan-recognition | 3 | started 16:56; card `docs/design/modules/scan-recognition.md`; model client on recorded fixtures until the Anthropic key exists | `session_01XqmaYu7JxPG5Ps2vpYGBcx` | top |
 | details-queue | 4 | started 17:10; card `docs/design/modules/details-queue.md`; dedupes first-seen on listing ID; uses the actor's `excludeListingIds` | `session_012piuTFFBNE7nuuToeJMbpN` | top |
 | usage-ledger | 3 | started 17:19; card `docs/design/modules/usage-ledger.md` and backlog 4.9 | `session_011LkRPvWVCRKMZ9Zs7DBwSt` | top |
