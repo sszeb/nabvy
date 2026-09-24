@@ -1,0 +1,13 @@
+{
+  "events": [
+    {
+      "type": "apify-gateway.run-collected",
+      "key": "apify-gateway.run-collected:1",
+      "payload": { "jobId": 1, "apifyRunId": "VkryjpwS6U2GBDh3k", "kind": "search" }
+    }
+  ],
+  "rows": { "total": 21, "listings": 20, "withSellerKey": 0 },
+  "sellerPresent": 3,
+  "costs": [],
+  "replay": { "metered": [], "collected": [], "settled": [] }
+}

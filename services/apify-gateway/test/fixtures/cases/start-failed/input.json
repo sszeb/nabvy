@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "builtFrom": "supabase/functions/apify-gateway/index.ts: a start that throws marks the job failed with no Apify run ID and no result",
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "mode": "start-failed",
+  "shape": "newest-check",
+  "tags": { "module": "check-scheduler", "region": "chichester", "purpose": "fixture replay" }
+}
