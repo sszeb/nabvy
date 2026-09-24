@@ -123,7 +123,7 @@ never resolves to the RTX 3090; desktop and mobile RTX 5080 resolve to different
 
 ## Open questions
 
-- `docs/questions.md`, "w1 product-catalogue: who may write the catalogue".
+- `docs/questions/product-catalogue.md`, "w1 product-catalogue: who may write the catalogue".
 
 ## Incidents
 
