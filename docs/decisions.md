@@ -286,6 +286,12 @@ Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): win
 - **Abuse audit from day one.** A written threat model of cost and abuse exploits (burner accounts, sign-up floods, free-burst farming, credit and referral gaming, card-check bypass, Telegram and webhook replay, Apify cost amplification, account sharing) with a test plan, adversarially checked, before the free tier opens (owner, 17:08).
 - **Surge stop.** Circuit breakers in the synchronous spend gate trip on any of: sign-ups per minute, paid submits per minute, submits from accounts younger than a policy-set age, or cost per minute, each a policy row. A trip sets `hold-new` immediately for free bursts and new accounts (paid watchers keep their funded cadence while under the caps), pauses admission, and alerts the founder. It resets only by an admin, with an audit row. The owner's case: 1,000 bots creating accounts and searching at once trip the breaker within the first minute, so the spend is at most the reservations in flight.
 
+## Cadence slider and the app's look (owner, 2026-09-24, 17:12)
+
+- **One control for speed.** Each want's check interval is set with a slider modelled on Claude Code's "Effort" control: 1-minute checks at the top as the "ultracode" equivalent, 4 hours at the bottom as the slow pace, with the intermediate steps between. It should be interesting and good-looking in the way that control is.
+- **Look like Claude and ChatGPT.** The app's overall look stays close to Claude and ChatGPT: easy to read, calm, never tiring on the eyes. This refines "a calm, spacious layout" under "MVP scope and pipeline runtime".
+- The control's design is in `docs/design/cadence-slider.md` (coordinator, from a two-designer panel with a critic); wording shown to users in it is provisional until the owner approves it.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
