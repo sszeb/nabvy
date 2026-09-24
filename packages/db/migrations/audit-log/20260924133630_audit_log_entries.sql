@@ -8,7 +8,7 @@ CREATE TABLE "audit_log"."entries" (
 	"before" jsonb,
 	"after" jsonb,
 	"reason" text,
-	"at" timestamp with time zone DEFAULT now() NOT NULL,
+	"at" timestamp (3) with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "entries_action_format" CHECK ("audit_log"."entries"."action" ~ '^[a-z][a-z0-9]*(-[a-z0-9]+)*\.[a-z][a-z0-9]*(-[a-z0-9]+)*$' and length("audit_log"."entries"."action") <= 100),
 	CONSTRAINT "entries_target_format" CHECK ("audit_log"."entries"."target" ~ '^[a-z][a-z0-9]*(-[a-z0-9]+)*:\S+$' and length("audit_log"."entries"."target") <= 300),
 	CONSTRAINT "entries_reason_length" CHECK ("audit_log"."entries"."reason" is null or (length(btrim("audit_log"."entries"."reason")) between 1 and 1000)),

@@ -157,7 +157,34 @@ describe('listEntries', () => {
     expect(mine).toHaveLength(1)
     const first = all[0]
     if (!first) throw new Error('no entries')
-    const older = await db.as('postgres', (tx) => listEntries(tx, { limit: 500, before: first.at }))
-    expect(older.every((e) => e.at < first.at)).toBe(true)
+    const older = await db.as('postgres', (tx) =>
+      listEntries(tx, { limit: 500, before: { at: first.at, id: first.id } }),
+    )
+    expect(older.length).toBe(all.length - 1)
+    expect(older.map((e) => e.id)).not.toContain(first.id)
+  })
+
+  it('pages one at a time through rows that share one transaction, each exactly once', async () => {
+    const ids = await db.as('nabvy_pipeline', async (tx) => {
+      const written: string[] = []
+      for (let i = 0; i < 5; i++) written.push((await record(tx, entry(`batch:${i}`))).id)
+      return written
+    })
+    const [{ n }] = (await db.sql(
+      "select count(distinct at) as n from audit_log.entries where target like 'batch:%'",
+    )) as [{ n: number }]
+    expect(Number(n)).toBe(1)
+    const seen: string[] = []
+    let before: { at: string; id: string } | undefined
+    for (;;) {
+      const page = await db.as('postgres', (tx) => listEntries(tx, { limit: 1, before }))
+      const last = page[0]
+      if (!last) break
+      seen.push(last.id)
+      before = { at: last.at, id: last.id }
+    }
+    expect(seen).toHaveLength(await count())
+    expect(new Set(seen).size).toBe(seen.length)
+    for (const id of ids) expect(seen).toContain(id)
   })
 })

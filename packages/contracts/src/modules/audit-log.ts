@@ -75,10 +75,18 @@ export const AuditLogEntry = z
   .refine(needsReason, reasonMessage)
 export type AuditLogEntry = z.infer<typeof AuditLogEntry>
 
-/** A page of entries, newest first. `before` is the `at` of the last entry already seen. */
+/**
+ * Where a page resumes: the `at` and `id` of the last entry already seen. Entries written in one
+ * transaction share one `at`, so the id breaks the tie; `at` is stored to the millisecond, the
+ * precision of an ISO timestamp, so the pair round-trips exactly.
+ */
+export const AuditLogCursor = z.strictObject({ at: IsoTimestamp, id: Uuid })
+export type AuditLogCursor = z.infer<typeof AuditLogCursor>
+
+/** A page of entries, newest first (`at` then `id`, both descending). */
 export const AuditLogListInput = z.strictObject({
   limit: z.number().int().min(1).max(500),
-  before: IsoTimestamp.optional(),
+  before: AuditLogCursor.optional(),
   actorUserId: Uuid.optional(),
   target: AuditLogTarget.optional(),
 })

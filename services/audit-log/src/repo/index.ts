@@ -3,7 +3,7 @@
 import type { AuditLogListInput } from '@nabvy/contracts/modules/audit-log'
 import type { Queryable } from '@nabvy/db'
 import { entries, vEntries } from '@nabvy/db/schema/audit-log'
-import { and, desc, eq, lt, type SQL } from 'drizzle-orm'
+import { and, desc, eq, type SQL, sql } from 'drizzle-orm'
 import type { EntryRow } from '../domain'
 
 /** Inserts one row. No RETURNING: writers have no select grant, so the id is made in code. */
@@ -28,7 +28,13 @@ export async function selectEntries(
   input: AuditLogListInput,
 ): Promise<EntryViewRow[]> {
   const where: SQL[] = []
-  if (input.before) where.push(lt(vEntries.at, new Date(input.before)))
+  if (input.before) {
+    // Row comparison matches the order below, so rows sharing one `at` are neither skipped nor
+    // repeated across pages.
+    where.push(
+      sql`(${vEntries.at}, ${vEntries.id}) < (${new Date(input.before.at)}::timestamptz, ${input.before.id}::uuid)`,
+    )
+  }
   if (input.actorUserId) where.push(eq(vEntries.actorUserId, input.actorUserId))
   if (input.target) where.push(eq(vEntries.target, input.target))
   const rows = await q

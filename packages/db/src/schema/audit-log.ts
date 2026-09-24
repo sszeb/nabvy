@@ -23,7 +23,7 @@ export const entries = schema.table(
     before: jsonb('before'),
     after: jsonb('after'),
     reason: text('reason'),
-    at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
+    at: timestamp('at', { withTimezone: true, precision: 3 }).notNull().defaultNow(),
   },
   (t) => [
     index('entries_at_idx').on(t.at),
@@ -58,6 +58,6 @@ export const vEntries = schema
     before: jsonb('before'),
     after: jsonb('after'),
     reason: text('reason'),
-    at: timestamp('at', { withTimezone: true }).notNull(),
+    at: timestamp('at', { withTimezone: true, precision: 3 }).notNull(),
   })
   .existing()
