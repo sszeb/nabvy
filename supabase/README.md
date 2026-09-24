@@ -99,5 +99,6 @@ Migrations in `migrations/` were applied through the Supabase connector on 2026-
 `20260924023000_apify_gateway_redact.sql` and `20260924024000_apify_gateway_redact_v2.sql` (redacted
 copies for fixtures, above) and `20260924025000_apify_gateway_collect.sql` (the `collect` job and
 the download page size).
-Deployed function version: 8. Versions 4 and 6 were not deployed from this repository (most likely
+Deployed function version: 8. The repository version also restores the `status = 'running'` guard
+on the final job update (dropped in version 8); the coordinator deploys it as version 9 after merge. Versions 4 and 6 were not deployed from this repository (most likely
 the dashboard redeploying when secrets changed); each later deploy replaced them.
