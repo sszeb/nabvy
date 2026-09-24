@@ -1,0 +1,5 @@
+{
+  "module": "pricing-console",
+  "schema": "pricing_console",
+  "dependsOn": ["core", "switches", "cost-meter"]
+}
