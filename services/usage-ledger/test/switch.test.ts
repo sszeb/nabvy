@@ -48,10 +48,13 @@ describe('usage-ledger off (no seed row: the switch reads off)', () => {
 })
 
 describe('shadow and on', () => {
-  it('shadow charges and fills v_balances, but shows the user nothing', async () => {
+  it('shadow refuses charges and shows the user nothing; v_balances has rows', async () => {
     await setSwitch(db, 'shadow')
-    expect((await charge('scan:shadow')).ok).toBe(true)
-    expect((await balances()).rows).toMatchObject([{ user_id: U1, credits: 15 }])
+    expect(await charge('scan:shadow')).toMatchObject({
+      ok: false,
+      error: { code: 'usage-ledger.off' },
+    })
+    expect((await balances()).rows).toMatchObject([{ user_id: U1, credits: 20 }])
     expect((await db.as('nabvy_app', (tx) => getBalance(tx, U1), U1)).ok).toBe(false)
   })
 
@@ -61,10 +64,10 @@ describe('shadow and on', () => {
       ok: true,
       value: {
         userId: U1,
-        credits: 15,
+        credits: 20,
         allowanceCredits: 0,
         tasteReferralCredits: 0,
-        topupCredits: 15,
+        topupCredits: 20,
         nextExpiryAt: null,
       },
     })

@@ -191,4 +191,28 @@ end;
 $$;
 reset role;
 
+-- A charge may not draw on an expired bucket, whoever writes it (allocation guards migration).
+set local role nabvy_pipeline;
+do $$
+declare
+  refused boolean := false;
+  charge_id uuid;
+begin
+  begin
+    insert into usage_ledger.entries (user_id, kind, credits, action, ref_id)
+      values ('00000000-0000-4000-8000-0000000000b2', 'charge', -1, 'scan_live', 'scan:expired')
+      returning id into charge_id;
+    insert into usage_ledger.allocations (entry_id, bucket_id, user_id, credits)
+      select charge_id, e.id, e.user_id, -1 from usage_ledger.entries as e
+      where e.ref_id = 'allowance:old';
+  exception when check_violation then
+    refused := true;
+  end;
+  if not refused then
+    raise exception 'a charge drew on an expired bucket';
+  end if;
+end;
+$$;
+reset role;
+
 rollback;

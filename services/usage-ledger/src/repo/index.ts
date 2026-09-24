@@ -119,6 +119,15 @@ export async function dueBuckets(
     .limit(limit)
 }
 
+/** What is left in one bucket now (0 when it is gone). */
+export async function bucketRemaining(q: Queryable, bucketId: string): Promise<number> {
+  const [row] = await q
+    .select({ remaining: buckets.remaining })
+    .from(buckets)
+    .where(eq(buckets.id, bucketId))
+  return row?.remaining ?? 0
+}
+
 /** Erases every row this module holds for these users (account deletion). */
 export async function purgeUsers(q: Queryable, userIds: readonly string[]): Promise<number> {
   if (userIds.length === 0) return 0

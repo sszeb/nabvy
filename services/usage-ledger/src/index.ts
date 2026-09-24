@@ -14,6 +14,7 @@ import { createEvent, type EventEnvelope, err, ok, type Result, Uuid } from '@na
 import {
   events,
   USAGE_LEDGER_MESSAGES,
+  UsageLedgerAllowanceGrant,
   type UsageLedgerBalance,
   UsageLedgerCharge,
   type UsageLedgerChargeInput,
@@ -22,7 +23,11 @@ import {
   type UsageLedgerErrorCode,
   UsageLedgerGrant,
   type UsageLedgerGrantInput,
+  type UsageLedgerPlan,
+  type UsageLedgerPolicyQuote,
   UsageLedgerReverse,
+  UsageLedgerTopupGrant,
+  type UsageLedgerTopupGrantInput,
 } from '@nabvy/contracts/modules/usage-ledger'
 import type { Queryable } from '@nabvy/db'
 import { state } from '@nabvy/switches'
@@ -49,6 +54,7 @@ function toEntry(row: repo.EntryRow): UsageLedgerEntry {
     cashMinor: row.cashMinor,
     costGbpMicros: row.costGbpMicros,
     expiresAt: row.expiresAt?.toISOString() ?? null,
+    policyVersion: row.policyVersion,
     at: row.at.toISOString(),
   }
 }
@@ -95,6 +101,100 @@ export async function grant(
   return ok({ entry: toEntry(existing), changed: false })
 }
 
+/**
+ * How policy-priced grants are valued (docs/decisions.md, "Paid ladder"): the plan's monthly
+ * bundle and its top-up rate are versioned policy rows in `pricing-console`, never constants in
+ * this module. `pricing-console` provides the real implementation; until it exists, callers get
+ * `pendingPricingConsole`, which answers nothing, so no credit is granted from a guessed number.
+ * Return `null` when no row answers for the plan.
+ */
+export interface UsageLedgerPolicy {
+  bundleCredits(q: Queryable, plan: UsageLedgerPlan): Promise<UsageLedgerPolicyQuote | null>
+  topupCredits(
+    q: Queryable,
+    plan: UsageLedgerPlan,
+    cashMinor: number,
+  ): Promise<UsageLedgerPolicyQuote | null>
+}
+
+/** The documented stub until `pricing-console` ships (backlog 4.10b): no policy, no grant. */
+export const pendingPricingConsole: UsageLedgerPolicy = {
+  bundleCredits: async () => null,
+  topupCredits: async () => null,
+}
+
+type PolicyGrant = {
+  userId: string
+  kind: 'allowance' | 'topup'
+  refId: string
+  cashMinor: number
+  expiresAt: string | null
+}
+
+/**
+ * A grant valued by policy. A replay of the same refId returns the first grant unchanged, whatever
+ * the policy says now (a webhook retried after a price change must not re-value a payment), and
+ * is refused only if its cash or expiry differ. The policy is read only for a new grant.
+ */
+async function grantByPolicy(
+  q: Queryable,
+  g: PolicyGrant,
+  quote: () => Promise<UsageLedgerPolicyQuote | null>,
+): Promise<Result<Written, UsageLedgerError>> {
+  await repo.lockUser(q, g.userId)
+  const expiresAt = g.expiresAt === null ? null : new Date(g.expiresAt)
+  const existing = await repo.selectEntry(q, g.userId, g.kind, g.refId)
+  if (existing) {
+    const same =
+      existing.cashMinor === g.cashMinor &&
+      (existing.expiresAt?.getTime() ?? null) === (expiresAt?.getTime() ?? null)
+    return same ? ok({ entry: toEntry(existing), changed: false }) : refuse('usage-ledger.mismatch')
+  }
+  const value = await quote()
+  if (!value) return refuse('usage-ledger.no_policy')
+  const inserted = await repo.insertEntry(q, {
+    userId: g.userId,
+    kind: g.kind,
+    credits: value.credits,
+    refId: g.refId,
+    cashMinor: g.cashMinor,
+    expiresAt,
+    policyVersion: value.policyVersion,
+  })
+  if (!inserted) throw new Error(`usage-ledger: grant ${g.refId} appeared under the user lock`)
+  return ok({ entry: toEntry(inserted), changed: true })
+}
+
+/**
+ * The plan's monthly bundle (use it or lose it: expires at the next renewal), valued by the
+ * policy's bundle size for the plan. Called by `subscriptions` on each renewal; idempotent on
+ * refId (for example `allowance:<subscription>@<period start>`). The fee funds the plan's base
+ * cadence; the bundle pays only for faster checks and for checking (the caller's concern).
+ */
+export async function grantAllowance(
+  q: Queryable,
+  input: UsageLedgerAllowanceGrant,
+  policy: UsageLedgerPolicy = pendingPricingConsole,
+): Promise<Result<Written, UsageLedgerError>> {
+  const g = UsageLedgerAllowanceGrant.parse(input)
+  return grantByPolicy(q, { ...g, kind: 'allowance' }, () => policy.bundleCredits(q, g.plan))
+}
+
+/**
+ * A bought top-up, valued at the plan's top-up rate for its net cash. Called by `subscriptions`
+ * from the top-up Checkout webhook; idempotent on refId (the payment intent).
+ */
+export async function grantTopup(
+  q: Queryable,
+  input: UsageLedgerTopupGrantInput,
+  policy: UsageLedgerPolicy = pendingPricingConsole,
+): Promise<Result<Written, UsageLedgerError>> {
+  const g = UsageLedgerTopupGrant.parse(input)
+  return grantByPolicy(q, { ...g, kind: 'topup' }, () =>
+    policy.topupCredits(q, g.plan, g.cashMinor),
+  )
+}
+
 export interface Charged extends Written {
   /** The spendable balance after this charge (or now, on a repeat). */
   balance: number
@@ -108,14 +208,16 @@ export interface Charged extends Written {
  * never partially charges, when the balance does not cover it (`usage-ledger.insufficient`, with
  * the balance and the amount for the top-up prompt). Idempotent on (user, refId). With zero
  * credits it records only the cost the action caused, for the free-tier lifetime cap (4.9a).
- * Refused while the module is off (`usage-ledger.off`), and for an inactive account.
+ * Refused unless the module is on (`usage-ledger.off`), for an inactive account, and for a
+ * replay of a charge that was reversed (`usage-ledger.reversed`).
  */
 export async function chargeUsage(
   q: Queryable,
   input: UsageLedgerChargeInput,
 ): Promise<Result<Charged, UsageLedgerError>> {
   const c = UsageLedgerCharge.parse(input)
-  if ((await state(q, 'usage-ledger')) === 'off') return refuse('usage-ledger.off')
+  // Only `on` charges: shadow would spend real credit while users see no balance (review of PR #47).
+  if ((await state(q, 'usage-ledger')) !== 'on') return refuse('usage-ledger.off')
   if (c.credits > 0 && !(await isActive(q, c.userId)))
     return refuse('usage-ledger.account_inactive')
   await repo.lockUser(q, c.userId)
@@ -130,6 +232,9 @@ export async function chargeUsage(
     ) {
       return refuse('usage-ledger.mismatch')
     }
+    // A charge replayed after its reversal is not paid for (review of PR #47): the caller must
+    // not run the action on the strength of the original charge.
+    if (await repo.selectReversalOf(q, existing.id)) return refuse('usage-ledger.reversed')
     const balance = buckets.reduce((sum, b) => sum + b.remaining, 0)
     return ok({ entry: toEntry(existing), changed: false, balance, events: [] })
   }
@@ -234,15 +339,20 @@ export async function expireBuckets(q: Queryable): Promise<{ expired: number }> 
   const due = await repo.dueBuckets(q, USAGE_LEDGER_EXPIRY_SWEEP_BATCH)
   let expired = 0
   for (const bucket of due) {
+    // Under the user's lock, re-read what is left: a charge may have committed since `due` was
+    // read, and closing the old amount would abort the whole batch (review of PR #47).
+    await repo.lockUser(q, bucket.userId)
+    const remaining = await repo.bucketRemaining(q, bucket.id)
+    if (!remaining) continue
     const entry = await repo.insertEntry(q, {
       userId: bucket.userId,
       kind: 'expiry',
-      credits: -bucket.remaining,
+      credits: -remaining,
       refId: expiryRef(bucket.id),
     })
     if (!entry) continue
     await repo.insertAllocations(q, entry.id, bucket.userId, [
-      { bucketId: bucket.id, credits: -bucket.remaining },
+      { bucketId: bucket.id, credits: -remaining },
     ])
     expired += 1
   }

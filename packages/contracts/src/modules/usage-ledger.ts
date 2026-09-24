@@ -87,6 +87,44 @@ export const UsageLedgerGrant = z
 export type UsageLedgerGrant = z.infer<typeof UsageLedgerGrant>
 export type UsageLedgerGrantInput = z.input<typeof UsageLedgerGrant>
 
+// ---------------------------------------------------------------------------------------------
+// Policy-priced grants (docs/decisions.md, "Paid ladder"): the plan's bundle and the top-up rate
+// are versioned policy rows in `pricing-console`, read through `UsageLedgerPolicy`, never
+// constants here.
+// ---------------------------------------------------------------------------------------------
+
+/** A plan's name as `pricing-console` keys it (`starter`, `pro`, `max`, `business`). */
+export const UsageLedgerPlan = z.string().regex(/^[a-z][a-z0-9-]{0,31}$/)
+export type UsageLedgerPlan = z.infer<typeof UsageLedgerPlan>
+
+/** What a policy row says a grant is worth, and which version of the row said it. */
+export const UsageLedgerPolicyQuote = z.strictObject({
+  credits: UsageLedgerCredits.min(1),
+  policyVersion: z.string().min(1).max(100),
+})
+export type UsageLedgerPolicyQuote = z.infer<typeof UsageLedgerPolicyQuote>
+
+/** The monthly bundle: use it or lose it, expiring at the next renewal. */
+export const UsageLedgerAllowanceGrant = z.strictObject({
+  userId: Uuid,
+  plan: UsageLedgerPlan,
+  refId: UsageLedgerRefId,
+  cashMinor: z.int().min(0).max(2_147_483_647),
+  expiresAt: IsoTimestamp,
+})
+export type UsageLedgerAllowanceGrant = z.infer<typeof UsageLedgerAllowanceGrant>
+
+/** A bought top-up: the policy turns the net cash into credits at the plan's top-up rate. */
+export const UsageLedgerTopupGrant = z.strictObject({
+  userId: Uuid,
+  plan: UsageLedgerPlan,
+  refId: UsageLedgerRefId,
+  cashMinor: z.int().min(1).max(2_147_483_647),
+  expiresAt: IsoTimestamp.nullable().default(null),
+})
+export type UsageLedgerTopupGrant = z.infer<typeof UsageLedgerTopupGrant>
+export type UsageLedgerTopupGrantInput = z.input<typeof UsageLedgerTopupGrant>
+
 export const UsageLedgerCharge = z.strictObject({
   userId: Uuid,
   action: UsageLedgerAction,
@@ -122,6 +160,8 @@ export const UsageLedgerEntry = z.strictObject({
   cashMinor: z.int().min(0),
   costGbpMicros: UsageLedgerGbpMicros,
   expiresAt: IsoTimestamp.nullable(),
+  /** The pricing-console policy version a policy-priced grant was valued at. */
+  policyVersion: z.string().nullable(),
   at: IsoTimestamp,
 })
 export type UsageLedgerEntry = z.infer<typeof UsageLedgerEntry>
@@ -155,7 +195,7 @@ export const events = defineEvents(module, {
 // ---------------------------------------------------------------------------------------------
 
 export const UsageLedgerErrorCode = z.enum([
-  /** The module is off: metered actions are refused. */
+  /** The module is not on: metered actions are refused. */
   'usage-ledger.off',
   /** The balance does not cover the charge (refusal at zero). */
   'usage-ledger.insufficient',
@@ -165,6 +205,10 @@ export const UsageLedgerErrorCode = z.enum([
   'usage-ledger.mismatch',
   /** No charge with that `refId` for that user. */
   'usage-ledger.not_found',
+  /** The charge with this `refId` was reversed: the action is not paid for. */
+  'usage-ledger.reversed',
+  /** No pricing policy answers for this plan (pricing-console not built, or no row). */
+  'usage-ledger.no_policy',
 ])
 export type UsageLedgerErrorCode = z.infer<typeof UsageLedgerErrorCode>
 
@@ -185,4 +229,7 @@ export const USAGE_LEDGER_MESSAGES: Record<UsageLedgerErrorCode, string> = {
   'usage-ledger.account_inactive': 'This account cannot use paid actions right now.',
   'usage-ledger.mismatch': 'This request was already recorded with different details.',
   'usage-ledger.not_found': 'No such charge.',
+  'usage-ledger.reversed':
+    'This action was not completed and its credits were returned. Start it again.',
+  'usage-ledger.no_policy': 'Credit for this plan cannot be granted yet. Nothing was changed.',
 }

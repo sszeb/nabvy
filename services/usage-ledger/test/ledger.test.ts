@@ -115,9 +115,56 @@ describe('the database refuses', () => {
     )
   })
 
+  it('an allocation added later to a committed charge (review of PR #47)', async () => {
+    const r = await db.as(
+      'nabvy_app',
+      (tx) => chargeUsage(tx, { userId: U1, action: 'scan_live', credits: 1, refId: 'scan:late' }),
+      U1,
+    )
+    const chargeId = r.ok ? r.value.entry.id : ''
+    // A second bucket: the (entry, bucket) primary key already refuses the charged one.
+    await db.as('nabvy_pipeline', (tx) =>
+      grant(tx, { userId: U1, kind: 'topup', credits: 10, refId: 'pi_u1_second', cashMinor: 100 }),
+    )
+    const [b] = await db.sql(
+      `select b.id from usage_ledger.buckets b join usage_ledger.entries e on e.id = b.id where e.ref_id = 'pi_u1_second'`,
+    )
+    await refused(
+      asApp(
+        U1,
+        `insert into usage_ledger.allocations (entry_id, bucket_id, user_id, credits) values ('${chargeId}', '${b?.id}', '${U1}', -1)`,
+      ),
+      /allocations move -2/,
+    )
+  })
+
+  it('a charge drawn on an expired bucket, even when the application check is skipped', async () => {
+    await db.as('nabvy_pipeline', (tx) =>
+      grant(tx, {
+        userId: U1,
+        kind: 'allowance',
+        credits: 10,
+        refId: 'allowance:gone',
+        expiresAt: new Date(Date.now() - 60_000).toISOString(),
+      }),
+    )
+    const [b] = await db.sql(
+      `select id from usage_ledger.buckets where user_id = $1 and kind = 'allowance'`,
+      [U1],
+    )
+    await refused(
+      asApp(
+        U1,
+        `with e as (insert into usage_ledger.entries (user_id, kind, credits, action, ref_id) values ('${U1}', 'charge', -1, 'x', 'from-expired') returning id)
+         insert into usage_ledger.allocations (entry_id, bucket_id, user_id, credits) select id, '${b?.id}', '${U1}', -1 from e`,
+      ),
+      /has expired/,
+    )
+  })
+
   it("reading another user's ledger", async () => {
     const rows = await asApp<{ rows: unknown[] }>(U1, `select * from usage_ledger.buckets`)
-    expect(rows.rows).toHaveLength(1)
+    expect(rows.rows).toHaveLength(3)
   })
 })
 
@@ -168,9 +215,9 @@ describe('charges', () => {
       )
     ).rows as Record<string, unknown>[]
     expect(row).toMatchObject({
-      credits: 97,
-      topup_credits: 97,
-      funding_credits: 97,
+      credits: 106,
+      topup_credits: 106,
+      funding_credits: 106,
       attributed_cost_gbp_micros: cost,
     })
   })

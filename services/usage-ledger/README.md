@@ -12,8 +12,9 @@ reads `off`). **Off**: every metered action is refused with `usage-ledger.off` a
 work that needs credit stops; `v_balances` returns no rows, `getBalance()` refuses and the expiry
 sweep writes nothing. **Exceptions while off**: `grant()` and `reverseCharge()` keep recording,
 so a paid top-up is never dropped and a charge taken while on can always be returned (see
-"Decisions"); the account-deletion purge always runs. **Shadow**: charges run and write, and
-`v_balances` has rows, but users are shown nothing (`getBalance()` refuses). **On**: all of it.
+"Decisions"); the account-deletion purge always runs. **Shadow**: charges are refused too (a
+shadow charge would spend real credit while users see no balance; review of PR #47), `v_balances`
+has rows, and users are shown nothing (`getBalance()` refuses). **On**: all of it.
 MVP, live at launch (`docs/decisions.md:93`), wave 3, backlog 4.9.
 
 ## Inputs
@@ -33,6 +34,13 @@ MVP, live at launch (`docs/decisions.md:93`), wave 3, backlog 4.9.
     Kinds: `allowance` (must expire), `taste` (must expire), `referral`, `topup`. `cashMinor` is
     the net cash the grant was bought with, in pence; only `allowance` and `topup` may carry it.
     Idempotent on (user, kind, refId); the same refId with other details is `usage-ledger.mismatch`.
+  - `grantAllowance(q, { userId, plan, refId, cashMinor, expiresAt }, policy)` and
+    `grantTopup(q, { userId, plan, refId, cashMinor, expiresAt? }, policy)`: the plan's monthly
+    bundle (use it or lose it) and a bought top-up, valued by `policy` (`UsageLedgerPolicy`,
+    implemented by `pricing-console`: `bundleCredits(plan)`, `topupCredits(plan, cashMinor)`), with
+    the policy version stored on the entry. Until `pricing-console` exists the default,
+    `pendingPricingConsole`, answers nothing and the grant is refused (`usage-ledger.no_policy`).
+    A replay of the same refId returns the first grant unchanged whatever the policy says now.
   - `chargeUsage(q, { userId, action, credits, refId, costGbpMicros? })` →
     `{ entry, changed, balance, events }`. Idempotent on (user, refId). Refuses whole, never
     partly: `usage-ledger.insufficient` carries `balance` and `required` for the top-up prompt.
@@ -57,7 +65,7 @@ MVP, live at launch (`docs/decisions.md:93`), wave 3, backlog 4.9.
   reversed or not: the provider was paid.
 - **No user-facing view**: no module has created the `app` schema yet (the same call `account`
   made); the user's balance is `getBalance()` through a procedure.
-- Error codes `usage-ledger.off | insufficient | account_inactive | mismatch | not_found`, each
+- Error codes `usage-ledger.off | insufficient | account_inactive | mismatch | not_found | reversed | no_policy`, each
   with a message in `USAGE_LEDGER_MESSAGES`.
 
 ## Tables
@@ -68,7 +76,8 @@ cost integer GBP micros (the cost-meter's unit).
 - `entries` (the card's `usage_ledger`): `id`, `user_id`, `kind` (`allowance | taste | referral |
   topup | charge | reversal | expiry`), `credits` (signed: grants and reversals add, charges and
   expiries take), `action` (charges only), `ref_id`, `reverses_id` (reversals only), `cash_minor`,
-  `cost_gbp_micros` (charges only), `expires_at` (grants only), `at`. **Unique on (user_id, kind,
+  `cost_gbp_micros` (charges only), `expires_at` (grants only), `policy_version` (policy-valued
+  allowance and top-up grants only), `at`. **Unique on (user_id, kind,
   ref_id)** and on `reverses_id` (one reversal per charge). Check constraints tie each column to
   its kinds and signs. Append-only: no role may update; only the pipeline deletes (the purge).
 - `buckets` (the card's `usage_balances`): one per grant, `id` = the grant entry's id, `user_id`,
@@ -96,14 +105,14 @@ fail; the bucket check constraint refuses an overdraw even without it.
 | Expired credit | Counts nothing from `expires_at`, swept or not | `docs/billing.md`: unused included usage expires | Fixed |
 | Low-balance line | 50 credits (`USAGE_LEDGER_LOW_BALANCE_CREDITS`) | The Free allowance in `docs/design/pricing-model.md` (a placeholder there) | Starting value; question below |
 | Expiry sweep batch | 500 buckets | `CLAUDE.md`, "Batches, not items" | Fixed |
-| Prices | None here | Brief: pricing-console owns prices; the caller passes credits | Fixed |
+| Prices, bundle sizes, top-up rates | None here: read through `UsageLedgerPolicy` | Brief; `docs/decisions.md`, "Paid ladder" (every value a versioned pricing-console policy row) | Fixed |
 
 ## Fixtures and pass rate
 
-Stage `ledger` (`test/fixtures/ledger.fixtures.ts`), 7/7, synthetic cases built from the card, the
+Stage `ledger` (`test/fixtures/ledger.fixtures.ts`), 8/8, synthetic cases built from the card, the
 4.9 entry, `docs/billing.md` and `docs/design/pricing-model.md` (there is no recorded run to build
 ledger fixtures from), run on the real migrations in PGlite: `bucket-order`, `refusal-at-zero`,
-`partial-refused`, `reversal-on-failure`, `grant-once`, `expired-not-spent`, `charge-once`.
+`partial-refused`, `reversal-on-failure`, `grant-once`, `expired-not-spent`, `charge-once`, `charge-after-reversal`.
 
 `test/domain.test.ts` covers the spend order, allocation and the low-balance boundary.
 `test/idempotency.test.ts` runs grant, charge, reversal, the expiry sweep and the
@@ -112,7 +121,8 @@ no writes, grants still recorded, empty view), shadow and on, and a reversal aft
 `test/ledger.test.ts` covers what the database refuses whoever writes (a grant from the web app,
 a bucket edit, a charge without allocations, a forged or oversized reversal, an overdraw), RLS
 isolation, the account check, the low-balance event and `v_balances`' attributed cost.
-`test/contracts.test.ts` checks the event and the input schemas. `packages/db/tests/usage-ledger.test.sql`
+`test/policy.test.ts` covers policy-valued grants: refused with the stub, valued and versioned
+with a policy, a replay after a price change keeping the first value. `test/contracts.test.ts` checks the event and the input schemas. `packages/db/tests/usage-ledger.test.sql`
 covers grants, RLS, the triggers and the view's switch filter on real Postgres (`pnpm db:dry-run`).
 
 ## Decisions
@@ -136,6 +146,15 @@ covers grants, RLS, the triggers and the view's switch filter on real Postgres (
   coordinator's branch) can read it without a schema change.
 - 2026-09-24: `estimate(want)` (card) is not here: it needs prices, which the brief keeps in
   `pricing-console`. The ledger supplies the balance and the low-balance event it compares with.
+- 2026-09-24 (coordinator, "Paid ladder"): bundle size and top-up rate are read through an
+  injected `UsageLedgerPolicy`, never constants; the stub refuses rather than guessing, and each
+  policy-valued grant records the policy version it was valued at. `grant()` with explicit credits
+  stays for taste and referral credit and for callers that already hold a policy quote.
+- 2026-09-24 (review of PR #47): a charge replayed with the key of a reversed charge is refused
+  (`usage-ledger.reversed`), never reported as paid; charges run only while the switch is `on`;
+  the database also refuses a charge on an expired bucket and, at commit, any allocation that
+  leaves its entry unbalanced (so nothing can be added to an already committed entry); the expiry
+  sweep takes each user's lock and re-reads the bucket before closing it.
 - 2026-09-24: a charge of zero credits skips the account check, so the cost of a check already
   made is always recorded; a charge of one credit or more is refused for an inactive account.
 - 2026-09-24: credit a reversal returns to a bucket that has already expired stays there and

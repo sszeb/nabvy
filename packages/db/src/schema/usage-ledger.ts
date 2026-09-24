@@ -46,6 +46,8 @@ export const entries = schema.table(
     cashMinor: integer('cash_minor').notNull().default(0),
     costGbpMicros: gbpMicros('cost_gbp_micros').notNull().default(0),
     expiresAt: at('expires_at'),
+    /** pricing-console's policy version, on grants valued by policy (grantAllowance, grantTopup). */
+    policyVersion: text('policy_version'),
     at: at('at').notNull().defaultNow(),
   },
   (t) => [
@@ -76,6 +78,10 @@ export const entries = schema.table(
     check(
       'entries_expires',
       sql`${t.expiresAt} is null or ${t.kind} in ('allowance', 'taste', 'referral', 'topup')`,
+    ),
+    check(
+      'entries_policy_version',
+      sql`${t.policyVersion} is null or ${t.kind} in ('allowance', 'topup')`,
     ),
     check(
       'entries_expiring_kinds',
