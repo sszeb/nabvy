@@ -42,6 +42,14 @@ the schema is not exposed to the Data API.
 **Seller data.** `apify_gateway.items` holds raw actor rows, which can include seller fields. Per
 the brief they are internal only: never copy them into user-facing tables, fixtures or logs.
 
+**Redacted copies for fixtures.** `apify_gateway.redacted_items(job_id)` returns a job's rows with
+every `seller` and `marketplace_listing_seller` object replaced by a same-shaped placeholder (an
+unknown seller key raises an error rather than passing through), Facebook media and profile URLs
+replaced by placeholders, and emails and UK phone numbers in text masked.
+`apify_gateway.redaction_leaks(job_id)` lists any raw seller ID, name or picture URL still present
+in the redacted rows and must return nothing before rows are exported. Only redacted rows ever
+leave the database.
+
 **Secret.** The function reads the Edge Function secret `APIFY_TOKEN` (Edge Functions → Secrets
 in the `fbapfy` dashboard) and fails with a clear error if it is missing. Update it there when the
 token is rotated. The function never logs or returns the token. An `env_check` job reports which
@@ -61,6 +69,7 @@ select id, kind, status, cost_usd, error from apify_gateway.jobs order by id;
 
 Migrations in `migrations/` were applied through the Supabase connector on 2026-09-24:
 `20260924020000_apify_gateway.sql` (schema), `20260924021000_apify_gateway_search_path.sql`
-(security advisor fix) and `20260924022000_apify_gateway_settle_cost.sql` (cost settlement).
+(security advisor fix), `20260924022000_apify_gateway_settle_cost.sql` (cost settlement) and
+`20260924023000_apify_gateway_redact.sql` (redacted copies for fixtures, below).
 Deployed function version: 7. Versions 4 and 6 were not deployed from this repository (most likely
 the dashboard redeploying when secrets changed); each later deploy replaced them.
