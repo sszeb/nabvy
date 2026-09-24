@@ -15,9 +15,14 @@ into `packages/db` with task 0.3.
 **How it works.**
 
 1. Work is queued as rows in `apify_gateway.jobs` by SQL, which only the database owner can run.
-   `apify_gateway.enqueue_run(input, memoryMb, timeoutSecs, note)` validates a run's input
-   (input version 3, `maxRequests` and `maxRunSeconds` required, `browserFallback` false, no
-   `startUrls`, explicit proxy) and reserves its worst-case cost.
+   `apify_gateway.enqueue_run(input, memoryMb, timeoutSecs, note)` validates a run's input and
+   reserves its worst-case cost. It refuses: input version other than 3; `maxRequests` missing or
+   outside 1-1,000; `maxRunSeconds` missing, or a timeout below `maxRunSeconds` + 60 s; memory
+   other than 512, 1,024 or 2,048 MB, or a timeout outside 60-1,800 s; `startUrls`;
+   `browserFallback` or `useDetailCache` other than `false`; a `proxyConfiguration` other than
+   exactly Apify `RESIDENTIAL` with `apifyProxyCountry: "GB"`; any integer field of the actor's
+   schema sent as anything but a JSON integer (such as `"60"`); and non-empty `searchTerms` and
+   `listingIds` in the same run. See "Input rules" below.
 2. `select apify_gateway.invoke()` asks the function (via `pg_net`) to work through the queue.
    The function takes no instructions from the request, so invoking it grants nothing; it is
    deployed with `verify_jwt` off for that reason.
@@ -75,9 +80,40 @@ Apify-like and project-added secret names exist (names only), so a token saved u
 name can be found. Until the owner added `APIFY_TOKEN`, the token was held briefly in Supabase Vault;
 that copy was deleted on 2026-09-24 once the secret was confirmed working.
 
+**Input rules** (task 1.1a, `20260924030000_apify_gateway_input_hardening.sql`). The timeout
+margin, the detail-cache, proxy and integer rules, and "not both" are Nabvy's own conservative
+policy, adopted from the actor scope report's owner question 9 (`docs/fb-actor-scope-report.md`).
+They match `services/source-adapters` (`src/domain/facebook-actor-input.ts`):
+
+- **Timeout margin.** Rows and `RUN_SUMMARY` are written only when the actor finishes, so a run
+  that the Apify timeout aborts returns nothing (fb-scrap-engine/docs/EVIDENCE_LEDGER.md:309-310).
+  The timeout must be at least `maxRunSeconds` + 60 s, the margin the recorded run had and
+  finished within (240 s against 300 s). The first version allowed them to be equal.
+- **No detail cache.** No second durable copy in Apify (fb-scrap-engine/docs/HANDOFF.md:220-221;
+  fb-scrap-engine/docs/design/SCALE_PLAN.md:76-77). `useDetailCache: false` must now be sent.
+- **Residential GB proxy.** The v3 default sets no country, and datacenter IPs returned no listing
+  data (fb-scrap-engine/docs/EVIDENCE_LEDGER.md:77-80,333-336).
+- **JSON integers.** The schema types these fields as integers (fb-scrap-engine/.actor/input_schema.json);
+  the first version read them with `->> … ::integer`, which accepted `"60"`.
+- **Searches or IDs, not both.** IDs run after searches, within the result limit
+  (fb-scrap-engine/README.md:73-74), so searches could crowd a detail batch out.
+
+Memory 512 MB stays allowed, though whether the actor honours it is disputed
+(fb-scrap-engine/README.md:86-87 against fb-scrap-engine/docs/EVIDENCE_LEDGER.md:337-338); the
+maximum of 2,048 MB is the gateway's own bound, and 2 GB runs have happened
+(fb-scrap-engine/docs/EVIDENCE_LEDGER.md:313).
+
+**Redaction v2, re-sourced.** The comment at the top of `20260924024000_apify_gateway_redact_v2.sql`
+cites a full read of the actor's code, which is outside the owner's reading list. The applied
+migration is left unchanged. What the listed files support: item sellers can carry `short_name`
+(fb-scrap-engine/docs/design/SELLER_DATA.md:27), though it never appeared (:55); recorded sellers
+have `{id, name, profile_picture{uri}}` (the recorded run's `dataset.json:52-58`). The `.url` key
+and "card sellers are unprojected" are not supported. The behaviour stays: redaction replaces every
+value in a seller object whatever its key, so it is safe whatever the shape.
+
 **Tests.** `pnpm db:dry-run` applies every migration to a local throwaway Postgres (with stand-ins
 for Supabase's roles and `pg_net` from `tests/supabase-stubs.sql`) and runs `tests/*.test.sql`:
-input validation, reservations, the spend cap, cost settlement, `collect` jobs, redaction and
+input validation (each refusal checked against its expected message), reservations, the spend cap, cost settlement, `collect` jobs, redaction and
 privileges. CI runs it
 on every pull request. The script refuses any non-local database.
 
@@ -98,13 +134,14 @@ Migrations in `migrations/` were applied through the Supabase connector on 2026-
 (security advisor fix), `20260924022000_apify_gateway_settle_cost.sql` (cost settlement) and
 `20260924023000_apify_gateway_redact.sql` and `20260924024000_apify_gateway_redact_v2.sql` (redacted
 copies for fixtures, above) and `20260924025000_apify_gateway_collect.sql` (the `collect` job and
-the download page size).
+the download page size). `20260924030000_apify_gateway_input_hardening.sql` (task 1.1a) was
+applied by the coordinator on 2026-09-24 at 12:32 UTC; the live `enqueue_run` body matches the file.
 Deployed function version: 9 (2026-09-24), matching `main`; it restores the `status = 'running'`
 guard on the final job update that version 8 dropped.
 
 **Migration versions differ on Supabase.** Applying through the connector recorded each migration
-under the time it was applied: `20260924013224`, `013419`, `014328`, `020511`, `070930` and `075225`.
-The names and content match the repository files `20260924020000` to `025000`. The Supabase CLI
+under the time it was applied: `20260924013224`, `013419`, `014328`, `020511`, `070930`, `075225`
+and `123259`. The names and content match the repository files `20260924020000` to `030000`. The Supabase CLI
 would see the repository files as unapplied; reconcile with `supabase migration repair` before
 anyone uses the CLI against `fbapfy`. Versions 4 and 6 were not deployed from this repository (most likely
 the dashboard redeploying when secrets changed); each later deploy replaced them.

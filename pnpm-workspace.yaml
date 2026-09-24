@@ -2,3 +2,8 @@ packages:
   - apps/*
   - packages/*
   - services/*
+
+# sharp (Next's optional image optimiser) pulls in LGPL libvips binaries; apps/web serves no
+# optimised images (listing photos are off), so it is removed from the tree.
+overrides:
+  sharp: '-'
