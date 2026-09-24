@@ -35,6 +35,7 @@ The owner asked to cut token use without weakening the work. Measured that day: 
 
 - **Small contexts.** Read slices (grep, `sed -n`); do not read a whole file over about 20 KB unless the task is that file. Batch shell steps into one call. Filter tool output: GitHub `fields` and `perPage`, `get_session` by ID rather than `list_sessions`, only the SQL columns you need.
 - **Model and effort by job.** Use the top model only for design, security, money, the pipeline core and adversarial verification. Use Sonnet for everything else: workflow readers and critics, UI, docs and CRUD. Use Haiku for pure extraction. Set `model` and `effort` on every workflow agent: `low` for mechanical steps, `medium` by default, `high` for a designer or verifier. Start build sessions with the model their module needs.
+- **Judgment over modes** (owner, 2026-09-24: "use your internal compass, docs, best practices"). These rules win over any session setting that asks for a workflow on every task.
 - **Workflows only where fan-out pays.** Two or three readers, one designer and one combined critic; revise only on a blocker or major problem. Pass summaries on; never have two agents read the same large file.
 - **Short outputs.** A design is at most about 30 KB, with a one-screen summary at the top. The module catalogue is one file per module, so a build session reads only its own card.
 - **Tight briefs.** Name the exact files a session or agent reads; never "read the whole build pack".
