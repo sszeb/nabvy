@@ -49,23 +49,12 @@ describe('email verification', () => {
 
 describe('the session guard', () => {
   function context(user: Record<string, unknown> | null) {
-    const updates: Record<string, unknown>[] = []
-    return {
-      updates,
-      ctx: {
-        context: {
-          internalAdapter: {
-            findUserById: async () => user,
-            updateUser: async (_id: string, data: Record<string, unknown>) => {
-              updates.push(data)
-              return null
-            },
-          },
-        },
-      },
-    }
+    return { ctx: { context: { internalAdapter: { findUserById: async () => user } } } }
   }
-  const guard = guardSessionCreation(['founder@example.com'])
+  const promoted: string[] = []
+  const guard = guardSessionCreation(['founder@example.com'], async (userId) => {
+    promoted.push(userId)
+  })
   const base = { id: 'u1', email: 'someone@example.com', emailVerified: true, role: 'user' }
 
   it('refuses an unverified address, e.g. a Google account Google has not verified', async () => {
@@ -94,12 +83,15 @@ describe('the session guard', () => {
   })
 
   it('promotes a founder and admits a verified user', async () => {
+    promoted.length = 0
     const founder = context({ ...base, email: 'Founder@example.com' })
     await expect(guard({ userId: 'u1' }, founder.ctx)).resolves.toBeUndefined()
-    expect(founder.updates).toEqual([{ role: 'admin' }])
+    expect(promoted).toEqual(['u1'])
     const plain = context(base)
     await expect(guard({ userId: 'u1' }, plain.ctx)).resolves.toBeUndefined()
-    expect(plain.updates).toEqual([])
+    const admin = context({ ...base, email: 'founder@example.com', role: 'admin' })
+    await expect(guard({ userId: 'u1' }, admin.ctx)).resolves.toBeUndefined()
+    expect(promoted).toEqual(['u1'])
   })
 
   it('fails closed with no request context or no user', async () => {
