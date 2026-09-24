@@ -235,11 +235,12 @@ revoke all on pricing_console.v_ladder, pricing_console.v_prices, pricing_consol
 grant select on pricing_console.v_ladder, pricing_console.v_prices, pricing_console.v_offers,
   pricing_console.v_free_policy, pricing_console.v_settings to nabvy_pipeline;
 
--- Initial policy values (README.md, "Rules and thresholds", with their sources). Not owner
--- decisions: tier prices are placeholders from docs/design/pricing-model.md until the owner
--- confirms them; the ladder's cadences and credits are coordinator 6's table of 17:40 in
--- docs/decisions.md, "Paid ladder"; the free tier is the coordinator's shape of 16:50 in
--- "Free tier: bursts under a lifetime cap". An admin changes any of them with a new version.
+-- Initial policy values (README.md, "Rules and thresholds", with their sources). The monthly tier
+-- prices, base cadences, floors and bundled credits are the owner's starting prices
+-- (docs/decisions.md, "Starting prices", 19:55, on the "Paid ladder" table of 17:40); yearly
+-- prices, top-up rates and unit prices are the pricing model's, the coordinator's to set within
+-- the 60% rule; the free tier is the coordinator's shape of 16:50 in "Free tier: bursts under a
+-- lifetime cap". An admin changes any of them with a new version.
 insert into pricing_console.policy_rows (kind, key, version, value, reason) values
   ('setting', 'min-margin-bps', 1, '{"value": 20000}',
    'initial policy value: the floor sells at no less than 2x measured cost (brief: start at two to three times)'),
@@ -259,16 +260,16 @@ insert into pricing_console.policy_rows (kind, key, version, value, reason) valu
    'initial policy value: 2p per photo scan (pricing-model, Unit prices, [P])'),
   ('tier', 'starter', 1,
    '{"baseCadenceMinutes": 120, "floorCadenceMinutes": 60, "bundledCredits": 1200, "monthlyPriceMinor": 1200, "yearlyPriceMinor": 12000, "topupGrossMicrosPerCredit": 10000, "topupNetMicrosPerCredit": 7900, "areas": 2, "wants": 10, "roundTheClock": false}',
-   'initial policy value: cadences and credits from decisions, Paid ladder (17:40); price placeholder from pricing-model'),
+   'starting price (owner, decisions: Starting prices, 19:55) with cadences and credits from Paid ladder (17:40); yearly price and top-up rate from pricing-model'),
   ('tier', 'pro', 1,
    '{"baseCadenceMinutes": 30, "floorCadenceMinutes": 5, "bundledCredits": 6000, "monthlyPriceMinor": 2900, "yearlyPriceMinor": 29000, "topupGrossMicrosPerCredit": 4830, "topupNetMicrosPerCredit": 3860, "areas": 6, "wants": 40, "roundTheClock": false}',
-   'initial policy value: cadences and credits from decisions, Paid ladder (17:40); price placeholder from pricing-model'),
+   'starting price (owner, decisions: Starting prices, 19:55) with cadences and credits from Paid ladder (17:40); yearly price and top-up rate from pricing-model'),
   ('tier', 'max', 1,
    '{"baseCadenceMinutes": 15, "floorCadenceMinutes": 1, "bundledCredits": 24000, "monthlyPriceMinor": 9900, "yearlyPriceMinor": 99000, "topupGrossMicrosPerCredit": 4130, "topupNetMicrosPerCredit": 3320, "areas": 20, "wants": 150, "roundTheClock": false}',
-   'initial policy value: cadences and credits from decisions, Paid ladder (17:40); price placeholder from pricing-model'),
+   'starting price (owner, decisions: Starting prices, 19:55) with cadences and credits from Paid ladder (17:40); yearly price and top-up rate from pricing-model'),
   ('tier', 'business', 1,
    '{"baseCadenceMinutes": 15, "floorCadenceMinutes": 1, "bundledCredits": 80000, "monthlyPriceMinor": 29900, "yearlyPriceMinor": null, "topupGrossMicrosPerCredit": 3740, "topupNetMicrosPerCredit": 3010, "areas": 60, "wants": 150, "roundTheClock": true}',
-   'initial policy value: cadences and credits from decisions, Paid ladder (17:40); price placeholder from pricing-model; wants question'),
+   'starting price (owner, decisions: Starting prices, 19:55) with cadences and credits from Paid ladder (17:40); yearly price and top-up rate from pricing-model; wants question'),
   ('price', 'photo-scan', 1, '{"unit": "each", "credits": 15, "costBasis": "photo-scan", "costUnits": 1}',
    'initial policy value: pricing-model, Unit prices (Checking)'),
   ('price', 'live-lookup', 1, '{"unit": "each", "credits": 15, "costBasis": "check", "costUnits": 1}',

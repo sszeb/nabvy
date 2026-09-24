@@ -96,7 +96,9 @@ advisory lock, so a change is checked against the floor with no other change lan
 ## Rules and thresholds
 
 Every number is a policy row, seeded as an **initial policy value** by the access migration and
-changed only through `setPolicy`. Tier prices are placeholders until the owner confirms them.
+changed only through `setPolicy`. The monthly tier prices, base cadences, floors and bundled
+credits are the owner's starting prices (`docs/decisions.md`, "Starting prices", 2026-09-24
+19:55, on the "Paid ladder" table); the rest are the coordinator's within the 60% rule.
 
 | Rule | Initial value | Basis | Status |
 | --- | --- | --- | --- |
@@ -105,8 +107,9 @@ changed only through `setPolicy`. Tier prices are placeholders until the owner c
 | Cost of a check (`cost-basis/check`) | 1.31p, all Apify calls | `docs/decisions.md`, "Free tier" (16:50: 1.31p per lone check, measured) | Initial policy value |
 | Cost of a photo scan (`cost-basis/photo-scan`) | 2p, Anthropic calls of `scan-recognition` | `docs/design/pricing-model.md`, "Unit prices" ([P]) | Initial policy value |
 | Net of a payment | gross ÷ 1.2 − (2.7% × gross + 20p) | `docs/design/pricing-model.md`, "Unit economics" ([A] verify) | Initial policy value |
-| Ladder: base / floor / bundled credits | Starter 2 h / 1 h / 1,200; Pro 30 min / 5 min / 6,000; Max 15 min / 1 min / 24,000; Business 15 min / 1 min / 80,000 | `docs/decisions.md`, "Paid ladder" (owner: Pro 30 min; coordinator 6's table, 17:40) | Initial policy value |
-| Ladder: monthly / yearly price | £12 / £120; £29 / £290; £99 / £990; £299 / contract | `docs/design/pricing-model.md`, "Summary" | **Placeholder** until the owner confirms |
+| Ladder: base / floor / bundled credits | Starter 2 h / 1 h / 1,200; Pro 30 min / 5 min / 6,000; Max 15 min / 1 min / 24,000; Business 15 min / 1 min / 80,000 | `docs/decisions.md`, "Paid ladder" (17:40) and "Starting prices" (owner, 19:55) | Owner's starting value |
+| Ladder: monthly price | £12; £29; £99; from £299 | `docs/decisions.md`, "Starting prices" (owner, 19:55) | Owner's starting value |
+| Ladder: yearly price | £120; £290; £990; contract | `docs/design/pricing-model.md`, "Summary" | Initial policy value (coordinator's, within the 60% rule) |
 | Ladder: top-up rate gross / net per credit | 1.00p / 0.790p; 0.483p / 0.386p; 0.413p / 0.332p; 0.374p / 0.301p | `docs/design/pricing-model.md`, "Tiers" | Initial policy value |
 | Ladder: areas / wants | 2 / 10; 6 / 40; 20 / 150; 60 / 150 | `docs/design/pricing-model.md`, "Tiers" (Business wants: question) | Initial policy value |
 | Checking prices | Photo scan 15 cr; live lookup 15; pasted link 10; similar item 10; export 50; boost 24 h 150, 7 d 500 | `docs/design/pricing-model.md`, "Unit prices" | Initial policy value |
@@ -194,6 +197,9 @@ views' switch filter and `measured_cost()` on real Postgres (`pnpm db:dry-run`).
 - 2026-09-24 (review of PR #55): the floor at read time uses the list rates. A user's own plan
   offer can lower their rate, but each plan offer is checked against every checking price when it
   is made, and the 2x margin leaves headroom; revisit if margins are cut close.
+- 2026-09-24 (owner, "Starting prices", 19:55): the seeded monthly prices, cadences and bundled
+  credits are the owner's starting prices, no longer placeholders; they stay versioned policy rows,
+  editable from the admin panel and held to the floor like any other.
 - 2026-09-24: seeds carry no audit row (`audit_log.entries` needs an actor; `switches` did the
   same); each carries its source in `reason`.
 
