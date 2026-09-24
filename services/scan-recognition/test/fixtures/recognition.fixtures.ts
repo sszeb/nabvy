@@ -82,7 +82,6 @@ describe('scan-recognition recognition (fixture cases)', () => {
           userId,
           ...(input.barcode ? { barcode: input.barcode } : {}),
           ...(photo ? { photo } : {}),
-          at: '2026-09-24T12:00:00.000Z',
         },
         { vision: client },
         ctx(),

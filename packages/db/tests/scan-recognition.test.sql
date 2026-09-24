@@ -93,6 +93,38 @@ begin
      or not exists (select 1 from scan_recognition.v_user_scans where id = '00000000-0000-4000-8000-0000000000c1') then
     raise exception 'v_user_scans does not show exactly the user''s own scan';
   end if;
+  -- RLS on the base table: another user's row is neither visible nor updatable.
+  if exists (select 1 from scan_recognition.scan_events where id = '00000000-0000-4000-8000-0000000000c2') then
+    raise exception 'nabvy_app can see another user''s scan';
+  end if;
+  update scan_recognition.scan_events set confirmed = true
+    where id = '00000000-0000-4000-8000-0000000000c2';
+  if found then
+    raise exception 'nabvy_app updated another user''s scan';
+  end if;
+end;
+$$;
+-- Column grants: model, barcode and photo columns are refused even on the user's own row.
+do $$
+declare
+  probe text;
+  refused boolean;
+begin
+  foreach probe in array array[
+    $q$update scan_recognition.scan_events set model_ref = 'x' where id = '00000000-0000-4000-8000-0000000000c1'$q$,
+    $q$update scan_recognition.scan_events set barcode = '12345678' where id = '00000000-0000-4000-8000-0000000000c1'$q$,
+    $q$update scan_recognition.scan_events set photo_ref = null where id = '00000000-0000-4000-8000-0000000000c1'$q$
+  ] loop
+    refused := false;
+    begin
+      execute probe;
+    exception when insufficient_privilege then
+      refused := true;
+    end;
+    if not refused then
+      raise exception 'nabvy_app was allowed: %', probe;
+    end if;
+  end loop;
 end;
 $$;
 reset role;

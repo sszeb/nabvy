@@ -30,7 +30,6 @@ const photoScan = () => ({
   scanId: randomUUID(),
   userId: U1,
   photo: { ref: photoRef(U1, 'gpu-confident'), mediaType: 'image/jpeg' as const, bytes: 1 },
-  at: '2026-09-24T12:00:00.000Z',
 })
 const scans = async () =>
   (
@@ -46,12 +45,7 @@ describe('switch', () => {
   it('off: refuses scans and confirmations, writes nothing, and both views are empty', async () => {
     const { scanId } = photoScan()
     await db.as('nabvy_pipeline', (q) =>
-      scan(
-        q,
-        { scanId, userId: U1, barcode: EAN_3080TI, at: '2026-09-24T12:00:00.000Z' },
-        { vision: recordedClient() },
-        ctx(),
-      ),
+      scan(q, { scanId, userId: U1, barcode: EAN_3080TI }, { vision: recordedClient() }, ctx()),
     )
     await setSwitches(db, { 'scan-recognition': 'off' })
     const before = await scans()
@@ -80,6 +74,33 @@ describe('switch', () => {
     expect(rows(await userFacing())).toHaveLength(0)
   })
 
+  it('shadow: confirm is refused, as the user cannot see the scan', async () => {
+    const outcome = await db.as('nabvy_pipeline', (q) =>
+      scan(
+        q,
+        {
+          ...photoScan(),
+          photo: { ref: photoRef(U1, 'gpu-unsure'), mediaType: 'image/jpeg' as const, bytes: 1 },
+        },
+        { vision: recordedClient() },
+        ctx(),
+      ),
+    )
+    if (!outcome.ok) throw new Error(outcome.error.message)
+    await setSwitches(db, { 'scan-recognition': 'shadow' })
+    const refused = await db.as(
+      'nabvy_app',
+      (q) =>
+        confirm(q, {
+          scanId: outcome.value.result.scanId,
+          userId: U1,
+          catalogueId: 'gpu:nvidia:rtx-3080-ti:12gb',
+        }),
+      U1,
+    )
+    expect(refused.ok ? 'ok' : refused.error.code).toBe('scan-recognition.off')
+  })
+
   it('on: the user sees their own scans', async () => {
     expect(rows(await userFacing()).length).toBeGreaterThan(0)
   })
@@ -93,12 +114,7 @@ describe('switch', () => {
       expect(paused.ok ? 'ok' : paused.error.code).toBe('scan-recognition.paid_work_paused')
       expect(vision.calls).toHaveLength(0)
       const byBarcode = await db.as('nabvy_pipeline', (q) =>
-        scan(
-          q,
-          { scanId: randomUUID(), userId: U1, barcode: EAN_3080TI, at: '2026-09-24T12:00:00.000Z' },
-          { vision },
-          ctx(),
-        ),
+        scan(q, { scanId: randomUUID(), userId: U1, barcode: EAN_3080TI }, { vision }, ctx()),
       )
       expect(byBarcode.ok && byBarcode.value.result.status).toBe('identified')
     },

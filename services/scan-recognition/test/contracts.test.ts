@@ -45,7 +45,6 @@ describe('contracts', () => {
           scanId: randomUUID(),
           userId: U1,
           photo: { ref: photoRef(U1, 'gpu-confident'), mediaType: 'image/png', bytes: 5 },
-          at: '2026-09-24T12:00:00.000Z',
         },
         { vision: recordedClient() },
         ctx(),

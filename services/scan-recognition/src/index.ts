@@ -128,7 +128,9 @@ const outcomeOf = (row: ScanRow, changed: boolean): ScanOutcome => {
  * whose candidates are resolved through the catalogue. Runs as the pipeline (withPipeline), in the
  * task the scan procedure starts, after the procedure checked the session. A replayed scan ID
  * returns the stored scan and never calls the model again. A scan whose call could take the user
- * past SCAN_SPEND_CAP_MINOR in the window is refused before the call.
+ * past SCAN_SPEND_CAP_MINOR in the window is refused before the call. `q` must be a transaction
+ * (withPipeline): the per-user advisory lock that makes the cap race-free lasts only as long as
+ * it, and the lock is held across the model call.
  */
 export async function scan(
   q: Queryable,
@@ -166,10 +168,9 @@ export async function scan(
     barcode: input.barcode ?? null,
     photoRef: input.photo?.ref ?? null,
     photoMediaType: input.photo?.mediaType ?? null,
-    photoExpiresAt: input.photo
-      ? photoExpiresAt(new Date(input.at), SCAN_RECOGNITION_PHOTO_RETENTION_DAYS)
-      : null,
-    at: new Date(input.at),
+    // Server time, never the client's: the cap window and photo expiry are measured from it.
+    photoExpiresAt: input.photo ? photoExpiresAt(now, SCAN_RECOGNITION_PHOTO_RETENTION_DAYS) : null,
+    at: now,
     method: 'none',
     status: 'unidentified',
   }
@@ -313,7 +314,8 @@ export async function confirm(
   const parsed = ScanRecognitionConfirmInput.safeParse(rawInput)
   if (!parsed.success) return failure('scan-recognition.invalid_input', parsed.error.message)
   const input = parsed.data
-  if ((await state(q, module)) === 'off') {
+  // Only while on: in shadow the user cannot see their scans (v_user_scans), so cannot confirm.
+  if ((await state(q, module)) !== 'on') {
     return failure('scan-recognition.off', 'Scan mode is unavailable.')
   }
   if (!(await isActive(q, input.userId))) {

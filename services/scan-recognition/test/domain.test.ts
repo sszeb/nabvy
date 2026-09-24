@@ -144,20 +144,16 @@ describe('contracts at the boundary', () => {
   })
 
   it('a scan needs a barcode or a photo, and the photo must sit under the user own path', () => {
-    const at = '2026-09-24T12:00:00.000Z'
     const scanId = '0190f1d2-0000-7000-8000-0000000000aa'
     const photo = { ref: `scans/${U1}/a.jpg`, mediaType: 'image/jpeg', bytes: 1000 }
-    expect(ScanRecognitionScanInput.safeParse({ scanId, userId: U1, at }).success).toBe(false)
-    expect(ScanRecognitionScanInput.safeParse({ scanId, userId: U1, photo, at }).success).toBe(true)
-    expect(ScanRecognitionScanInput.safeParse({ scanId, userId: U2, photo, at }).success).toBe(
-      false,
-    )
+    expect(ScanRecognitionScanInput.safeParse({ scanId, userId: U1 }).success).toBe(false)
+    expect(ScanRecognitionScanInput.safeParse({ scanId, userId: U1, photo }).success).toBe(true)
+    expect(ScanRecognitionScanInput.safeParse({ scanId, userId: U2, photo }).success).toBe(false)
     expect(
       ScanRecognitionScanInput.safeParse({
         scanId,
         userId: U1,
         photo: { ...photo, mediaType: 'image/gif' },
-        at,
       }).success,
     ).toBe(false)
     expect(
@@ -165,11 +161,10 @@ describe('contracts at the boundary', () => {
         scanId,
         userId: U1,
         photo: { ...photo, bytes: 10 * 1024 * 1024 + 1 },
-        at,
       }).success,
     ).toBe(false)
     expect(
-      ScanRecognitionScanInput.safeParse({ scanId, userId: U1, barcode: '12345', at }).success,
+      ScanRecognitionScanInput.safeParse({ scanId, userId: U1, barcode: '12345' }).success,
     ).toBe(false)
   })
 })

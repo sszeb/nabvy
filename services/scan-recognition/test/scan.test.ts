@@ -21,6 +21,37 @@ beforeAll(async () => {
 }, 60_000)
 afterAll(() => db?.close())
 
+/** A recorded client whose response IDs are unique per user and call, so each call is metered. */
+function recordedClientFor(user: string, n: number) {
+  const base = recordedClient()
+  return createRecordedVisionClient(base.model, {
+    [photoRef(user, 'gpu-confident')]: {
+      responseId: `msg_late_${user}_${n}`,
+      output: {
+        description: {
+          type: null,
+          brand: null,
+          model: null,
+          colour: null,
+          material: null,
+          size: null,
+          condition: null,
+        },
+        candidates: [{ name: 'RTX 3080 Ti', confidence: 0.9 }],
+        searchPhrases: [],
+      },
+      usage: {
+        inputTokens: 1800,
+        outputTokens: 220,
+        cacheWrite5mTokens: 0,
+        cacheWrite1hTokens: 0,
+        cacheReadTokens: 0,
+      },
+      latencyMs: 1,
+    },
+  })
+}
+
 const photo = (user: string, name: string) => ({
   ref: photoRef(user, name),
   mediaType: 'image/jpeg' as const,
@@ -30,12 +61,7 @@ const photo = (user: string, name: string) => ({
 async function scanPhoto(user: string, name: string, vision = recordedClient(), now = ctx()) {
   const scanId = randomUUID()
   const outcome = await db.as('nabvy_pipeline', (q) =>
-    scan(
-      q,
-      { scanId, userId: user, photo: photo(user, name), at: now.now.toISOString() },
-      { vision },
-      now,
-    ),
+    scan(q, { scanId, userId: user, photo: photo(user, name) }, { vision }, now),
   )
   return { scanId, outcome, vision }
 }
@@ -156,7 +182,7 @@ describe('scan', () => {
     const reused = await db.as('nabvy_pipeline', (q) =>
       scan(
         q,
-        { scanId, userId: U1, barcode: '5012345678900', at: '2026-09-24T12:00:00.000Z' },
+        { scanId, userId: U1, barcode: '5012345678900' },
         { vision: recordedClient() },
         ctx(),
       ),
@@ -178,7 +204,6 @@ describe('scan', () => {
           userId: U1,
           barcode: '5012345678917',
           photo: photo(U1, 'gpu-confident'),
-          at: '2026-09-24T12:00:00.000Z',
         },
         {
           vision,
@@ -193,6 +218,70 @@ describe('scan', () => {
       identified: RTX_3080_TI,
     })
     expect(vision.calls).toHaveLength(0)
+  })
+})
+
+describe('server time (review of PR #41)', () => {
+  it('stamps at and photo expiry from server time and refuses a client-sent at', async () => {
+    const now = ctx(new Date('2026-09-20T08:30:00.000Z'))
+    const { scanId, outcome } = await scanPhoto(U2, 'gpu-at-threshold', recordedClient(), now)
+    expect(outcome.ok).toBe(true)
+    const [row] = await db.sql(
+      `select at, photo_expires_at from scan_recognition.scan_events where id = $1`,
+      [scanId],
+    )
+    expect(new Date(row?.at as string).toISOString()).toBe('2026-09-20T08:30:00.000Z')
+    expect(new Date(row?.photo_expires_at as string).toISOString()).toBe('2026-10-20T08:30:00.000Z')
+    const withClientTime = await db.as('nabvy_pipeline', (q) =>
+      scan(
+        q,
+        {
+          scanId: randomUUID(),
+          userId: U2,
+          photo: photo(U2, 'gpu-confident'),
+          at: '2026-09-18T00:00:00.000Z',
+        } as unknown as Parameters<typeof scan>[1],
+        { vision: recordedClient() },
+        now,
+      ),
+    )
+    expect(withClientTime.ok ? 'ok' : withClientTime.error.code).toBe(
+      'scan-recognition.invalid_input',
+    )
+  })
+
+  it('a task that runs late still counts its spend in the window it ran in', async () => {
+    const user = randomUUID()
+    await db.sql(
+      `insert into better_auth."user" (id, name, email) values ($1, 'Late', 'late@example.com')`,
+      [user],
+    )
+    // Ten photo scans run now, however long ago their forms were sent, take 43,500 micros of the
+    // 50,000 cap; the eleventh would pass it and is refused before its call.
+    const runAt = ctx(new Date('2026-09-26T12:00:00.000Z'))
+    for (let i = 0; i < 10; i++) {
+      const done = await scanPhoto(user, 'gpu-confident', recordedClientFor(user, i), runAt)
+      expect(done.outcome.ok).toBe(true)
+    }
+    const vision = recordedClientFor(user, 10)
+    const refused = await scanPhoto(user, 'gpu-confident', vision, runAt)
+    expect(refused.outcome.ok ? 'ok' : refused.outcome.error.code).toBe(
+      'scan-recognition.cap_reached',
+    )
+    expect(vision.calls).toHaveLength(0)
+  })
+
+  it('invalid model output is still charged, metered and quarantined', async () => {
+    const { scanId } = await scanPhoto(U1, 'price-in-output')
+    const [row] = await db.sql(
+      `select cost_gbp_micros, output_valid, model_ref from scan_recognition.scan_events where id = $1`,
+      [scanId],
+    )
+    expect(Number(row?.cost_gbp_micros)).toBeGreaterThan(0)
+    expect(row?.output_valid).toBe(false)
+    expect(
+      await db.sql(`select 1 from cost_meter.provider_calls where ref_id = $1`, [row?.model_ref]),
+    ).toHaveLength(1)
   })
 })
 

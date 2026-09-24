@@ -25,7 +25,6 @@ describe('idempotency', () => {
       scanId: randomUUID(),
       userId: U1,
       photo: { ref: photoRef(U1, 'gpu-confident'), mediaType: 'image/jpeg' as const, bytes: 1 },
-      at: '2026-09-24T12:00:00.000Z',
     }
     const first = await db.as('nabvy_pipeline', (q) => scan(q, input, { vision }, ctx()))
     const second = await db.as('nabvy_pipeline', (q) => scan(q, input, { vision }, ctx()))
@@ -53,7 +52,6 @@ describe('idempotency', () => {
       scanId: randomUUID(),
       userId: U1,
       barcode: EAN_3080TI,
-      at: '2026-09-24T12:00:00.000Z',
     }
     const vision = recordedClient()
     const first = await db.as('nabvy_pipeline', (q) => scan(q, input, { vision }, ctx()))
@@ -71,12 +69,7 @@ describe('idempotency', () => {
     )
     const vision = recordedClient()
     await db.as('nabvy_pipeline', (q) =>
-      scan(
-        q,
-        { scanId: randomUUID(), userId: user, barcode: EAN_3080TI, at: '2026-09-24T12:00:00.000Z' },
-        { vision },
-        ctx(),
-      ),
+      scan(q, { scanId: randomUUID(), userId: user, barcode: EAN_3080TI }, { vision }, ctx()),
     )
     await db.sql(
       `insert into scan_recognition.scan_events (id, user_id, photo_ref, photo_media_type, method, status, at)

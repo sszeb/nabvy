@@ -73,7 +73,8 @@ without photo; a scan past the cap refused before any call. Pass rate 10/10 (202
 scans are recorded yet: there is no vision key.
 
 Other tests: `domain.test.ts` (threshold and cap boundaries, ranking, output and input schemas),
-`scan.test.ts` (metering, what reaches the model, cap window, restricted account, unpriced model,
+`scan.test.ts` (metering, what reaches the model, server-stamped time, cap window, invalid
+output still charged, restricted account, unpriced model,
 failed call, reused scan ID, CeX lookup, confirmation, RLS and column grants, photo expiry),
 `idempotency.test.ts`, `switch.test.ts`, `contracts.test.ts`, and
 `packages/db/tests/scan-recognition.test.sql` under `pnpm db:dry-run`.
@@ -101,6 +102,18 @@ failed call, reused scan ID, CeX lookup, confirmation, RLS and column grants, ph
   meter refuses after the call (an invariant break: its state and price were checked first), the
   scan is still stored and counted, and `unmetered` is set so the task commits and raises an
   incident instead of rolling back and paying again.
+- 2026-09-24: **Server time only** (review of PR #41). The scan form carries no client time; the
+  row's `at` and `photo_expires_at` are stamped from server `now`, so a late task run or a forged
+  time can neither hide spend from the cap window nor stretch or cut the 30-day photo rule.
+- 2026-09-24: **Run `scan()` in a transaction.** The per-user lock is a transaction-scoped
+  advisory lock, so the cap is race-free only inside `withPipeline`, and the lock (and the
+  transaction) is held across the vision call. If that transaction later rolls back, or the call
+  throws after the provider billed it (a timeout), the call is not recorded; the provider's own
+  usage is then the record of it. Known gap until a real client exists.
+- 2026-09-24: **The worst-case estimate is not a hard bound on input.** `max_tokens` bounds output;
+  input is bounded only by the client downscaling to 1.15 MP, so a larger image can pass the cap
+  by a fraction of one call. The actual cost is always recorded and counted.
+- 2026-09-24: **`confirm()` only while on.** In shadow the user sees no scans, so nothing to confirm.
 - 2026-09-24: **User-facing view in this module's schema** until an `app` schema exists (question).
 - 2026-09-24: **Photo expiry** clears the ref after 30 days and returns it for the storage task
   to delete; the storage lifecycle rule is the backstop. No inventory exemption yet (question).
