@@ -140,6 +140,16 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - **Filters and sorting like eBay:** nearest distance, cheapest, newest, best asking-price position and the other eBay equivalents, plus price range, condition, collection or delivery, and radius.
   - **A map view like Airbnb's:** listings as price markers on a map beside the list, panning and zooming to search. Markers show approximate location only, at town or area level, clustered where dense. This follows the Precedence row "Location precision" and Airbnb's own practice of an approximate area.
   - **A distance limit with "worth the trip" hints:** users see only items within the distance they choose. The app may also hint at good deals slightly further away, when the saving outweighs the extra travel.
+  - **Where an item really is** (owner, 2026-09-24). A listing's location field is not trusted on its own:
+    - the location may be missing, with the real one only in the description (for example "collection from Bognor");
+    - the seller may have picked the wrong one, for example an autofilled postcode typed earlier that day.
+
+    Nabvy resolves each listing's pickup location from every signal it has, in the same way it finds an "RTX 3090" in the description of a listing titled "gaming PC":
+    - the location field;
+    - place names and postcodes in the title and description;
+    - conflicts between them.
+
+    Rules come first; AI runs at most once per listing version, shared by all users, only where rules cannot decide. What users see stays at town or area level, marked as approximate when it is uncertain. Distance filters, the map and hints use the resolved location.
   - **Pickup route planning:** the user records each pickup they have arranged with a seller (where, and the agreed time or window). The app plans an optimal route to collect the whole haul in one day. The addresses and times come from the user, stay private to that user, and are never taken from listing data or shown to anyone else.
 - **Legal gates lifted** (owner, 2026-09-24): "Lift the gates. The operational instruction is to have the production app fully working as intended." The gates are:
   - further data collection through Apify no longer waits for an LIA and a DPIA. Nabvy never deals with Facebook directly: it uses third-party data that comes from Apify runs (owner, 2026-09-24);
