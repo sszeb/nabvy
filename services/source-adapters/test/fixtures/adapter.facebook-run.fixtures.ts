@@ -15,7 +15,7 @@ const OBSERVED_SOURCE_STATUSES = ['truncated']
 
 type Row = Record<string, unknown>
 
-const RUNS = new URL('../../../fixtures/listings/facebook/runs/', import.meta.url)
+const RUNS = new URL('../../../../fixtures/listings/facebook/runs/', import.meta.url)
 const readJson = (run: string, file: string): unknown =>
   JSON.parse(readFileSync(new URL(`${run}/${file}`, RUNS), 'utf8'))
 const runs = readdirSync(RUNS, { withFileTypes: true })

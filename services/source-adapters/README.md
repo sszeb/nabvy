@@ -161,10 +161,11 @@ entry in `docs/questions.md`; 4 is part of the build-pack rewrite there):
   and 1.1).
 - **Pin the build.** The recorded run used the `latest` tag, which resolved to 1.0.82. Adapter
   runs must pin a build.
-- **The test checks the fixture, not an adapter.** `test/facebook-run-fixture.test.ts` checks that
-  every field this mapping relies on is present, with the expected type, in the recorded run. It
-  also checks that the fixture carries no seller identity, and that the recorded input uses only
-  the schema's properties and obeys the gateway's rules. The Zod schema for actor rows is built with the
+- **The test checks the fixture, not an adapter.** `test/fixtures/adapter.facebook-run.fixtures.ts`
+  (fixture stage `adapter`, run by `pnpm test:fixtures`) checks that every field this mapping
+  relies on is present, with the expected type, in the recorded run. It also checks that the
+  fixture carries no seller identity, and that the recorded input uses only the schema's properties
+  and obeys the gateway's rules. The Zod schema for actor rows is built with the
   adapter (task 1.1), once task 0.2 has settled the contracts layout.
 
 ## Route health (task 1.1 groundwork)
