@@ -1,0 +1,994 @@
+[
+  {
+    "productKey": "gpu:nvidia:rtx-5090:32gb",
+    "name": "RTX 5090 32GB",
+    "family": "RTX 5090",
+    "vramGb": 32,
+    "aliases": ["geforce rtx 5090", "rtx 5090", "5090"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-5080:16gb",
+    "name": "RTX 5080 16GB",
+    "family": "RTX 5080",
+    "vramGb": 16,
+    "aliases": ["geforce rtx 5080", "rtx 5080", "5080"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-5070-ti:16gb",
+    "name": "RTX 5070 Ti 16GB",
+    "family": "RTX 5070 Ti",
+    "vramGb": 16,
+    "aliases": ["geforce rtx 5070 ti", "rtx 5070 ti", "5070 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-5070:12gb",
+    "name": "RTX 5070 12GB",
+    "family": "RTX 5070",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 5070", "rtx 5070", "5070"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-5060-ti:8gb",
+    "name": "RTX 5060 Ti 8GB",
+    "family": "RTX 5060 Ti",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 5060 ti", "rtx 5060 ti", "5060 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-5060-ti:16gb",
+    "name": "RTX 5060 Ti 16GB",
+    "family": "RTX 5060 Ti",
+    "vramGb": 16,
+    "aliases": ["geforce rtx 5060 ti", "rtx 5060 ti", "5060 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-5060:8gb",
+    "name": "RTX 5060 8GB",
+    "family": "RTX 5060",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 5060", "rtx 5060", "5060"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4090:24gb",
+    "name": "RTX 4090 24GB",
+    "family": "RTX 4090",
+    "vramGb": 24,
+    "aliases": ["geforce rtx 4090", "rtx 4090", "4090"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4080-super:16gb",
+    "name": "RTX 4080 Super 16GB",
+    "family": "RTX 4080 Super",
+    "vramGb": 16,
+    "aliases": ["geforce rtx 4080 super", "rtx 4080 super", "4080 super", "rtx 4080s", "4080s"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4080:16gb",
+    "name": "RTX 4080 16GB",
+    "family": "RTX 4080",
+    "vramGb": 16,
+    "aliases": ["geforce rtx 4080", "rtx 4080", "4080"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4070-ti-super:16gb",
+    "name": "RTX 4070 Ti Super 16GB",
+    "family": "RTX 4070 Ti Super",
+    "vramGb": 16,
+    "aliases": [
+      "geforce rtx 4070 ti super",
+      "rtx 4070 ti super",
+      "4070 ti super",
+      "rtx 4070 tis",
+      "4070 tis",
+      "rtx 4070 ti s",
+      "4070 ti s"
+    ]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4070-ti:12gb",
+    "name": "RTX 4070 Ti 12GB",
+    "family": "RTX 4070 Ti",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 4070 ti", "rtx 4070 ti", "4070 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4070-super:12gb",
+    "name": "RTX 4070 Super 12GB",
+    "family": "RTX 4070 Super",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 4070 super", "rtx 4070 super", "4070 super", "rtx 4070s", "4070s"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4070:12gb",
+    "name": "RTX 4070 12GB",
+    "family": "RTX 4070",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 4070", "rtx 4070", "4070"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4060-ti:8gb",
+    "name": "RTX 4060 Ti 8GB",
+    "family": "RTX 4060 Ti",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 4060 ti", "rtx 4060 ti", "4060 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4060-ti:16gb",
+    "name": "RTX 4060 Ti 16GB",
+    "family": "RTX 4060 Ti",
+    "vramGb": 16,
+    "aliases": ["geforce rtx 4060 ti", "rtx 4060 ti", "4060 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-4060:8gb",
+    "name": "RTX 4060 8GB",
+    "family": "RTX 4060",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 4060", "rtx 4060", "4060"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3090-ti:24gb",
+    "name": "RTX 3090 Ti 24GB",
+    "family": "RTX 3090 Ti",
+    "vramGb": 24,
+    "aliases": ["geforce rtx 3090 ti", "rtx 3090 ti", "3090 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3090:24gb",
+    "name": "RTX 3090 24GB",
+    "family": "RTX 3090",
+    "vramGb": 24,
+    "aliases": ["geforce rtx 3090", "rtx 3090", "3090"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3080-ti:12gb",
+    "name": "RTX 3080 Ti 12GB",
+    "family": "RTX 3080 Ti",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 3080 ti", "rtx 3080 ti", "3080 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3080:10gb",
+    "name": "RTX 3080 10GB",
+    "family": "RTX 3080",
+    "vramGb": 10,
+    "aliases": ["geforce rtx 3080", "rtx 3080", "3080"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3080:12gb",
+    "name": "RTX 3080 12GB",
+    "family": "RTX 3080",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 3080", "rtx 3080", "3080"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3070-ti:8gb",
+    "name": "RTX 3070 Ti 8GB",
+    "family": "RTX 3070 Ti",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 3070 ti", "rtx 3070 ti", "3070 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3070:8gb",
+    "name": "RTX 3070 8GB",
+    "family": "RTX 3070",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 3070", "rtx 3070", "3070"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3060-ti:8gb",
+    "name": "RTX 3060 Ti 8GB",
+    "family": "RTX 3060 Ti",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 3060 ti", "rtx 3060 ti", "3060 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3060:8gb",
+    "name": "RTX 3060 8GB",
+    "family": "RTX 3060",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 3060", "rtx 3060", "3060"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3060:12gb",
+    "name": "RTX 3060 12GB",
+    "family": "RTX 3060",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 3060", "rtx 3060", "3060"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3050:6gb",
+    "name": "RTX 3050 6GB",
+    "family": "RTX 3050",
+    "vramGb": 6,
+    "aliases": ["geforce rtx 3050", "rtx 3050", "3050"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-3050:8gb",
+    "name": "RTX 3050 8GB",
+    "family": "RTX 3050",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 3050", "rtx 3050", "3050"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2080-ti:11gb",
+    "name": "RTX 2080 Ti 11GB",
+    "family": "RTX 2080 Ti",
+    "vramGb": 11,
+    "aliases": ["geforce rtx 2080 ti", "rtx 2080 ti", "2080 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2080-super:8gb",
+    "name": "RTX 2080 Super 8GB",
+    "family": "RTX 2080 Super",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 2080 super", "rtx 2080 super", "2080 super", "rtx 2080s", "2080s"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2080:8gb",
+    "name": "RTX 2080 8GB",
+    "family": "RTX 2080",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 2080", "rtx 2080", "2080"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2070-super:8gb",
+    "name": "RTX 2070 Super 8GB",
+    "family": "RTX 2070 Super",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 2070 super", "rtx 2070 super", "2070 super", "rtx 2070s", "2070s"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2070:8gb",
+    "name": "RTX 2070 8GB",
+    "family": "RTX 2070",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 2070", "rtx 2070", "2070"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2060-super:8gb",
+    "name": "RTX 2060 Super 8GB",
+    "family": "RTX 2060 Super",
+    "vramGb": 8,
+    "aliases": ["geforce rtx 2060 super", "rtx 2060 super", "2060 super", "rtx 2060s", "2060s"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2060:6gb",
+    "name": "RTX 2060 6GB",
+    "family": "RTX 2060",
+    "vramGb": 6,
+    "aliases": ["geforce rtx 2060", "rtx 2060", "2060"]
+  },
+  {
+    "productKey": "gpu:nvidia:rtx-2060:12gb",
+    "name": "RTX 2060 12GB",
+    "family": "RTX 2060",
+    "vramGb": 12,
+    "aliases": ["geforce rtx 2060", "rtx 2060", "2060"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1660-ti:6gb",
+    "name": "GTX 1660 Ti 6GB",
+    "family": "GTX 1660 Ti",
+    "vramGb": 6,
+    "aliases": ["geforce gtx 1660 ti", "gtx 1660 ti", "1660 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1660-super:6gb",
+    "name": "GTX 1660 Super 6GB",
+    "family": "GTX 1660 Super",
+    "vramGb": 6,
+    "aliases": ["geforce gtx 1660 super", "gtx 1660 super", "1660 super", "gtx 1660s", "1660s"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1660:6gb",
+    "name": "GTX 1660 6GB",
+    "family": "GTX 1660",
+    "vramGb": 6,
+    "aliases": ["geforce gtx 1660", "gtx 1660", "1660"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1650-super:4gb",
+    "name": "GTX 1650 Super 4GB",
+    "family": "GTX 1650 Super",
+    "vramGb": 4,
+    "aliases": ["geforce gtx 1650 super", "gtx 1650 super", "1650 super", "gtx 1650s", "1650s"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1650:4gb",
+    "name": "GTX 1650 4GB",
+    "family": "GTX 1650",
+    "vramGb": 4,
+    "aliases": ["geforce gtx 1650", "gtx 1650", "1650"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1080-ti:11gb",
+    "name": "GTX 1080 Ti 11GB",
+    "family": "GTX 1080 Ti",
+    "vramGb": 11,
+    "aliases": ["geforce gtx 1080 ti", "gtx 1080 ti", "1080 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1080:8gb",
+    "name": "GTX 1080 8GB",
+    "family": "GTX 1080",
+    "vramGb": 8,
+    "aliases": ["geforce gtx 1080", "gtx 1080", "1080"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1070-ti:8gb",
+    "name": "GTX 1070 Ti 8GB",
+    "family": "GTX 1070 Ti",
+    "vramGb": 8,
+    "aliases": ["geforce gtx 1070 ti", "gtx 1070 ti", "1070 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1070:8gb",
+    "name": "GTX 1070 8GB",
+    "family": "GTX 1070",
+    "vramGb": 8,
+    "aliases": ["geforce gtx 1070", "gtx 1070", "1070"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1060:3gb",
+    "name": "GTX 1060 3GB",
+    "family": "GTX 1060",
+    "vramGb": 3,
+    "aliases": ["geforce gtx 1060", "gtx 1060", "1060"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1060:6gb",
+    "name": "GTX 1060 6GB",
+    "family": "GTX 1060",
+    "vramGb": 6,
+    "aliases": ["geforce gtx 1060", "gtx 1060", "1060"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1050-ti:4gb",
+    "name": "GTX 1050 Ti 4GB",
+    "family": "GTX 1050 Ti",
+    "vramGb": 4,
+    "aliases": ["geforce gtx 1050 ti", "gtx 1050 ti", "1050 ti"]
+  },
+  {
+    "productKey": "gpu:nvidia:gtx-1050:2gb",
+    "name": "GTX 1050 2GB",
+    "family": "GTX 1050",
+    "vramGb": 2,
+    "aliases": ["geforce gtx 1050", "gtx 1050", "1050"]
+  },
+  {
+    "productKey": "gpu:amd:rx-9070-xt:16gb",
+    "name": "RX 9070 XT 16GB",
+    "family": "RX 9070 XT",
+    "vramGb": 16,
+    "aliases": ["rx 9070 xt", "radeon 9070 xt", "9070 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-9070:16gb",
+    "name": "RX 9070 16GB",
+    "family": "RX 9070",
+    "vramGb": 16,
+    "aliases": ["rx 9070", "radeon 9070"]
+  },
+  {
+    "productKey": "gpu:amd:rx-9060-xt:8gb",
+    "name": "RX 9060 XT 8GB",
+    "family": "RX 9060 XT",
+    "vramGb": 8,
+    "aliases": ["rx 9060 xt", "radeon 9060 xt", "9060 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-9060-xt:16gb",
+    "name": "RX 9060 XT 16GB",
+    "family": "RX 9060 XT",
+    "vramGb": 16,
+    "aliases": ["rx 9060 xt", "radeon 9060 xt", "9060 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-7900-xtx:24gb",
+    "name": "RX 7900 XTX 24GB",
+    "family": "RX 7900 XTX",
+    "vramGb": 24,
+    "aliases": ["rx 7900 xtx", "radeon 7900 xtx", "7900 xtx"]
+  },
+  {
+    "productKey": "gpu:amd:rx-7900-xt:20gb",
+    "name": "RX 7900 XT 20GB",
+    "family": "RX 7900 XT",
+    "vramGb": 20,
+    "aliases": ["rx 7900 xt", "radeon 7900 xt", "7900 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-7900-gre:16gb",
+    "name": "RX 7900 GRE 16GB",
+    "family": "RX 7900 GRE",
+    "vramGb": 16,
+    "aliases": ["rx 7900 gre", "radeon 7900 gre", "7900 gre"]
+  },
+  {
+    "productKey": "gpu:amd:rx-7800-xt:16gb",
+    "name": "RX 7800 XT 16GB",
+    "family": "RX 7800 XT",
+    "vramGb": 16,
+    "aliases": ["rx 7800 xt", "radeon 7800 xt", "7800 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-7700-xt:12gb",
+    "name": "RX 7700 XT 12GB",
+    "family": "RX 7700 XT",
+    "vramGb": 12,
+    "aliases": ["rx 7700 xt", "radeon 7700 xt", "7700 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-7600-xt:16gb",
+    "name": "RX 7600 XT 16GB",
+    "family": "RX 7600 XT",
+    "vramGb": 16,
+    "aliases": ["rx 7600 xt", "radeon 7600 xt", "7600 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-7600:8gb",
+    "name": "RX 7600 8GB",
+    "family": "RX 7600",
+    "vramGb": 8,
+    "aliases": ["rx 7600", "radeon 7600"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6950-xt:16gb",
+    "name": "RX 6950 XT 16GB",
+    "family": "RX 6950 XT",
+    "vramGb": 16,
+    "aliases": ["rx 6950 xt", "radeon 6950 xt", "6950 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6900-xt:16gb",
+    "name": "RX 6900 XT 16GB",
+    "family": "RX 6900 XT",
+    "vramGb": 16,
+    "aliases": ["rx 6900 xt", "radeon 6900 xt", "6900 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6800-xt:16gb",
+    "name": "RX 6800 XT 16GB",
+    "family": "RX 6800 XT",
+    "vramGb": 16,
+    "aliases": ["rx 6800 xt", "radeon 6800 xt", "6800 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6800:16gb",
+    "name": "RX 6800 16GB",
+    "family": "RX 6800",
+    "vramGb": 16,
+    "aliases": ["rx 6800", "radeon 6800"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6750-xt:12gb",
+    "name": "RX 6750 XT 12GB",
+    "family": "RX 6750 XT",
+    "vramGb": 12,
+    "aliases": ["rx 6750 xt", "radeon 6750 xt", "6750 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6700-xt:12gb",
+    "name": "RX 6700 XT 12GB",
+    "family": "RX 6700 XT",
+    "vramGb": 12,
+    "aliases": ["rx 6700 xt", "radeon 6700 xt", "6700 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6700:10gb",
+    "name": "RX 6700 10GB",
+    "family": "RX 6700",
+    "vramGb": 10,
+    "aliases": ["rx 6700", "radeon 6700"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6650-xt:8gb",
+    "name": "RX 6650 XT 8GB",
+    "family": "RX 6650 XT",
+    "vramGb": 8,
+    "aliases": ["rx 6650 xt", "radeon 6650 xt", "6650 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6600-xt:8gb",
+    "name": "RX 6600 XT 8GB",
+    "family": "RX 6600 XT",
+    "vramGb": 8,
+    "aliases": ["rx 6600 xt", "radeon 6600 xt", "6600 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6600:8gb",
+    "name": "RX 6600 8GB",
+    "family": "RX 6600",
+    "vramGb": 8,
+    "aliases": ["rx 6600", "radeon 6600"]
+  },
+  {
+    "productKey": "gpu:amd:rx-6500-xt:4gb",
+    "name": "RX 6500 XT 4GB",
+    "family": "RX 6500 XT",
+    "vramGb": 4,
+    "aliases": ["rx 6500 xt", "radeon 6500 xt", "6500 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-5700-xt:8gb",
+    "name": "RX 5700 XT 8GB",
+    "family": "RX 5700 XT",
+    "vramGb": 8,
+    "aliases": ["rx 5700 xt", "radeon 5700 xt", "5700 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-5700:8gb",
+    "name": "RX 5700 8GB",
+    "family": "RX 5700",
+    "vramGb": 8,
+    "aliases": ["rx 5700", "radeon 5700"]
+  },
+  {
+    "productKey": "gpu:amd:rx-5600-xt:6gb",
+    "name": "RX 5600 XT 6GB",
+    "family": "RX 5600 XT",
+    "vramGb": 6,
+    "aliases": ["rx 5600 xt", "radeon 5600 xt", "5600 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-5500-xt:4gb",
+    "name": "RX 5500 XT 4GB",
+    "family": "RX 5500 XT",
+    "vramGb": 4,
+    "aliases": ["rx 5500 xt", "radeon 5500 xt", "5500 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-5500-xt:8gb",
+    "name": "RX 5500 XT 8GB",
+    "family": "RX 5500 XT",
+    "vramGb": 8,
+    "aliases": ["rx 5500 xt", "radeon 5500 xt", "5500 xt"]
+  },
+  {
+    "productKey": "gpu:amd:rx-580:4gb",
+    "name": "RX 580 4GB",
+    "family": "RX 580",
+    "vramGb": 4,
+    "aliases": ["rx 580", "radeon 580"]
+  },
+  {
+    "productKey": "gpu:amd:rx-580:8gb",
+    "name": "RX 580 8GB",
+    "family": "RX 580",
+    "vramGb": 8,
+    "aliases": ["rx 580", "radeon 580"]
+  },
+  {
+    "productKey": "gpu:amd:rx-570:4gb",
+    "name": "RX 570 4GB",
+    "family": "RX 570",
+    "vramGb": 4,
+    "aliases": ["rx 570", "radeon 570"]
+  },
+  {
+    "productKey": "gpu:amd:rx-570:8gb",
+    "name": "RX 570 8GB",
+    "family": "RX 570",
+    "vramGb": 8,
+    "aliases": ["rx 570", "radeon 570"]
+  },
+  {
+    "productKey": "gpu:amd:rx-vega-64:8gb",
+    "name": "RX Vega 64 8GB",
+    "family": "RX Vega 64",
+    "vramGb": 8,
+    "aliases": ["rx vega 64", "vega 64", "radeon vega 64"]
+  },
+  {
+    "productKey": "gpu:amd:rx-vega-56:8gb",
+    "name": "RX Vega 56 8GB",
+    "family": "RX Vega 56",
+    "vramGb": 8,
+    "aliases": ["rx vega 56", "vega 56", "radeon vega 56"]
+  },
+  {
+    "productKey": "gpu:intel:arc-b580:12gb",
+    "name": "Arc B580 12GB",
+    "family": "Arc B580",
+    "vramGb": 12,
+    "aliases": ["arc b580", "intel arc b580", "b580"]
+  },
+  {
+    "productKey": "gpu:intel:arc-b570:10gb",
+    "name": "Arc B570 10GB",
+    "family": "Arc B570",
+    "vramGb": 10,
+    "aliases": ["arc b570", "intel arc b570", "b570"]
+  },
+  {
+    "productKey": "gpu:intel:arc-a770:8gb",
+    "name": "Arc A770 8GB",
+    "family": "Arc A770",
+    "vramGb": 8,
+    "aliases": ["arc a770", "intel arc a770", "a770"]
+  },
+  {
+    "productKey": "gpu:intel:arc-a770:16gb",
+    "name": "Arc A770 16GB",
+    "family": "Arc A770",
+    "vramGb": 16,
+    "aliases": ["arc a770", "intel arc a770", "a770"]
+  },
+  {
+    "productKey": "gpu:intel:arc-a750:8gb",
+    "name": "Arc A750 8GB",
+    "family": "Arc A750",
+    "vramGb": 8,
+    "aliases": ["arc a750", "intel arc a750", "a750"]
+  },
+  {
+    "productKey": "gpu:intel:arc-a580:8gb",
+    "name": "Arc A580 8GB",
+    "family": "Arc A580",
+    "vramGb": 8,
+    "aliases": ["arc a580", "intel arc a580", "a580"]
+  },
+  {
+    "productKey": "gpu:intel:arc-a380:6gb",
+    "name": "Arc A380 6GB",
+    "family": "Arc A380",
+    "vramGb": 6,
+    "aliases": ["arc a380", "intel arc a380", "a380"]
+  },
+  {
+    "productKey": "cpu:intel:core-i3-gen8",
+    "name": "Intel Core i3 8th gen",
+    "aliases": ["i3 8th gen", "8th gen i3", "core i3 8th gen"],
+    "patterns": ["\\b(?:core\\s*)?i3\\s*-?\\s*8\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i5-gen8",
+    "name": "Intel Core i5 8th gen",
+    "aliases": ["i5 8th gen", "8th gen i5", "core i5 8th gen"],
+    "patterns": ["\\b(?:core\\s*)?i5\\s*-?\\s*8\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i7-gen8",
+    "name": "Intel Core i7 8th gen",
+    "aliases": ["i7 8th gen", "8th gen i7", "core i7 8th gen"],
+    "patterns": ["\\b(?:core\\s*)?i7\\s*-?\\s*8\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i3-gen9",
+    "name": "Intel Core i3 9th gen",
+    "aliases": ["i3 9th gen", "9th gen i3", "core i3 9th gen"],
+    "patterns": ["\\b(?:core\\s*)?i3\\s*-?\\s*9\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i5-gen9",
+    "name": "Intel Core i5 9th gen",
+    "aliases": ["i5 9th gen", "9th gen i5", "core i5 9th gen"],
+    "patterns": ["\\b(?:core\\s*)?i5\\s*-?\\s*9\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i7-gen9",
+    "name": "Intel Core i7 9th gen",
+    "aliases": ["i7 9th gen", "9th gen i7", "core i7 9th gen"],
+    "patterns": ["\\b(?:core\\s*)?i7\\s*-?\\s*9\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i9-gen9",
+    "name": "Intel Core i9 9th gen",
+    "aliases": ["i9 9th gen", "9th gen i9", "core i9 9th gen"],
+    "patterns": ["\\b(?:core\\s*)?i9\\s*-?\\s*9\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i3-gen10",
+    "name": "Intel Core i3 10th gen",
+    "aliases": ["i3 10th gen", "10th gen i3", "core i3 10th gen"],
+    "patterns": ["\\b(?:core\\s*)?i3\\s*-?\\s*10\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i5-gen10",
+    "name": "Intel Core i5 10th gen",
+    "aliases": ["i5 10th gen", "10th gen i5", "core i5 10th gen"],
+    "patterns": ["\\b(?:core\\s*)?i5\\s*-?\\s*10\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i7-gen10",
+    "name": "Intel Core i7 10th gen",
+    "aliases": ["i7 10th gen", "10th gen i7", "core i7 10th gen"],
+    "patterns": ["\\b(?:core\\s*)?i7\\s*-?\\s*10\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i9-gen10",
+    "name": "Intel Core i9 10th gen",
+    "aliases": ["i9 10th gen", "10th gen i9", "core i9 10th gen"],
+    "patterns": ["\\b(?:core\\s*)?i9\\s*-?\\s*10\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i3-gen11",
+    "name": "Intel Core i3 11th gen",
+    "aliases": ["i3 11th gen", "11th gen i3", "core i3 11th gen"],
+    "patterns": ["\\b(?:core\\s*)?i3\\s*-?\\s*11\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i5-gen11",
+    "name": "Intel Core i5 11th gen",
+    "aliases": ["i5 11th gen", "11th gen i5", "core i5 11th gen"],
+    "patterns": ["\\b(?:core\\s*)?i5\\s*-?\\s*11\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i7-gen11",
+    "name": "Intel Core i7 11th gen",
+    "aliases": ["i7 11th gen", "11th gen i7", "core i7 11th gen"],
+    "patterns": ["\\b(?:core\\s*)?i7\\s*-?\\s*11\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i9-gen11",
+    "name": "Intel Core i9 11th gen",
+    "aliases": ["i9 11th gen", "11th gen i9", "core i9 11th gen"],
+    "patterns": ["\\b(?:core\\s*)?i9\\s*-?\\s*11\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i3-gen12",
+    "name": "Intel Core i3 12th gen",
+    "aliases": ["i3 12th gen", "12th gen i3", "core i3 12th gen"],
+    "patterns": ["\\b(?:core\\s*)?i3\\s*-?\\s*12\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i5-gen12",
+    "name": "Intel Core i5 12th gen",
+    "aliases": ["i5 12th gen", "12th gen i5", "core i5 12th gen"],
+    "patterns": ["\\b(?:core\\s*)?i5\\s*-?\\s*12\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i7-gen12",
+    "name": "Intel Core i7 12th gen",
+    "aliases": ["i7 12th gen", "12th gen i7", "core i7 12th gen"],
+    "patterns": ["\\b(?:core\\s*)?i7\\s*-?\\s*12\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i9-gen12",
+    "name": "Intel Core i9 12th gen",
+    "aliases": ["i9 12th gen", "12th gen i9", "core i9 12th gen"],
+    "patterns": ["\\b(?:core\\s*)?i9\\s*-?\\s*12\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i3-gen13",
+    "name": "Intel Core i3 13th gen",
+    "aliases": ["i3 13th gen", "13th gen i3", "core i3 13th gen"],
+    "patterns": ["\\b(?:core\\s*)?i3\\s*-?\\s*13\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i5-gen13",
+    "name": "Intel Core i5 13th gen",
+    "aliases": ["i5 13th gen", "13th gen i5", "core i5 13th gen"],
+    "patterns": ["\\b(?:core\\s*)?i5\\s*-?\\s*13\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i7-gen13",
+    "name": "Intel Core i7 13th gen",
+    "aliases": ["i7 13th gen", "13th gen i7", "core i7 13th gen"],
+    "patterns": ["\\b(?:core\\s*)?i7\\s*-?\\s*13\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i9-gen13",
+    "name": "Intel Core i9 13th gen",
+    "aliases": ["i9 13th gen", "13th gen i9", "core i9 13th gen"],
+    "patterns": ["\\b(?:core\\s*)?i9\\s*-?\\s*13\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i3-gen14",
+    "name": "Intel Core i3 14th gen",
+    "aliases": ["i3 14th gen", "14th gen i3", "core i3 14th gen"],
+    "patterns": ["\\b(?:core\\s*)?i3\\s*-?\\s*14\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i5-gen14",
+    "name": "Intel Core i5 14th gen",
+    "aliases": ["i5 14th gen", "14th gen i5", "core i5 14th gen"],
+    "patterns": ["\\b(?:core\\s*)?i5\\s*-?\\s*14\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i7-gen14",
+    "name": "Intel Core i7 14th gen",
+    "aliases": ["i7 14th gen", "14th gen i7", "core i7 14th gen"],
+    "patterns": ["\\b(?:core\\s*)?i7\\s*-?\\s*14\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-i9-gen14",
+    "name": "Intel Core i9 14th gen",
+    "aliases": ["i9 14th gen", "14th gen i9", "core i9 14th gen"],
+    "patterns": ["\\b(?:core\\s*)?i9\\s*-?\\s*14\\d{3}[a-z]{0,3}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-ultra-5",
+    "name": "Intel Core Ultra 5",
+    "aliases": ["core ultra 5"],
+    "patterns": ["\\b(?:core\\s*)?ultra\\s*5\\s*-?\\s*\\d{3}[a-z]{0,2}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-ultra-7",
+    "name": "Intel Core Ultra 7",
+    "aliases": ["core ultra 7"],
+    "patterns": ["\\b(?:core\\s*)?ultra\\s*7\\s*-?\\s*\\d{3}[a-z]{0,2}\\b"]
+  },
+  {
+    "productKey": "cpu:intel:core-ultra-9",
+    "name": "Intel Core Ultra 9",
+    "aliases": ["core ultra 9"],
+    "patterns": ["\\b(?:core\\s*)?ultra\\s*9\\s*-?\\s*\\d{3}[a-z]{0,2}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-3-2000",
+    "name": "AMD Ryzen 3 2000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*3\\s*(?:pro\\s*)?2\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-5-2000",
+    "name": "AMD Ryzen 5 2000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*5\\s*(?:pro\\s*)?2\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-7-2000",
+    "name": "AMD Ryzen 7 2000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*7\\s*(?:pro\\s*)?2\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-9-2000",
+    "name": "AMD Ryzen 9 2000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*9\\s*(?:pro\\s*)?2\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-3-3000",
+    "name": "AMD Ryzen 3 3000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*3\\s*(?:pro\\s*)?3\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-5-3000",
+    "name": "AMD Ryzen 5 3000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*5\\s*(?:pro\\s*)?3\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-7-3000",
+    "name": "AMD Ryzen 7 3000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*7\\s*(?:pro\\s*)?3\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-9-3000",
+    "name": "AMD Ryzen 9 3000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*9\\s*(?:pro\\s*)?3\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-3-4000",
+    "name": "AMD Ryzen 3 4000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*3\\s*(?:pro\\s*)?4\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-5-4000",
+    "name": "AMD Ryzen 5 4000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*5\\s*(?:pro\\s*)?4\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-7-4000",
+    "name": "AMD Ryzen 7 4000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*7\\s*(?:pro\\s*)?4\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-9-4000",
+    "name": "AMD Ryzen 9 4000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*9\\s*(?:pro\\s*)?4\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-3-5000",
+    "name": "AMD Ryzen 3 5000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*3\\s*(?:pro\\s*)?5\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-5-5000",
+    "name": "AMD Ryzen 5 5000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*5\\s*(?:pro\\s*)?5\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-7-5000",
+    "name": "AMD Ryzen 7 5000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*7\\s*(?:pro\\s*)?5\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-9-5000",
+    "name": "AMD Ryzen 9 5000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*9\\s*(?:pro\\s*)?5\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-3-7000",
+    "name": "AMD Ryzen 3 7000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*3\\s*(?:pro\\s*)?7\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-5-7000",
+    "name": "AMD Ryzen 5 7000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*5\\s*(?:pro\\s*)?7\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-7-7000",
+    "name": "AMD Ryzen 7 7000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*7\\s*(?:pro\\s*)?7\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-9-7000",
+    "name": "AMD Ryzen 9 7000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*9\\s*(?:pro\\s*)?7\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-3-8000",
+    "name": "AMD Ryzen 3 8000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*3\\s*(?:pro\\s*)?8\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-5-8000",
+    "name": "AMD Ryzen 5 8000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*5\\s*(?:pro\\s*)?8\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-7-8000",
+    "name": "AMD Ryzen 7 8000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*7\\s*(?:pro\\s*)?8\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-9-8000",
+    "name": "AMD Ryzen 9 8000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*9\\s*(?:pro\\s*)?8\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-3-9000",
+    "name": "AMD Ryzen 3 9000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*3\\s*(?:pro\\s*)?9\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-5-9000",
+    "name": "AMD Ryzen 5 9000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*5\\s*(?:pro\\s*)?9\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-7-9000",
+    "name": "AMD Ryzen 7 9000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*7\\s*(?:pro\\s*)?9\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:ryzen-9-9000",
+    "name": "AMD Ryzen 9 9000 series",
+    "aliases": [],
+    "patterns": ["\\bryzen\\s*9\\s*(?:pro\\s*)?9\\d{3}[a-z0-9]{0,4}\\b"]
+  },
+  {
+    "productKey": "cpu:amd:threadripper",
+    "name": "AMD Ryzen Threadripper",
+    "aliases": ["threadripper"],
+    "patterns": []
+  }
+]

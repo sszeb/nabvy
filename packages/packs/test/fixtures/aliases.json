@@ -1,0 +1,144 @@
+{
+  "about": "Alias fixtures for the gpu-pc dictionary (task 0.4). Each case is a listing title or text fragment and the first product the rules-tier resolver must find. productKey null with a family means the model was found but its VRAM variant is not stated; family null means nothing may match.",
+  "cases": [
+    {
+      "text": "RTX 3080 Ti Founders Edition",
+      "family": "RTX 3080 Ti",
+      "productKey": "gpu:nvidia:rtx-3080-ti:12gb"
+    },
+    {
+      "text": "rtx3080ti mint",
+      "family": "RTX 3080 Ti",
+      "productKey": "gpu:nvidia:rtx-3080-ti:12gb"
+    },
+    { "text": "3080ti", "family": "RTX 3080 Ti", "productKey": "gpu:nvidia:rtx-3080-ti:12gb" },
+    {
+      "text": "EVGA 3080 ti FTW3",
+      "family": "RTX 3080 Ti",
+      "productKey": "gpu:nvidia:rtx-3080-ti:12gb"
+    },
+    { "text": "RTX-3080-Ti", "family": "RTX 3080 Ti", "productKey": "gpu:nvidia:rtx-3080-ti:12gb" },
+    { "text": "rtx3080 10gb", "family": "RTX 3080", "productKey": "gpu:nvidia:rtx-3080:10gb" },
+    {
+      "text": "MSI RTX 3080 Gaming Z Trio 12GB LHR",
+      "family": "RTX 3080",
+      "productKey": "gpu:nvidia:rtx-3080:12gb"
+    },
+    { "text": "Gigabyte RTX 3080 Eagle", "family": "RTX 3080", "productKey": null },
+    {
+      "text": "12GB RTX 3060 Ventus",
+      "family": "RTX 3060",
+      "productKey": "gpu:nvidia:rtx-3060:12gb"
+    },
+    {
+      "text": "Zotac GeForce RTX 3060 Ti Twin Edge",
+      "family": "RTX 3060 Ti",
+      "productKey": "gpu:nvidia:rtx-3060-ti:8gb"
+    },
+    {
+      "text": "Asus TUF RTX 4070 Ti Super OC",
+      "family": "RTX 4070 Ti Super",
+      "productKey": "gpu:nvidia:rtx-4070-ti-super:16gb"
+    },
+    {
+      "text": "4070 TiS",
+      "family": "RTX 4070 Ti Super",
+      "productKey": "gpu:nvidia:rtx-4070-ti-super:16gb"
+    },
+    {
+      "text": "MSI 4070 Ti Suprim X",
+      "family": "RTX 4070 Ti",
+      "productKey": "gpu:nvidia:rtx-4070-ti:12gb"
+    },
+    {
+      "text": "rtx 4070s dual",
+      "family": "RTX 4070 Super",
+      "productKey": "gpu:nvidia:rtx-4070-super:12gb"
+    },
+    {
+      "text": "Palit RTX 4070 Dual",
+      "family": "RTX 4070",
+      "productKey": "gpu:nvidia:rtx-4070:12gb"
+    },
+    {
+      "text": "4080 super FE boxed",
+      "family": "RTX 4080 Super",
+      "productKey": "gpu:nvidia:rtx-4080-super:16gb"
+    },
+    { "text": "RTX 4090 24gb", "family": "RTX 4090", "productKey": "gpu:nvidia:rtx-4090:24gb" },
+    { "text": "rtx 5070ti", "family": "RTX 5070 Ti", "productKey": "gpu:nvidia:rtx-5070-ti:16gb" },
+    {
+      "text": "RTX 5060 Ti 16GB",
+      "family": "RTX 5060 Ti",
+      "productKey": "gpu:nvidia:rtx-5060-ti:16gb"
+    },
+    {
+      "text": "GTX 1080 Ti 11GB",
+      "family": "GTX 1080 Ti",
+      "productKey": "gpu:nvidia:gtx-1080-ti:11gb"
+    },
+    {
+      "text": "gtx1660 super",
+      "family": "GTX 1660 Super",
+      "productKey": "gpu:nvidia:gtx-1660-super:6gb"
+    },
+    { "text": "GTX 1060 6GB", "family": "GTX 1060", "productKey": "gpu:nvidia:gtx-1060:6gb" },
+    { "text": "gtx 1060 3gb", "family": "GTX 1060", "productKey": "gpu:nvidia:gtx-1060:3gb" },
+    {
+      "text": "Sapphire Nitro+ RX 7900 XTX",
+      "family": "RX 7900 XTX",
+      "productKey": "gpu:amd:rx-7900-xtx:24gb"
+    },
+    { "text": "rx7900xt", "family": "RX 7900 XT", "productKey": "gpu:amd:rx-7900-xt:20gb" },
+    { "text": "7900 GRE Pulse", "family": "RX 7900 GRE", "productKey": "gpu:amd:rx-7900-gre:16gb" },
+    { "text": "Radeon 6700xt", "family": "RX 6700 XT", "productKey": "gpu:amd:rx-6700-xt:12gb" },
+    {
+      "text": "RX 9070 XT Hellhound",
+      "family": "RX 9070 XT",
+      "productKey": "gpu:amd:rx-9070-xt:16gb"
+    },
+    { "text": "RX 580 8GB", "family": "RX 580", "productKey": "gpu:amd:rx-580:8gb" },
+    { "text": "rx580 8 gb", "family": "RX 580", "productKey": "gpu:amd:rx-580:8gb" },
+    { "text": "RX Vega 56", "family": "RX Vega 56", "productKey": "gpu:amd:rx-vega-56:8gb" },
+    {
+      "text": "Intel Arc B580 Limited Edition",
+      "family": "Arc B580",
+      "productKey": "gpu:intel:arc-b580:12gb"
+    },
+    { "text": "Arc A770 16GB", "family": "Arc A770", "productKey": "gpu:intel:arc-a770:16gb" },
+    {
+      "text": "Gaming PC i7 12700K RTX 3070 32GB DDR4",
+      "family": "cpu:intel:core-i7-gen12",
+      "productKey": "cpu:intel:core-i7-gen12"
+    },
+    {
+      "text": "i5-8400 office tower",
+      "family": "cpu:intel:core-i5-gen8",
+      "productKey": "cpu:intel:core-i5-gen8"
+    },
+    {
+      "text": "Core Ultra 7 265K build",
+      "family": "cpu:intel:core-ultra-7",
+      "productKey": "cpu:intel:core-ultra-7"
+    },
+    {
+      "text": "Ryzen 7 5800X3D + 6800XT",
+      "family": "cpu:amd:ryzen-7-5000",
+      "productKey": "cpu:amd:ryzen-7-5000"
+    },
+    {
+      "text": "ryzen 5 3600 bundle",
+      "family": "cpu:amd:ryzen-5-3000",
+      "productKey": "cpu:amd:ryzen-5-3000"
+    },
+    { "text": "Dell OptiPlex 3080 i5 office PC", "family": null, "productKey": null },
+    { "text": "OptiPlex 3090 SFF", "family": null, "productKey": null },
+    { "text": "Asking £1070 ono", "family": null, "productKey": null },
+    { "text": "1080p monitor", "family": null, "productKey": null },
+    {
+      "text": "Ryzen 5 7600 with B650",
+      "family": "cpu:amd:ryzen-5-7000",
+      "productKey": "cpu:amd:ryzen-5-7000"
+    }
+  ]
+}

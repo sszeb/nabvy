@@ -130,12 +130,32 @@ end;
 $$;
 reset role;
 
--- The helper functions are for migrations only.
+-- The helper functions are for migrations only. Any nabvy_core function other than the two the
+-- application uses must have PUBLIC revoked; the check is proved on a probe function first.
+create function nabvy_core.probe_later() returns integer language sql as 'select 1';
+create function pg_temp.executable_core_functions() returns text language sql as $$
+  select string_agg(p.oid::regprocedure::text, ', ' order by p.oid::regprocedure::text)
+  from pg_proc p
+  where p.pronamespace = 'nabvy_core'::regnamespace
+    and p.proname not in ('uuidv7', 'current_user_id')
+    and (has_function_privilege('nabvy_app', p.oid, 'execute')
+         or has_function_privilege('nabvy_pipeline', p.oid, 'execute'))
+$$;
 do $$
 begin
-  if has_function_privilege('nabvy_app', 'nabvy_core.enable_user_rls(regclass, name)', 'execute')
-     or has_function_privilege('nabvy_pipeline', 'nabvy_core.allow_pipeline(regclass, text)', 'execute') then
-    raise exception 'application roles can execute migration helpers';
+  if pg_temp.executable_core_functions() is distinct from 'nabvy_core.probe_later()' then
+    raise exception 'executable-function check did not catch the probe: %', pg_temp.executable_core_functions();
+  end if;
+end;
+$$;
+drop function nabvy_core.probe_later();
+do $$
+begin
+  if pg_temp.executable_core_functions() is not null then
+    raise exception 'nabvy_core functions executable by application roles: %', pg_temp.executable_core_functions();
+  end if;
+  if has_function_privilege('nabvy_app', 'nabvy_core.view_violations()', 'execute') then
+    raise exception 'application roles can execute view_violations()';
   end if;
   if not has_function_privilege('nabvy_app', 'nabvy_core.uuidv7()', 'execute') then
     raise exception 'nabvy_app cannot execute uuidv7()';
@@ -144,10 +164,23 @@ end;
 $$;
 
 -- Views: security_invoker and no seller identity ----------------------------------------------
+-- The probe schema counts as a module schema only while it is in the ledger (rolled back below).
+insert into nabvy_core.schema_migrations (module, name, checksum) values ('rls-probe', 'probe', 'probe');
 create view rls_probe.v_hunts with (security_invoker = true) as select id, note from rls_probe.hunts;
 create view rls_probe.v_leaky as select id, note from rls_probe.hunts;
 create view rls_probe.v_sellers with (security_invoker = true) as
   select id, note as seller_name, note as raw from rls_probe.hunts;
+-- Not named v_, but a plain view: still refused, since a grant would bypass RLS.
+create view rls_probe.hunt_notes as select id, note from rls_probe.hunts;
+-- Internal view with seller data, not granted to nabvy_app: allowed.
+create view rls_probe.internal_sellers with (security_invoker = true) as
+  select id, note as seller_id from rls_probe.hunts;
+-- Internal view with seller data granted to nabvy_app: refused.
+create view rls_probe.granted_sellers with (security_invoker = true) as
+  select id, note as seller_id from rls_probe.hunts;
+grant select on rls_probe.granted_sellers to nabvy_app;
+-- A materialised view has no RLS; seller columns in an mv_ are refused.
+create materialized view rls_probe.mv_sellers as select id, note as seller_profile_url from rls_probe.hunts;
 do $$
 declare
   problems text;
@@ -155,7 +188,10 @@ begin
   select string_agg(view_name || ': ' || problem, '; ' order by view_name, problem) into problems
   from nabvy_core.view_violations() where view_name like 'rls\_probe.%';
   if problems is distinct from
-     'rls_probe.v_leaky: v_ view is not security_invoker; '
+     'rls_probe.granted_sellers: exposes column seller_id, which may identify a seller or carry the raw provider row; '
+     || 'rls_probe.hunt_notes: view is not security_invoker; '
+     || 'rls_probe.mv_sellers: exposes column seller_profile_url, which may identify a seller or carry the raw provider row; '
+     || 'rls_probe.v_leaky: view is not security_invoker; '
      || 'rls_probe.v_sellers: exposes column raw, which may identify a seller or carry the raw provider row; '
      || 'rls_probe.v_sellers: exposes column seller_name, which may identify a seller or carry the raw provider row'
   then
