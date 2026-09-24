@@ -90,11 +90,12 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | account | 2 | done: PR #33 merged 16:54 (`1c28404`) after the fix round; three migrations applied 16:59 (ledger checked) | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
 | listing-ingest | 3 | done: PR #35 merged 16:54 (approved at `04b54ba`); both migrations applied 16:57 (ledger checked); first-seen may re-announce on out-of-order replay, so details-queue dedupes on listing ID | `session_01HfncCwAz7dL7Kx9LnCeR2U` | top |
 | spend-governor | 3 | done: PR #36 merged 16:39 (`5c2b7eb`); both migrations applied 16:43 (ledger checked); budgets seeded ($150 Apify month, $85 plan, 10 GB proxy); needs a scheduled recompute and a measured `proxy_gb` before any paying module reads `v_throttle` (backlog 1.6a, 1.6b) | `session_01CC2oetv6aarq9Pyf3wKC7q` | top |
-| route-health | 3 | PR #37 open 16:40; after merge apply its migrations listed in the PR body | `session_01DgJ6WG8sK8FmVprvBHT7Ln` | Sonnet |
+| route-health | 3 | done: PR #37 merged 17:08 (`583a4c0`); both migrations applied 17:12 (ledger checked); follow-ups in `docs/questions.md` (retire the source-adapters port; no-description replays) | `session_01DgJ6WG8sK8FmVprvBHT7Ln` | Sonnet |
 | run-coverage | 4 | started 16:55; card `docs/design/modules/run-coverage.md` | `session_01W9G6WWzHRC5ZWWNB5Ud36i` | top |
 | detail-evidence | 4 | started 16:55; card `docs/design/modules/detail-evidence.md` | `session_019oxS7CYEwPHJ2YpQjxK4Gw` | top |
 | product-events | 3 | started 16:56; card `docs/design/modules/product-events.md`; PostHog keys still missing, sending stubbed | `session_01Mb9c2K2KfFYvqLcNQ8ysMD` | Sonnet |
 | scan-recognition | 3 | started 16:56; card `docs/design/modules/scan-recognition.md`; model client on recorded fixtures until the Anthropic key exists | `session_01XqmaYu7JxPG5Ps2vpYGBcx` | top |
+| details-queue | 4 | started 17:10; card `docs/design/modules/details-queue.md`; dedupes first-seen on listing ID; uses the actor's `excludeListingIds` | `session_012piuTFFBNE7nuuToeJMbpN` | top |
 
 ## Work outside the backlog
 
