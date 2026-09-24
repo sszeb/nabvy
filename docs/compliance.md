@@ -23,7 +23,7 @@
 - **eBay Partner Network:** disclose affiliate links; no incentivised clicks; no cookie stuffing.
 - **CeX:** web API used at low volume; licensing request in progress; stop on request.
 - **Apify:** actors' own terms; our Facebook actor collects only public listing data; no logged-in sessions.
-- **Facebook Marketplace legal gate (before exposing Facebook alerts to paying users):** UK legal review of (1) database right over provider-collected listing data, (2) UK GDPR for the personal data in listings, (3) Meta's automated collection terms as they apply to us as a customer of a data provider. Outcome recorded in `docs/decisions.md`. Until then Facebook alerts go to the founder and design partners only.
+- **Facebook Marketplace legal gate (before exposing Facebook alerts to paying users):** UK legal review of (1) database right over provider-collected listing data, (2) UK GDPR for the personal data in listings, (3) Meta's automated collection terms as they apply to us as a customer of a data provider. Outcome recorded in `docs/decisions.md`. Until then Facebook alerts go to the founder and design partners only. *(Lifted by the owner on 2026-09-24: `docs/decisions.md`, "Legal gates lifted"; points listed in `docs/legal-review.md`.)*
 
 ## Consumer law (UK)
 

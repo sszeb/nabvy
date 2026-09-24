@@ -131,9 +131,9 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - **Budget.** The gateway enforces an Apify spend cap of **$150 a month**. The gateway's cap today is a lifetime total ($5.50 for testing), so it becomes a monthly cap, reset each calendar month, with the same worst-case reservations.
   - **Cadence within the budget.** The spend governor spreads the monthly budget across centres and terms. Centres with paying subscribers are checked more often, and the rest are covered at the slowest cadence the budget allows. On the actor's evidence, about $3.20 a month per term per centre buys a newest-first check every 30 minutes. A national grid of about 30 centres × 3 terms within $150 therefore works out at about hourly checks on average. This is an estimate, refined once the actor's T2 results and a week of measured spend are in.
 - **Legal gates lifted** (owner, 2026-09-24): "Lift the gates. The operational instruction is to have the production app fully working as intended." The gates are:
-  - further Facebook collection no longer waits for an LIA and a DPIA;
+  - further data collection through Apify no longer waits for an LIA and a DPIA. Nabvy never deals with Facebook directly: it uses third-party data that comes from Apify runs (owner, 2026-09-24);
   - sharing or reselling listing data no longer waits for legal advice, so the build pack's Business features (export, channel feeds, public API) are back in the plan;
-  - Facebook alerts go to every user, paying or not.
+  - alerts built from that data go to every user, paying or not.
 
   Collection runs as the product needs, within the Apify spend cap the owner sets. The points stay listed in `docs/legal-review.md`. The owner's own product decisions are unchanged, for example listing photos stay off until the owner decides otherwise.
 - **Policies and conduct match big tech** (owner, 2026-09-24): "Any and all policies and conduct just match to the big tech. I'm sure their policies and terms were vetted by legal professionals already." For every policy and every piece of conduct toward users, Nabvy takes the position that leading consumer tech companies share in their UK-facing terms and practice, written in Nabvy's own words. Examples:

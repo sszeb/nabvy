@@ -82,7 +82,7 @@ Check-in points are marked **[CHECK-IN]**: stop and wait for a human before cont
 - **5.4 Second pack** (consoles and controllers) as data only. Done: no pipeline code changes required.
 - **5.3a MCP server (read-only).** `services/mcp` exposing deals, hunts, trends and metrics tools with the same authorisation as the calling user, for the founder's analysis agents first. Done: an agent lists yesterday's top deals through the server.
 - **5.4a Public API (Business tier).** Versioned OpenAPI endpoints from the oRPC router for deals, hunts and scans; API keys hashed and scoped; rate limits; docs page. Done: a Business test account pulls its deal feed with an API key.
-- **5.5 Legal gate checklist** for Facebook alerts to paying users, per `docs/decisions.md`. Done: checklist signed off by a human.
+- **5.5 Legal gate checklist** for Facebook alerts to paying users, per `docs/decisions.md`. Done: checklist signed off by a human. *(The gate was lifted by the owner on 2026-09-24: `docs/decisions.md`, "Legal gates lifted".)*
 
 - **5.6 Load check and launch checklist.** Staging load run per `docs/operations.md`; every launch-checklist item ticked with evidence in `docs/questions.md` or the admin area. Done: p95 pipeline delay under 30 s; checklist complete.
 
