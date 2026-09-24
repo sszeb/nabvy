@@ -270,6 +270,12 @@ The owner, on the free tier ("hook them right away, blown away, then a couple mo
 
 Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): window one runs 1 minute for 20 minutes, 5 minutes for 100 minutes, 15 minutes for 2 hours, then hourly (52 checks, 68p lone); windows two and three run 1 minute for 10 minutes, 5 minutes for 50 minutes, 15 minutes for 2 hours, then hourly (33 checks, 43p each). Three windows cost £1.54 lone plus about 10p of model calls, under the £2 cap with room for retries; where a paid watcher already funds the area the burst costs nothing extra. The free-burst pool starts at £20 a day and 5% of the previous month's net revenue, whichever is higher. These are the initial policy values, not owner decisions.
 
+## Hard daily, weekly and monthly spend caps (owner, 2026-09-24, 17:00)
+
+- **Caps stop spending by themselves.** A daily, weekly or monthly cap reached is an automatic stop of all paid calls (Apify, model calls, other paid sources), not a notice to an admin. Example: a £10 daily cap means the day's bill is at most £10 plus the run-off, and never more than £11.
+- **The run-off is bounded, not hoped for.** The stop is checked synchronously before every paid submit, against reserved plus settled cost (never on a schedule alone); every run reserves its capped cost before it starts (a per-run cost cap in the actor input); concurrency is capped; so the overrun is at most the reservations in flight at the moment the cap is hit, which the caps are set to keep under 10%.
+- **Caps are policy rows** (spend-governor budgets), editable at run time, audited, with periods of day, week and month, on top of the gateway's own monthly hard cap and Apify's platform limit as second and third fences.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
