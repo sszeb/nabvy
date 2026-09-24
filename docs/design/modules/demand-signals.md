@@ -5,12 +5,12 @@
 ### `demand-signals`
 - **Purpose:** publish demand per centre per week from first-party wants plus wanted and swap adverts, with small cells suppressed.
 - **Does / does not:** weekly aggregates per centre (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:273-275`) of want counts and wanted or swap adverts; cells under 10 suppressed (question 20). Buyer adverts are 0.39% of listings (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:219`). Never by user or seller. No user-facing view until the owner says who sees it.
-- **Inputs:** `want-manager.changed`; `v_want_terms_by_centre`; `v_assessments`; `v_centres`.
+- **Inputs:** `want-manager.changed`; `v_want_terms_by_centre`; `v_assessments`; `v_centres`; `copy-advert.clustered` and `v_members` (soft), so a wanted advert posted in many towns counts once per cell and week (`copy-advert.md` section 7).
 - **Outputs:** `demand-signals.published` (week).
 - **Owns:** `cells` (centre, week, catalogue family, wants, adverts, suppressed).
 - **Views:** internal `v_cells`. User-facing: none.
 - **Contracts:** `DemandSignalsCell`, `DemandSignalsPublishedEvent`.
-- **Depends on:** `switches`, `want-manager`, `listing-assessment`, `city-pages`.
+- **Depends on:** `switches`, `want-manager`, `listing-assessment`, `city-pages`, `copy-advert` (soft).
 - **When off:** nothing reads it yet.
 - **Tests and fixtures:** suppression below the threshold; no user ID in any output.
 - **Priority and phase:** Also (`fb-scrap-engine/docs/HANDOFF.md:199-200`) or Later (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:219`).

@@ -3,7 +3,7 @@
     "name": "switches",
     "group": "Foundation",
     "job": "Hold the state of every module, provider and gate",
-    "priority": "P0; kill switch from day one (`nabvy/docs/decisions.md:151`)",
+    "priority": "P0; kill switch from day one (`nabvy/docs/decisions.md:202`)",
     "round": 1,
     "scope": "MVP",
     "dependsOn": ["audit-log"],
@@ -112,9 +112,9 @@
   {
     "name": "search-planner",
     "group": "Facebook acquisition",
-    "job": "Plan searches per region (verified centre × a few terms) and owner-approved one-off runs",
-    "priority": "P1, step 1 (`fb-scrap-engine/docs/HANDOFF.md:140-145`)",
-    "round": 8,
+    "job": "Plan the (centre, term) pairs that active hunts need, never per user, plus verification and owner-approved one-off runs",
+    "priority": "P1, step 1 (`fb-scrap-engine/docs/HANDOFF.md:140-145`; `nabvy/docs/decisions.md:131-137`)",
+    "round": 6,
     "scope": "MVP",
     "dependsOn": ["switches", "city-pages", "want-manager", "audit-log"],
     "softDependsOn": ["side-discovery"]
@@ -123,8 +123,8 @@
     "name": "check-scheduler",
     "group": "Facebook acquisition",
     "job": "Decide when each search check runs, and submit it",
-    "priority": "P1; Gated: off until the LIA and DPIA position (`nabvy/docs/questions.md:7`)",
-    "round": 9,
+    "priority": "P1; runs only the pairs active hunts need (`nabvy/docs/decisions.md:131-135,176`)",
+    "round": 7,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -132,7 +132,8 @@
       "run-coverage",
       "spend-governor",
       "source-health",
-      "apify-gateway"
+      "apify-gateway",
+      "listing-ingest"
     ],
     "softDependsOn": []
   },
@@ -161,9 +162,9 @@
     "group": "Facebook acquisition",
     "job": "Keep paid calls inside budget",
     "priority": "P1 (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:202-203`)",
-    "round": 2,
+    "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "cost-meter"],
+    "dependsOn": ["switches", "cost-meter", "apify-gateway"],
     "softDependsOn": []
   },
   {
@@ -184,7 +185,7 @@
     "round": 6,
     "scope": "MVP",
     "dependsOn": ["switches", "listing-ingest", "city-pages", "details-queue"],
-    "softDependsOn": []
+    "softDependsOn": ["want-manager"]
   },
   {
     "name": "detail-evidence",
@@ -280,7 +281,7 @@
     "group": "Listing intelligence",
     "job": "Keep one versioned parts record per listing",
     "priority": "First (`fb-scrap-engine/docs/HANDOFF.md:159-167`)",
-    "round": 9,
+    "round": 6,
     "scope": "MVP",
     "dependsOn": ["switches", "parts-rules", "parts-ai", "photo-review", "product-catalogue"],
     "softDependsOn": []
@@ -290,7 +291,7 @@
     "group": "Listing intelligence",
     "job": "Decide container, form, GPU state, confirmed parts and cautions",
     "priority": "First (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:143-144,150-185`)",
-    "round": 10,
+    "round": 7,
     "scope": "MVP",
     "dependsOn": ["switches", "parts-record", "detail-evidence", "listing-ingest"],
     "softDependsOn": []
@@ -300,7 +301,7 @@
     "group": "Listing intelligence",
     "job": "Mark wanted, swap, service, stuffing, laptop and mention-only hits",
     "priority": "First, free (`fb-scrap-engine/docs/HANDOFF.md:171-173`)",
-    "round": 11,
+    "round": 8,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -322,11 +323,13 @@
     "scope": "MVP",
     "dependsOn": [
       "switches",
+      "audit-log",
       "listing-ingest",
       "detail-evidence",
       "city-pages",
       "details-queue",
-      "listing-suppression"
+      "listing-suppression",
+      "account"
     ],
     "softDependsOn": ["seller-key", "photo-review"]
   },
@@ -335,7 +338,7 @@
     "group": "Listing intelligence",
     "job": "Merge relisted items internally",
     "priority": "Build, internal (`fb-scrap-engine/docs/design/SELLER_DATA.md:144-160`)",
-    "round": 9,
+    "round": 5,
     "scope": "MVP",
     "dependsOn": ["switches", "listing-ingest", "detail-evidence", "photo-review"],
     "softDependsOn": ["seller-key"]
@@ -345,7 +348,7 @@
     "group": "Listing intelligence",
     "job": "Group asks and compute their bands",
     "priority": "First, under position (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:261-271`)",
-    "round": 12,
+    "round": 9,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -366,7 +369,7 @@
     "group": "Listing intelligence",
     "job": "Place each listing among same-spec, same-condition asks",
     "priority": "First (`fb-scrap-engine/docs/HANDOFF.md:188-190`)",
-    "round": 13,
+    "round": 10,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -384,7 +387,7 @@
     "group": "Listing intelligence",
     "job": "Compute listing-level warning facts with their evidence",
     "priority": "Also; scam use in shadow (`fb-scrap-engine/docs/HANDOFF.md:111-112,194-196`)",
-    "round": 13,
+    "round": 10,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -400,9 +403,9 @@
   {
     "name": "suspected-labels",
     "group": "Listing intelligence",
-    "job": "Turn documented rules into \"Suspected …:\" labels with evidence",
+    "job": "Turn documented rules into \"Suspected …:\" labels with evidence, including \"Suspected too good to be true:\"",
     "priority": "First; shadow first (`fb-scrap-engine/docs/HANDOFF.md:180-187`)",
-    "round": 14,
+    "round": 11,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -413,17 +416,17 @@
       "listing-suppression",
       "audit-log"
     ],
-    "softDependsOn": []
+    "softDependsOn": ["pickup-location", "seller-reply-reports"]
   },
   {
     "name": "demand-signals",
     "group": "Listing intelligence",
     "job": "Publish weekly demand per centre from wants and wanted adverts",
     "priority": "Also or Later (`fb-scrap-engine/docs/HANDOFF.md:199-200`)",
-    "round": 11,
+    "round": 8,
     "scope": "MVP",
     "dependsOn": ["switches", "want-manager", "listing-assessment", "city-pages"],
-    "softDependsOn": []
+    "softDependsOn": ["copy-advert"]
   },
   {
     "name": "multi-quantity-filter",
@@ -433,6 +436,26 @@
     "round": 6,
     "scope": "Parked",
     "dependsOn": ["switches", "detail-evidence", "listing-suppression"],
+    "softDependsOn": []
+  },
+  {
+    "name": "pickup-location",
+    "group": "Listing intelligence",
+    "job": "Resolve where an item really is, from its location field and its text; publish town or area only",
+    "priority": "MVP (`nabvy/docs/decisions.md:144-153`); AI gated with `parts-ai` (question 12)",
+    "round": 7,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "listing-ingest",
+      "detail-evidence",
+      "city-pages",
+      "location",
+      "quote-redaction",
+      "spend-governor",
+      "cost-meter",
+      "listing-suppression"
+    ],
     "softDependsOn": []
   },
   {
@@ -448,9 +471,9 @@
   {
     "name": "spec-match",
     "group": "User features and delivery",
-    "job": "Match wants against listings, and run spec searches on demand",
+    "job": "Match wants against listings, and run spec searches on demand with the owner's filters and sorts",
     "priority": "First (`fb-scrap-engine/docs/HANDOFF.md:168-170`)",
-    "round": 12,
+    "round": 9,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -465,7 +488,7 @@
       "quote-redaction",
       "account"
     ],
-    "softDependsOn": ["multi-quantity-filter"]
+    "softDependsOn": ["multi-quantity-filter", "pickup-location", "asking-price-position"]
   },
   {
     "name": "listing-card",
@@ -489,7 +512,7 @@
     "group": "User features and delivery",
     "job": "Keep price history within one listing ID and alert on drops",
     "priority": "First (`fb-scrap-engine/docs/HANDOFF.md:191-192`)",
-    "round": 10,
+    "round": 6,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -507,7 +530,7 @@
     "group": "User features and delivery",
     "job": "Decide which alerts go out, when and how",
     "priority": "First (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:74,181-182`)",
-    "round": 13,
+    "round": 10,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -517,20 +540,19 @@
       "relist-merge",
       "listing-assessment",
       "want-manager",
-      "subscriptions",
       "listing-suppression",
       "listing-lifecycle",
       "run-coverage",
       "account"
     ],
-    "softDependsOn": []
+    "softDependsOn": ["subscriptions"]
   },
   {
     "name": "prepared-message",
     "group": "User features and delivery",
     "job": "Build the copyable \"ask the seller\" message and checklist",
     "priority": "First (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:75,186-188`)",
-    "round": 11,
+    "round": 8,
     "scope": "MVP",
     "dependsOn": ["switches", "listing-assessment", "quote-redaction"],
     "softDependsOn": []
@@ -540,7 +562,7 @@
     "group": "User features and delivery",
     "job": "Deliver alerts and digests, and record delivery",
     "priority": "First; founder's Telegram in P1 (`nabvy/docs/backlog.md:30`)",
-    "round": 15,
+    "round": 12,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -558,7 +580,7 @@
       "listing-suppression",
       "location"
     ],
-    "softDependsOn": []
+    "softDependsOn": ["pickup-location"]
   },
   {
     "name": "pasted-link-lookup",
@@ -588,6 +610,26 @@
     "softDependsOn": []
   },
   {
+    "name": "pickup-routes",
+    "group": "User features and delivery",
+    "job": "Plan a one-day route through the pickups a user has arranged",
+    "priority": "MVP (`nabvy/docs/decisions.md:174`)",
+    "round": 7,
+    "scope": "MVP",
+    "dependsOn": ["switches", "auth", "account", "location"],
+    "softDependsOn": []
+  },
+  {
+    "name": "seller-reply-reports",
+    "group": "Trust and rights",
+    "job": "Record users' one-tap reports of what a seller said, as fixed codes",
+    "priority": "MVP (`nabvy/docs/decisions.md:154-158`)",
+    "round": 4,
+    "scope": "MVP",
+    "dependsOn": ["switches", "auth", "account", "listing-ingest"],
+    "softDependsOn": []
+  },
+  {
     "name": "listing-suppression",
     "group": "Trust and rights",
     "job": "Keep the suppression list and resolve it to listings",
@@ -602,7 +644,7 @@
     "group": "Trust and rights",
     "job": "Take objection and erasure requests and carry them out",
     "priority": "Launch (`fb-scrap-engine/docs/design/SELLER_DATA.md:131-142`)",
-    "round": 16,
+    "round": 13,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -631,7 +673,9 @@
       "alert-router",
       "notifier",
       "pasted-link-lookup",
-      "listing-feedback"
+      "listing-feedback",
+      "pickup-location",
+      "seller-reply-reports"
     ],
     "softDependsOn": [
       "seller-key",
@@ -647,7 +691,7 @@
     "group": "Trust and rights",
     "job": "Fail CI when user-facing output breaks the rules",
     "priority": "Launch (`nabvy/docs/decisions.md:34,42`)",
-    "round": 17,
+    "round": 14,
     "scope": "MVP",
     "dependsOn": [
       "listing-suppression",
@@ -669,7 +713,8 @@
       "inventory",
       "account",
       "account-integrity",
-      "listing-feedback"
+      "listing-feedback",
+      "pickup-location"
     ],
     "softDependsOn": [
       "multi-quantity-filter",
@@ -694,7 +739,7 @@
     "group": "Operations",
     "job": "Roll up daily metrics and public freshness",
     "priority": "BP1 (`nabvy/docs/backlog.md:31`)",
-    "round": 16,
+    "round": 13,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -708,7 +753,8 @@
       "product-events",
       "incidents",
       "run-coverage",
-      "listing-feedback"
+      "listing-feedback",
+      "copy-advert"
     ],
     "softDependsOn": []
   },
@@ -717,7 +763,7 @@
     "group": "Operations",
     "job": "Tell the founder when something needs a human",
     "priority": "P1 (`nabvy/docs/operations.md:21`)",
-    "round": 16,
+    "round": 13,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -737,7 +783,7 @@
     "group": "Operations",
     "job": "Run the human loop: review, corrections, fixture export",
     "priority": "BP4 (`nabvy/docs/backlog.md:65`)",
-    "round": 17,
+    "round": 14,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -746,6 +792,7 @@
       "parts-record",
       "listing-assessment",
       "suspected-labels",
+      "copy-advert",
       "notifier",
       "audit-log",
       "account-integrity",
@@ -758,7 +805,7 @@
     "group": "Other sources, sold prices and scan",
     "job": "Call eBay Browse: search, item and image search",
     "priority": "After MVP; BP2 (`nabvy/docs/backlog.md:37`)",
-    "round": 3,
+    "round": 4,
     "scope": "After MVP",
     "dependsOn": ["switches", "spend-governor", "cost-meter", "product-catalogue"],
     "softDependsOn": []
@@ -768,7 +815,7 @@
     "group": "Other sources, sold prices and scan",
     "job": "Read eBay sold data (Marketplace Insights, flagged)",
     "priority": "After MVP; BP2 (`nabvy/docs/backlog.md:39`)",
-    "round": 3,
+    "round": 4,
     "scope": "After MVP",
     "dependsOn": ["switches", "spend-governor", "cost-meter", "product-catalogue"],
     "softDependsOn": []
@@ -788,7 +835,7 @@
     "group": "Other sources, sold prices and scan",
     "job": "Collect Gumtree listings through Apify",
     "priority": "After MVP; BP5; blocked (`nabvy/supabase/README.md:54`; `nabvy/docs/progress.md:53`)",
-    "round": 3,
+    "round": 4,
     "scope": "After MVP",
     "dependsOn": ["switches", "spend-governor", "cost-meter"],
     "softDependsOn": []
@@ -835,7 +882,7 @@
     "group": "Other sources, sold prices and scan",
     "job": "Compute margin and days-to-sell where real sold data exists",
     "priority": "After MVP; BP2 (`nabvy/docs/decisions.md:15-17`)",
-    "round": 11,
+    "round": 10,
     "scope": "After MVP",
     "dependsOn": [
       "switches",
@@ -862,7 +909,7 @@
     "group": "Other sources, sold prices and scan",
     "job": "Price a scanned item from shared data: Facebook asks in the MVP, eBay and CeX after it",
     "priority": "MVP, from Facebook asks only (`nabvy/docs/decisions.md:85`); BP3 (`nabvy/docs/backlog.md:49`)",
-    "round": 13,
+    "round": 10,
     "scope": "MVP",
     "dependsOn": ["switches", "scan-recognition", "asking-price-index", "usage-ledger", "account"],
     "softDependsOn": ["ebay-adapter", "ebay-sold", "cex-adapter", "sold-price-book"]
@@ -918,7 +965,7 @@
     "name": "account",
     "group": "Accounts, billing and marketing",
     "job": "Profiles, channel links, export, deletion and the standing record",
-    "priority": "MVP; BP4 (`nabvy/docs/backlog.md:62`); standing (`nabvy/docs/decisions.md:111-137`)",
+    "priority": "MVP; BP4 (`nabvy/docs/backlog.md:62`); standing (`nabvy/docs/decisions.md:110-129`)",
     "round": 2,
     "scope": "MVP",
     "dependsOn": ["switches", "auth", "audit-log"],
@@ -928,7 +975,7 @@
     "name": "subscriptions",
     "group": "Accounts, billing and marketing",
     "job": "Turn Stripe subscriptions into entitlements, under the no-refunds rules",
-    "priority": "MVP: live at launch, the owner's override (`nabvy/docs/decisions.md:93,96-110`); BP4",
+    "priority": "MVP: live at launch, the owner's override (`nabvy/docs/decisions.md:93,96-109`); BP4",
     "round": 4,
     "scope": "MVP",
     "dependsOn": ["switches", "auth", "account", "audit-log", "usage-ledger"],
@@ -958,8 +1005,8 @@
     "name": "account-integrity",
     "group": "Accounts, billing and marketing",
     "job": "Enforce fair use automatically: throttle, limit, suspend or ban, and catch ban evasion; reasons stay internal",
-    "priority": "MVP; ships in shadow (`nabvy/docs/decisions.md:111-137`)",
-    "round": 16,
+    "priority": "MVP; ships in shadow (`nabvy/docs/decisions.md:110-129`)",
+    "round": 13,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -1021,7 +1068,7 @@
     "group": "Accounts, billing and marketing",
     "job": "Send Nabvy Daily",
     "priority": "MVP: the private brief only (question 30); BP4 (`nabvy/docs/backlog.md:71`)",
-    "round": 16,
+    "round": 13,
     "scope": "MVP",
     "dependsOn": [
       "switches",
@@ -1048,7 +1095,7 @@
     "group": "Later (brief)",
     "job": "Suggest an opening offer from the lower quartile at n≥10",
     "priority": "Later, held back (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:179-183`)",
-    "round": 13,
+    "round": 10,
     "scope": "Later",
     "dependsOn": ["switches", "asking-price-index", "listing-assessment", "listing-suppression"],
     "softDependsOn": []
@@ -1058,7 +1105,7 @@
     "group": "Later (brief)",
     "job": "Compare a PC's ask with standalone part asks",
     "priority": "Later (`fb-scrap-engine/docs/HANDOFF.md:203-204`)",
-    "round": 13,
+    "round": 10,
     "scope": "Later",
     "dependsOn": ["switches", "asking-price-index", "parts-record", "listing-assessment"],
     "softDependsOn": []
@@ -1068,7 +1115,7 @@
     "group": "Later (brief)",
     "job": "Flag regional flip opportunities",
     "priority": "Later (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:217`)",
-    "round": 14,
+    "round": 11,
     "scope": "Later",
     "dependsOn": ["switches", "part-out-calculator", "city-pages"],
     "softDependsOn": []
@@ -1078,7 +1125,7 @@
     "group": "Later (brief)",
     "job": "Show sellers what similar PCs ask, aggregates only",
     "priority": "Later (`fb-scrap-engine/docs/HANDOFF.md:206`)",
-    "round": 13,
+    "round": 10,
     "scope": "Later",
     "dependsOn": ["switches", "asking-price-index", "product-catalogue"],
     "softDependsOn": []

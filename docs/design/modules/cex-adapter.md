@@ -15,4 +15,4 @@
 - **Tests and fixtures:** cache and cap; the response wrapper.
 - **Priority and phase:** After MVP: the MVP has one source, Facebook (`nabvy/docs/decisions.md:85`). BP1 (`nabvy/docs/backlog.md:28`).
 - **Sources:** `nabvy/docs/providers.md:37-42`; `nabvy/docs/compliance.md:24`.
-- **Open questions:** `nabvy/docs/decisions.md:194` (CeX licensing).
+- **Open questions:** `nabvy/docs/decisions.md:245` (CeX licensing).

@@ -10,7 +10,7 @@
 - **Owns:** `records` (listing, evidence_hash, kind, rule_version, ai_version, photo_version), `parts` (listing, evidence_hash, part_type, catalogue_id, attrs, inclusion, source, quote, start, end, conflict).
 - **Views:** internal `v_records`, `v_parts`. User-facing: none; quotes reach users through `spec-match` after redaction.
 - **Contracts:** `PartsRecordKind`, `PartsRecordPartType`, `PartsRecordInclusion`, `PartsRecordPart`, `PartsRecordRecordedEvent`.
-- **Depends on:** `switches`, `parts-rules`, `parts-ai`, `photo-review`, `product-catalogue`.
+- **Depends on:** `switches`, `parts-rules`, `parts-ai` (soft: off until an AI processor agreement, rule rows only), `photo-review` (soft: gated on actor photo capture), `product-catalogue`.
 - **When off:** no parts anywhere; `spec-match` shows parts as not stated.
 - **Tests and fixtures:** the two worked examples as synthetic fixtures: listing 2756686961383848 with its parts table (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:59-70`) and listing 29056633657273875, "Pc", with its parts only in the description (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:6-9`); recorded-run inclusion cases: extras that "come with" the PC, an optional paid extra, and items not included (`…/dataset.json:2244,5464,5779`).
 - **Priority and phase:** First (`fb-scrap-engine/docs/HANDOFF.md:159-167`).

@@ -15,4 +15,4 @@
 - **Tests and fixtures:** deduplication; lease expiry; priority order; batch size; not-attempted requeue; closing a batch twice changes nothing.
 - **Priority and phase:** P1, step 3 (`fb-scrap-engine/docs/HANDOFF.md:148-150`).
 - **Sources:** `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:68,108-109,146,172-173,194-196`; `fb-scrap-engine/docs/design/SCALE_PLAN.md:80-82`; `fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:150-151,228-229`; `fb-scrap-engine/README.md:106-111,136-139`; `fb-scrap-engine/docs/EVIDENCE_LEDGER.md:217-219,250-253`; `nabvy/docs/decisions.md:21-22`.
-- **Open questions:** 5, 6, 8.
+- **Open questions:** 5, 6.

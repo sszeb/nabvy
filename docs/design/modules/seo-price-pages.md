@@ -4,7 +4,7 @@
 
 ### `seo-price-pages`
 - **Purpose:** render public price pages per product key from sold data and CeX.
-- **Does / does not:** eBay sold, CeX cash and a 90-day trend, rendered nightly (`nabvy/docs/web-app.md:20`; `nabvy/docs/marketing.md:54`). Facebook asks are not published (`nabvy/docs/decisions.md:24`).
+- **Does / does not:** eBay sold, CeX cash and a 90-day trend, rendered nightly (`nabvy/docs/web-app.md:20`; `nabvy/docs/marketing.md:54`). Facebook asks are not on these pages in this design; whether to add them is part of question 30, now that the legal-advice gate is lifted (`nabvy/docs/decisions.md:24,177`).
 - **Inputs:** `v_bands`, `v_prices`.
 - **Outputs:** public pages.
 - **Owns:** none.

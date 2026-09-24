@@ -11,7 +11,7 @@
 - **Contracts:** `QuoteRedactionResult`.
 - **Depends on:** none.
 - **When off:** callers show no quote at all and send no listing text to a model (fail closed); other facts still show.
-- **Tests and fixtures:** the detectors already used by `nabvy/services/source-adapters/test/facebook-run-fixture.test.ts:110-135`; the recorded run's masked business postcode (`nabvy/fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/README.md:35-37`) as a synthetic unmasked case.
+- **Tests and fixtures:** the detectors already used by `nabvy/services/source-adapters/test/fixtures/adapter.facebook-run.fixtures.ts:110-134`; the recorded run's masked business postcode (`nabvy/fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/README.md:35-37`) as a synthetic unmasked case.
 - **Priority and phase:** Launch.
 - **Sources:** `fb-scrap-engine/docs/design/SELLER_DATA.md:296-301`; `nabvy/supabase/README.md:62-69`.
 - **Open questions:** 11, 13.

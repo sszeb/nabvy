@@ -15,4 +15,4 @@
 - **Tests and fixtures:** normalisation from recorded responses (`nabvy/docs/backlog.md:37`).
 - **Priority and phase:** After MVP: the MVP has one source, Facebook (`nabvy/docs/decisions.md:85`). BP2.
 - **Sources:** `nabvy/docs/providers.md:26-35`; `nabvy/docs/compliance.md:22-23`; `nabvy/docs/backlog.md:37-38`.
-- **Open questions:** `nabvy/docs/decisions.md:193` (eBay approvals).
+- **Open questions:** `nabvy/docs/decisions.md:244` (eBay approvals).

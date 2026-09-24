@@ -2,7 +2,7 @@
 
 **For the owner.** The first coordinator session, `session_012J8dDJ1GUtySk77vK6SNjM`, handed off to a fresh one at about 11:20 UTC on 2026-09-24 because its context had grown large. It did this under your rule in `CLAUDE.md`, "Short sessions: hand off on your own". The old session now only commits the design drafts still being written as each one finishes. Follow the new coordinator from here.
 
-**Coordinator 3 (from 12:50 UTC).** Coordinator 2 (`session_01XSTcLZmm35nVGEa6LhMoUj`) handed off at 434k tokens. Start here: (1) `git fetch origin claude/coordinator-2` and base your branch `claude/coordinator-3` on it (PR #12 is still open from `claude/coordinator-2`; keep pushing docs there until it merges, then use your own branch); (2) re-create the two-hour sweep with `send_later` for about 14:40 UTC, prompt as in "Next steps" step 1; (3) subscribe to PR #12 and to each wave-1 PR as it opens; (4) follow "Wave 1" below. The PR watchdog Routine `trig_011fjd2grZBEWR3FqfDzTWJR` is fresh-session and stays as is. Coordinator 3 is `session_01MDEFeMG2eAjgFNVvtDQcFi`; its next sweep is `trig_01NZbY3KYGnPZp8geppX9eHN` (14:40 UTC). At 12:50 it merged `main` into `claude/coordinator-2` (PR #12 conflicted in `docs/questions.md`; both sides kept).
+**Coordinator 3 (from 12:50 UTC).** Coordinator 2 (`session_01XSTcLZmm35nVGEa6LhMoUj`) handed off at 434k tokens. Start here: (1) `git fetch origin claude/coordinator-2` and base your branch `claude/coordinator-3` on it (PR #12 is still open from `claude/coordinator-2`; keep pushing docs there until it merges, then use your own branch); (2) re-create the two-hour sweep with `send_later` for about 14:40 UTC, prompt as in "Next steps" step 1; (3) subscribe to PR #12 and to each wave-1 PR as it opens; (4) follow "Wave 1" below. The PR watchdog Routine `trig_011fjd2grZBEWR3FqfDzTWJR` is fresh-session and stays as is. Coordinator 3 is `session_01MDEFeMG2eAjgFNVvtDQcFi`; its next sweep is `trig_01NZbY3KYGnPZp8geppX9eHN` (14:40 UTC). At 12:50 it merged `main` into `claude/coordinator-2` (PR #12 conflicted in `docs/questions.md`; both sides kept). At 13:00, on coordinator 1's note, it merged `origin/claude/hopeful-wright-r5ygps` (the final audited catalogue and five drafts), regenerated the cards (89 modules, rounds 0 to 14) and republished the catalogue page (version 2). Brief round 1 onwards only from these cards; tiers are in the page (top for 41 modules, including the new `pickup-location`).
 
 **For the next coordinator.** The rest of this note is for you. Update it when you hand off in turn.
 
@@ -53,7 +53,7 @@ Do not read the whole build pack. Read a file when a task needs it.
 
 ## Fleet at handoff (11:20 UTC, snapshot)
 
-Check each row with `get_session` by ID and `list_triggers` before acting; sessions and blocks after this time are not listed. At each hand-off, fill in what each session is blocked on from a fresh `get_session` sweep. Since 11:32 the reviewer is `session_01N9Z7KMkngJHEJBjDEReGo3` ("Nabvy PR reviewer (2)"); reviewer 1 below has handed off. Find a later reviewer with `get_session` on that ID, else `list_sessions` with `mine: true` and no `tags` filter (the filter errors inside a session), taking the newest non-archived row titled "Nabvy PR reviewer".
+Check each row with `get_session` by ID and `list_triggers` before acting; sessions and blocks after this time are not listed. At each hand-off, fill in what each session is blocked on from a fresh `get_session` sweep. Since 12:57 the reviewer is `session_01AxhGvp1bDTi7zahVzsJAii` ("Nabvy PR reviewer (3)"); reviewers 1 and 2 (`session_01N9Z7KMkngJHEJBjDEReGo3`) have handed off. Find a later reviewer with `get_session` on that ID, else `list_sessions` with `mine: true` and no `tags` filter (the filter errors inside a session), taking the newest non-archived row titled "Nabvy PR reviewer".
 
 | Session | ID | Role and state | Its scheduled check-ins |
 | --- | --- | --- | --- |
@@ -91,14 +91,15 @@ The predecessor's design workflows write raw drafts. As each finishes, it is com
 
 | Draft | Subject | State at handoff |
 | --- | --- | --- |
-| `modules.md` | The atomic module catalogue (about 290 KB) | Landed |
-| `copy-advert.md` | The copy-advert spam module | Being revised |
-| `actor-integration.md` | How Nabvy uses the actor: planning, scheduling, spend, ingest | Being revised |
+| `modules.md` | The atomic module catalogue (about 320 KB; 89 modules, 15 build rounds, final audited version) | Landed |
+| `catalogue-audit-changes.md` | The final audit's change log. It has three points to take to the owner: five dependencies made soft so the rtx3090 test does not wait for billing or photos; three placeholder modules; task-ID clashes with the account-sharing and listing-reuse drafts | Landed |
+| `copy-advert.md` | The copy-advert spam module | Landed |
+| `actor-integration.md` | How Nabvy uses the actor: planning, scheduling, spend, ingest | Landed |
 | `account-sharing.md` | Account-integrity: sharing protection, bans, ban evasion | Landed |
-| `listing-location.md` | Where an item really is: the location field, "collection from X", autofill mistakes | Being critiqued |
-| `search-map-routes.md` | eBay-style filters, the map with approximate markers, distance with "worth the trip" hints, pickup route planner | Being designed |
-| `too-good-to-be-true.md` | Marking scam-like listings from listing signals plus one-tap user reports | Being designed |
-| `listing-reuse.md` | Reusing listings other than the one searched for (by-catch): shared pool, price learning, cross-hunt matching, gems, similar picks | Being read |
+| `listing-location.md` | Where an item really is: the location field, "collection from X", autofill mistakes | Landed |
+| `search-map-routes.md` | eBay-style filters, the map with approximate markers, distance with "worth the trip" hints, pickup route planner | Landed |
+| `too-good-to-be-true.md` | Marking scam-like listings from listing signals plus one-tap user reports | Landed |
+| `listing-reuse.md` | Reusing listings other than the one searched for (by-catch): shared pool, price learning, cross-hunt matching, gems, similar picks | Landed |
 
 Treat the drafts as design notes, not decisions. A product choice in them goes to the owner or to `docs/questions.md`; a legal point goes to `docs/legal-review.md`, one line each.
 
@@ -127,6 +128,7 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
 
 ## Next steps, in order
 
+0. **Pull request subscriptions** are per session and do not carry over. Subscribe with `subscribe_pr_activity` to your own pull requests only. Build sessions and the reviewer subscribe to theirs, so you do not need events from #7, #9 or #10.
 1. **Set one scheduled sweep, every two hours from about 12:30 UTC,** with `send_later`. This replaces the old hourly fleet check and the separate actor-documents check. Each sweep does the following:
    - **Re-arm first.** Before any other call, re-arm the next sweep two hours ahead, so a sweep that fails part-way still leaves one armed. Record its trigger ID in this note.
    - **Fleet.** Call `get_session` by ID for each session in the fleet table. In the message to the owner, name any session that is blocked or has `needs_action` set (session ID and what it waits on), and any idle session over 300k used tokens; do not wake them. Keep each session's `cost_usd` and `used_tokens` for **Spend** below, written at the next batched push only.
@@ -154,7 +156,7 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
    - scan (vision AI per scan, capped per user);
    - account-integrity;
    - billing, once Stripe is set up.
-5. **Keep records current.** Record PR #10 as 4.1c. Keep `docs/progress.md` current after every merge.
+5. **Keep records current.** Add a 4.1c task to `docs/backlog.md` for PR #10's scope: branded error pages and the restricted-account notice, stacked on PR #7. Then record PR #10 against it in `docs/progress.md`. Keep `docs/progress.md` current after every merge.
 
 ## Waiting on the owner
 
@@ -162,7 +164,7 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
 
 - **Stripe test mode.**
   - Add a test secret key as an environment secret.
-  - Allow `api.stripe.com` in the environment's network policy.
+  - Allow Stripe in the environment's network policy: `*.stripe.com` and `*.stripe.network`. If wildcards are not accepted, add `api.stripe.com`, `checkout.stripe.com`, `js.stripe.com` and `m.stripe.network`.
   - Enable Stripe Tax.
 
   Until then 4.3 is blocked. When explaining how, use `read_documentation` with the `environment.secrets` and `environment.network` topics.

@@ -4,7 +4,7 @@
 
 ### `pasted-link-lookup`
 - **Purpose:** let a user paste a Marketplace listing link and get the listing's facts from the shared pipeline, never through a per-user fetch.
-- **Does / does not:** takes the listing ID from `facebook.com/marketplace/item/<id>/` and refuses any other URL (listing text and user input never choose URLs or runs, `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:186-188`). If the listing is already described, it answers at once; otherwise it adds the ID to the shared, deduplicated details queue (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:228-229`; confirmed by the owner, `nabvy/docs/decisions.md:95`) and tells the user when it is ready. Rate-limited per user in the oRPC middleware (`nabvy/docs/engineering.md:67`; the limit is a starting value). Not charged meanwhile: whether it is a metered "live on-demand lookup" is the owner's call (question 40). Interpretation runs once per listing in the shared pipeline, never per user. It fetches only when collection is allowed (question 8).
+- **Does / does not:** takes the listing ID from `facebook.com/marketplace/item/<id>/` and refuses any other URL (listing text and user input never choose URLs or runs, `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:186-188`). If the listing is already described, it answers at once; otherwise it adds the ID to the shared, deduplicated details queue (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:228-229`; confirmed by the owner, `nabvy/docs/decisions.md:95`) and tells the user when it is ready. Rate-limited per user in the oRPC middleware (`nabvy/docs/engineering.md:67`; the limit is a starting value). Not charged meanwhile: whether it is a metered "live on-demand lookup" is the owner's call (question 40). Interpretation runs once per listing in the shared pipeline, never per user. Its fetches run under the switches and the monthly cap like any hunt's; the collection gate is lifted (`nabvy/docs/decisions.md:138,176`).
 - **Inputs:** web form; `app.v_listing_card`; `v_suppressed`; `account.deleted`.
 - **Outputs:** `pasted-link-lookup.ready` (request IDs); `detailsQueue.enqueue()`.
 - **Owns:** `requests` (id, user_id, source_listing_id, status, requested_at, ready_at).
@@ -15,4 +15,4 @@
 - **Tests and fixtures:** ID parsing keeps digits as text; non-Marketplace URLs are refused; the same link pasted twice makes one queue item.
 - **Priority and phase:** P1.
 - **Sources:** `fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:228-229`; `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:186-188`; `nabvy/docs/decisions.md:21`; `nabvy/services/source-adapters/README.md:88-89`.
-- **Open questions:** 8, 40.
+- **Open questions:** 40.
