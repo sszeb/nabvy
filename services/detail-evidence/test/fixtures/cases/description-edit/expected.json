@@ -1,0 +1,37 @@
+{
+  "steps": [
+    {
+      "details": 20,
+      "versionsWritten": 20,
+      "fetchesWritten": 20,
+      "changed": 20,
+      "unresolved": 0
+    },
+    {
+      "details": 20,
+      "versionsWritten": 1,
+      "fetchesWritten": 20,
+      "changed": 1,
+      "unresolved": 0
+    }
+  ],
+  "last": {
+    "changed": ["1756692548940192"],
+    "unresolved": []
+  },
+  "versions": {
+    "versions": 21,
+    "full_verified": 21
+  },
+  "current": 20,
+  "listing": {
+    "sourceListingId": "1756692548940192",
+    "firstSeenAt": "2026-09-25T01:40:43.415Z",
+    "condition": null,
+    "attributes": []
+  },
+  "text": {
+    "sourceListingId": "1756692548940192",
+    "startsWith": "Selling my previous gaming pc. Now with"
+  }
+}

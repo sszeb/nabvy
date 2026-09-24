@@ -1,0 +1,1 @@
+The user already spent 4.5p of the 5p cap in the window; the worst-case call (2,500 input and 600 output tokens at the vision model price, 0.825p at 0.75) would pass it, so the scan is refused before any model call.

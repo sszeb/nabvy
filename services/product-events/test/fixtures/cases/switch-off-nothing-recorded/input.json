@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "source": "module card, \"When off\": nothing recorded; features unaffected",
+  "userId": "00000000-0000-7000-8000-000000000005",
+  "consent": true,
+  "switchState": "off",
+  "sessionId": null,
+  "trackInput": {
+    "event": "signup_completed",
+    "properties": { "method": "magic-link", "referralOrAffiliatePresent": false }
+  }
+}

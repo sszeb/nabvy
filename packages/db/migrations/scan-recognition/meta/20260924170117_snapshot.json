@@ -1,0 +1,399 @@
+{
+  "id": "d125f332-171d-4c50-bce9-eb7ee064a24a",
+  "prevId": "0e5aecc1-836d-444a-a65e-cd9e7171f8f8",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "scan_recognition.scan_events": {
+      "name": "scan_events",
+      "schema": "scan_recognition",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "barcode": {
+          "name": "barcode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_ref": {
+          "name": "photo_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_media_type": {
+          "name": "photo_media_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_expires_at": {
+          "name": "photo_expires_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "method": {
+          "name": "method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identified": {
+          "name": "identified",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "candidates": {
+          "name": "candidates",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "confidence": {
+          "name": "confidence",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "confirmed": {
+          "name": "confirmed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "description": {
+          "name": "description",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "search_phrases": {
+          "name": "search_phrases",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "model_called": {
+          "name": "model_called",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "model_ref": {
+          "name": "model_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "output_valid": {
+          "name": "output_valid",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cost_gbp_micros": {
+          "name": "cost_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identified_at": {
+          "name": "identified_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "confirmed_at": {
+          "name": "confirmed_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "scan_events_user_id_at_idx": {
+          "name": "scan_events_user_id_at_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "scan_events_photo_expires_at_idx": {
+          "name": "scan_events_photo_expires_at_idx",
+          "columns": [
+            {
+              "expression": "photo_expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "where": "\"scan_recognition\".\"scan_events\".\"photo_ref\" is not null",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "scan_events_method": {
+          "name": "scan_events_method",
+          "value": "\"scan_recognition\".\"scan_events\".\"method\" in ('barcode', 'cex_box', 'vision', 'none')"
+        },
+        "scan_events_status": {
+          "name": "scan_events_status",
+          "value": "\"scan_recognition\".\"scan_events\".\"status\" in ('identified', 'needs_confirmation', 'unidentified')"
+        },
+        "scan_events_barcode_format": {
+          "name": "scan_events_barcode_format",
+          "value": "\"scan_recognition\".\"scan_events\".\"barcode\" ~ '^([0-9]{8}|[0-9]{12,14})$'"
+        },
+        "scan_events_photo_ref_per_user": {
+          "name": "scan_events_photo_ref_per_user",
+          "value": "\"scan_recognition\".\"scan_events\".\"photo_ref\" like 'scans/' || \"scan_recognition\".\"scan_events\".\"user_id\"::text || '/%'"
+        },
+        "scan_events_photo_media_type": {
+          "name": "scan_events_photo_media_type",
+          "value": "\"scan_recognition\".\"scan_events\".\"photo_media_type\" in ('image/jpeg', 'image/png', 'image/webp')"
+        },
+        "scan_events_confidence_range": {
+          "name": "scan_events_confidence_range",
+          "value": "\"scan_recognition\".\"scan_events\".\"confidence\" between 0 and 1"
+        },
+        "scan_events_candidates_max": {
+          "name": "scan_events_candidates_max",
+          "value": "cardinality(\"scan_recognition\".\"scan_events\".\"candidates\") <= 3"
+        },
+        "scan_events_identified_is_candidate": {
+          "name": "scan_events_identified_is_candidate",
+          "value": "\"scan_recognition\".\"scan_events\".\"identified\" is null or \"scan_recognition\".\"scan_events\".\"identified\" = any(\"scan_recognition\".\"scan_events\".\"candidates\")"
+        },
+        "scan_events_status_consistent": {
+          "name": "scan_events_status_consistent",
+          "value": "(\"scan_recognition\".\"scan_events\".\"status\" = 'identified') = (\"scan_recognition\".\"scan_events\".\"identified\" is not null)\n        and (\"scan_recognition\".\"scan_events\".\"status\" <> 'needs_confirmation' or cardinality(\"scan_recognition\".\"scan_events\".\"candidates\") > 0)\n        and (not \"scan_recognition\".\"scan_events\".\"confirmed\" or \"scan_recognition\".\"scan_events\".\"identified\" is not null)"
+        },
+        "scan_events_cost_nonnegative": {
+          "name": "scan_events_cost_nonnegative",
+          "value": "\"scan_recognition\".\"scan_events\".\"cost_gbp_micros\" >= 0"
+        },
+        "scan_events_model_fields": {
+          "name": "scan_events_model_fields",
+          "value": "\"scan_recognition\".\"scan_events\".\"model_called\" or (\"scan_recognition\".\"scan_events\".\"model_ref\" is null and \"scan_recognition\".\"scan_events\".\"output_valid\" is null and \"scan_recognition\".\"scan_events\".\"cost_gbp_micros\" = 0)"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "scan_recognition": "scan_recognition"
+  },
+  "views": {
+    "scan_recognition.v_scans": {
+      "name": "v_scans",
+      "schema": "scan_recognition",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "method": {
+          "name": "method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identified": {
+          "name": "identified",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "confidence": {
+          "name": "confidence",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "confirmed": {
+          "name": "confirmed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model_called": {
+          "name": "model_called",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identified_at": {
+          "name": "identified_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "scan_recognition.v_user_scans": {
+      "name": "v_user_scans",
+      "schema": "scan_recognition",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "method": {
+          "name": "method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identified": {
+          "name": "identified",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "candidates": {
+          "name": "candidates",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confidence": {
+          "name": "confidence",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "confirmed": {
+          "name": "confirmed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "search_phrases": {
+          "name": "search_phrases",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
