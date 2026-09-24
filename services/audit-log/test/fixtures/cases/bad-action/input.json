@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "source": "contracts: AuditLogAction is <module>.<what-happened>",
+  "role": "nabvy_pipeline",
+  "entry": {
+    "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+    "action": "RoleChanged",
+    "target": "user:1"
+  }
+}
