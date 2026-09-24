@@ -40,3 +40,11 @@ From a three-designer panel with an adversarial critic on "how do we speed up": 
 - **Fresh fix session at 150k tokens** (was 300k): when a review asks for more than a few edits and the build session is past 150k, the coordinator starts a fresh session on the PR branch from the review.
 - **The coordinator applies all of a merge's migrations in one call**: emit every pending file, concatenate, one `apply_migration`, one ledger query. It starts ready dependents before it applies.
 - **One token line per merge** in `docs/progress.md` (the build session's tokens and cost from `get_session`), so the next round of this analysis is measured rather than estimated.
+
+## Reviewer Routine (owner, 2026-09-24, 18:55 UTC)
+
+The reviewer is a fresh session per fire: Routine `trig_01FPLnjfTATPb7YQivWvA7FX` ("Nabvy PR reviewer (fresh session per fire)", top model, standalone brief). A build session asks for a review with one call, `fire_trigger` on that ID with the text `PR #<number>: <title>; migrations: <files in order, or none>; [cp N]`, when its PR is ready and again after it pushes fixes for a "Changes needed" review. The PR watchdog fires the same Routine for any non-draft PR whose head has had no review for an hour. The Routine posts one review with the verdict line first, merges on Approved with green CI, and wakes the coordinator with the migrations after a merge; it never touches Supabase. Reviewer 8 (`session_01W8BG14eKCyVvDh8uv3FHFu`) finishes the queue it holds and then stops taking PRs; no long-lived reviewer follows it. The Routine stores no claude.ai connectors; it needs none (GitHub and the session tools come from the environment, as for the watchdog).
+
+## Pauses (owner, 2026-09-24, 18:55 UTC)
+
+When the owner says pause, the coordinator: disables the PR watchdog, interrupts every running session (`interrupt_session`), creates one resume trigger per session at the resume time (a one-shot `create_trigger` with `persistent_session_id`) telling it to push uncommitted work first, moves its own sweep to just after the resume, and re-enables the watchdog at the sweep. A session's own scheduled check-ins may still fire during a pause; that is accepted. First pause: 18:55 to 19:32 UTC.
