@@ -65,6 +65,17 @@ Updated by the agent at the end of every task. A new session reads this first.
 
 Status values: not started, in progress, blocked (see `docs/questions.md`), done, superseded.
 
+## Wave 1 (atomic modules)
+
+Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when its hard dependencies are merged (`docs/design/modules/index.json`, "round"); round 0 first. Next: `switches` once `audit-log` merges, then round 2.
+
+| Module | Round | Status | Session | Model |
+| --- | --- | --- | --- | --- |
+| audit-log | 0 | in progress | `session_01SUaJRBg87fChhAHgCmYrGb` | top |
+| cost-meter | 0 | in progress | `session_01P7EwgNXQxqDq16uiLsSEVg` | top |
+| incidents | 0 | in progress | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
+| quote-redaction | 0 | in progress | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
+
 ## Work outside the backlog
 
 | Item | Status | Date | Notes |

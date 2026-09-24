@@ -107,6 +107,10 @@ Treat the drafts as design notes, not decisions. A product choice in them goes t
 - Step 2 done: cards in `docs/design/modules/` (re-run `node scripts/split-module-cards.mjs` when the draft changes), catalogue page https://claude.ai/artifact/TYppyezuT2g3Nmv2CGSxbD. It proposes starting each module when its hard dependencies are merged, rounds 0 to 2 first, so the earlier wave-1 list below moves to rounds 3 to 16. Model tiers are set in the page (top model for 40 modules: pipeline core, security, money; Sonnet for the rest).
 - Step 5: PR #10 recorded as 4.1c, PR #11 as 1.1a in `docs/progress.md`.
 
+## Wave 1 (12:45 UTC)
+
+The owner said "launch wave 1 now". Round 0 is running, one session each, briefs from the template in this session (card + `_rules.md` + `docs/session-conventions.md` via `git show origin/claude/coordinator-2:` until PR #12 merges): see the table in `docs/progress.md`. Start each later module when its hard dependencies are merged (round order in `docs/design/modules/index.json`), with the model tier from the catalogue page.
+
 ## Spend
 
 Updated only at batched pushes, from the sweep's `get_session` calls; `cost_usd` is cumulative per session.
