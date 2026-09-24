@@ -26,6 +26,7 @@
     "LANGFUSE_PUBLIC_KEY": "placeholder-langfuse-public",
     "LANGFUSE_SECRET_KEY": "placeholder-langfuse-secret",
     "LANGFUSE_HOST": "https://cloud.langfuse.com",
+    "LANGFUSE_SAMPLE_RATE": "0.25",
     "TELEGRAM_BOT_TOKEN": "placeholder-telegram-token",
     "DISCORD_BOT_TOKEN": "placeholder-discord-token",
     "VAPID_PUBLIC_KEY": "placeholder-vapid-public",

@@ -21,10 +21,15 @@ env.FB_DAILY_CAP_MINOR // number, default 1000
 - **Empty means unset.** `.env.example` ships every variable with an empty value; a blank or
   whitespace-only value counts as missing, never as a valid empty string.
 - **Defaults only where docs/secrets.md states a value.** `CEX_API_BASE`, `CEX_DAILY_CAP_CALLS`,
-  the three `MODEL_*` IDs, `POSTCODES_IO_BASE`, `POSTHOG_HOST`, the three spend caps,
-  `EBAY_INSIGHTS_ENABLED` and `LIVE_PROVIDERS` have defaults. `USD_GBP_RATE` and `ADMIN_EMAILS` are
-  configuration without a default. Secrets never have defaults; a test proves that every other
-  variable is missing from an empty environment.
+  the three `MODEL_*` IDs, `POSTCODES_IO_BASE`, `POSTHOG_HOST`, `LANGFUSE_SAMPLE_RATE`, the three
+  spend caps, `EBAY_INSIGHTS_ENABLED` and `LIVE_PROVIDERS` have defaults. `USD_GBP_RATE` and
+  `ADMIN_EMAILS` are configuration without a default. Secrets never have defaults; a test proves
+  that every other variable is missing from an empty environment.
+- **`safeLoadEnv` for a client that must do nothing without its keys.** `loadEnv` fails fast, on
+  purpose: most callers cannot run correctly with half their configuration. A third-party client
+  installed ahead of its keys existing (`@nabvy/telemetry`, task 0.10) has a different contract —
+  run with reduced function, not refuse to start — so it safe-parses its group instead. `loadEnv`
+  stays the default for every other caller.
 - **URL checks.** Provider endpoints must be `https://`. The app's own URLs (`BETTER_AUTH_URL`,
   `SUPABASE_URL`) may be `http://` so local development (`supabase start`, Next.js) works, but must
   have a scheme and a host.
