@@ -140,7 +140,6 @@ export type ProductCatalogueMatch = z.infer<typeof ProductCatalogueMatch>
 export const ProductCatalogueErrorCode = z.enum([
   'product-catalogue.invalid_input',
   'product-catalogue.unknown_item',
-  'product-catalogue.duplicate',
 ])
 export type ProductCatalogueErrorCode = z.infer<typeof ProductCatalogueErrorCode>
 
