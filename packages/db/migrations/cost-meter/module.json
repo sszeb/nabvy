@@ -1,0 +1,5 @@
+{
+  "module": "cost-meter",
+  "schema": "cost_meter",
+  "dependsOn": ["core"]
+}

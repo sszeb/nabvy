@@ -1,0 +1,14 @@
+{
+  "steps": [
+    { "ok": true, "changed": true, "countedMicros": 336300, "countedGbpMicros": 252225 },
+    { "ok": true, "changed": true, "countedMicros": 17700, "countedGbpMicros": 13275 },
+    {
+      "ok": false,
+      "code": "cost-meter.already_settled",
+      "countedMicros": 17700,
+      "countedGbpMicros": 13275
+    },
+    { "ok": true, "changed": false, "countedMicros": 17700, "countedGbpMicros": 13275 }
+  ],
+  "rows": 1
+}

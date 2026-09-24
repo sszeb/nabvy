@@ -1,0 +1,9 @@
+{
+  "module": "ebay-sold",
+  "provider": "ebay",
+  "refId": "ebay-request-1",
+  "currency": "GBP",
+  "reservedMicros": 100,
+  "status": "succeeded",
+  "at": "2026-09-24T12:00:00.000Z"
+}

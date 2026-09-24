@@ -1,0 +1,55 @@
+{
+  "synthetic": true,
+  "source": "fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/run.json (IDs and amounts)",
+  "usdGbpRate": 0.75,
+  "steps": [
+    {
+      "op": "record",
+      "input": {
+        "module": "apify-gateway",
+        "provider": "apify",
+        "refId": "synthetic-run-1",
+        "currency": "USD",
+        "reservedUsd": 0.3363,
+        "status": "pending",
+        "at": "2026-09-24T01:40:18.718Z"
+      }
+    },
+    {
+      "op": "settle",
+      "input": {
+        "provider": "apify",
+        "refId": "synthetic-run-1",
+        "currency": "USD",
+        "settledUsd": 0.0177,
+        "status": "succeeded",
+        "finishedAt": "2026-09-24T01:40:44.010Z",
+        "readAt": "2026-09-24T01:50:44.010Z"
+      }
+    },
+    {
+      "op": "settle",
+      "input": {
+        "provider": "apify",
+        "refId": "synthetic-run-1",
+        "currency": "USD",
+        "settledUsd": 0.0003,
+        "status": "succeeded",
+        "finishedAt": "2026-09-24T01:40:44.010Z",
+        "readAt": "2026-09-24T01:55:44.010Z"
+      }
+    },
+    {
+      "op": "record",
+      "input": {
+        "module": "apify-gateway",
+        "provider": "apify",
+        "refId": "synthetic-run-1",
+        "currency": "USD",
+        "reservedUsd": 0.3363,
+        "status": "pending",
+        "at": "2026-09-24T01:40:18.718Z"
+      }
+    }
+  ]
+}
