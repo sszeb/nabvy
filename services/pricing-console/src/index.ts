@@ -86,13 +86,14 @@ export async function priceFor(
   const rule = policy.prices.get(p.item.slice('price:'.length))
   if (!rule) return refuse('pricing-console.not_found')
   const priced = priceCredits(policy, s, costs, rule.value, offer)
+  if (!priced) return refuse('pricing-console.no_price')
   return ok(quote(p.item, 'credits', priced, versionOf('price', rule)))
 }
 
 function quote(
   item: PricingConsoleQuote['item'],
   currency: PricingConsoleQuote['currency'],
-  priced: ReturnType<typeof priceCredits>,
+  priced: NonNullable<ReturnType<typeof priceCredits>>,
   rowVersion: string,
 ): PricingConsoleQuote {
   return {
@@ -159,6 +160,7 @@ export async function estimate(
   const costs = await repo.loadCosts(q, policy)
   const offer = await liveOffer(q, policy, `price:${rule.key}`, w.userId, w.plan)
   const priced = priceCredits(policy, s, costs, rule.value, offer)
+  if (!priced) return refuse('pricing-console.no_price')
   const perArea = w.roundTheClock
     ? Math.ceil((priced.amount * s.roundTheClockBps) / 10_000)
     : priced.amount
@@ -342,8 +344,7 @@ async function write(
   if ((await state(q, module)) === 'off') return refuse('pricing-console.off')
   await repo.lockPolicy(q)
   const now = await repo.dbNow(q)
-  const at = effectiveAt === undefined ? now : new Date(effectiveAt)
-  if (at.getTime() < now.getTime()) {
+  if (effectiveAt !== undefined && Date.parse(effectiveAt) < now.getTime()) {
     return refuse('pricing-console.invalid', ['a change cannot take effect in the past'])
   }
   if (kind === 'offer' && value && Date.parse(String(value.endsAt)) <= now.getTime()) {
@@ -355,11 +356,27 @@ async function write(
   if (latest && latest.retired === retire && (retire || sameJson(latest.value, value))) {
     return ok({ row: toRow(latest), changed: false })
   }
+  // A version never takes effect before the one it follows, so a change made now cannot skip
+  // a version already scheduled: without a time it follows that version (review of PR #55).
+  const scheduled = latest && latest.effectiveAt > now ? latest.effectiveAt : null
+  const at = effectiveAt === undefined ? (scheduled ?? now) : new Date(effectiveAt)
+  if (scheduled && at < scheduled) {
+    return refuse('pricing-console.invalid', [
+      `version ${latest?.version} takes effect at ${scheduled.toISOString()}; a change cannot take effect before it`,
+    ])
+  }
+  // An offer stays with whom it was made for: one user, or its segment (review of PR #55).
+  if (kind === 'offer' && latest && value && (value.userId ?? null) !== latest.targetUserId) {
+    return refuse('pricing-console.invalid', [
+      'an offer cannot change whom it is for; make a new offer instead',
+    ])
+  }
 
   const before = await repo.loadPolicy(q)
   const after = withChange(before, kind, key, value)
   const costsBefore = await repo.loadCosts(q, before)
-  const costsAfter = kind === 'cost-basis' ? await repo.loadCosts(q, after) : costsBefore
+  const costsAfter =
+    kind === 'cost-basis' ? await repo.loadCosts(q, after, { unwritten: true }) : costsBefore
   const fresh = newViolations(
     floorViolations(before, costsBefore),
     floorViolations(after, costsAfter),
@@ -381,7 +398,7 @@ async function write(
     retired: retire,
     targetUserId: kind === 'offer' ? ((stored.userId as string | null) ?? null) : null,
     // Omitted: the database's now(), the same clock the views compare with.
-    ...(effectiveAt === undefined ? {} : { effectiveAt: at }),
+    ...(effectiveAt === undefined && !scheduled ? {} : { effectiveAt: at }),
     createdBy: actorUserId,
     reason: reason ?? null,
   })

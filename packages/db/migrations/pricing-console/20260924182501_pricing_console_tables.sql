@@ -8,7 +8,7 @@ CREATE TABLE "pricing_console"."policy_rows" (
 	"value" jsonb NOT NULL,
 	"retired" boolean DEFAULT false NOT NULL,
 	"target_user_id" uuid,
-	"effective_at" timestamp (3) with time zone DEFAULT now() NOT NULL,
+	"effective_at" timestamp (3) with time zone DEFAULT date_trunc('milliseconds', now()) NOT NULL,
 	"created_by" uuid,
 	"reason" text,
 	"created_at" timestamp (3) with time zone DEFAULT now() NOT NULL,

@@ -340,6 +340,15 @@ export function floorViolations(policy: Policy, costs: Costs): Violation[] {
     })
   }
 
+  if (sources.length === 0) {
+    for (const item of sold) {
+      out.push({
+        id: `${item.id}:unsold`,
+        rows: item.rows,
+        message: `${item.label} costs ${pence(item.cost)}p but no credit is sold to pay for it`,
+      })
+    }
+  }
   for (const item of sold) {
     if (item.credits === 0) {
       out.push({
@@ -485,9 +494,14 @@ export interface Priced {
   floored: boolean
 }
 
+/** The most credits a price may be (Postgres `integer`). */
+const MAX_CREDITS = 2_147_483_647
+
 /**
  * A checking or watching price for one user: the list price, less the best offer, never below
  * the floor price at the lowest rate credit is sold at (costs can rise after a price is set).
+ * Null when no floor price can be set: the cost basis is missing, no credit is sold, or the floor
+ * is beyond any credit count (review of PR #55).
  */
 export function priceCredits(
   policy: Policy,
@@ -495,16 +509,17 @@ export function priceCredits(
   costs: Costs,
   rule: PricingConsolePriceRule,
   offer: Versioned<PricingConsoleOffer> | null,
-): Priced {
+): Priced | null {
   const list = rule.credits
   const offered = offer ? discounted(list, offer.value.discountBps) : list
   let min = rule.unit === 'area-month' ? 1 : 0
   const cost = unitCost(rule, costs)
-  if (cost === undefined) min = Number.MAX_SAFE_INTEGER
-  else if (cost !== null) {
+  if (cost === undefined) return null
+  if (cost !== null) {
     const low = lowestRate(listRateSources(policy, s))
-    min =
-      low === null ? Number.MAX_SAFE_INTEGER : Math.max(1, floorCredits(low, cost, s.minMarginBps))
+    if (low === null) return null
+    min = Math.max(1, floorCredits(low, cost, s.minMarginBps))
+    if (min > MAX_CREDITS) return null
   }
   if (offered >= min) return { list, amount: offered, offer, floored: false }
   if (list >= min) return { list, amount: min, offer, floored: true }

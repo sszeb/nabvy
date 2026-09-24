@@ -40,7 +40,8 @@ export const policyRows = schema.table(
     retired: boolean('retired').notNull().default(false),
     /** An offer's user, copied from its value so row-level security can hide it from others. */
     targetUserId: uuid('target_user_id'),
-    effectiveAt: at('effective_at').notNull().defaultNow(),
+    /** Truncated, not rounded, to the column's milliseconds, so a row is never a moment ahead of now(). */
+    effectiveAt: at('effective_at').notNull().default(sql`date_trunc('milliseconds', now())`),
     /** The admin who made the change; null for the seeded initial values. */
     createdBy: uuid('created_by'),
     reason: text('reason'),
@@ -97,7 +98,7 @@ export const vPrices = schema
   })
   .existing()
 
-/** Offers live now, while the module is not off (PricingConsoleOfferRow). */
+/** Offers live now, while the module is on (PricingConsoleOfferRow). */
 export const vOffers = schema
   .view('v_offers', {
     offer: text('offer').notNull(),
@@ -130,6 +131,7 @@ export const vFreePolicy = schema
     signupsPerIpDay: integer('signups_per_ip_day'),
     signupsPerDeviceDay: integer('signups_per_device_day'),
     signupsPerEmailDomainDay: integer('signups_per_email_domain_day'),
+    accountDayCapPence: integer('account_day_cap_pence'),
     effectiveAt: at('effective_at').notNull(),
   })
   .existing()

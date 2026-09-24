@@ -152,6 +152,104 @@ describe('the table', () => {
   })
 })
 
+describe('review of PR #55', () => {
+  const offer = (userId: string | null, segment: string | null) => ({
+    userId,
+    segment,
+    item: 'price:export' as const,
+    discountBps: 1000,
+    startsAt: new Date(Date.now() - 60_000).toISOString(),
+    endsAt: new Date(Date.now() + 3_600_000).toISOString(),
+  })
+  const set = (key: string, value: unknown, effectiveAt?: string) =>
+    db.as('nabvy_pipeline', (q) =>
+      setPolicy(q, {
+        actorUserId: ADMIN,
+        kind: 'offer',
+        key,
+        value: value as never,
+        ...(effectiveAt ? { effectiveAt } : {}),
+      }),
+    )
+  const code = (r: Awaited<ReturnType<typeof set>>) => (r.ok ? 'ok' : r.error.code)
+
+  it('an offer never changes whom it is for, in code and in the database', async () => {
+    expect(code(await set('promo', offer(null, 'all')))).toBe('ok')
+    expect(code(await set('promo', offer(USER_A, null)))).toBe('pricing-console.invalid')
+    expect(code(await set('gift', offer(USER_A, null)))).toBe('ok')
+    expect(code(await set('gift', offer(null, 'all')))).toBe('pricing-console.invalid')
+    await fails(
+      db.sql(
+        `insert into pricing_console.policy_rows (kind, key, version, value, target_user_id)
+         select kind, key, 2, jsonb_set(value, '{userId}', to_jsonb($1::text)), $1::uuid
+         from pricing_console.policy_rows where kind = 'offer' and key = 'promo'`,
+        [USER_A],
+      ),
+    )
+    await fails(
+      db.sql(
+        `insert into pricing_console.policy_rows (kind, key, version, value)
+         select kind, key, 2, jsonb_set(value, '{userId}', 'null'), value
+         from pricing_console.policy_rows where kind = 'offer' and key = 'gift'`,
+      ),
+    )
+  })
+
+  it('a change never takes effect before a version already scheduled', async () => {
+    const soon = new Date(Date.now() + 7_200_000).toISOString()
+    const change = (credits: number, effectiveAt?: string) =>
+      db.as('nabvy_pipeline', (q) =>
+        setPolicy(q, {
+          actorUserId: ADMIN,
+          kind: 'price',
+          key: 'boost-24h',
+          value: { unit: 'each', credits, costBasis: null, costUnits: 1 },
+          ...(effectiveAt ? { effectiveAt } : {}),
+        }),
+      )
+    expect((await change(160, soon)).ok).toBe(true)
+    const now = await change(170)
+    expect(now.ok && now.value.row.effectiveAt).toBe(soon) // follows the scheduled version
+    const early = await change(180, new Date(Date.now() + 60_000).toISOString())
+    expect(early.ok ? null : early.error.code).toBe('pricing-console.invalid')
+    await fails(
+      db.sql(
+        `insert into pricing_console.policy_rows (kind, key, version, value)
+         select kind, key, version + 1, value from pricing_console.policy_rows
+         where kind = 'price' and key = 'boost-24h' order by version desc limit 1`,
+      ),
+    )
+  })
+
+  it('keeps tier and bundle keys short enough for the ledger’s policy version', async () => {
+    const r = await db.as('nabvy_pipeline', (q) =>
+      setPolicy(q, {
+        actorUserId: ADMIN,
+        kind: 'bundle',
+        key: 'a-very-long-bundle-key-over-24',
+        value: { tier: null, grossMinor: 1000, discountBps: 0 },
+      }),
+    )
+    expect(r.ok ? null : r.error.code).toBe('pricing-console.invalid')
+  })
+
+  it('lets the web app read a basis cost, never choose its own window', async () => {
+    await fails(
+      db.as(
+        'nabvy_app',
+        (q) => q.execute(`select pricing_console.measured_cost('apify', null, 7, 1)`),
+        USER_A,
+      ),
+    )
+    const r = await db.as(
+      'nabvy_app',
+      (q) => q.execute(`select pricing_console.basis_cost('check') as c`),
+      USER_A,
+    )
+    expect(r.rows).toEqual([{ c: null }])
+  })
+})
+
 describe('UsageLedgerPolicy', () => {
   it('values allowances and top-ups through the real ledger, with the policy version', async () => {
     const allowance = await db.as('nabvy_pipeline', (q) =>

@@ -11,6 +11,7 @@ import {
   netOfGrossMinor,
   newViolations,
   type Policy,
+  priceCredits,
   type Settings,
   settingsOf,
   topupCredits,
@@ -164,6 +165,20 @@ describe('the floor', () => {
   })
 })
 
+describe('no price', () => {
+  it('refuses to price a costed action when no credit is sold, and flags it', () => {
+    const p = policy()
+    p.tiers.clear()
+    const rule = p.prices.get('lookup')?.value
+    if (!rule) throw new Error('no rule')
+    const s = settingsOf(p)
+    if ('missing' in s) throw new Error('settings')
+    expect(priceCredits(p, s, costs, rule, null)).toBeNull()
+    expect(priceCredits(p, s, new Map(), rule, null)).toBeNull() // unknown cost basis
+    expect(floorViolations(p, costs).map((x) => x.id)).toContain('price/lookup:unsold')
+  })
+})
+
 describe('free tier', () => {
   it('counts the coordinator’s bursts: 52, 33 and 33 checks', () => {
     const shape = (fast: number, slow: number) => [
@@ -188,6 +203,7 @@ describe('free tier', () => {
       signupsPerIpDay: null,
       signupsPerDeviceDay: null,
       signupsPerEmailDomainDay: null,
+      accountDayCapPence: null,
     }
     expect(freeTierChecks(ft)).toEqual([52, 33, 33])
   })

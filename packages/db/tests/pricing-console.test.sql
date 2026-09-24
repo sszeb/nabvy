@@ -32,9 +32,14 @@ begin
      or not has_table_privilege('nabvy_pipeline', 'pricing_console.v_settings', 'select') then
     raise exception 'the v_ views must be granted to nabvy_pipeline only';
   end if;
-  if not has_function_privilege('nabvy_app', 'pricing_console.measured_cost(text, text, integer, integer)', 'execute')
+  if has_function_privilege('nabvy_app', 'pricing_console.measured_cost(text, text, integer, integer)', 'execute')
+     or not has_function_privilege('nabvy_pipeline', 'pricing_console.measured_cost(text, text, integer, integer)', 'execute')
      or has_function_privilege('anon', 'pricing_console.measured_cost(text, text, integer, integer)', 'execute') then
-    raise exception 'measured_cost grants are wrong';
+    raise exception 'measured_cost must be the pipeline''s only';
+  end if;
+  if not has_function_privilege('nabvy_app', 'pricing_console.basis_cost(text)', 'execute')
+     or has_function_privilege('anon', 'pricing_console.basis_cost(text)', 'execute') then
+    raise exception 'basis_cost grants are wrong';
   end if;
   if exists (select 1 from nabvy_core.view_violations() where view_name like 'pricing_console.%') then
     raise exception 'pricing_console views break the view conventions';
@@ -152,6 +157,39 @@ begin
   exception when check_violation then refused := true;
   end;
   if not refused then raise exception 'an offer''s target differs from its userId'; end if;
+
+  -- An offer's target is fixed for its key (review of PR #55): for everyone, then one user...
+  refused := false;
+  begin
+    insert into pricing_console.policy_rows (kind, key, version, value, target_user_id)
+      select kind, key, 2,
+             jsonb_set(value, '{userId}', '"00000000-0000-4000-8000-0000000000b2"'),
+             '00000000-0000-4000-8000-0000000000b2'
+      from pricing_console.policy_rows where kind = 'offer' and key = 'for-all';
+  exception when check_violation then refused := true;
+  end;
+  if not refused then raise exception 'an offer for everyone was moved to one user'; end if;
+
+  -- ...and one user, then everyone.
+  refused := false;
+  begin
+    insert into pricing_console.policy_rows (kind, key, version, value)
+      select kind, key, 2, jsonb_set(value, '{userId}', 'null')
+      from pricing_console.policy_rows where kind = 'offer' and key = 'for-b1';
+  exception when check_violation then refused := true;
+  end;
+  if not refused then raise exception 'an offer for one user was opened to everyone'; end if;
+
+  -- A version cannot take effect before the one it follows.
+  insert into pricing_console.policy_rows (kind, key, version, value, effective_at)
+    values ('setting', 'round-the-clock-bps', 2, '{"value": 15000}', now() + interval '1 day');
+  refused := false;
+  begin
+    insert into pricing_console.policy_rows (kind, key, version, value)
+      values ('setting', 'round-the-clock-bps', 3, '{"value": 16000}');
+  exception when check_violation then refused := true;
+  end;
+  if not refused then raise exception 'a version took effect before the one it follows'; end if;
 end;
 $$;
 
@@ -180,7 +218,7 @@ insert into cost_meter.provider_calls
   (module, provider, kind, ref_id, currency, reserved_micros, usd_gbp_rate, reserved_gbp_micros, status, at)
   select 'apify-gateway', 'apify', 'actor_run', 'pc-test-' || g, 'GBP', 10001, 1, 10001, 'succeeded', now()
   from generate_series(1, 3) as g;
-set local role nabvy_app;
+set local role nabvy_pipeline;
 do $$
 begin
   if pricing_console.measured_cost('apify', null, 7, 4) is not null then
@@ -188,6 +226,16 @@ begin
   end if;
   if pricing_console.measured_cost('apify', null, 7, 3) <> 10001 then
     raise exception 'measured_cost is not the mean of the matching calls';
+  end if;
+end;
+$$;
+reset role;
+-- The web app reads a basis's cost with the row's own window and minimum (20 calls): none yet.
+set local role nabvy_app;
+do $$
+begin
+  if pricing_console.basis_cost('check') is not null then
+    raise exception 'basis_cost answered below the basis''s sample minimum';
   end if;
 end;
 $$;

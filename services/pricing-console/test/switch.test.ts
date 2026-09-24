@@ -11,8 +11,8 @@ import {
 
 // The module's switch (README.md, "Switch and priority"). Off: policy writes refused, list prices
 // apply, no offers, v_offers empty; the ladder, prices and free policy still publish, and the
-// ledger policy still answers. Shadow: writes run, v_offers has rows, users get list prices.
-// On: offers apply.
+// ledger policy still answers. Shadow: writes run, users get list prices, v_offers stays empty
+// (it shows only offers that apply). On: offers apply and v_offers shows them.
 
 let db: TestDatabase
 beforeAll(async () => {
@@ -65,14 +65,15 @@ describe('switch', () => {
     )
   })
 
-  it('shadow: v_offers has rows, users still pay list', async () => {
+  it('shadow: users still pay list, and v_offers shows no offer that does not apply', async () => {
     await setSwitch(db, 'pricing-console', 'shadow')
-    expect(await offers()).toBe(1)
+    expect(await offers()).toBe(0)
     expect(await exportPrice()).toMatchObject({ value: { amount: 50, offer: null } })
   })
 
   it('on: the offer applies', async () => {
     await setSwitch(db, 'pricing-console', 'on')
     expect(await exportPrice()).toMatchObject({ value: { amount: 25, offer: 'half' } })
+    expect(await offers()).toBe(1)
   })
 })

@@ -14,8 +14,8 @@ configuration apply; no offers", the configuration being the current policy rows
 no rows. `v_ladder`, `v_prices`, `v_free_policy` and `v_settings` always return their rows, and
 `usageLedgerPolicy` always answers, so want-manager, check-scheduler and the ledger keep their
 plan ceilings and a paid top-up is never refused for want of a price (see "Decisions").
-**Shadow**: changes are written, `v_offers` has rows, users still pay list prices. **On**: offers
-apply. MVP, with `usage-ledger` (card); backlog 4.10a and 4.10b.
+**Shadow**: changes are written, users still pay list prices, and `v_offers` stays empty (it shows
+only offers that apply; review of PR #55). **On**: offers apply and `v_offers` shows them. MVP, with `usage-ledger` (card); backlog 4.10a and 4.10b.
 
 ## Inputs
 
@@ -26,8 +26,10 @@ apply. MVP, with `usage-ledger` (card); backlog 4.10a and 4.10b.
   server and then calls these functions inside `withPipeline`; the database has no admin check for
   `nabvy_app`, so no signed-in session can write a price. The server-side admin gate for the admin
   layout is backlog 4.3af, not yet built. Question in `docs/questions/pricing-console.md`.
-- Reads: `cost_meter.v_costs` (from `cost-meter`) through the SECURITY DEFINER
-  `pricing_console.measured_cost()`, for measured cost per call; `switches.state('pricing-console')`
+- Reads: `cost_meter.v_costs` (from `cost-meter`) through two SECURITY DEFINER functions:
+  `pricing_console.basis_cost(key)` (web app and pipeline: one current cost basis, with the row's
+  own window and sample minimum) and `pricing_console.measured_cost()` (pipeline only: any window,
+  to check a cost-basis change before it is written); `switches.state('pricing-console')`
   (`@nabvy/switches`).
 - Writes one `audit-log` row per change (`@nabvy/audit-log`'s `record()`, same transaction).
 - Event `account.deleted` (from `account`): `accountDeletedHandler` deletes offers made for the
@@ -58,16 +60,18 @@ apply. MVP, with `usage-ledger` (card); backlog 4.10a and 4.10b.
     (base and floor) for want-manager, check-scheduler and the cadence slider.
   - `pricing_console.v_prices`: `item, version, unit (each | area-month), credits,
     cadence_minutes, cost_basis, cost_units, effective_at`.
-  - `pricing_console.v_offers` (rows only while not off): `offer, version, user_id, segment, item,
+  - `pricing_console.v_offers` (rows only while on): `offer, version, user_id, segment, item,
     discount_bps, starts_at, ends_at`, live offers only.
   - `pricing_console.v_free_policy` (backlog 4.10a): the free tier's window count and length,
-    reset hours, burst shapes (JSON), lifetime, per-user and pool caps, sign-up limits.
+    reset hours, burst shapes (JSON), lifetime, per-user, per-account-per-day and pool caps,
+    sign-up limits.
   - `pricing_console.v_settings`: `setting, version, value, effective_at` (the minimum margin that
     check-scheduler's funding rule uses, VAT, fees, the round-the-clock multiple).
 - **No user-facing view**: the prices and offers a user sees go through procedures only (card).
   **No events.**
 - Error codes `pricing-console.off | below_floor | invalid | not_found | below_plan_floor |
-  no_price`, each with a message in `PRICING_CONSOLE_MESSAGES`; `below_floor` and `invalid` list
+  no_price`, each with a message in `PRICING_CONSOLE_MESSAGES` (`no_price` also when no floor
+  price can be set: a missing cost basis, or no credit on sale); `below_floor` and `invalid` list
   what was refused.
 
 ## Tables
@@ -82,7 +86,10 @@ retired (the card's `price_rules`, `bundles` and `offers` are the kinds `price`,
 
 A trigger keeps it append-only: no update, no truncate, no delete except an offer made for one
 user (the account-deletion purge); each version is the previous one plus one; nothing takes effect
-in the past; `target_user_id` must match the offer. RLS: `nabvy_app` may select rows with no
+in the past or before the version it follows; `target_user_id` must match the offer and never
+changes between an offer's versions; tier and bundle keys are at most 24 characters.
+`effective_at` defaults to `now()` truncated to milliseconds, so a new row is never a fraction of a
+millisecond ahead of the clock the views compare with. RLS: `nabvy_app` may select rows with no
 target or targeting its own user; `nabvy_pipeline` may select, insert and delete. Writes take an
 advisory lock, so a change is checked against the floor with no other change landing in between.
 
@@ -172,6 +179,21 @@ views' switch filter and `measured_cost()` on real Postgres (`pnpm db:dry-run`).
   floor is refused when made and dropped at read time.
 - 2026-09-24: **no admin procedure or page yet** (see "Inputs"): writes run as the pipeline after
   the caller's `requireAdmin`, as `switches` does. The admin gate is backlog 4.3af.
+- 2026-09-24 (review of PR #55): **an offer's target is fixed for its key.** A later version
+  cannot move an offer between users or between a user and a segment (in code, `invalid`, and in
+  the database), so row-level security can never leave an older version live for the users who no
+  longer see the newer one, and a purge removes a user's offer whole.
+- 2026-09-24 (review of PR #55): **versions take effect in order.** A change without a time,
+  written while a version is scheduled, takes effect with that version rather than skipping it;
+  an explicit earlier time is refused.
+- 2026-09-24 (review of PR #55): `v_offers` shows offers only while on, the one state in which
+  they apply; the web app reads costs only through `basis_cost(key)`; tier and bundle keys are at
+  most 24 characters so `pricing-console:tier/<tier>@<n>+bundle/<bundle>@<n>` fits usage-ledger's
+  100; `priceFor` and `estimate` refuse with `no_price` rather than quote a price they cannot floor,
+  and the floor flags a costed action when no credit is on sale.
+- 2026-09-24 (review of PR #55): the floor at read time uses the list rates. A user's own plan
+  offer can lower their rate, but each plan offer is checked against every checking price when it
+  is made, and the 2x margin leaves headroom; revisit if margins are cut close.
 - 2026-09-24: seeds carry no audit row (`audit_log.entries` needs an actor; `switches` did the
   same); each carries its source in `reason`.
 

@@ -5,7 +5,9 @@
 --   * policy rows are append-only: nobody updates them; a change is the next version of its
 --     (kind, key), numbered without gaps; only an offer made for one user may be deleted (the
 --     account-deletion purge);
---   * a version never takes effect in the past;
+--   * a version never takes effect in the past, nor before the version it follows;
+--   * an offer's target (one user, or none) is fixed for its key: no version can move an offer
+--     between users or between a user and a segment;
 --   * the web app reads prices, never writes them, and sees an offer only if it is for everyone,
 --     for a segment, or for the signed-in user;
 --   * only the pipeline writes (the admin procedure, once built, calls the module inside
@@ -28,7 +30,7 @@ language plpgsql
 set search_path = pg_catalog
 as $$
 declare
-  latest integer;
+  prev record;
 begin
   if tg_op = 'UPDATE' then
     raise exception 'pricing_console.policy_rows is append-only: write the next version instead'
@@ -40,12 +42,28 @@ begin
     end if;
     return old;
   end if;
-  select max(r.version) into latest
+  -- Short tier and bundle keys keep usage-ledger's policy version within 100 characters.
+  if new.kind in ('tier', 'bundle') and length(new.key) > 24 then
+    raise exception 'pricing_console.policy_rows: a % key is at most 24 characters', new.kind
+      using errcode = 'check_violation';
+  end if;
+  select r.version, r.target_user_id, r.effective_at into prev
   from pricing_console.policy_rows as r
-  where r.kind = new.kind and r.key = new.key;
-  if new.version <> coalesce(latest, 0) + 1 then
+  where r.kind = new.kind and r.key = new.key
+  order by r.version desc
+  limit 1;
+  if new.version <> coalesce(prev.version, 0) + 1 then
     raise exception 'pricing_console.policy_rows: % % needs version %, not %',
-      new.kind, new.key, coalesce(latest, 0) + 1, new.version
+      new.kind, new.key, coalesce(prev.version, 0) + 1, new.version
+      using errcode = 'check_violation';
+  end if;
+  if prev.version is not null and new.effective_at < prev.effective_at then
+    raise exception 'pricing_console.policy_rows: % % cannot take effect before version %',
+      new.kind, new.key, prev.version
+      using errcode = 'check_violation';
+  end if;
+  if prev.version is not null and new.target_user_id is distinct from prev.target_user_id then
+    raise exception 'pricing_console.policy_rows: offer % cannot change whom it is for', new.key
       using errcode = 'check_violation';
   end if;
   -- effective_at keeps milliseconds (rounded), so compare with now() truncated to them.
@@ -98,7 +116,30 @@ as $$
 $$;
 revoke all on function pricing_console.measured_cost(text, text, integer, integer) from public;
 grant execute on function pricing_console.measured_cost(text, text, integer, integer)
-  to nabvy_app, nabvy_pipeline;
+  to nabvy_pipeline;
+
+-- The web app's reader: the measured cost of one current cost basis, with the window and sample
+-- minimum its policy row sets, so a session cannot choose its own (review of PR #55).
+create or replace function pricing_console.basis_cost(p_key text) returns bigint
+language sql
+stable
+security definer
+set search_path = pg_catalog
+as $$
+  select pricing_console.measured_cost(
+    b.value ->> 'provider', b.value ->> 'module',
+    (b.value ->> 'windowDays')::integer, (b.value ->> 'minSamples')::integer)
+  from (
+    select r.value, r.retired
+    from pricing_console.policy_rows as r
+    where r.kind = 'cost-basis' and r.key = p_key and r.effective_at <= now()
+    order by r.version desc
+    limit 1
+  ) as b
+  where not b.retired
+$$;
+revoke all on function pricing_console.basis_cost(text) from public;
+grant execute on function pricing_console.basis_cost(text) to nabvy_app, nabvy_pipeline;
 
 -- The current row of each (kind, key): its highest version already in effect, unless retired.
 create view pricing_console.current_rows with (security_invoker = true) as
@@ -114,7 +155,8 @@ revoke all on pricing_console.current_rows from public;
 grant select on pricing_console.current_rows to nabvy_pipeline;
 
 -- The views below always return their rows, whatever the module's switch (README.md, "Switch and
--- priority": when off, list prices apply), except v_offers: no offers while the module is off.
+-- priority": when off, list prices apply), except v_offers: offers only while the module is on, the one state
+-- in which priceFor applies them (review of PR #55).
 create view pricing_console.v_ladder with (security_invoker = true) as
   select c.key as tier,
          c.version,
@@ -159,7 +201,7 @@ create view pricing_console.v_offers with (security_invoker = true) as
     where c.kind = 'offer'
   ) as o
   where o.starts_at <= now() and o.ends_at > now()
-    and switches.state('pricing-console') <> 'off';
+    and switches.is_on('pricing-console');
 
 create view pricing_console.v_free_policy with (security_invoker = true) as
   select c.version,
@@ -178,6 +220,7 @@ create view pricing_console.v_free_policy with (security_invoker = true) as
          (c.value ->> 'signupsPerIpDay')::integer as signups_per_ip_day,
          (c.value ->> 'signupsPerDeviceDay')::integer as signups_per_device_day,
          (c.value ->> 'signupsPerEmailDomainDay')::integer as signups_per_email_domain_day,
+         (c.value ->> 'accountDayCapPence')::integer as account_day_cap_pence,
          c.effective_at
   from pricing_console.current_rows as c
   where c.kind = 'free-tier' and c.key = 'default';
@@ -255,5 +298,5 @@ insert into pricing_console.policy_rows (kind, key, version, value, reason) valu
   ('bundle', 'topup-50', 1, '{"tier": null, "grossMinor": 5000, "discountBps": 0}',
    'initial policy value: top-ups of 10, 25 and 50 pounds at the tier''s rate (pricing-model, Rules)'),
   ('free-tier', 'default', 1,
-   '{"wantCount": 1, "windowCount": 3, "windowMinutes": 480, "resetHours": 72, "bursts": [[{"cadenceMinutes": 1, "minutes": 20}, {"cadenceMinutes": 5, "minutes": 100}, {"cadenceMinutes": 15, "minutes": 120}, {"cadenceMinutes": 60, "minutes": 240}], [{"cadenceMinutes": 1, "minutes": 10}, {"cadenceMinutes": 5, "minutes": 50}, {"cadenceMinutes": 15, "minutes": 120}, {"cadenceMinutes": 60, "minutes": 300}]], "lifetimeCapPence": 200, "userWeekCapPence": null, "userMonthCapPence": null, "poolDayFloorPence": 2000, "poolRevenueShareBps": 500, "poolWeekPence": null, "poolMonthPence": null, "signupsPerIpDay": null, "signupsPerDeviceDay": null, "signupsPerEmailDomainDay": null}',
+   '{"wantCount": 1, "windowCount": 3, "windowMinutes": 480, "resetHours": 72, "bursts": [[{"cadenceMinutes": 1, "minutes": 20}, {"cadenceMinutes": 5, "minutes": 100}, {"cadenceMinutes": 15, "minutes": 120}, {"cadenceMinutes": 60, "minutes": 240}], [{"cadenceMinutes": 1, "minutes": 10}, {"cadenceMinutes": 5, "minutes": 50}, {"cadenceMinutes": 15, "minutes": 120}, {"cadenceMinutes": 60, "minutes": 300}]], "lifetimeCapPence": 200, "userWeekCapPence": null, "userMonthCapPence": null, "poolDayFloorPence": 2000, "poolRevenueShareBps": 500, "poolWeekPence": null, "poolMonthPence": null, "signupsPerIpDay": null, "signupsPerDeviceDay": null, "signupsPerEmailDomainDay": null, "accountDayCapPence": null}',
    'initial policy value: coordinator''s shape of 16:50 (decisions, Free tier: bursts under a lifetime cap)');

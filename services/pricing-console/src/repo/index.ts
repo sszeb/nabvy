@@ -95,12 +95,23 @@ export async function loadPolicy(q: Queryable): Promise<Policy> {
   return policy
 }
 
-/** The floor's cost per basis: the higher of the measured mean and the recorded fallback. */
-export async function loadCosts(q: Queryable, policy: Policy): Promise<Costs> {
+/**
+ * The floor's cost per basis: the higher of the measured mean and the recorded fallback. Reads
+ * through `basis_cost(key)`, which uses the stored row's window and sample minimum. `unwritten`
+ * (the pipeline only, checking a cost-basis change before it is written) measures with the
+ * policy's own values instead.
+ */
+export async function loadCosts(
+  q: Queryable,
+  policy: Policy,
+  options: { unwritten?: boolean } = {},
+): Promise<Costs> {
   const costs = new Map<string, number>()
   for (const { key, value: b } of policy.costBases.values()) {
     const result = await q.execute<{ cost: string | number | null }>(
-      sql`select pricing_console.measured_cost(${b.provider}, ${b.module}::text, ${b.windowDays}::integer, ${b.minSamples}::integer) as cost`,
+      options.unwritten
+        ? sql`select pricing_console.measured_cost(${b.provider}, ${b.module}::text, ${b.windowDays}::integer, ${b.minSamples}::integer) as cost`
+        : sql`select pricing_console.basis_cost(${key}) as cost`,
     )
     const cost = result.rows[0]?.cost
     const measured = cost === null || cost === undefined ? null : Number(cost)

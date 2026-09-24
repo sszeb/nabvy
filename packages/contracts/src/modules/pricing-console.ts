@@ -23,6 +23,12 @@ const Bps = z.int().min(0).max(10_000)
 export const PricingConsoleKey = z.string().regex(/^[a-z][a-z0-9-]{0,62}$/)
 export type PricingConsoleKey = z.infer<typeof PricingConsoleKey>
 
+/**
+ * A tier's or a bundle's key: at most 24 characters, so the policy version usage-ledger stores
+ * (`pricing-console:tier/<tier>@<n>+bundle/<bundle>@<n>`) stays within its 100 (review of PR #55).
+ */
+export const PricingConsoleShortKey = z.string().regex(/^[a-z][a-z0-9-]{0,23}$/)
+
 /** The kinds of policy row. Each kind's value schema is below. */
 export const PricingConsoleKind = z.enum([
   'tier',
@@ -165,6 +171,8 @@ export const PricingConsoleFreeTier = z
     signupsPerIpDay: Positive.nullable(),
     signupsPerDeviceDay: Positive.nullable(),
     signupsPerEmailDomainDay: Positive.nullable(),
+    /** Attributed cost one free account may cause in a day (null: not set; question). */
+    accountDayCapPence: Int.nullable(),
   })
   .refine((f) => f.bursts.every((b) => b.reduce((s, x) => s + x.minutes, 0) === f.windowMinutes), {
     message: "each burst's steps add up to the window's length",
@@ -225,9 +233,9 @@ const change = <K extends PricingConsoleKind, V extends z.ZodType, Key extends z
 
 /** A new version of one policy row. Refused if it breaks the floor (`pricing-console.below_floor`). */
 export const PricingConsoleSetInput = z.discriminatedUnion('kind', [
-  change('tier', PricingConsoleKey, PricingConsoleTier),
+  change('tier', PricingConsoleShortKey, PricingConsoleTier),
   change('price', PricingConsoleKey, PricingConsolePriceRule),
-  change('bundle', PricingConsoleKey, PricingConsoleBundle),
+  change('bundle', PricingConsoleShortKey, PricingConsoleBundle),
   change('offer', PricingConsoleKey, PricingConsoleOffer),
   change('free-tier', z.literal('default'), PricingConsoleFreeTier),
   change('setting', PricingConsoleSettingKey, PricingConsoleSetting),
