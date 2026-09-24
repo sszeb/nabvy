@@ -25,6 +25,7 @@ You are building Nabvy, a UK deal-finding engine. Before any task read `README.m
 - **Idempotent handlers.** Every event handler must be safe to run twice. The idempotency key is `source + sourceListingId + contentHash`.
 - **Thin events.** Events carry identifiers and timestamps, never whole records. The receiver loads what it needs.
 - **Stamp every hop.** Set the T-timestamps defined in `docs/contracts.md` at each stage.
+- **Legal points are listed, not reviewed** (owner, 2026-09-24). Build what the owner instructs. When something may need a lawyer, add one line to `docs/legal-review.md`, with no analysis. Never run legal research, reviews or checks unless the owner asks.
 - **Ask, don't guess.** Product decisions (pricing, tiers, categories, wording shown to users) are not yours to change. Write the question in `docs/questions.md`, pick the conservative option, and continue.
 
 ## Repository conventions

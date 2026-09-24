@@ -98,35 +98,26 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - usage top-ups, boosts and exports.
 
   How it is built:
-  - **Consent at checkout.** Before any first payment, including a trial that will convert, Checkout requires the customer's express request to start now, their acknowledgement that they lose the 14-day right to cancel, and their acceptance that payments are non-refundable. The consent and its time are stored with the billing event. Without that consent, UK law (Consumer Contracts Regulations 2013) leaves a 14-day cancellation right in place, so the policy depends on it.
   - **Cancellation.** Customers can cancel at any time in the billing portal. It takes effect at the end of the paid period, and access continues until then.
   - **Plan changes.** Downgrades are scheduled for the period end, so no credit arises. Upgrades take effect at once and charge the difference.
   - **Disclosure.** The pricing page, Checkout and the terms state "Payments are non-refundable" before purchase.
-  - **Reminders.** A reminder goes out before a trial converts and before an annual renewal.
-  - **No refund button** anywhere for users or admins. The one exception is a refund the law requires, for example under the Consumer Rights Act 2015 for a service not provided with reasonable care. That is issued only by the owner through an audited admin action with a stated legal reason.
-  - **Chargebacks** are answered in Stripe with the stored consent, and they reverse any affiliate commission.
+  - **No refund button** anywhere, for users or admins.
+  - **Chargebacks** are recorded, and they reverse any affiliate commission.
   - **Failed actions.** A metered action that fails returns its usage credits (a ledger reversal, not a refund of money).
 
-  The wording shown to customers needs legal review before launch (`docs/questions.md`).
+  Points a lawyer may want to look at are listed in `docs/legal-review.md`.
 - **Fair use, suspension and bans** (owner, 2026-09-24). Nabvy publishes a Fair Use Policy alongside its terms and acceptable use policy. At its discretion, Nabvy may suspend an account temporarily or ban it permanently when it notices abuse, including:
   - a breach of the terms, the acceptable use policy or the fair use policy;
   - fraud or chargeback abuse;
   - a risk to other users, to sellers or to the service.
 
-  Paid amounts are not refunded on a ban, under "No refunds", except where the law requires. A banned person may not open a new account.
+  Paid amounts are not refunded on a ban, under "No refunds". A banned person may not open a new account.
 
   **Automatic, autonomous and internal** (owner, 2026-09-24). Enforcement is automatic: the system applies throttles, limits, suspensions and bans itself from its rules, with no human needed to act. Everything behind a decision stays internal and is never shown or told to any user, in any form:
   - no reasons, evidence, rule names, signals or scores;
   - nothing in the app, email, notifications, API, exports or support replies.
 
-  The user receives only a short, vague notice, for example "Your account has been restricted under our terms. If you think this is a mistake, contact us." Developers and admins see everything.
-
-  **The legal minimum, kept without revealing anything** (`TODO-LEGAL`). UK GDPR as amended by the Data (Use and Access) Act 2025 requires safeguards when a solely automated decision has a significant effect, which a ban on a paying account is likely to have:
-  - the person is told a decision was made;
-  - they can contest it;
-  - a human reviews it if they ask.
-
-  So the notice names a contact route. A human reviews internally, and the reply stays generic. The legal texts keep the discretion as strong as UK law allows, for example stating that Nabvy need not give reasons. Subject access requests are answered within the law's exemptions, for example crime and fraud prevention. The lawyer confirms both.
+  The user receives only a short, vague notice, for example "Your account has been restricted under our terms." Developers and admins see everything. Points a lawyer may want to look at are listed in `docs/legal-review.md`.
 
   The product enforces it:
   - an account status (active, suspended until a date, banned) checked on every signed-in request and by every job that acts for a user;
@@ -135,6 +126,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - throttling and hunt or alert limits as fair-use steps short of suspension;
   - checks against ban evasion (the same email or payment card);
   - a CI test that fails if any user-facing output carries an enforcement reason, rule, signal or score.
+- **Legal review on request only** (owner, 2026-09-24): "Run everything as instructed and only write to a document what needs a legal review but do not run any legal reviews or checks until requested." Nabvy is built as the owner instructs. Points that may need a lawyer are listed, without analysis, in `docs/legal-review.md`. No legal research, review or check is run until the owner asks for one.
 - **Pipeline runtime.** **Trigger.dev** runs the pipeline modules, as the build pack planned. Apify is still called only through the Supabase `apify-gateway` Edge Function: pipeline tasks queue gateway jobs in the database and read the collected rows back. This answers the runtime question in `docs/questions.md`.
 
 ## Product

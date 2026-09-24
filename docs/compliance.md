@@ -28,7 +28,7 @@
 ## Consumer law (UK)
 
 - Prices shown including VAT; clear cadence and speed statements with the measured floor; no fake urgency or scarcity anywhere in the product.
-- Subscriptions: clear renewal terms at checkout, reminder before annual renewal, easy cancellation through the Customer Portal, the no-refunds policy published and accepted at checkout (express consent to start now and acknowledgement of losing the 14-day right to cancel), reminders before a trial converts and before annual renewal.
+- Subscriptions: clear renewal terms at checkout, reminder before annual renewal, easy cancellation through the Customer Portal, the no-refunds policy published.
 - Electronic marketing (PECR): marketing email only with consent or the soft opt-in, one-click unsubscribe in every message, preference centre, suppression within an hour; service messages separated from marketing on different sending subdomains.
 
 ## Content and safety
