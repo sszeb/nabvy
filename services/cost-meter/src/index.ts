@@ -22,8 +22,8 @@ import {
 } from './domain'
 import { findCall, insertCall, listCalls, writeSettlement } from './repo'
 
+export { APIFY_SETTLE_DELAY_MS, MODEL_PRICES_NANO_USD } from '@nabvy/config/modules/cost-meter'
 export { events, module } from '@nabvy/contracts/modules/cost-meter'
-export { APIFY_SETTLE_DELAY_MS, MODEL_PRICES_NANO_USD } from './config'
 export { type CostMeterContext, modelCostMicros, toGbpMicros, unitsToMicros } from './domain'
 
 /** The outcome of a write: the call as readers see it, and whether this call changed the ledger. */
