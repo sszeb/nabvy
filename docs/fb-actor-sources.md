@@ -6,12 +6,17 @@ read it through the session's GitHub access, never by fetching Facebook.
 
 Repository: https://github.com/sebtimize/fb-scrap-engine (private, branch main)
 
+**Knowledge for the whole app** (owner, 2026-09-24): every document in the actor repository, not only
+this list, is knowledge for developing the app as a whole: product, pricing, trust, testing and
+operations as well as calling the actor. See `docs/decisions.md`, "The actor is a tool".
+
 ## Start here
 
 0. `docs/fb-actor-reference.md` in this repository: a checked reference compiled from a full read of the
    actor repository at `f177a44` (inputs, routes, output fields, costs, failure modes, app duties).
 
-1. `docs/APP_INTEGRATION_GUIDE.md` (being written; check back until it exists)
+1. `docs/APP_INTEGRATION_GUIDE.md`: will not be written in the actor repo; Nabvy writes its own
+   integration plan (owner, 2026-09-24; `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/APP_INTEGRATION_GUIDE.md
 2. `docs/HANDOFF.md`: read only the sections "Rules" and "The app: what we want it to do, and
    what the data allows"
@@ -22,7 +27,8 @@ Repository: https://github.com/sebtimize/fb-scrap-engine (private, branch main)
 3. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/PARTS_INTELLIGENCE.md
 4. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/CONTAINER_LISTINGS.md
 5. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/SELLER_DATA.md
-6. `docs/design/COPY_ADVERT_SPAM.md` (being written; check back until it exists)
+6. `docs/design/COPY_ADVERT_SPAM.md`: will not be written in the actor repo; Nabvy writes its own
+   copy-advert spam design (owner, 2026-09-24; `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/COPY_ADVERT_SPAM.md
 
 ## Data and code to copy into the app
