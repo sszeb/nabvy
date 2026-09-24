@@ -5,12 +5,9 @@ import { PGlite } from '@electric-sql/pglite'
 import type { Queryable } from '@nabvy/db'
 import { drizzle } from 'drizzle-orm/pglite'
 
-// An in-process Postgres (PGlite) with the real core, switches and cost-meter migrations applied,
-// used as nabvy_pipeline, the role paying modules write through. v_costs filters by the live
-// switch (task 0.11), so the seeded 'cost-meter' row is switched on here: most tests write and
-// read through v_costs and only care about the switch through CostMeterContext, which they still
-// pass explicitly. PGlite has no PostGIS, pgvector or pg_trgm, so their `create extension` lines
-// are skipped; the full set runs in `pnpm db:dry-run`.
+// An in-process Postgres (PGlite) with the real core, switches and quote-redaction migrations
+// applied, used as nabvy_app (the role callers use to read a quote). PGlite has no PostGIS,
+// pgvector or pg_trgm; nothing here uses them. The full set runs in `pnpm db:dry-run`.
 
 const migrations = fileURLToPath(new URL('../../../../packages/db/migrations/', import.meta.url))
 
@@ -23,12 +20,10 @@ function migrationFiles(module: string): string[] {
 }
 
 export interface TestDatabase {
-  /** Drizzle on the one PGlite connection, running as nabvy_pipeline. */
+  /** Drizzle on the one PGlite connection, running as nabvy_app. */
   db: Queryable
-  /** Runs SQL as the migration superuser, then returns to nabvy_pipeline. */
+  /** Runs SQL as the migration superuser, for example to change a switch. */
   sql(query: string, params?: unknown[]): Promise<Record<string, unknown>[]>
-  /** Runs SQL as nabvy_pipeline. */
-  asPipeline(query: string, params?: unknown[]): Promise<Record<string, unknown>[]>
   close(): Promise<void>
 }
 
@@ -37,7 +32,7 @@ export async function createTestDatabase(): Promise<TestDatabase> {
   for (const file of [
     ...migrationFiles('core'),
     ...migrationFiles('switches'),
-    ...migrationFiles('cost-meter'),
+    ...migrationFiles('quote-redaction'),
   ]) {
     const text = readFileSync(file, 'utf8')
       .split('\n')
@@ -46,8 +41,7 @@ export async function createTestDatabase(): Promise<TestDatabase> {
       .replaceAll('--> statement-breakpoint', '')
     await pg.exec(text)
   }
-  await pg.exec(`update switches.switches set state = 'on' where name = 'cost-meter'`)
-  await pg.exec('set role nabvy_pipeline')
+  await pg.exec('set role nabvy_app')
   return {
     db: drizzle(pg) as unknown as Queryable,
     async sql(query, params = []) {
@@ -55,11 +49,8 @@ export async function createTestDatabase(): Promise<TestDatabase> {
       try {
         return (await pg.query<Record<string, unknown>>(query, params)).rows
       } finally {
-        await pg.exec('set role nabvy_pipeline')
+        await pg.exec('set role nabvy_app')
       }
-    },
-    async asPipeline(query, params = []) {
-      return (await pg.query<Record<string, unknown>>(query, params)).rows
     },
     close: () => pg.close(),
   }

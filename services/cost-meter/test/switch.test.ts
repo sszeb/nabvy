@@ -1,7 +1,15 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { readCosts, record, recordModelCall, settle } from '../src'
+import { contextFor, readCosts, record, recordModelCall, settle } from '../src'
 import { createTestDatabase, type TestDatabase } from './support/database'
-import { apifyReservation, apifySettlement, haikuCall, OFF, ON, SHADOW } from './support/inputs'
+import {
+  apifyReservation,
+  apifySettlement,
+  haikuCall,
+  OFF,
+  ON,
+  RATE,
+  SHADOW,
+} from './support/inputs'
 
 // Rule 11: off writes nothing and shows nothing. The cost meter fails closed: `record` answers
 // `cost-meter.off`, so a paying module pauses instead of spending unmetered. No module reads the
@@ -44,5 +52,35 @@ describe('switch', () => {
       (await readCosts(t.db, { since, module: 'listing-assessment' }, ON)).map((row) => row.kind),
     ).toEqual(['model_call'])
     expect(await readCosts(t.db, { since: new Date('2027-01-01T00:00:00Z') }, ON)).toEqual([])
+  })
+})
+
+// Task 0.11: v_costs itself is now filtered by the live switch (`switches.state('cost-meter')`),
+// not only by the ctx a caller happens to pass. A separate database keeps this independent of the
+// row states the `switch` describe block above leaves behind.
+describe('v_costs filter (task 0.11)', () => {
+  let f: TestDatabase
+  beforeAll(async () => {
+    f = await createTestDatabase()
+    await record(f.db, apifyReservation(), ON)
+  })
+  afterAll(async () => {
+    await f.close()
+  })
+
+  it('shows rows while the switch is on or shadow, none while off', async () => {
+    expect(await f.sql('select * from cost_meter.v_costs')).not.toEqual([])
+    await f.sql(`update switches.switches set state = 'shadow' where name = 'cost-meter'`)
+    expect(await f.sql('select * from cost_meter.v_costs')).not.toEqual([])
+    await f.sql(`update switches.switches set state = 'off' where name = 'cost-meter'`)
+    expect(await f.sql('select * from cost_meter.v_costs')).toEqual([])
+    await f.sql(`update switches.switches set state = 'on' where name = 'cost-meter'`)
+  })
+
+  it('contextFor reads the live switch', async () => {
+    expect(await contextFor(f.db, RATE)).toEqual({ state: 'on', usdGbpRate: RATE })
+    await f.sql(`update switches.switches set state = 'shadow' where name = 'cost-meter'`)
+    expect(await contextFor(f.db, RATE)).toEqual({ state: 'shadow', usdGbpRate: RATE })
+    await f.sql(`update switches.switches set state = 'on' where name = 'cost-meter'`)
   })
 })

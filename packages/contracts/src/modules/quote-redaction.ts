@@ -29,13 +29,5 @@ export const QuoteRedactionResult = z.strictObject({
 })
 export type QuoteRedactionResult = z.infer<typeof QuoteRedactionResult>
 
-/**
- * A module switch state as the caller read it (docs/design rule 11). Stub until the `switches`
- * module publishes its own contract; the values follow the rule. `quoteFor` fails closed on
- * anything but 'on', including a missing or unreadable state.
- */
-export const QuoteRedactionSwitchState = z.enum(['off', 'shadow', 'on'])
-export type QuoteRedactionSwitchState = z.infer<typeof QuoteRedactionSwitchState>
-
 /** Events this module publishes: none, it is a function only. */
 export const events = defineEvents(module, {})
