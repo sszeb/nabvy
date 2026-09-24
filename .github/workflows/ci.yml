@@ -2,6 +2,11 @@
 # task that enables it: Vercel preview (0.5a), a migration dry-run against a real Supabase branch
 # (needs a SUPABASE_ACCESS_TOKEN repository secret), and the deploy steps on merge (1.2, 0.5a; the
 # coordinator applies merged migrations, packages/db/README.md).
+#
+# Runners (owner, 2026-09-24): every job runs on the owner's own self-hosted runner, never on a
+# GitHub-hosted one, so no Actions minutes are billed. The runner is installed once per machine
+# from docs/ops/self-hosted-runner.md; a job that finds no online runner with these labels waits
+# in the queue instead of failing.
 name: CI
 
 on:
@@ -22,7 +27,7 @@ env:
 jobs:
   checks:
     name: Typecheck, lint and test
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +44,7 @@ jobs:
 
   audit:
     name: Dependency audit
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -51,7 +56,7 @@ jobs:
 
   secrets:
     name: Secret scan
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 10
     env:
       GITLEAKS_VERSION: 8.30.1
@@ -76,7 +81,7 @@ jobs:
 
   migrations:
     name: Migration dry-run
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 15
     services:
       postgres:
@@ -103,8 +108,10 @@ jobs:
           node-version-file: .nvmrc
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      # The runner machine installs postgresql-client itself (docs/ops/self-hosted-runner.md); the
+      # runner user has no sudo.
       - name: Ensure psql is available
-        run: command -v psql || (sudo apt-get update && sudo apt-get install -y postgresql-client)
+        run: command -v psql
       # The live project (Postgres 17) has pgvector and PostGIS; the stock image has neither, so
       # install them from the image's own PostgreSQL apt repository.
       - name: Install pgvector and PostGIS in the Postgres container
