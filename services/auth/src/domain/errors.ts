@@ -69,3 +69,11 @@ export class AccountRestrictedError extends AuthFailure {
     }
   }
 }
+
+/** An admin action named an account that does not exist; nothing was changed or recorded. */
+export class UnknownAccountError extends Error {
+  constructor(readonly userId: string) {
+    super('No account has this ID.')
+    this.name = 'UnknownAccountError'
+  }
+}

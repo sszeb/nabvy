@@ -1,7 +1,8 @@
 # @nabvy/auth
 
-One atomic module (`docs/decisions.md`, "Atomic modules"), backlog task 4.0. It edits only this
-folder, `packages/contracts/src/modules/auth.ts` and the `better-auth` migrations in `packages/db`.
+One atomic module (`docs/decisions.md`, "Atomic modules"), backlog tasks 4.0 and 4.0b (audited admin
+actions). It edits only this folder, `packages/contracts/src/modules/auth.ts` and the
+`better-auth` migrations in `packages/db`.
 
 ## Job
 
@@ -13,9 +14,10 @@ standing check that refuses suspended and banned accounts.
 
 - HTTP requests to `/api/auth/*`, through the route handlers apps/web mounts.
 - Request headers passed to the session helpers by oRPC procedures.
-- Restrictions on `better_auth.user` (`banned`, `ban_expires`, `restriction_policy`), set through
-  this module's `restrictAccount` (the account-integrity module, later) or by an admin through
-  Better Auth's admin API. Only `nabvy_auth` can write the table, so nothing writes the fields
+- Admin actions (role changes, restrictions on `better_auth.user`: `banned`, `ban_expires`,
+  `restriction_policy`, session revokes), taken only through this module's audited functions
+  (`setRole`, `restrictAccount`, `liftRestriction`, `revokeSessions`) by admin procedures and the
+  account-integrity module. Only `nabvy_auth` can write the table, so nothing writes the fields
   directly.
 - Configuration (`docs/secrets.md`): `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `ADMIN_EMAILS`,
   `DATABASE_URL_AUTH`, `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`,
@@ -28,16 +30,21 @@ standing check that refuses suspended and banned accounts.
 | `createAuthRouteHandlers()` | apps/web: `{ GET, POST }` for `app/api/auth/[...all]/route.ts` |
 | `getSession(headers)` | the signed-in session and user, or `null` |
 | `requireActiveUser(headers)` | every procedure: signed in, verified, neither suspended nor banned |
-| `restrictAccount(auth, { userId, policy, until?, reason })`, `liftRestriction(auth, userId)` | the account-integrity module and admin tools: suspend (with `until`) or ban, record the policy, keep the reason internal, revoke sessions |
+| `setRole({ actorUserId, userId, role, reason? }, auth?)` | admin procedures: change a role; one `auth.role-changed` audit row |
+| `restrictAccount({ actorUserId, userId, policy, until?, reason }, auth?)`, `liftRestriction({ actorUserId, userId, reason? }, auth?)` | the account-integrity module and admin procedures: suspend (with `until`) or ban, record the policy, keep the reason internal, revoke sessions; lift after a review. One `auth.account-restricted` or `auth.restriction-lifted` audit row |
+| `revokeSessions({ actorUserId, userId, reason? }, auth?)` | admin procedures: sign an account out everywhere; one `auth.sessions-revoked` audit row |
 | `requireAdmin(headers)` | admin procedures: `requireActiveUser` plus the `admin` role |
 | `requireUser(headers)` | only what a restricted account may still do: see the notice, sign out, delete the account |
 | `isAccountActive(db, userId)`, `assertAccountActive(db, userId)` | jobs and module functions acting for a user without a request |
 | `createAuth(options)`, `getAuth()`, `createAuthFromEnv()` | the Better Auth instance (explicit options, or from the environment) |
 | `createRecordingMagicLinkSender()` | test double: records magic links instead of emailing them |
 | `AuthFailure`, `UnauthenticatedError` (401), `ForbiddenError` (403), `AccountRestrictedError` (403) | errors the helpers throw; `toJSON()` is the `AuthError` contract |
+| `UnknownAccountError` | an admin action named no account; nothing changed or recorded |
 | `accountRestrictedNotice(step, policy)`, `ACCOUNT_REVIEW_OFFER`, `POLICY_NAMES` | the notice and review offer a restricted user sees (from `@nabvy/contracts/modules/auth`) |
 
-Helpers take the request `Headers` and, optionally, an instance (tests pass their own).
+Helpers take the request `Headers` and, optionally, an instance (tests pass their own). Admin
+functions throw `AuditLogRefused` (from `@nabvy/audit-log`) when the audit row cannot be written;
+the change has then rolled back.
 
 ## Mounting in apps/web
 
@@ -117,17 +124,24 @@ Nothing leaves the machine.
 - `test/auth.test.ts`:
   - sign-up by magic link: verified user, `user` role, hashed token, one use, captcha missing or
     failed;
-  - the admin role check, and the admin endpoints refused until auditing exists;
+  - the admin role check; Better Auth's admin endpoints that change anything refused, listing
+    users still allowed;
   - founder bootstrap from `ADMIN_EMAILS`: new account, account seeded by `seed_founders`,
     existing account added later, look-alike address;
   - sign-out revoking the session so the old cookies fail;
   - `requireActiveUser` refusing banned and suspended users with the notice only (step and
     policy), admitting lapsed suspensions; the ban reason never leaving the API;
-  - `restrictAccount` and an admin ban revoking sessions, a restricted sign-in answered with the
-    notice, `liftRestriction`;
+  - `restrictAccount` revoking sessions, a restricted sign-in answered with the notice,
+    `liftRestriction`;
   - standing checks as `nabvy_app` and `nabvy_pipeline`;
   - rate limits: 5 magic-link emails an hour per address, 5 sign-in requests an hour per IP in the
     Postgres counter, and captcha on Google sign-in.
+- `test/admin.test.ts` (task 4.0b): `setRole`, `restrictAccount`, `liftRestriction`,
+  `revokeSessions` and founder bootstrap each write exactly one audit row with the actor, target,
+  before and after; an actor that is not an admin (or not an account) is refused; with audit
+  writes failing (a trigger on `audit_log.entries`), each action rolls
+  back and a founder gets neither the role nor a session; an unknown account and an actor that is
+  not an account change nothing.
 - `test/verification.test.ts`: no session for an unverified address; the session guard (restricted,
   unverified, founder promotion, no context).
 - `test/cookies.test.ts`: `__Secure-`, `HttpOnly`, `Secure` and `SameSite=Lax` cookies over https;
@@ -178,16 +192,34 @@ Nothing leaves the machine.
 - **Founder bootstrap.** An address in `ADMIN_EMAILS` gets the `admin` role when its account is
   created, and on any later sign-in if it lacks the role (for example, an address added to the
   list later). `pnpm db:seed` (`better_auth.seed_founders`) still pre-creates founders; they are
-  verified on their first magic-link sign-in. The `audit_log` row for role changes arrives with
-  the ops-monitor module (`packages/db/README.md`, "Seeds").
+  verified on their first magic-link sign-in. The promotion is an audited role change
+  (`auth.role-changed`, the founder as actor), made by the session guard on the first sign-in,
+  also for a new account: the account has no ID to record before it exists, so the user-create
+  hook no longer sets the role. If the audit row cannot be written, the founder gets neither the
+  role nor a session. `seed_founders` runs as the migration role and writes no audit row
+  (`docs/questions.md`).
 - **Captcha on sign-in and sign-up.** Turnstile is required in `createAuth`, so no instance runs
   without it, and applies to `/sign-in/magic-link` and `/sign-in/social`: a magic-link request or
   a first Google sign-in is also the sign-up.
-- **Admin permissions are narrow until admin actions are audited.** Through `/api/auth/admin/*` an
-  admin may list and read users, ban and unban, and list and revoke sessions. Role changes,
-  impersonation, creating or removing users, and password or email changes are refused
-  (`docs/security.md` asks for an `audit_log` row per admin action; it arrives with the
-  ops-monitor module). Founders get the role from `ADMIN_EMAILS` only.
+- **Admin actions are audited in the transaction that makes them** (task 4.0b, `docs/security.md`).
+  `setRole`, `restrictAccount`, `liftRestriction` and `revokeSessions` each run one transaction on
+  the auth connection: lock the account row, change it with Drizzle, and call audit-log's
+  `record()` with the same transaction, so an audit failure (`AuditLogRefused`) rolls the change
+  back. The audit row's `before` and `after` hold `role`, `banned`, `banExpires` and
+  `restrictionPolicy`; the ban reason is the row's `reason`, never a state, and stays internal.
+  Better Auth's endpoints cannot write the row in their own transaction, so through
+  `/api/auth/admin/*` an admin may now only list and read users and list sessions; ban, unban,
+  session revokes, role changes, impersonation, user creation or removal, and password or email
+  changes are refused there. The caller checks the actor first (`requireAdmin`); as defence in
+  depth each function also refuses (`ForbiddenError`) unless the actor's account has the admin
+  role, except founder bootstrap (actor = target, matched against `ADMIN_EMAILS`). Admin reads
+  (list, get) are not audited (`docs/questions.md`).
+- **Demotions.** Demoting an address listed in `ADMIN_EMAILS` is undone at its next sign-in, so a
+  founder is removed from the list, not demoted. Nothing stops an admin demoting the last admin;
+  `ADMIN_EMAILS` is the way back.
+- **`nabvy_auth` inserts audit rows** (`20260924143843_better_auth_audit_access.sql`): usage on
+  `audit_log` and insert on `audit_log.entries`, nothing else, under a policy that the actor is an
+  existing account. `better-auth` now depends on `audit-log` in `module.json`.
 - **Cookies.** `BETTER_AUTH_URL` must be https except on localhost (`createAuth` refuses
   otherwise), and cookies are then `__Secure-`, `HttpOnly`, `Secure` and `SameSite=Lax`.
 - **Magic links** expire in 5 minutes, work once, and are stored hashed. Production sends them

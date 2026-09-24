@@ -217,8 +217,8 @@ answer whether an account may be acted for, and if not, the step and policy to n
 
 - **Founder users:** `pnpm db:seed` reads `ADMIN_EMAILS` (config group `auth`) and calls
   `better_auth.seed_founders(emails)`, which creates each address as an `admin` user or promotes
-  it. It is idempotent. It runs with psql as the migration role. The `audit_log` row from
-  `docs/engineering.md` arrives with the ops-monitor module.
+  it. It is idempotent. It runs with psql as the migration role and writes no `audit_log` row;
+  a founder promoted on sign-in instead is recorded by the auth module (task 4.0b).
 - **No H3 cells seed.** The build pack's UK H3 resolution-4 `cells` seed is superseded: search
   planning uses verified city-page centres (`city-pages.seed.json`), per region and never per
   user (`docs/decisions.md`, Precedence, "Search planning"). The crawl-planner module seeds those.
