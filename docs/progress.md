@@ -84,7 +84,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | product-catalogue | 2 | in progress, started 15:08 | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
 | apify-gateway | 2 | in progress, started 15:08; the live gateway folds in | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
 | waitlist | 2 | in progress, started 15:08; email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
-| account | 2 | waits for the amended card (account-sharing integration), then starts | | Sonnet |
+| account | 2 | in progress, started 15:35 from the amended card on `claude/coordinator-4` | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
 
 ## Work outside the backlog
 
