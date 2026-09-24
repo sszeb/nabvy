@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md:202: a kill switch per provider from day one",
+  "changes": [
+    {
+      "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+      "name": "apify",
+      "kind": "provider",
+      "state": "on"
+    },
+    {
+      "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+      "name": "apify",
+      "kind": "provider",
+      "state": "off",
+      "reason": "spend spike"
+    }
+  ]
+}
