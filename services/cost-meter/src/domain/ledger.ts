@@ -8,8 +8,8 @@ import {
   type CostMeterModelCallInput,
   type CostMeterRecordInput,
   type CostMeterSettleInput,
-  type CostMeterSwitchState,
 } from '@nabvy/contracts/modules/cost-meter'
+import type { SwitchesState } from '@nabvy/contracts/modules/switches'
 import type { providerCalls } from '@nabvy/db/schema/cost-meter'
 import { modelCostMicros, storedRate, toGbpMicros } from './amounts'
 
@@ -25,7 +25,7 @@ export type SettlementPatch = Pick<
 
 /** What every call needs from its caller: the module switch and today's USD_GBP_RATE. */
 export interface CostMeterContext {
-  state: CostMeterSwitchState
+  state: SwitchesState
   usdGbpRate: number
 }
 

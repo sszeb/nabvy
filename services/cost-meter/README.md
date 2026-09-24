@@ -22,11 +22,14 @@ Priority P0 (`docs/architecture.md:99`).
 ## Inputs
 
 No events. Paying modules call `record()`, `recordModelCall()` and `settle()`, passing a
-`CostMeterContext`: the module's switch state and today's `USD_GBP_RATE` (see "Decisions").
+`CostMeterContext`: the module's switch state (`SwitchesState` from `@nabvy/contracts/modules/switches`)
+and today's `USD_GBP_RATE` (see "Decisions"). `contextFor(q, usdGbpRate)` builds one by reading the
+live switch through `@nabvy/switches` (task 0.11).
 
 ## Outputs
 
-- **Internal view** `cost_meter.v_costs` (row type `CostMeterCall`), granted to `nabvy_pipeline`:
+- **Internal view** `cost_meter.v_costs` (row type `CostMeterCall`), granted to `nabvy_pipeline`,
+  filtered to `switches.state('cost-meter') <> 'off'` (task 0.11):
   `id, module, provider, kind, ref_id, currency, reserved_micros, settled_micros,
   reserved_gbp_micros, settled_gbp_micros, counted_gbp_micros, status, latency_ms, settled_at, at`.
   `counted_gbp_micros` is what a call costs now: its settlement once settled, otherwise its
@@ -43,6 +46,8 @@ No events. Paying modules call `record()`, `recordModelCall()` and `settle()`, p
     call: `cost-meter.not_found`. An Apify reading taken less than 10 minutes after the run
     finished: `cost-meter.not_final`, and the reservation keeps counting.
   - `readCosts(db, { since, module? }, ctx)`: the ledger as `v_costs` shows it.
+  - `contextFor(db, usdGbpRate)`: a `CostMeterContext` with `state` read live from
+    `state(db, 'cost-meter')` (`@nabvy/switches`).
   - Helpers: `unitsToMicros` (provider dollars to micros, rounded up), `toGbpMicros`,
     `modelCostMicros`.
 
@@ -106,6 +111,17 @@ Other tests: `domain.test.ts` (rounding, conversion, prices, the settle-delay bo
   is still passed in too: `USD_GBP_RATE` now has its own `exchangeRate` config group, loadable
   without `APIFY_TOKEN` (task 0.8), but reading it directly here is a separate change from moving
   where it is grouped, and is not part of this module's scope yet.
+- **2026-09-24: switch stub replaced (task 0.11).** `switches` is built. `v_costs` now filters
+  `where switches.state('cost-meter') <> 'off'` in SQL (a new migration,
+  `packages/db/migrations/cost-meter/20260924180010_cost_meter_switch_filter.sql`, same columns as
+  before; `CREATE OR REPLACE VIEW` keeps its grants). `CostMeterContext.state` is `SwitchesState`
+  from `@nabvy/contracts/modules/switches` rather than the module's own stub enum
+  (`CostMeterSwitchState` is gone). `record`, `recordModelCall`, `settle` and `readCosts` still take
+  the context a caller passes, so their signatures and `readCosts`'s own off-path are unchanged; the
+  new `contextFor(db, usdGbpRate)` gives a caller a correct one by calling
+  `state(db, 'cost-meter')` (`@nabvy/switches`) instead of reading the switch itself.
+  `packages/db/migrations/cost-meter/module.json` and `package.json` now depend on `switches`, since
+  the view creation binds to `switches.state` at migration time and `contextFor` calls it.
 - **2026-09-24: config moved to `@nabvy/config`.** The settle delay and price table were in
   `src/config.ts` until `@nabvy/config` gained per-module files; they now live in
   `packages/config/src/modules/cost-meter.ts` (rule 14), imported as
