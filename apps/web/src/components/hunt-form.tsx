@@ -100,7 +100,7 @@ export function HuntForm({ hunt }: { hunt?: Hunt }) {
           <NativeSelect id="hunt-delivery" name="delivery" defaultValue={hunt?.delivery ?? 'all'}>
             <option value="all">Collection or delivery</option>
             <option value="collection">Collection only</option>
-            <option value="delivery">Delivery only</option>
+            <option value="posted">Delivery only</option>
           </NativeSelect>
         </div>
       </div>

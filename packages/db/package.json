@@ -4,10 +4,31 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./schema/*": "./src/schema/*.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run",
+    "db:plan": "node scripts/migrate.mjs plan",
+    "db:migrate": "node scripts/migrate.mjs apply",
+    "db:generate": "node scripts/generate.mjs",
+    "db:seed": "tsx scripts/seed.ts",
+    "auth:generate": "node scripts/generate-better-auth.mjs"
+  },
+  "dependencies": {
+    "@nabvy/config": "workspace:*",
+    "@nabvy/contracts": "workspace:*",
+    "drizzle-orm": "0.45.3",
+    "pg": "8.23.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@better-auth/stripe": "1.7.5",
+    "@types/pg": "8.23.1",
+    "auth": "1.7.5",
+    "better-auth": "1.7.5",
+    "drizzle-kit": "0.31.11",
+    "stripe": "22.6.2"
   }
 }

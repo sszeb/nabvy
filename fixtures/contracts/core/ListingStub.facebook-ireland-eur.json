@@ -1,0 +1,24 @@
+{
+  "source": "facebook",
+  "sourceListingId": "1234567890123456789",
+  "url": "https://www.facebook.com/marketplace/item/1234567890123456789/",
+  "title": "RTX 3080 10GB",
+  "price": {
+    "amountMinor": 35000,
+    "currency": "EUR"
+  },
+  "priceKind": "fixed",
+  "locationText": "Cork",
+  "listedAt": "2026-09-23T09:02:45.000Z",
+  "listedAtPrecision": "exact",
+  "fetchedAt": "2026-09-24T01:40:43.415Z",
+  "deliveryMethod": "collection",
+  "raw": {
+    "listingId": "1234567890123456789",
+    "money": {
+      "kind": "fixed",
+      "currency": "EUR",
+      "amountMinor": 35000
+    }
+  }
+}

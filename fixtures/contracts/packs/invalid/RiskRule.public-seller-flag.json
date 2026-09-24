@@ -1,0 +1,8 @@
+{
+  "flag": "reused_photos",
+  "test": "reused_photos",
+  "action": "weight",
+  "weight": 0.2,
+  "patterns": [],
+  "params": {}
+}

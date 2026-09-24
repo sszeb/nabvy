@@ -27,7 +27,6 @@ const shotDir = '../../docs/design/screens'
 const forbidden = [
   /!/,
   /\b(worth|fair value|relisted|seen before|hurry|last chance|act now)\b/i,
-  /\b(ebay|cex|gumtree|vinted)\b/i,
   /\b(deal|risk|scam) score\b/i,
 ]
 

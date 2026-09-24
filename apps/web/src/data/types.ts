@@ -10,13 +10,10 @@
  * short quoted evidence and extracted facts reach the screen).
  */
 
-/** The only source in the production MVP (owner, 2026-09-24). */
-export type Source = 'facebook'
+import type { Currency, DeliveryMethod, Money, Source } from '@nabvy/contracts'
 
-/** Irish asks form their own EUR groups and are never converted into GBP. */
-export type Currency = 'GBP' | 'EUR'
-
-export type Money = { amountMinor: number; currency: Currency }
+/** Shared core shapes come from the contracts package; they are never retyped here. */
+export type { Currency, DeliveryMethod, Money, Source }
 
 /** T-timestamps shown to the user, as ISO strings. A missing stage has not happened yet. */
 export type Freshness = {
@@ -34,8 +31,6 @@ export type ListingFact = {
   value?: string
   status: 'stated' | 'not_stated'
 }
-
-export type DeliveryMethod = 'collection' | 'delivery' | 'collection_or_delivery'
 
 export type ListingSummary = {
   id: string

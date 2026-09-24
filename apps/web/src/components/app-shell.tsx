@@ -121,7 +121,6 @@ export function AppShell({
           <div className="flex-1 overflow-y-auto">
             <NavList sections={sections} />
           </div>
-          <p className="px-3 text-muted-foreground text-xs">Public beta · Facebook Marketplace</p>
         </aside>
         <div className="flex min-w-0 flex-col">
           <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/90 px-3 backdrop-blur sm:px-5">

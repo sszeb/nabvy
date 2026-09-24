@@ -8,8 +8,9 @@ import { Badge } from './ui/badge'
 
 export const deliveryLabel: Record<DeliveryMethod, string> = {
   collection: 'Collection',
-  delivery: 'Delivery',
-  collection_or_delivery: 'Collection or delivery',
+  posted: 'Delivery',
+  both: 'Collection or delivery',
+  unknown: 'Delivery not stated',
 }
 
 /**

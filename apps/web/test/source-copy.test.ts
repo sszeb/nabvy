@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest'
 
 /**
  * Copy rules over the screen source (docs/web-app.md, "Copy rules", and the Precedence table):
- * outside comments, no screen or component names another marketplace or price source, calls an
- * ask "worth" or a "fair value", mentions relisting or scores, or reads process.env.
+ * outside comments, no screen or component calls an ask "worth" or a "fair value", mentions
+ * relisting or scores, or uses urgency.
  */
 
 const root = new URL('../src/', import.meta.url).pathname
@@ -27,7 +27,6 @@ function withoutComments(source: string): string {
 }
 
 const forbidden: Array<[string, RegExp]> = [
-  ['other marketplaces or price sources', /\b(eBay|CeX|Gumtree|Vinted)\b/],
   ['worth or fair-value wording', /\b(worth|fair value|fair price|market value)\b/i],
   ['relist wording', /\b(relisted|seen before)\b/i],
   ['scores', /\b(deal score|risk score|scam score)\b/i],

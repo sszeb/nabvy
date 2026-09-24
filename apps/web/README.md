@@ -66,6 +66,14 @@ this is the start of the CI check on user-facing output that `docs/decisions.md`
 - **`sharp` is removed** from the tree (`pnpm-workspace.yaml` override): it is Next's optional
   image optimiser and brings LGPL binaries; the app serves no optimised images.
 
+## Not deployable yet
+
+This is design scaffolding. The waitlist, sign-in, "Report a mistake", "Mark as bought", hunt and
+preference forms report success without doing anything; `/app` and `/admin` have no auth guard;
+there are no CSP or HSTS headers. Do not deploy the app before tasks 0.5a (waitlist storage), 4.0
+(auth and the admin role) and 4.3b (security headers and rate limits) land. Fixture listing links
+point at `.invalid` hosts so none can resolve to a real listing.
+
 ## Commands
 
 ```
