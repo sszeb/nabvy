@@ -1,0 +1,21 @@
+{
+  "rows": 1,
+  "results": [
+    {
+      "ok": true,
+      "created": true,
+      "email": "fixture-repeat@example.com",
+      "postcode": "PO19 8HR",
+      "wantedProducts": [],
+      "utm": { "source": "reddit" }
+    },
+    {
+      "ok": true,
+      "created": false,
+      "email": "fixture-repeat@example.com",
+      "postcode": "PO19 8HR",
+      "wantedProducts": [],
+      "utm": { "source": "reddit" }
+    }
+  ]
+}

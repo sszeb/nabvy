@@ -1,0 +1,11 @@
+{
+  "synthetic": true,
+  "source": "module card, \"When off\": the form is closed",
+  "calls": [
+    {
+      "ip": "203.0.113.106",
+      "state": "off",
+      "input": { "email": "fixture-closed@example.com" }
+    }
+  ]
+}

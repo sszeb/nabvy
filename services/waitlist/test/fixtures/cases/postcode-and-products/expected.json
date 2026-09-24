@@ -1,0 +1,19 @@
+{
+  "rows": 1,
+  "results": [
+    {
+      "ok": true,
+      "created": true,
+      "email": "fixture-full@example.com",
+      "postcode": "EC1A 1BB",
+      "wantedProducts": ["RTX 3080", "RTX 3090"],
+      "utm": {
+        "source": "reddit",
+        "medium": "social",
+        "campaign": "launch",
+        "term": "gpu",
+        "content": "banner-a"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "synthetic": true,
+  "source": "module card, \"Does / does not\": email, postcode and wanted products, with UTM",
+  "calls": [
+    {
+      "ip": "203.0.113.104",
+      "state": "on",
+      "input": {
+        "email": "fixture-full@example.com",
+        "postcode": "EC1A 1BB",
+        "wantedProducts": ["RTX 3080", "RTX 3090"],
+        "utm": {
+          "source": "reddit",
+          "medium": "social",
+          "campaign": "launch",
+          "term": "gpu",
+          "content": "banner-a"
+        }
+      }
+    }
+  ]
+}
