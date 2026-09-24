@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "module card, \"Tests and fixtures\": a suppressed address is never sent to (docs/modules.md:107)",
+  "moduleState": "on",
+  "banned": false,
+  "granted": true,
+  "paused": false,
+  "suppressed": true
+}
