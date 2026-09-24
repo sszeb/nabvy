@@ -105,7 +105,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - **Chargebacks** are recorded, and they reverse any affiliate commission.
   - **Failed actions.** A metered action that fails returns its usage credits (a ledger reversal, not a refund of money).
 
-  Points a lawyer may want to look at are listed in `docs/legal-review.md`.
+  Worded and paired as big tech does ("Policies and conduct match big tech" below). Points a lawyer may want to look at are listed in `docs/legal-review.md`.
 - **Fair use, suspension and bans** (owner, 2026-09-24). Nabvy publishes a Fair Use Policy alongside its terms and acceptable use policy. At its discretion, Nabvy may suspend an account temporarily or ban it permanently when it notices abuse, including:
   - a breach of the terms, the acceptable use policy or the fair use policy;
   - fraud or chargeback abuse;
@@ -117,7 +117,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - no reasons, evidence, rule names, signals or scores;
   - nothing in the app, email, notifications, API, exports or support replies.
 
-  The user receives only a short, vague notice, for example "Your account has been restricted under our terms." Developers and admins see everything. Points a lawyer may want to look at are listed in `docs/legal-review.md`.
+  The user receives only a short, vague notice, for example "Your account has been restricted under our terms." A generic appeal or contact route is offered only if big tech offers one, and it reveals nothing ("Policies and conduct match big tech" below). Developers and admins see everything. Points a lawyer may want to look at are listed in `docs/legal-review.md`.
 
   The product enforces it:
   - an account status (active, suspended until a date, banned) checked on every signed-in request and by every job that acts for a user;
@@ -126,6 +126,13 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - throttling and hunt or alert limits as fair-use steps short of suspension;
   - checks against ban evasion (the same email or payment card);
   - a CI test that fails if any user-facing output carries an enforcement reason, rule, signal or score.
+- **Policies and conduct match big tech** (owner, 2026-09-24): "Any and all policies and conduct just match to the big tech. I'm sure their policies and terms were vetted by legal professionals already." For every policy and every piece of conduct toward users, Nabvy takes the position that leading consumer tech companies share in their UK-facing terms and practice, written in Nabvy's own words. Examples:
+  - terms, refunds, cancellation and trials;
+  - fair use, acceptable use and account sharing;
+  - suspension, bans, notices and appeals;
+  - privacy and cookie notices.
+
+  The benchmark is Netflix, Spotify, Disney+ and YouTube for subscriptions; Google, Apple, Microsoft and Meta for accounts and enforcement; OpenAI, Anthropic, Canva, Midjourney and Adobe for SaaS and AI; and Apify and Supabase for platform-style clauses. The owner's specific decisions above hold. Where big tech pairs them with a standard element, Nabvy includes it too, for example "except where required by law" on refunds, a generic appeal or contact route that reveals nothing, and trial-end reminders.
 - **Legal review on request only** (owner, 2026-09-24): "Run everything as instructed and only write to a document what needs a legal review but do not run any legal reviews or checks until requested." Nabvy is built as the owner instructs. Points that may need a lawyer are listed, without analysis, in `docs/legal-review.md`. No legal research, review or check is run until the owner asks for one.
 - **Pipeline runtime.** **Trigger.dev** runs the pipeline modules, as the build pack planned. Apify is still called only through the Supabase `apify-gateway` Edge Function: pipeline tasks queue gateway jobs in the database and read the collected rows back. This answers the runtime question in `docs/questions.md`.
 
