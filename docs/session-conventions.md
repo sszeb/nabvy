@@ -23,3 +23,7 @@ Measured at 16:15: the day's spend is about $3,900, of which coordinator 1 is $2
 - **One wake per message.** Batch what a session needs into one trigger; never send two triggers to the same session minutes apart. A trigger to a session that has handed off is wasted: check `docs/handoff.md` for the current IDs first.
 - **Model by job** stays as in `CLAUDE.md`: Sonnet by default, the top model for money, security and the pipeline core, Haiku for mechanical tasks (the 0.9b trial passed review in one round at $0.60).
 - **Archiving** releases containers but saves no tokens; idle sessions cost nothing. What costs is a stale check-in firing into a large context, so a session deletes its own check-ins when its PR merges.
+
+## Usage pause (owner, 2026-09-24, 17:30 UTC)
+
+The owner: "Pause all work when we reach 99% of our usage session and resume when we have new allowance" (the five-hour window; that day's reset was 19:30 UTC, 20:30 BST). No session can read the percentage; `get_session` shows only a coarse `rate_limit_info` (`allowed_warning` and the seven-day reset). So the rule is applied by hand: when the owner says the allowance is near its cap, the coordinator starts no new sessions, sends no wakes that are not needed to unblock a pull request, and moves its own sweep past the reset. Sessions already running keep going until the platform refuses them; they are not interrupted mid-edit. After the reset the coordinator's sweep re-arms any one-shot trigger that failed to deliver during the pause (`list_triggers` shows a non-succeeded `last_run`).
