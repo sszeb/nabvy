@@ -1,0 +1,15 @@
+{
+  "name": "@nabvy/trigger",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nabvy/config": "workspace:*",
+    "@nabvy/db": "workspace:*",
+    "@nabvy/spend-governor": "workspace:*",
+    "@trigger.dev/sdk": "4.6.4"
+  }
+}
