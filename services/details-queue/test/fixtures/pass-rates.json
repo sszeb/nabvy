@@ -1,0 +1,12 @@
+{
+  "stages": {
+    "close": {
+      "passed": 6,
+      "total": 6
+    },
+    "first-seen": {
+      "passed": 3,
+      "total": 3
+    }
+  }
+}

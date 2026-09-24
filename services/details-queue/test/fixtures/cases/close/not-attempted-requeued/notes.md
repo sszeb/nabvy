@@ -1,0 +1,1 @@
+Built from the actor's `not-requested-*` outcomes (actor guide item 5). Not attempted, or stopped by a limit: requeued without counting a failure (2.10 row 4; card). An item that already had one failed attempt keeps it at 1, not 2.
