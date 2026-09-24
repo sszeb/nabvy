@@ -32,66 +32,78 @@ export interface Target {
 }
 
 /**
- * The current version of each listing with the rules' run over it at `ruleVersion`, and its
- * text. Listings with no current version or no run at that version are left out.
+ * The current version of each listing with the rules' latest run over it (parts-rules' readers
+ * take the latest `done_at` for the current evidence hash, whatever the rule version), and its
+ * text. Listings with no current version or no run over it are left out.
  */
-export async function selectTargets(
-  q: Queryable,
-  listingIds: string[],
-  ruleVersion: string,
-): Promise<Target[]> {
+export async function selectTargets(q: Queryable, listingIds: string[]): Promise<Target[]> {
   if (listingIds.length === 0) return []
-  const rows = await q
+  const versions = await q
     .select({
       listingId: vCurrent.listingId,
       evidenceHash: vCurrent.evidenceHash,
       source: vCurrent.source,
       sourceListingId: vCurrent.sourceListingId,
       descriptionStatus: vCurrent.descriptionStatus,
-      kind: vGaps.kind,
-      kindGap: vGaps.kindGap,
-      parts: vGaps.parts,
       title: vText.title,
       description: vText.description,
     })
     .from(vCurrent)
     .innerJoin(
-      vGaps,
-      and(
-        eq(vGaps.listingId, vCurrent.listingId),
-        eq(vGaps.evidenceHash, vCurrent.evidenceHash),
-        eq(vGaps.ruleVersion, ruleVersion),
-      ),
-    )
-    .innerJoin(
       vText,
       and(eq(vText.listingId, vCurrent.listingId), eq(vText.evidenceHash, vCurrent.evidenceHash)),
     )
     .where(inArray(vCurrent.listingId, listingIds))
-  return rows.map((r) => ({
-    ...r,
-    parts: (r.parts ?? []) as PartsRulesPartGap[],
-    title: r.title ?? '',
-    description: r.description ?? '',
-  }))
+  if (versions.length === 0) return []
+  const runs = await q
+    .select({
+      listingId: vGaps.listingId,
+      evidenceHash: vGaps.evidenceHash,
+      kind: vGaps.kind,
+      kindGap: vGaps.kindGap,
+      parts: vGaps.parts,
+      doneAt: vGaps.doneAt,
+    })
+    .from(vGaps)
+    .where(inArray(vGaps.listingId, listingIds))
+  const latest = new Map<string, (typeof runs)[number]>()
+  for (const run of runs) {
+    const key = `${run.listingId}@${run.evidenceHash}`
+    const seen = latest.get(key)
+    if (!seen || run.doneAt > seen.doneAt) latest.set(key, run)
+  }
+  return versions.flatMap((v) => {
+    const run = latest.get(`${v.listingId}@${v.evidenceHash}`)
+    if (!run) return []
+    return [
+      {
+        ...v,
+        kind: run.kind,
+        kindGap: run.kindGap,
+        parts: (run.parts ?? []) as PartsRulesPartGap[],
+        title: v.title ?? '',
+        description: v.description ?? '',
+      },
+    ]
+  })
 }
 
 /**
- * Listings (up to `limit`) whose current version the rules left open at `ruleVersion` and that
- * have no call at `promptVersion` and no refresh request yet: the sweep's work.
+ * Listings (up to `limit`) whose current version the rules' latest run left open and that have
+ * no call at `promptVersion` and no refresh request yet: the sweep's work.
  */
 export async function selectPending(
   q: Queryable,
-  ruleVersion: string,
   promptVersion: string,
   limit: number,
 ): Promise<string[]> {
   const result = (await q.execute(sql`
     select c.listing_id
     from detail_evidence.v_current c
-    join parts_rules.v_gaps g
-      on g.listing_id = c.listing_id and g.evidence_hash = c.evidence_hash
-     and g.rule_version = ${ruleVersion}
+    cross join lateral (
+      select g.kind_gap, g.parts, g.done_at from parts_rules.v_gaps g
+      where g.listing_id = c.listing_id and g.evidence_hash = c.evidence_hash
+      order by g.done_at desc limit 1) g
     where (g.kind_gap is not null or jsonb_array_length(g.parts) > 0)
       and not exists (
         select 1 from parts_ai.calls a

@@ -32,7 +32,6 @@ import {
 } from '@nabvy/cost-meter'
 import type { Queryable } from '@nabvy/db'
 import { enqueue } from '@nabvy/details-queue'
-import { RULE_VERSION } from '@nabvy/parts-rules'
 import { resolve } from '@nabvy/product-catalogue'
 import { redact } from '@nabvy/quote-redaction'
 import { readThrottle } from '@nabvy/spend-governor'
@@ -137,8 +136,7 @@ export interface RunReport {
 
 /**
  * Runs the model over the gaps of each listing's current version (the `parts-rules.ran`
- * payload, up to 500 IDs). Reads `v_current`, `v_gaps` at parts-rules' current rule version and
- * `v_text`; a version the rules settled is left alone; a version already called at this prompt
+ * payload, up to 500 IDs). Reads `v_current`, the rules' latest `v_gaps` run over it and `v_text`; a version the rules settled is left alone; a version already called at this prompt
  * version is a cache hit (a price change never re-runs it); partial or missing text is sent to
  * details-queue for a refresh, once per version, and never to the model. Paid work fails closed:
  * quote-redaction, cost-meter and the `anthropic` switch must be on, the model priced, the
@@ -180,7 +178,7 @@ export async function run(
   await lockBatches(q)
 
   const listingIds = [...new Set(input.listingIds)]
-  const targets = (await selectTargets(q, listingIds, RULE_VERSION)).flatMap((t) => {
+  const targets = (await selectTargets(q, listingIds)).flatMap((t) => {
     const asks = asksFor(t)
     return asks ? [{ ...t, asks }] : []
   })
@@ -279,12 +277,7 @@ export async function sweep(
     return run(q, { listingIds: [] }, deps, ctx)
   }
   const version = deps.prompt?.version ?? PARTS_AI_PROMPT_VERSION
-  const listingIds = await selectPending(
-    q,
-    RULE_VERSION,
-    version,
-    Math.min(limit, PARTS_AI_EVENT_BATCH_SIZE),
-  )
+  const listingIds = await selectPending(q, version, Math.min(limit, PARTS_AI_EVENT_BATCH_SIZE))
   return run(q, { listingIds }, deps, ctx)
 }
 

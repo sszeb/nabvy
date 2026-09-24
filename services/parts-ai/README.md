@@ -30,7 +30,8 @@ Priority: first; gated (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:357-3
   up to 500 listing IDs per batch; `sweep()` on a schedule for deferred and failed versions.
 - Views of `detail-evidence`: `v_current` (the current version, its `descriptionStatus`, source
   and source listing ID), `v_text` (its title and description).
-- View of `parts-rules`: `v_gaps` at parts-rules' `RULE_VERSION` (the open kind and parts).
+- View of `parts-rules`: `v_gaps`, the latest run (`done_at`) over the current evidence hash, as
+  parts-rules' readers do (the open kind and parts).
 - `product-catalogue`: `resolve()` for every GPU and CPU the model names.
 - `quote-redaction`: `redact()` on the copy of the text sent to the model.
 - `cost-meter`: `contextFor()`, `recordModelCall()` and the price table; `spend-governor`:
@@ -84,7 +85,7 @@ The pipeline inserts, selects and deletes (erase); the only update it may make i
 
 | Rule | Value | Basis | Status |
 | --- | --- | --- | --- |
-| What is asked | The open parts of `v_gaps` (not stated, mention only, unresolved, conflict) and the kind when `kind_gap` is set; nothing when the rules settled all | "AI only on gaps, conflicts and the listing-kind decision" (`PARTS_INTELLIGENCE.md:245`) | Fixed |
+| What is asked | The open parts of the latest `v_gaps` run (not stated, mention only, unresolved, conflict) and the kind when `kind_gap` is set; nothing when the rules settled all | "AI only on gaps, conflicts and the listing-kind decision" (`PARTS_INTELLIGENCE.md:245`) | Fixed |
 | Full text only | `descriptionStatus` `full_verified`; otherwise `enqueue` a refresh once per version, priority `sweep` | `CONTAINER_LISTINGS.md:167-168` | Starting value (question) |
 | One listing per request | Strict schema, no tools, temperature 0, system prompt cached | `CONTAINER_LISTINGS.md:70`; `docs/contracts.md`, "Model call rules" | Fixed |
 | Output | `PartsAiOutput`: strict; kind and parts with verbatim quotes (≤ 300 characters, ≤ 30 parts); a name with a currency or amount of money is refused | "Returns only catalogue IDs plus quotes" (`PARTS_INTELLIGENCE.md:246`) | Fixed |
