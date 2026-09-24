@@ -1,8 +1,8 @@
 # @nabvy/source-adapters
 
 Provider adapters behind the `ProviderAdapter` contract (`docs/contracts.md`, `docs/providers.md`).
-Nothing here is implemented yet: task 1.0 records the Facebook actor's real fields and maps them to
-the target shape; task 1.1 builds the adapter on this record.
+Task 1.0 records the Facebook actor's real fields and maps them to the target shape; task 1.1 builds
+the adapter on this record. Implemented so far: the route-health helper (below).
 
 ## Facebook Marketplace actor (task 1.0)
 
@@ -160,3 +160,24 @@ No field that the adapter needs is missing, so the task does not stop. The diffe
   also checks that the fixture carries no seller identity, and that the recorded input obeys the
   actor's v3 rules and the gateway's limits. The Zod schema for actor rows is built with the
   adapter (task 1.1), once task 0.2 has settled the contracts layout.
+
+## Route health (task 1.1 groundwork)
+
+`src/domain/route-health.ts` is a line-for-line TypeScript port of the actor's
+`app/route-health.js` (`f177a44`), which the brief lists as code to copy. It chooses each region's
+`detailRoute` from recent runs' `RUN_SUMMARY.detailRoute` stats. It stays on the cheaper graphql
+replay while at least 95% of 50 or more replays succeed, and switches to the item page on a tripped
+breaker, failing bootstraps or low success. It then probes graphql every tenth run and returns after
+20 good probe replays.
+
+- **Tests.** `test/route-health.test.ts` ports the actor's eight route-health tests. The two that
+  exercise the actor's internals (its in-run breaker and its input normalisation) stay in the actor
+  repository. Two tests are added: the recorded run stays on graphql as `insufficient-data` (19 of
+  19 replays), and a pinned test for the known caveat.
+- **Known caveat, pinned.** A reply for a listing with no description counts as a failed replay,
+  so the actor's own 1.0.82 check (47 of 50) would move a region to the dearer page route with an
+  alert. The port keeps the actor's behaviour until the owner decides (`docs/questions.md`); the
+  pinned test makes any change deliberate.
+- **Where state lives.** The caller keeps one state object per region, plus each run's
+  `detailRoute` object tagged with its Apify run ID. Their table arrives with the adapter's storage
+  (tasks 0.3 and 1.1).
