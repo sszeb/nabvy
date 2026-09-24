@@ -25,3 +25,4 @@ This file lists points a lawyer may want to look at. It gives no analysis, and n
 | 17 | Marketing | Affiliate programme terms and ad disclosure; marketing consent | `docs/affiliates.md`; `docs/marketing.md` |
 | 18 | Terms | The owner asked to "copy over" Apify's and Supabase's terms. The drafts follow their structure in Nabvy's own wording rather than copying text | Terms drafts (in progress) |
 | 19 | Policies | All policies and conduct follow big tech's UK-facing positions (owner's decision). Their terms were written for their own services; whether each position fits Nabvy is for the lawyer | `docs/decisions.md`, "Policies and conduct match big tech" |
+| 20 | Data | Pickup addresses and times that users enter for their own route planning (sellers' addresses, entered by the user) | `docs/decisions.md`, "Search, map and pickup features" |
