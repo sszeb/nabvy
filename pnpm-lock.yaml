@@ -81,6 +81,18 @@ importers:
 
   packages/packs: {}
 
+  services/scaffold-probe:
+    dependencies:
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+
   services/source-adapters: {}
 
 packages:

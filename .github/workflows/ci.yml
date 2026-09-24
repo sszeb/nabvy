@@ -114,7 +114,7 @@ jobs:
       - name: Scaffold a throwaway module end to end
         run: |
           pnpm new:module scaffold-probe
-          pnpm install --offline --no-frozen-lockfile
+          pnpm install --prefer-offline --no-frozen-lockfile
           pnpm db:generate scaffold-probe --name scaffold_probe_schema
           pnpm typecheck
           pnpm lint
