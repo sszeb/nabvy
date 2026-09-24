@@ -9,6 +9,7 @@ import { admin, captcha, magicLink } from 'better-auth/plugins'
 import { createAccessControl } from 'better-auth/plugins/access'
 import { defaultStatements } from 'better-auth/plugins/admin/access'
 import { sql } from 'drizzle-orm'
+import { promoteFounder, registerAuthDatabase } from './audited'
 import { isFounderEmail, normaliseEmail } from './domain/founders'
 import { restrictionOf } from './domain/standing'
 import { type MagicLinkSender, magicLinkText } from './email/magic-link'
@@ -71,22 +72,23 @@ const privateBanReason = {
 } satisfies BetterAuthPlugin
 
 /**
- * What an admin may do through `/api/auth/admin/*` until admin actions write `audit_log`
- * (docs/security.md): list and read users, ban and unban, list and revoke sessions. No role
- * changes, impersonation, user creation or removal, password or email changes
- * (docs/questions.md). Founders get the role from ADMIN_EMAILS only.
+ * What an admin may do through `/api/auth/admin/*`: list and read users and sessions, nothing
+ * that changes anything. Better Auth's endpoints cannot write `audit_log` in the transaction that
+ * makes the change, so every admin action (role changes, restrictions, session revokes) goes
+ * through this module's audited functions instead (admin.ts; docs/security.md). Impersonation,
+ * user creation or removal, and password or email changes have no audited function and stay
+ * refused.
  */
 const ac = createAccessControl(defaultStatements)
 const roles = {
   user: ac.newRole({ user: [], session: [] }),
-  admin: ac.newRole({ user: ['list', 'get', 'ban'], session: ['list', 'revoke'] }),
+  admin: ac.newRole({ user: ['list', 'get'], session: ['list'] }),
 }
 
 type SessionHookContext = {
   context: {
     internalAdapter: {
       findUserById(id: string): Promise<Record<string, unknown> | null>
-      updateUser(id: string, data: Record<string, unknown>): Promise<unknown>
     }
   }
 }
@@ -95,11 +97,13 @@ type SessionHookContext = {
  * Runs before any session is created, whatever the sign-in method:
  * - a restricted account gets its notice (step and policy only), never a session;
  * - an unverified email address gets no session (email verification is required);
- * - an address in ADMIN_EMAILS that lacks the admin role is promoted (founder bootstrap).
+ * - an address in ADMIN_EMAILS that lacks the admin role is promoted by `promote`, which records
+ *   the role change in audit_log (founder bootstrap).
  * Fails closed when there is no request context.
  */
 export function guardSessionCreation(
   adminEmails: readonly string[],
+  promote: (userId: string) => Promise<void>,
   now: () => Date = () => new Date(),
 ) {
   return async (data: { userId: string }, ctx: SessionHookContext | null | undefined) => {
@@ -120,7 +124,7 @@ export function guardSessionCreation(
       })
     }
     if (isFounderEmail(String(owner.email), adminEmails) && owner.role !== 'admin') {
-      await ctx.context.internalAdapter.updateUser(String(owner.id), { role: 'admin' })
+      await promote(String(owner.id))
     }
     return undefined
   }
@@ -158,9 +162,8 @@ export async function consumeMagicLinkQuota(
 /** The Better Auth server instance (docs/decisions.md, "Authentication and authorisation"). */
 export function createAuth(options: AuthOptions) {
   const base = assertSecureBaseURL(options.baseURL)
-  const founder = (email: string) => isFounderEmail(email, options.adminEmails)
   const signUp = { window: rateLimits.signUpPerIp.windowSeconds, max: rateLimits.signUpPerIp.max }
-  return betterAuth({
+  const auth = betterAuth({
     baseURL: options.baseURL,
     secret: options.secret,
     basePath: '/api/auth',
@@ -208,16 +211,8 @@ export function createAuth(options: AuthOptions) {
           },
         }
       : {}),
-    databaseHooks: {
-      user: {
-        create: {
-          // Founder bootstrap for new accounts.
-          async before(data) {
-            return founder(data.email) ? { data: { ...data, role: 'admin' } } : undefined
-          },
-        },
-      },
-    },
+    // Founder bootstrap happens in the session guard, for new and existing accounts alike, so the
+    // role change is recorded in audit_log: a new account has no ID to record before it exists.
     plugins: [
       // Before `admin`, whose own ban check would otherwise answer first with a fixed message.
       {
@@ -225,7 +220,13 @@ export function createAuth(options: AuthOptions) {
         init: () => ({
           options: {
             databaseHooks: {
-              session: { create: { before: guardSessionCreation(options.adminEmails) as never } },
+              session: {
+                create: {
+                  before: guardSessionCreation(options.adminEmails, (userId) =>
+                    promoteFounder(options.db, userId),
+                  ) as never,
+                },
+              },
             },
           },
         }),
@@ -268,6 +269,8 @@ export function createAuth(options: AuthOptions) {
       }),
     ],
   })
+  registerAuthDatabase(auth, options.db)
+  return auth
 }
 
 export type Auth = ReturnType<typeof createAuth>

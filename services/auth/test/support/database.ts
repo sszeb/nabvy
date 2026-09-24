@@ -5,7 +5,7 @@ import { PGlite } from '@electric-sql/pglite'
 import type { Queryable } from '@nabvy/db'
 import { drizzle } from 'drizzle-orm/pglite'
 
-// An in-process Postgres (PGlite) with the real core and better-auth migrations applied, so the
+// An in-process Postgres (PGlite) with the real core, audit-log and better-auth migrations, so the
 // tests run Better Auth against the actual tables and grants, as the nabvy_auth role. PGlite has
 // no PostGIS, pgvector or pg_trgm; nothing here uses them, so their `create extension` lines are
 // skipped. The full migration set runs on real Postgres in `pnpm db:dry-run`.
@@ -35,7 +35,11 @@ export interface TestDatabase {
 
 export async function createTestDatabase(): Promise<TestDatabase> {
   const pg = new PGlite()
-  for (const file of [...migrationFiles('core'), ...migrationFiles('better-auth')]) {
+  for (const file of [
+    ...migrationFiles('core'),
+    ...migrationFiles('audit-log'),
+    ...migrationFiles('better-auth'),
+  ]) {
     const text = readFileSync(file, 'utf8')
       .split('\n')
       .filter((line) => !/^create extension /i.test(line))
