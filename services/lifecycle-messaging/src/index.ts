@@ -61,8 +61,27 @@ export interface RunResult {
   skipped: Record<string, number>
 }
 
-const startOfUtcDay = (at: Date): Date =>
-  new Date(Date.UTC(at.getUTCFullYear(), at.getUTCMonth(), at.getUTCDate()))
+/** Parts of a date in Europe/London (same approach as `services/spend-governor/src/domain/index.ts`). */
+function londonParts(date: Date): { year: number; month: number; day: number; hour: number } {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    hourCycle: 'h23',
+  }).formatToParts(date)
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value)
+  return { year: get('year'), month: get('month'), day: get('day'), hour: get('hour') }
+}
+
+/** Midnight in London on the calendar day `at` falls in, as an instant (London is UTC+0 or UTC+1). */
+const startOfLondonDay = (at: Date): Date => {
+  const { year, month, day } = londonParts(at)
+  const utcMidnight = Date.UTC(year, month - 1, day)
+  const offsetHours = londonParts(new Date(utcMidnight)).hour
+  return new Date(utcMidnight - offsetHours * 3_600_000)
+}
 
 const bump = (counts: Record<string, number>, key: string): void => {
   counts[key] = (counts[key] ?? 0) + 1
@@ -135,7 +154,7 @@ export async function run(q: Queryable, deps: RunDeps = {}): Promise<RunResult> 
   const resend = deps.resend ?? new InMemoryResendClient()
   const workflows = deps.workflows ?? new InMemoryPostHogWorkflowsClient()
   const emailResolver = deps.emailResolver ?? new InMemoryEmailResolver()
-  const dayStart = startOfUtcDay(now)
+  const dayStart = startOfLondonDay(now)
   const marketingSentToday = new Map<string, number>()
 
   const marketingCountToday = async (userId: string): Promise<number> => {
@@ -149,8 +168,20 @@ export async function run(q: Queryable, deps: RunDeps = {}): Promise<RunResult> 
 
   for (const programme of PROGRAMMES) {
     const occurrences = await occurrencesForProgramme(q, programme, now)
+    if (occurrences.length === 0) continue
+
+    // Batched per programme (rule 9), not per occurrence: re-engagement's exit is "any activity"
+    // (docs/marketing.md), its own `exitEvents` empty, which `selectEarliestEventAfter` reads as
+    // "match any event" (repo.ts).
+    const anchors = new Map(occurrences.map((o) => [o.userId, o.triggeredAt]))
+    const [exitedAtByUser, displayNames] = await Promise.all([
+      repo.selectEarliestEventAfter(q, anchors, programme.exitEvents),
+      repo.selectDisplayNames(q, [...anchors.keys()]),
+    ])
+
     for (const occurrence of occurrences) {
       const alreadySent = await repo.selectAlreadySent(q, programme.id, occurrence.userId)
+      const exitedAt = exitedAtByUser.get(occurrence.userId) ?? null
       for (const step of programme.steps) {
         result.evaluated += 1
         const sentKey = `${step.key}|${occurrence.triggeredAt.toISOString()}`
@@ -163,18 +194,6 @@ export async function run(q: Queryable, deps: RunDeps = {}): Promise<RunResult> 
           bump(result.skipped, 'wait')
           continue
         }
-
-        // re-engagement's exit is "any activity" (docs/marketing.md): its own `exitEvents` is
-        // empty, which `selectEarliestEventAfter` reads as "match any event" (repo.ts).
-        const exitedAt =
-          (
-            await repo.selectEarliestEventAfter(
-              q,
-              [occurrence.userId],
-              programme.exitEvents,
-              occurrence.triggeredAt,
-            )
-          ).get(occurrence.userId) ?? null
 
         const email = await emailResolver.resolve(occurrence.userId)
         if (email == null) {
@@ -205,10 +224,7 @@ export async function run(q: Queryable, deps: RunDeps = {}): Promise<RunResult> 
           continue
         }
 
-        const [displayNames, numbers] = await Promise.all([
-          repo.selectDisplayNames(q, [occurrence.userId]),
-          numbersFor(q, programme, occurrence),
-        ])
+        const numbers = await numbersFor(q, programme, occurrence)
         const message = renderCopy(programme.id, step.key, {
           displayName: displayNames.get(occurrence.userId) ?? null,
           numbers,

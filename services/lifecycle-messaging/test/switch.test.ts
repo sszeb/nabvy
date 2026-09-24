@@ -48,6 +48,47 @@ describe('lifecycle-messaging off (no seed row: switches.state reads off for an 
   })
 })
 
+// shadow behaves exactly like off (README.md "Switch and priority" and "Decisions"): `isOn()`
+// (src/index.ts) is true only for 'on', so a 'shadow' switch also evaluates and writes nothing.
+describe('lifecycle-messaging shadow', () => {
+  beforeEach(async () => {
+    await t.sql(
+      `insert into switches.switches (name, kind, state) values ('lifecycle-messaging', 'module', 'shadow')`,
+    )
+    await t.sql(
+      `insert into switches.switches (name, kind, state) values ('marketing-consent', 'module', 'on')`,
+    )
+    await t.sql(
+      `insert into switches.switches (name, kind, state) values ('product-events', 'module', 'on')`,
+    )
+    await t.as(
+      'nabvy_app',
+      (tx) =>
+        setPreference(tx, { userId: USER, category: 'tips', granted: true, source: 'signup' }),
+      USER,
+    )
+  })
+
+  it('run() writes nothing and returns an empty result', async () => {
+    const result = await t.as('nabvy_pipeline', (tx) =>
+      run(tx, { now: NOW, emailResolver: emailResolver() }),
+    )
+    expect(result).toEqual({ evaluated: 0, sent: 0, skipped: {} })
+    const rows = await t.sql('select count(*)::int as n from lifecycle_messaging.programme_runs')
+    expect(Number(rows[0]?.n)).toBe(0)
+  })
+
+  // Unlike the off case above, this does not insert a row directly first: `v_runs`'s own filter is
+  // `switches.state(...) <> 'off'` (packages/db/migrations/lifecycle-messaging/…_access.sql), so a
+  // shadow switch does not hide a row that already exists (rule 11: shadow's internal views still
+  // show rows) -- what shadow changes is that `run()` never writes one in the first place.
+  it('v_runs returns no rows after a shadow run', async () => {
+    await t.as('nabvy_pipeline', (tx) => run(tx, { now: NOW, emailResolver: emailResolver() }))
+    const rows = await t.sql('select count(*)::int as n from lifecycle_messaging.v_runs')
+    expect(Number(rows[0]?.n)).toBe(0)
+  })
+})
+
 describe('lifecycle-messaging on', () => {
   beforeEach(async () => {
     await t.sql(

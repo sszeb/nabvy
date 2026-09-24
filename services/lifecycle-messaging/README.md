@@ -11,6 +11,9 @@ returns immediately (module card, "When off": "no lifecycle messages") — nothi
 nothing is sent, nothing is written, and `v_runs` returns no rows. MVP, BP4, backlog task 4.6b
 (kept as the `lifecycle-messaging` atomic module).
 
+`shadow` behaves exactly like `off`: `run()` gates on `isOn()`, which is true only for `on`, so a
+`shadow` switch also evaluates nothing and writes nothing (see "Decisions").
+
 ## Inputs
 
 - `product_events.v_events` (module: `product-events`), read directly (`@nabvy/db/schema/product-events`):
@@ -125,10 +128,39 @@ earlier while the switch was on.
   never written anywhere, so a step blocked today is retried automatically on a later run once the
   blocking condition changes.
 - 2026-09-24: **`re-engagement`'s exit ("any activity") is never stored**: its `exitEvents` is
-  empty, which `selectEarliestEventAtOrAfter` (`src/repo`) reads as "match any event, not a
+  empty, which `selectEarliestEventAfter` (`src/repo`) reads as "match any event, not a
   specific list" — a fresh `alert_opened`/`scan_started` moves the inactivity anchor itself and the
   14-day condition stops being true on its own, and any other event after that anchor still counts
   as the "any activity" exit `docs/marketing.md` names.
+- 2026-09-24: **`selectEarliestEventAfter` and `selectDisplayNames` are called once per programme,
+  not once per user** (review of PR #65, item 3; rule 9). Occurrences in one programme have
+  different trigger times, so `selectEarliestEventAfter` takes a `userId → triggeredAt` map, fetches
+  every candidate exit event since the earliest anchor in the batch in one query (ordered by `at`),
+  and picks each user's own first match above their own anchor in memory, rather than reusing a
+  single cutoff across users.
+- 2026-09-24: **`run()` gates shadow the same as off** (review of PR #65, item 1, option (b)): the
+  switch check is `isOn()` (true only for `on`), not `state() !== 'off'`, so `shadow` evaluates
+  nothing and writes nothing, same as `off`. This module's only table, `programme_runs`, doubles as
+  its send record and the `alreadySent` check that makes `run()` idempotent; a `shadow` run that
+  evaluated and wrote a row without sending would make a later `on` run treat that step as
+  already sent and skip the real send. Recording a run without treating it as sent would need a
+  `sent`/`outcome` column this table does not have. Because the module's only output is a send
+  (module card, "Outputs": "sends"), and it publishes no user-facing view for shadow rows to inform
+  without sending, the smaller change is to keep `shadow` equal to `off` rather than add that
+  column; `test/switch.test.ts` covers the `shadow` case (no send, no row, `v_runs` empty).
+- 2026-09-24: **the daily marketing cap counts Europe/London calendar days**, not UTC days (review
+  of PR #65, item 2; `docs/marketing.md`: "a cap of one marketing message per user per day" is a UK
+  calendar day, and UTC is an hour off during BST). `startOfLondonDay` (`src/index.ts`) follows the
+  same instant-adjustment approach as `services/spend-governor/src/domain/index.ts`'s
+  `londonMonthStartOf`, at day granularity instead of month.
+- 2026-09-24: **a trigger that recurs inside its own window supersedes the earlier occurrence**
+  (review of PR #65, item 4). `selectRecentTriggerOccurrences` keeps only the latest occurrence per
+  user, so two `hunt_created` events inside `channel-not-linked`'s window leave only the later one
+  as a candidate; the earlier occurrence's still-due steps are never separately evaluated again.
+  This matches "no skip is ever persisted" above in spirit (nothing about the earlier occurrence is
+  recorded as skipped or lost — a fresh occurrence simply replaces it as the thing being evaluated),
+  and is the same trade-off the primary key's `triggered_at` (above) already accepts: one open
+  occurrence per user per programme at a time.
 - 2026-09-24: **email resolution is an open gap, not invented.** No module this card depends on
   (`switches`, `product-events`, `marketing-consent`, `account`) exposes a user's email — the same
   gap `services/marketing-consent/README.md` already records for `canMarket()`. `EmailResolver`

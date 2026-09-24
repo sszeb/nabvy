@@ -35,31 +35,42 @@ export async function selectRecentTriggerOccurrences(
 }
 
 /**
- * The earliest occurrence per user of any of `events` strictly after `since` (`since` itself, the
- * trigger's own moment, never counts as its own exit). Pass an empty `events` array to match any
- * event at all (the "any activity" exit `re-engagement` uses, README.md "Decisions") -- exclusive
- * for exactly that reason: `re-engagement`'s anchor is itself an `alert_opened`/`scan_started` row
- * at `since`, which an inclusive bound would immediately match as its own exit.
+ * The earliest occurrence per user of any of `events` strictly after that user's own anchor in
+ * `anchors` (a user's own trigger moment never counts as its own exit). Batched per programme
+ * (rule 9) rather than one query per occurrence: users can have different anchors in the same
+ * call, so this fetches every candidate event since the earliest anchor in the batch in one query,
+ * ordered by `at`, then takes each user's own first match above their own anchor in memory. Pass
+ * an empty `events` array to match any event at all (the "any activity" exit `re-engagement` uses,
+ * README.md "Decisions") -- exclusive for exactly that reason: `re-engagement`'s anchor is itself
+ * an `alert_opened`/`scan_started` row, which an inclusive bound would immediately match as its own
+ * exit.
  */
 export async function selectEarliestEventAfter(
   q: Queryable,
-  userIds: readonly string[],
+  anchors: ReadonlyMap<string, Date>,
   events: readonly ProductEventsName[],
-  since: Date,
 ): Promise<Map<string, Date>> {
-  if (userIds.length === 0) return new Map()
+  if (anchors.size === 0) return new Map()
+  const userIds = [...anchors.keys()]
+  const earliestAnchor = [...anchors.values()].reduce((min, d) => (d < min ? d : min))
   const rows = await q
-    .select({ userId: vEvents.userId, at: sql<Date>`min(${vEvents.at})`.as('earliest_at') })
+    .select({ userId: vEvents.userId, at: vEvents.at })
     .from(vEvents)
     .where(
       and(
-        inArray(vEvents.userId, [...userIds]),
-        gt(vEvents.at, since),
+        inArray(vEvents.userId, userIds),
+        gt(vEvents.at, earliestAnchor),
         events.length > 0 ? inArray(vEvents.event, [...events]) : undefined,
       ),
     )
-    .groupBy(vEvents.userId)
-  return new Map(rows.map((r) => [r.userId, new Date(r.at)]))
+    .orderBy(vEvents.at)
+  const earliestAfterOwnAnchor = new Map<string, Date>()
+  for (const row of rows) {
+    if (earliestAfterOwnAnchor.has(row.userId)) continue
+    const since = anchors.get(row.userId)
+    if (since != null && row.at > since) earliestAfterOwnAnchor.set(row.userId, new Date(row.at))
+  }
+  return earliestAfterOwnAnchor
 }
 
 /**
