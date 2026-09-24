@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
   channelKey,
+  checkIssuanceCap,
   checkLinkCode,
   checkRelinkCap,
   deletedKey,
   generateLinkCode,
+  hashLinkCode,
   planStandingChange,
   relinkCapFor,
   standingChangedKey,
@@ -59,10 +61,26 @@ describe('relinkCapFor / checkRelinkCap', () => {
     expect(relinkCapFor('business', capByPlan)).toBe(1)
   })
 
-  it('refuses once the cap in the window is reached', () => {
+  it('refuses once the cap of completed re-links in the window is reached', () => {
     expect(checkRelinkCap(0, 1)).toBeNull()
     expect(checkRelinkCap(1, 1)).toBe('account.relink_cap_exceeded')
     expect(checkRelinkCap(5, 1)).toBe('account.relink_cap_exceeded')
+  })
+})
+
+describe('checkIssuanceCap', () => {
+  it('refuses once the short-window issuance cap is reached, independent of completion', () => {
+    expect(checkIssuanceCap(4, 5)).toBeNull()
+    expect(checkIssuanceCap(5, 5)).toBe('account.link_code_rate_limited')
+  })
+})
+
+describe('hashLinkCode', () => {
+  it('is a deterministic 64-character hex digest, distinct per code', () => {
+    const hash = hashLinkCode('ABCDEFGH')
+    expect(hash).toMatch(/^[0-9a-f]{64}$/)
+    expect(hashLinkCode('ABCDEFGH')).toBe(hash)
+    expect(hashLinkCode('ZZZZZZZZ')).not.toBe(hash)
   })
 })
 

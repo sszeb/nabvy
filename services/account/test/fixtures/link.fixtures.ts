@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync } from 'node:fs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { z } from 'zod'
@@ -54,9 +55,10 @@ describe('link', () => {
       input.userId,
     )
     if (input.tamper === 'expire') {
+      const codeHash = createHash('sha256').update(code).digest('hex')
       await db.sql(
-        `update account.telegram_link_codes set expires_at = now() - interval '1 minute' where code = $1`,
-        [code],
+        `update account.telegram_link_codes set expires_at = now() - interval '1 minute' where code_hash = $1`,
+        [codeHash],
       )
     }
 

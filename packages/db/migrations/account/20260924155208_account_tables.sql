@@ -43,13 +43,13 @@ CREATE TABLE "account"."standing" (
 );
 --> statement-breakpoint
 CREATE TABLE "account"."telegram_link_codes" (
-	"code" text PRIMARY KEY NOT NULL,
+	"code_hash" text PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
 	"session_id" text NOT NULL,
 	"created_at" timestamp (3) with time zone DEFAULT now() NOT NULL,
 	"expires_at" timestamp (3) with time zone NOT NULL,
 	"used_at" timestamp (3) with time zone,
-	CONSTRAINT "telegram_link_codes_code_format" CHECK ("account"."telegram_link_codes"."code" ~ '^[A-HJ-NP-Z2-9]{8}$')
+	CONSTRAINT "telegram_link_codes_code_hash_format" CHECK ("account"."telegram_link_codes"."code_hash" ~ '^[0-9a-f]{64}$')
 );
 --> statement-breakpoint
 CREATE TABLE "account"."telegram_links" (
@@ -71,4 +71,4 @@ CREATE TABLE "account"."user_profiles" (
 CREATE INDEX "api_keys_user_id_idx" ON "account"."api_keys" USING btree ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "push_subscriptions_user_id_device_id_key" ON "account"."push_subscriptions" USING btree ("user_id","device_id");--> statement-breakpoint
 CREATE INDEX "telegram_link_codes_user_id_created_at_idx" ON "account"."telegram_link_codes" USING btree ("user_id","created_at");--> statement-breakpoint
-CREATE INDEX "telegram_links_chat_id_active_idx" ON "account"."telegram_links" USING btree ("chat_id") WHERE "account"."telegram_links"."revoked_at" is null;
+CREATE UNIQUE INDEX "telegram_links_chat_id_active_idx" ON "account"."telegram_links" USING btree ("chat_id") WHERE "account"."telegram_links"."revoked_at" is null;

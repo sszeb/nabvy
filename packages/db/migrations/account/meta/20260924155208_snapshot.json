@@ -281,8 +281,8 @@
       "name": "telegram_link_codes",
       "schema": "account",
       "columns": {
-        "code": {
-          "name": "code",
+        "code_hash": {
+          "name": "code_hash",
           "type": "text",
           "primaryKey": true,
           "notNull": true
@@ -347,9 +347,9 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {
-        "telegram_link_codes_code_format": {
-          "name": "telegram_link_codes_code_format",
-          "value": "\"account\".\"telegram_link_codes\".\"code\" ~ '^[A-HJ-NP-Z2-9]{8}$'"
+        "telegram_link_codes_code_hash_format": {
+          "name": "telegram_link_codes_code_hash_format",
+          "value": "\"account\".\"telegram_link_codes\".\"code_hash\" ~ '^[0-9a-f]{64}$'"
         }
       },
       "isRLSEnabled": false
@@ -395,7 +395,7 @@
               "nulls": "last"
             }
           ],
-          "isUnique": false,
+          "isUnique": true,
           "where": "\"account\".\"telegram_links\".\"revoked_at\" is null",
           "concurrently": false,
           "method": "btree",

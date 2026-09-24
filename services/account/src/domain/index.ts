@@ -1,4 +1,5 @@
 // Pure logic: no I/O, no database, no clock or randomness passed in implicitly.
+import { createHash } from 'node:crypto'
 import type {
   AccountErrorCode,
   AccountFairUseLimits,
@@ -17,7 +18,11 @@ export class AccountRefused extends Error {
 
 const LINK_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // no 0/O/1/I
 
-/** An 8-character single-use code. `random` is `() => number in [0, 1)`, e.g. `Math.random`. */
+/**
+ * An 8-character single-use code. `random` is `() => number in [0, 1)`; the exported
+ * `createTelegramLinkCode` always calls this with a CSPRNG-backed generator (never `Math.random`,
+ * which is predictable), keeping this seam only for domain.test.ts's deterministic cases.
+ */
 export function generateLinkCode(random: () => number): string {
   let code = ''
   for (let i = 0; i < 8; i++) {
@@ -26,8 +31,12 @@ export function generateLinkCode(random: () => number): string {
   return code
 }
 
+/** The primary key `telegram_link_codes` stores instead of the plain code, as for API keys. */
+export function hashLinkCode(code: string): string {
+  return createHash('sha256').update(code).digest('hex')
+}
+
 export interface LinkCodeRow {
-  code: string
   userId: string
   expiresAt: Date
   usedAt: Date | null
@@ -46,9 +55,25 @@ export function relinkCapFor(plan: string, capByPlan: Readonly<Record<string, nu
   return capByPlan[plan] ?? capByPlan.default ?? 0
 }
 
-/** Refuses a new link code once the plan's cap of codes issued in the window is reached. */
-export function checkRelinkCap(codesIssuedInWindow: number, cap: number): AccountErrorCode | null {
-  return codesIssuedInWindow >= cap ? 'account.relink_cap_exceeded' : null
+/**
+ * Refuses a new link code once the plan's cap of *completed* re-links in the window is reached.
+ * Counts confirmations, never mere issuance: an expired or mistyped code was never completed, so
+ * it never counts against this cap (services/account/README.md, "Rules and thresholds").
+ */
+export function checkRelinkCap(
+  completedRelinksInWindow: number,
+  cap: number,
+): AccountErrorCode | null {
+  return completedRelinksInWindow >= cap ? 'account.relink_cap_exceeded' : null
+}
+
+/**
+ * A separate, short-window limit on requesting a code at all (any outcome), independent of plan:
+ * stops a script from hammering the endpoint. Distinct from `checkRelinkCap`, which only counts
+ * completed links.
+ */
+export function checkIssuanceCap(issuedInWindow: number, cap: number): AccountErrorCode | null {
+  return issuedInWindow >= cap ? 'account.link_code_rate_limited' : null
 }
 
 /**

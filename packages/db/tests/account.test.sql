@@ -26,9 +26,16 @@ begin
           and has_table_privilege('nabvy_pipeline', 'account.standing', 'update')) then
     raise exception 'nabvy_pipeline lacks its standing grants';
   end if;
-  if has_table_privilege('nabvy_app', 'account.standing', 'select')
-     or has_table_privilege('nabvy_pipeline', 'account.standing', 'delete') then
+  if has_table_privilege('nabvy_app', 'account.standing', 'select') then
     raise exception 'standing is reachable outside setStanding()''s own writers';
+  end if;
+  -- The 24-hour purge sweep (services/account/src/index.ts, purgeDueDeletions) erases these four
+  -- tables' rows for a user whose deletion is due (20260924163054_account_purge_grants.sql).
+  if not (has_table_privilege('nabvy_pipeline', 'account.telegram_link_codes', 'delete')
+          and has_table_privilege('nabvy_pipeline', 'account.deletion_requests', 'delete')
+          and has_table_privilege('nabvy_pipeline', 'account.api_keys', 'delete')
+          and has_table_privilege('nabvy_pipeline', 'account.standing', 'delete')) then
+    raise exception 'nabvy_pipeline lacks a purge grant';
   end if;
   foreach r in array array['anon', 'authenticated'] loop
     if has_schema_privilege(r, 'account', 'usage') then
@@ -87,6 +94,35 @@ begin
   if found then
     raise exception 'nabvy_app updated another user''s profile';
   end if;
+end;
+$$;
+reset role;
+
+-- RLS isolation, WITH CHECK: nabvy_app, signed in as b1, cannot write a row for another user into
+-- telegram_links, push_subscriptions or deletion_requests (the same user_isolation policy as
+-- user_profiles above, on the tables the review found untested).
+set local role nabvy_app;
+select set_config('app.user_id', '00000000-0000-4000-8000-0000000000b1', true);
+do $$
+declare
+  refused boolean;
+  probe text;
+begin
+  foreach probe in array array[
+    $q$insert into account.telegram_links (user_id, chat_id) values ('00000000-0000-4000-8000-0000000000b2', 'chat-2')$q$,
+    $q$insert into account.push_subscriptions (user_id, device_id, session_id, endpoint, keys) values ('00000000-0000-4000-8000-0000000000b2', 'device-2', 'session-2', 'https://example.com/push', '{}'::jsonb)$q$,
+    $q$insert into account.deletion_requests (user_id, purge_by) values ('00000000-0000-4000-8000-0000000000b2', now() + interval '1 day')$q$
+  ] loop
+    refused := false;
+    begin
+      execute probe;
+    exception when insufficient_privilege then
+      refused := true;
+    end;
+    if not refused then
+      raise exception 'nabvy_app wrote another user''s row: %', probe;
+    end if;
+  end loop;
 end;
 $$;
 reset role;

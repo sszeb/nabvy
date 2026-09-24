@@ -8,7 +8,7 @@
 // `liftRestriction` for the actual enforcement (Better Auth's ban fields, session revocation, its
 // own audit row) and adds only what auth does not carry: fair-use limits and this module's own
 // audit trail, in `account.standing`.
-import { record } from '@nabvy/audit-log'
+import { randomInt } from 'node:crypto'
 import {
   type AccountRestrictedError,
   assertAccountActive,
@@ -18,6 +18,8 @@ import {
 } from '@nabvy/auth'
 import {
   DELETION_PURGE_DELAY_MS,
+  TELEGRAM_LINK_CODE_ISSUANCE_CAP,
+  TELEGRAM_LINK_CODE_ISSUANCE_WINDOW_MS,
   TELEGRAM_LINK_CODE_TTL_MS,
   TELEGRAM_RELINK_CAP_BY_PLAN,
   TELEGRAM_RELINK_WINDOW_MS,
@@ -34,7 +36,7 @@ import {
   type AccountProfile,
   AccountPushSubscribeInput,
   type AccountPushUnsubscribeInput,
-  type AccountSetStandingInput,
+  AccountSetStandingInput,
   type AccountStanding,
   type AccountTelegramLinkCodeIssued,
   type AccountUnlinkTelegramInput,
@@ -46,15 +48,16 @@ import { isOn } from '@nabvy/switches'
 import {
   AccountRefused,
   channelKey,
+  checkIssuanceCap,
   checkLinkCode,
   checkRelinkCap,
   deletedKey,
   generateLinkCode,
-  planStandingChange,
+  hashLinkCode,
   relinkCapFor,
-  standingChangedKey,
 } from './domain'
 import * as repo from './repo'
+import { setStandingWith } from './standing'
 
 export { events, module } from '@nabvy/contracts/modules/account'
 export { AccountRefused } from './domain'
@@ -133,6 +136,9 @@ export async function updateProfile(
 // account-integrity ships.
 // ---------------------------------------------------------------------------------------------
 
+// TODO(account-integrity): once that module ships, call its checkChannelBinding() here instead of
+// this placeholder resolver (docs/questions/account.md, "checkChannelBinding() has no
+// account-integrity to call yet").
 async function channelBindingAllowed(q: Queryable): Promise<boolean> {
   return !(await isOn(q, 'account-integrity'))
 }
@@ -157,26 +163,43 @@ function channelUnlinkedEvent(userId: string, kind: 'telegram' | 'push', at: Dat
   ) as EventEnvelope
 }
 
+/** [0, 1) from a CSPRNG, for `generateLinkCode` (never `Math.random`, which is predictable). */
+const RANDOM_UNIT_RANGE = 2 ** 32
+function secureLinkCodeRandom(): number {
+  return randomInt(0, RANDOM_UNIT_RANGE) / RANDOM_UNIT_RANGE
+}
+
 export async function createTelegramLinkCode(
   q: Queryable,
   input: AccountCreateTelegramLinkCodeInput,
-  random: () => number = Math.random,
 ): Promise<AccountTelegramLinkCodeIssued> {
   await assertModuleOn(q)
   if (!(await channelBindingAllowed(q))) {
     throw new AccountRefused('account.device_not_established', 'this device is not established')
   }
   const now = new Date()
-  const windowStart = new Date(now.getTime() - TELEGRAM_RELINK_WINDOW_MS)
-  const issued = await repo.countRecentLinkCodes(q, input.userId, windowStart)
+
+  // The short-window issuance limit (any outcome; stops a script hammering the endpoint) is
+  // separate from the plan's re-link cap below (which counts only completed links).
+  const issuanceWindowStart = new Date(now.getTime() - TELEGRAM_LINK_CODE_ISSUANCE_WINDOW_MS)
+  const issuedRecently = await repo.countRecentLinkCodes(q, input.userId, issuanceWindowStart)
+  const issuanceError = checkIssuanceCap(issuedRecently, TELEGRAM_LINK_CODE_ISSUANCE_CAP)
+  if (issuanceError) throw new AccountRefused(issuanceError, 'too many codes requested recently')
+
+  const relinkWindowStart = new Date(now.getTime() - TELEGRAM_RELINK_WINDOW_MS)
+  const completedRelinks = await repo.countCompletedLinksInWindow(
+    q,
+    input.userId,
+    relinkWindowStart,
+  )
   const cap = relinkCapFor('default', TELEGRAM_RELINK_CAP_BY_PLAN)
-  const capError = checkRelinkCap(issued, cap)
+  const capError = checkRelinkCap(completedRelinks, cap)
   if (capError) throw new AccountRefused(capError, 'the re-link cap for this plan is reached')
 
-  const code = generateLinkCode(random)
+  const code = generateLinkCode(secureLinkCodeRandom)
   const expiresAt = new Date(now.getTime() + TELEGRAM_LINK_CODE_TTL_MS)
   await repo.insertLinkCode(q, {
-    code,
+    codeHash: hashLinkCode(code),
     userId: input.userId,
     sessionId: input.sessionId,
     expiresAt,
@@ -193,12 +216,13 @@ export async function confirmTelegramLink(
   await assertModuleOn(q)
   const input = AccountConfirmTelegramLinkInput.parse(rawInput)
   const now = new Date()
-  const row = await repo.selectLinkCodeForUpdate(q, input.code)
+  const codeHash = hashLinkCode(input.code)
+  const row = await repo.selectLinkCodeForUpdate(q, codeHash)
   const error = checkLinkCode(row, now)
   if (error) throw new AccountRefused(error, 'the link code is not usable')
   const userId = (row as NonNullable<typeof row>).userId
 
-  await repo.consumeLinkCode(q, input.code, now)
+  await repo.consumeLinkCode(q, codeHash, now)
   await repo.upsertTelegramLink(q, userId, input.chatId, now)
   return { event: channelLinkedEvent(userId, 'telegram', now) }
 }
@@ -289,9 +313,9 @@ export async function requestDeletion(
   const requestedAt = new Date()
   const purgeBy = new Date(requestedAt.getTime() + DELETION_PURGE_DELAY_MS)
   await repo.insertDeletionRequest(q, input.userId, requestedAt, purgeBy)
-  // The purge itself (erasing this module's rows and publishing `account.deleted` once every
-  // module holding user rows has purged) is the 24-hour sweep task's job, not this call's; it
-  // reads deletion_requests as the pipeline and returns null here until it runs.
+  // The purge itself (erasing this module's rows and publishing `account.deleted`) is
+  // `purgeDueDeletions`'s job, called by the 24-hour sweep task, not this call's; it returns null
+  // here until that sweep runs.
   return {
     request: {
       userId: input.userId,
@@ -303,8 +327,7 @@ export async function requestDeletion(
   }
 }
 
-/** Built for the sweep task once a request's `purgeBy` has passed: purges this module's own rows
- * and returns the `account.deleted` envelope for the sweep to publish. */
+/** The `account.deleted` envelope for one user; `purgeDueDeletions` publishes one per user purged. */
 export function accountDeletedEvent(userId: string): EventEnvelope {
   return createEvent(
     events,
@@ -313,6 +336,27 @@ export function accountDeletedEvent(userId: string): EventEnvelope {
     { userId },
     { key: deletedKey(userId) },
   ) as EventEnvelope
+}
+
+/**
+ * The 24-hour sweep (docs/security.md:11): erases this module's rows for every deletion request
+ * whose `purgeBy` is due, in one batch (rule: "batches, not items"), and returns the
+ * `account.deleted` envelope for each user purged, for the sweep task to publish. Idempotent: once
+ * a user's rows are gone, a repeat call finds nothing left for them (repo.purgeAccountRows). Not
+ * gated by the module switch: the 24-hour purge deadline is a data-retention obligation, not a
+ * feature this module's switch turns off (unlike the exemptions rule 11 names for reads, this is
+ * the same reasoning applied to a write no switch should be able to defer).
+ */
+export async function purgeDueDeletions(
+  q: Queryable,
+  now: Date = new Date(),
+): Promise<{
+  events: EventEnvelope[]
+}> {
+  const userIds = await repo.selectDueDeletionUserIds(q, now)
+  if (userIds.length === 0) return { events: [] }
+  await repo.purgeAccountRows(q, userIds)
+  return { events: userIds.map(accountDeletedEvent) }
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -335,84 +379,18 @@ export async function getStanding(q: Queryable, userId: string): Promise<Account
 /**
  * Called only by `account-integrity` (automated) or an audited admin override, both inside
  * `withPipeline` (the same convention `switches.set()` uses; docs/questions.md, "w1 switches: who
- * may write a switch"). Enforcement (Better Auth's ban fields, session revocation) runs through
- * `@nabvy/auth`; this call adds only the fair-use limits and this module's own audit row.
+ * may write a switch"). Parses `rawInput` first, so a malformed transition (e.g. a `banned` status
+ * carrying an `until`) is refused before anything is called, and always delegates to the real
+ * `@nabvy/auth` functions (services/account/src/standing.ts): there is no way for a caller to
+ * inject a replacement and skip auth's admin check. Enforcement (Better Auth's ban fields, session
+ * revocation, the admin-role check) runs through `@nabvy/auth`; this call adds only the fair-use
+ * limits and this module's own audit row.
  */
 export async function setStanding(
   q: Queryable,
   rawInput: AccountSetStandingInput,
-  deps: { restrictAccount: typeof restrictAccount; liftRestriction: typeof liftRestriction } = {
-    restrictAccount,
-    liftRestriction,
-  },
 ): Promise<{ standing: AccountStanding; event: EventEnvelope }> {
   await assertModuleOn(q)
-  const plan = planStandingChange(rawInput)
-
-  if (plan.auth.kind === 'lift') {
-    await deps.liftRestriction({
-      actorUserId: rawInput.actorUserId,
-      userId: rawInput.userId,
-      reason: rawInput.reason,
-    })
-  } else {
-    await deps.restrictAccount({
-      actorUserId: rawInput.actorUserId,
-      userId: rawInput.userId,
-      // rawInput.policy is required for a non-active status (AccountSetStandingInput.refine).
-      policy: rawInput.policy as NonNullable<typeof rawInput.policy>,
-      until: plan.auth.until,
-      reason: rawInput.reason,
-    })
-  }
-
-  const before = await repo.selectStanding(q, rawInput.userId)
-  const { id: actionId } = await record(q, {
-    actorUserId: rawInput.actorUserId,
-    action: 'account.standing-changed',
-    target: `user:${rawInput.userId}`,
-    ...(before
-      ? {
-          before: {
-            status: before.status,
-            until: before.until?.toISOString() ?? null,
-            limits: (before.limits as Record<string, number> | null) ?? null,
-          },
-        }
-      : {}),
-    after: {
-      status: plan.row.status,
-      until: plan.row.until?.toISOString() ?? null,
-      limits: plan.row.limits,
-    },
-    reason: rawInput.reason,
-  })
-
-  const at = new Date()
-  await repo.upsertStanding(q, {
-    userId: rawInput.userId,
-    status: plan.row.status,
-    until: plan.row.until,
-    limits: plan.row.limits,
-    actionId,
-    at,
-  })
-
-  return {
-    standing: {
-      userId: rawInput.userId,
-      status: plan.row.status,
-      until: plan.row.until?.toISOString() ?? null,
-      limits: plan.row.limits,
-      actionId,
-      at: at.toISOString(),
-    },
-    event: createEvent(
-      events,
-      'account.standing-changed',
-      1,
-      { userId: rawInput.userId },
-      { key: standingChangedKey(rawInput.userId, at) },
-    ) as EventEnvelope,
-  }
+  const input = AccountSetStandingInput.parse(rawInput)
+  return setStandingWith(q, input, { restrictAccount, liftRestriction })
 }

@@ -2,6 +2,7 @@
 // v_standing directly (packages/db/README.md); this file is for services/account's own use.
 import type { Queryable } from '@nabvy/db'
 import {
+  apiKeys,
   deletionRequests,
   pushSubscriptions,
   standing,
@@ -9,7 +10,7 @@ import {
   telegramLinks,
   userProfiles,
 } from '@nabvy/db/schema/account'
-import { and, count, eq, gte, isNull, sql } from 'drizzle-orm'
+import { and, count, eq, gte, inArray, isNotNull, isNull, lte, sql } from 'drizzle-orm'
 
 export type ProfileRow = typeof userProfiles.$inferSelect
 export type TelegramLinkRow = typeof telegramLinks.$inferSelect
@@ -39,11 +40,12 @@ export async function upsertProfile(
 
 export async function insertLinkCode(
   q: Queryable,
-  row: { code: string; userId: string; sessionId: string; expiresAt: Date },
+  row: { codeHash: string; userId: string; sessionId: string; expiresAt: Date },
 ): Promise<void> {
   await q.insert(telegramLinkCodes).values(row)
 }
 
+/** Codes requested in the window, whatever their outcome (the short-window issuance limit). */
 export async function countRecentLinkCodes(
   q: Queryable,
   userId: string,
@@ -56,21 +58,43 @@ export async function countRecentLinkCodes(
   return row?.n ?? 0
 }
 
+/** Codes actually confirmed in the window (the plan's re-link cap; never counts a mere issuance). */
+export async function countCompletedLinksInWindow(
+  q: Queryable,
+  userId: string,
+  since: Date,
+): Promise<number> {
+  const [row] = await q
+    .select({ n: count() })
+    .from(telegramLinkCodes)
+    .where(
+      and(
+        eq(telegramLinkCodes.userId, userId),
+        isNotNull(telegramLinkCodes.usedAt),
+        gte(telegramLinkCodes.usedAt, since),
+      ),
+    )
+  return row?.n ?? 0
+}
+
 /** Locks the code row so two concurrent callback deliveries cannot both consume it. */
 export async function selectLinkCodeForUpdate(
   q: Queryable,
-  code: string,
+  codeHash: string,
 ): Promise<LinkCodeRow | undefined> {
   const [row] = await q
     .select()
     .from(telegramLinkCodes)
-    .where(eq(telegramLinkCodes.code, code))
+    .where(eq(telegramLinkCodes.codeHash, codeHash))
     .for('update')
   return row
 }
 
-export async function consumeLinkCode(q: Queryable, code: string, at: Date): Promise<void> {
-  await q.update(telegramLinkCodes).set({ usedAt: at }).where(eq(telegramLinkCodes.code, code))
+export async function consumeLinkCode(q: Queryable, codeHash: string, at: Date): Promise<void> {
+  await q
+    .update(telegramLinkCodes)
+    .set({ usedAt: at })
+    .where(eq(telegramLinkCodes.codeHash, codeHash))
 }
 
 export async function selectTelegramLink(
@@ -159,6 +183,32 @@ export async function selectDeletionRequest(
 ): Promise<DeletionRequestRow | undefined> {
   const [row] = await q.select().from(deletionRequests).where(eq(deletionRequests.userId, userId))
   return row
+}
+
+/** User IDs whose deletion is due (rows past `purge_by`); the purge sweep's own batch, not one row. */
+export async function selectDueDeletionUserIds(q: Queryable, now: Date): Promise<string[]> {
+  const rows = await q
+    .select({ userId: deletionRequests.userId })
+    .from(deletionRequests)
+    .where(lte(deletionRequests.purgeBy, now))
+  return rows.map((row) => row.userId)
+}
+
+/**
+ * Erases every row this module holds for the given users, including the `deletion_requests` rows
+ * themselves: once gone, a repeat sweep finds nothing left to purge for them, which is this
+ * function's idempotency (rule: "every event handler must be safe to run twice"). A no-op for an
+ * empty batch.
+ */
+export async function purgeAccountRows(q: Queryable, userIds: string[]): Promise<void> {
+  if (userIds.length === 0) return
+  await q.delete(userProfiles).where(inArray(userProfiles.userId, userIds))
+  await q.delete(telegramLinks).where(inArray(telegramLinks.userId, userIds))
+  await q.delete(telegramLinkCodes).where(inArray(telegramLinkCodes.userId, userIds))
+  await q.delete(pushSubscriptions).where(inArray(pushSubscriptions.userId, userIds))
+  await q.delete(apiKeys).where(inArray(apiKeys.userId, userIds))
+  await q.delete(standing).where(inArray(standing.userId, userIds))
+  await q.delete(deletionRequests).where(inArray(deletionRequests.userId, userIds))
 }
 
 export async function insertDeletionRequest(

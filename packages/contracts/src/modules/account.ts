@@ -209,11 +209,23 @@ export type AccountDeletionRequest = z.infer<typeof AccountDeletionRequest>
 // Events
 // ---------------------------------------------------------------------------------------------
 
+export const AccountDeletedEvent = z.object({ userId: Uuid })
+export type AccountDeletedEvent = z.infer<typeof AccountDeletedEvent>
+
+export const AccountStandingChangedEvent = z.object({ userId: Uuid })
+export type AccountStandingChangedEvent = z.infer<typeof AccountStandingChangedEvent>
+
+export const AccountChannelLinkedEvent = z.object({ userId: Uuid })
+export type AccountChannelLinkedEvent = z.infer<typeof AccountChannelLinkedEvent>
+
+export const AccountChannelUnlinkedEvent = z.object({ userId: Uuid })
+export type AccountChannelUnlinkedEvent = z.infer<typeof AccountChannelUnlinkedEvent>
+
 export const events = defineEvents(module, {
-  'account.deleted': { 1: z.object({ userId: Uuid }) },
-  'account.standing-changed': { 1: z.object({ userId: Uuid }) },
-  'account.channel-linked': { 1: z.object({ userId: Uuid }) },
-  'account.channel-unlinked': { 1: z.object({ userId: Uuid }) },
+  'account.deleted': { 1: AccountDeletedEvent },
+  'account.standing-changed': { 1: AccountStandingChangedEvent },
+  'account.channel-linked': { 1: AccountChannelLinkedEvent },
+  'account.channel-unlinked': { 1: AccountChannelUnlinkedEvent },
 })
 
 // ---------------------------------------------------------------------------------------------
@@ -227,6 +239,7 @@ export const AccountErrorCode = z.enum([
   'account.already_linked',
   'account.chat_already_linked',
   'account.relink_cap_exceeded',
+  'account.link_code_rate_limited',
   'account.device_not_established',
   'account.unknown_account',
   'account.deletion_already_requested',

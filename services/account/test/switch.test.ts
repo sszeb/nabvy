@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { getStanding, isActive, setStanding, updateProfile } from '../src'
 import { AccountRefused } from '../src/domain'
+import { setStandingWith } from '../src/standing'
 import { createTestDatabase, type TestDatabase } from './support/database'
 
 const U1 = '00000000-0000-4000-8000-0000000000c1'
@@ -28,14 +29,7 @@ describe('account off (rule 11 default for a new module: no seed row, so the swi
   it('refuses setStanding', async () => {
     await expect(
       db.as('nabvy_pipeline', (tx) =>
-        setStanding(
-          tx,
-          { actorUserId: ADMIN, userId: U1, status: 'active', reason: 'no-op' },
-          {
-            restrictAccount: async () => {},
-            liftRestriction: async () => {},
-          },
-        ),
+        setStanding(tx, { actorUserId: ADMIN, userId: U1, status: 'active', reason: 'no-op' }),
       ),
     ).rejects.toBeInstanceOf(AccountRefused)
   })
@@ -45,7 +39,7 @@ describe('account off (rule 11 default for a new module: no seed row, so the swi
       `insert into switches.switches (name, kind, state) values ('account', 'module', 'on')`,
     )
     await db.as('nabvy_pipeline', (tx) =>
-      setStanding(
+      setStandingWith(
         tx,
         { actorUserId: ADMIN, userId: U1, status: 'active', reason: 'seed' },
         { restrictAccount: async () => {}, liftRestriction: async () => {} },

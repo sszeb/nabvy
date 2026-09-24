@@ -36,21 +36,27 @@ export const telegramLinks = schema.table(
     revokedAt: timestamp('revoked_at', { withTimezone: true, precision: 3 }),
   },
   (t) => [
-    // Partial unique index: a revoked link frees the chat id for a future link.
-    index('telegram_links_chat_id_active_idx').on(t.chatId).where(sql`${t.revokedAt} is null`),
+    // Partial unique index: one user per chat (a revoked link frees the chat id for a future
+    // link); the primary key on user_id holds the other half, one chat per user.
+    uniqueIndex('telegram_links_chat_id_active_idx')
+      .on(t.chatId)
+      .where(sql`${t.revokedAt} is null`),
   ],
 )
 
 /**
  * A pending single-use link code (10-minute TTL, packages/config/src/modules/account.ts), created
- * only from an established device (README.md, "Telegram and push binding"). One row per issued
- * code; `usedAt` is set once, and `linkCode` inserts a fresh row per attempt rather than reusing
- * one, so the re-link cap (per plan) is a count of rows in a window, not a single counter.
+ * only from an established device (README.md, "Telegram and push binding"). The primary key is
+ * `sha256(code)`, never the plain code (services/account/src/domain/index.ts, `hashLinkCode`): a
+ * table dump or a slow query log never carries a usable code, the same reason `api_keys` stores
+ * `hashedKey`. One row per issued code; `usedAt` is set once, and `linkCode` inserts a fresh row
+ * per attempt rather than reusing one, so the re-link cap (per plan) counts completed
+ * confirmations in a window, not issued codes.
  */
 export const telegramLinkCodes = schema.table(
   'telegram_link_codes',
   {
-    code: text('code').primaryKey(),
+    codeHash: text('code_hash').primaryKey(),
     userId: uuid('user_id').notNull(),
     sessionId: text('session_id').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true, precision: 3 }).notNull().defaultNow(),
@@ -59,7 +65,7 @@ export const telegramLinkCodes = schema.table(
   },
   (t) => [
     index('telegram_link_codes_user_id_created_at_idx').on(t.userId, t.createdAt),
-    check('telegram_link_codes_code_format', sql`${t.code} ~ '^[A-HJ-NP-Z2-9]{8}$'`),
+    check('telegram_link_codes_code_hash_format', sql`${t.codeHash} ~ '^[0-9a-f]{64}$'`),
   ],
 )
 

@@ -6,6 +6,8 @@ const accountConfig = z.object({
   telegramLinkCodeTtlMs: z.number().int().positive(),
   telegramRelinkWindowMs: z.number().int().positive(),
   telegramRelinkCapByPlan: z.record(z.string(), z.number().int().min(0)),
+  telegramLinkCodeIssuanceWindowMs: z.number().int().positive(),
+  telegramLinkCodeIssuanceCap: z.number().int().positive(),
   deletionPurgeDelayMs: z.number().int().positive(),
 })
 
@@ -32,6 +34,13 @@ const config = accountConfig.parse({
     standard: 3,
     business: 10,
   },
+  /**
+   * A separate, short-window limit on requesting a code at all, independent of plan: protects
+   * against a script hammering the endpoint, distinct from the 30-day re-link cap above (which
+   * counts completed links, not requests). Starting value, pending abuse data.
+   */
+  telegramLinkCodeIssuanceWindowMs: 60 * 60 * 1000,
+  telegramLinkCodeIssuanceCap: 5,
   /** Deletion purge deadline: 24 hours (docs/security.md:11, CLAUDE.md "No personal data"). */
   deletionPurgeDelayMs: 24 * 60 * 60 * 1000,
 })
@@ -40,4 +49,6 @@ export const TELEGRAM_LINK_CODE_TTL_MS = config.telegramLinkCodeTtlMs
 export const TELEGRAM_RELINK_WINDOW_MS = config.telegramRelinkWindowMs
 export const TELEGRAM_RELINK_CAP_BY_PLAN: Readonly<Record<string, number>> =
   config.telegramRelinkCapByPlan
+export const TELEGRAM_LINK_CODE_ISSUANCE_WINDOW_MS = config.telegramLinkCodeIssuanceWindowMs
+export const TELEGRAM_LINK_CODE_ISSUANCE_CAP = config.telegramLinkCodeIssuanceCap
 export const DELETION_PURGE_DELAY_MS = config.deletionPurgeDelayMs

@@ -1,8 +1,9 @@
 import type { Queryable } from '@nabvy/db'
 import { sql } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { confirmTelegramLink, createTelegramLinkCode, isActive, setStanding } from '../src'
+import { confirmTelegramLink, createTelegramLinkCode, isActive } from '../src'
 import { AccountRefused } from '../src/domain'
+import { setStandingWith } from '../src/standing'
 import { createTestDatabase, type TestDatabase } from './support/database'
 
 const U1 = '00000000-0000-4000-8000-0000000000c1'
@@ -70,7 +71,7 @@ describe('setStanding twice', () => {
       until: '2026-10-24T00:00:00.000Z',
       reason: 'observed abuse',
     }
-    const run = () => db.as('nabvy_pipeline', (tx) => setStanding(tx, input, fakeAuthOn(tx)))
+    const run = () => db.as('nabvy_pipeline', (tx) => setStandingWith(tx, input, fakeAuthOn(tx)))
     const first = await run()
     const second = await run()
     // actionId and at legitimately advance each call (audit_log is append-only, so each call adds
@@ -107,5 +108,32 @@ describe('confirmTelegramLink twice', () => {
       [U1],
     )
     expect(rows[0]?.n).toBe(1)
+  })
+})
+
+describe('suspension until a date (services/account/README.md, "Standing")', () => {
+  it('refuses while suspended and allows again once until has passed', async () => {
+    const future = new Date(Date.now() + 60_000).toISOString()
+    await db.as('nabvy_pipeline', (tx) =>
+      setStandingWith(
+        tx,
+        {
+          actorUserId: ADMIN,
+          userId: U1,
+          status: 'suspended',
+          policy: 'fair-use',
+          until: future,
+          reason: 'observed abuse',
+        },
+        fakeAuthOn(tx),
+      ),
+    )
+    expect(await db.as('nabvy_app', (tx) => isActive(tx, U1))).toBe(false)
+
+    await db.sql(
+      `update better_auth."user" set ban_expires = now() - interval '1 minute' where id = $1`,
+      [U1],
+    )
+    expect(await db.as('nabvy_app', (tx) => isActive(tx, U1))).toBe(true)
   })
 })
