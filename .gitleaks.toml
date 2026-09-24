@@ -1,0 +1,24 @@
+title = "Nabvy secret scan"
+
+# Keep gitleaks' own rules and add the credentials this project uses that they do not cover.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "apify-api-token"
+description = "Apify API token"
+regex = '''apify_api_[A-Za-z0-9]{30,}'''
+keywords = ["apify_api_"]
+
+[[rules]]
+id = "supabase-secret-key"
+description = "Supabase secret API key"
+regex = '''sb_secret_[A-Za-z0-9_-]{20,}'''
+keywords = ["sb_secret_"]
+
+# Apify run IDs (17 characters) are identifiers, not credentials: reading a run needs the token.
+# The generic rule flags them because the field names contain "api".
+[[allowlists]]
+description = "Apify run IDs"
+regexTarget = "line"
+regexes = ['''(?i)apify_?run_?id["']?\s*[:=]\s*["']?[A-Za-z0-9]{17}["']?''']
