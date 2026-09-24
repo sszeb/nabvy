@@ -150,6 +150,17 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
     - conflicts between them.
 
     Rules come first; AI runs at most once per listing version, shared by all users, only where rules cannot decide. What users see stays at town or area level, marked as approximate when it is uncertain. Distance filters, the map and hints use the resolved location.
+  - **"Too good to be true"** (owner, 2026-09-24). Listings that look like scams are marked "too good to be true". The owner's examples: a listing placed on the Isle of Wight whose seller then says collection is in Manchester, and a listing in Chichester whose seller then says postage only. Nabvy never sees conversations with sellers, so the mark comes from two sources:
+    - **Listing signals:** a price far below comparable asks (at n>=10); the listing's location conflicting with the location in its text (the "Where an item really is" resolution); "postage only", "courier only" or "delivery only" in a listing offered for collection; risky payment requests; and copies of the same advert across distant places (copy-advert).
+    - **User reports:** after messaging a seller, a user can report in one tap what the seller said, for example that collection was elsewhere, that it was postage only, or that they asked for a bank transfer or deposit. The report counts towards the mark that other users see on that listing and on its copies.
+
+    It follows the Precedence row "Labels and scores":
+    - worded as a suspicion and shown with its evidence;
+    - from documented rules with thresholds calibrated on real data;
+    - with a way to report a mistake;
+    - no numeric score shown.
+
+    Seller-level signals stay internal (Precedence row "Seller-derived flags"). It runs in shadow mode during the rtx3090 test hunt to set its thresholds, then goes live.
   - **Pickup route planning:** the user records each pickup they have arranged with a seller (where, and the agreed time or window). The app plans an optimal route to collect the whole haul in one day. The addresses and times come from the user, stay private to that user, and are never taken from listing data or shown to anyone else.
 - **Legal gates lifted** (owner, 2026-09-24): "Lift the gates. The operational instruction is to have the production app fully working as intended." The gates are:
   - further data collection through Apify no longer waits for an LIA and a DPIA. Nabvy never deals with Facebook directly: it uses third-party data that comes from Apify runs (owner, 2026-09-24);
