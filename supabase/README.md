@@ -7,8 +7,8 @@ Supabase-side code for project `fbapfy` (`rlgufxmsrkhyeiabdeic`, eu-west-1).
 The owner's rule is that the Apify token lives only as a Supabase Edge Function secret
 (`docs/fb-actor-sources.md`), so the one piece of code that talks to Apify is the Edge Function
 `functions/apify-gateway`. It is a bootstrap for connecting to the actor and recording its real
-fields (task 1.0). Once Nabvy's own integration plan is agreed (the actor repo will not write an
-integration guide; `docs/decisions.md`, "The actor is a tool"), this gateway is reviewed against
+fields (task 1.0). Once Nabvy's own integration plan is agreed (`docs/decisions.md`, "The actor is a
+tool"), this gateway is reviewed against
 it and folded into the provider adapter (task 1.1), and the schema below moves
 into `packages/db` with task 0.3.
 

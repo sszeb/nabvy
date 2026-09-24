@@ -4,7 +4,7 @@ These are standing rules. Change them only with a human decision recorded here.
 
 ## Precedence: the Facebook actor brief
 
-**Owner's decision, 2026-09-24.** Where this build pack conflicts with the Facebook actor brief in `sebtimize/fb-scrap-engine` (`docs/HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows", and the designs they link; reading list and rules in `docs/fb-actor-sources.md`), the brief wins because it is more up to date. The brief's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` will not be written in the actor repo; Nabvy writes its own ("The actor is a tool" below). The build-pack documents affected below are rewritten to match before task 0.2 (contracts) starts. Until then, read the build pack through this table.
+**Owner's decision, 2026-09-24.** Where this build pack conflicts with the Facebook actor brief in `sebtimize/fb-scrap-engine` (`docs/HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows", and the designs they link; reading list and rules in `docs/fb-actor-sources.md`), the brief wins because it is more up to date. The brief's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` do not exist yet; Nabvy writes its own integration plan and copy-advert design either way ("The actor is a tool" below). The build-pack documents affected below are rewritten to match before task 0.2 (contracts) starts. Until then, read the build pack through this table.
 
 | Topic | Build pack says | Brief says (wins) |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ New work from the brief, to be placed in the backlog with Nabvy's own integratio
 
 ## The actor is a tool; Nabvy owns the rest
 
-**Owner's decision, 2026-09-24.** The Facebook actor is a plain fetch tool: it runs searches and fetches listing details, and nothing more. Everything else is Nabvy's to design and build: copy-advert spam detection, the parts record, noise filtering, suspected-behaviour labels, asking-price position, the price-drop watch, scam signals, alerts and the rest. The actor repo's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` will not be written there; Nabvy writes its own integration plan and copy-advert spam design (in progress, `docs/progress.md`).
+**Owner's decision, 2026-09-24.** The Facebook actor is a plain fetch tool: it runs searches and fetches listing details, and nothing more. Everything else is Nabvy's to design and build: copy-advert spam detection, the parts record, noise filtering, suspected-behaviour labels, asking-price position, the price-drop watch, scam signals, alerts and the rest. Nabvy writes its own integration plan and copy-advert spam design (in progress, `docs/progress.md`). The actor repo's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` are on the owner's reading list but not written yet (checked at `f177a44`); they are checked for until they land, and anything useful in them is folded into Nabvy's own plans.
 
 **Only the listed actor files are read** (owner, 2026-09-24). The owner asked for the actor's documents to be used "as knowledge to help you in developing the app as a whole", and then limited that to the files in the owner's reading list, `docs/fb-actor-sources.md`; the actor repository is a separate project and the rest of it is not scanned. In scope:
 - `HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows" only;
