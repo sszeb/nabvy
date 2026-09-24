@@ -7,7 +7,7 @@
 - **Does / does not:** rank, n, median and range, in the style "based on 23 comparable asks" (`fb-scrap-engine/docs/design/SELLER_DATA.md:153`), with context where a new build asks the same (`fb-scrap-engine/docs/HANDOFF.md:189-190`). Stamps T4. Hidden below n=10 (`nabvy/docs/questions.md:8`). Wording is the owner's: never "worth", "fair" or "sale price" (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:365-367`), and no score. It does not suggest offers or check price cuts; both are held back (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:179-181`).
 - **Inputs:** `asking-price-index.updated`; `v_groups`, `v_members`; `v_assessments`, `v_parts`; `v_current`; `v_listings`; `v_suppressed`.
 - **Outputs:** `asking-price-position.positioned` (listing IDs).
-- **Owns:** `positions` (listing, group_key, rank, n, percentile, positioned_at as T4).
+- **Owns:** `positions` (listing, group_key, rank, n, percentile, robust_z, positioned_at as T4).
 - **Views:** internal `v_positions`; user-facing `app.v_asking_price_position` (listing_id, group label, rank, n, median, range low and high, currency; rows only at n≥10).
 - **Contracts:** `AskingPricePosition`, `AskingPricePositionPositionedEvent`.
 - **Depends on:** `switches`, `asking-price-index`, `listing-assessment`, `parts-record`, `detail-evidence`, `listing-ingest`, `listing-suppression`.

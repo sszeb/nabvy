@@ -41,7 +41,7 @@ beyond the schema dependency recorded in `packages/db/migrations/waitlist/module
   `InMemoryWaitlistSender`, which records entries instead of sending anything. No email or DNS
   account exists yet (`docs/secrets.md`), and `submit()` does not call a sender today; this exists
   so a later task can wire in a real one (Resend, say) without changing `submit()`'s signature
-  (`docs/questions.md`, "waitlist: sending interface").
+  (`docs/questions/waitlist.md`, "waitlist: sending interface").
 
 ## Tables
 
@@ -62,9 +62,9 @@ never the address itself), `count`, `window_start` — the Postgres-backed rate-
 
 | Rule | Value | Basis | Status |
 | --- | --- | --- | --- |
-| Submissions per IP | 5 per hour | No number is documented for this endpoint; mirrors `rateLimits.signUpPerIp` from `@nabvy/config`, the closest documented limit for an unauthenticated public endpoint (`docs/engineering.md`, "Rate limits and abuse") | Starting value (`docs/questions.md`, "waitlist: submission rate limit") |
-| Required fields | Email only; postcode and wanted products optional | `docs/marketing.md` and the module card list all three as captured together, but do not say postcode or products are mandatory; the conservative option asks for the least data | `docs/questions.md`, "waitlist: which fields are required" |
-| Repeat sign-up | The first entry is kept; a later submission's postcode, products and UTM are discarded | Task 0.5a's "Done" only requires one row per address; keeping the first attribution is the conservative option (never silently overwrite stored data) | `docs/questions.md`, "waitlist: repeat sign-ups" |
+| Submissions per IP | 5 per hour | No number is documented for this endpoint; mirrors `rateLimits.signUpPerIp` from `@nabvy/config`, the closest documented limit for an unauthenticated public endpoint (`docs/engineering.md`, "Rate limits and abuse") | Starting value (`docs/questions/waitlist.md`, "waitlist: submission rate limit") |
+| Required fields | Email only; postcode and wanted products optional | `docs/marketing.md` and the module card list all three as captured together, but do not say postcode or products are mandatory; the conservative option asks for the least data | `docs/questions/waitlist.md`, "waitlist: which fields are required" |
+| Repeat sign-up | The first entry is kept; a later submission's postcode, products and UTM are discarded | Task 0.5a's "Done" only requires one row per address; keeping the first attribution is the conservative option (never silently overwrite stored data) | `docs/questions/waitlist.md`, "waitlist: repeat sign-ups" |
 
 ## Fixtures and pass rate
 
@@ -87,7 +87,7 @@ constraints, the view's column list and switch filter, run by `pnpm db:dry-run`)
   not exist, `docs/secrets.md`). Sending is behind `WaitlistSender`, an interface with only an
   in-memory implementation (`InMemoryWaitlistSender`); `submit()` does not call it, so the module
   has no sending behaviour today, only a shape a later task can fill in
-  (`docs/questions.md`, "waitlist: sending interface").
+  (`docs/questions/waitlist.md`, "waitlist: sending interface").
 - 2026-09-24: `submit()` takes the switch state as `ctx.state` rather than reading `@nabvy/switches`
   itself, the same shape as `services/cost-meter`'s `CostMeterContext`. The internal view still
   checks `switches.state('waitlist')` independently in SQL (defence in depth), so the two checks
@@ -105,21 +105,21 @@ constraints, the view's column list and switch filter, run by `pnpm db:dry-run`)
   no consent is captured by this task, so `waitlist.v_waitlist`'s only reader must not aggregate it
   into a demand count yet (review of PR #31, non-blocking).
 - 2026-09-24: `submission_attempts` has no pruning yet; the table grows by one row per distinct IP
-  that has ever submitted (review of PR #31, non-blocking; `docs/questions.md`, "waitlist:
+  that has ever submitted (review of PR #31, non-blocking; `docs/questions/waitlist.md`, "waitlist:
   submission-attempts pruning").
 - 2026-09-24: the rate-limit key is an unsalted SHA-256 of the IP address (review of PR #31,
   non-blocking: key it with an HMAC secret, as `SELLER_HASH_SALT` salts seller IDs). No such secret
   is listed in `docs/secrets.md` for this purpose, so none is invented here (`CLAUDE.md`, "No
-  secrets in the repo"); `docs/questions.md`, "waitlist: IP hash secret" records the gap.
+  secrets in the repo"); `docs/questions/waitlist.md`, "waitlist: IP hash secret" records the gap.
 
 ## Open questions
 
-- `docs/questions.md`, "waitlist: submission rate limit".
-- `docs/questions.md`, "waitlist: which fields are required".
-- `docs/questions.md`, "waitlist: repeat sign-ups".
-- `docs/questions.md`, "waitlist: sending interface".
-- `docs/questions.md`, "waitlist: submission-attempts pruning".
-- `docs/questions.md`, "waitlist: IP hash secret".
+- `docs/questions/waitlist.md`, "waitlist: submission rate limit".
+- `docs/questions/waitlist.md`, "waitlist: which fields are required".
+- `docs/questions/waitlist.md`, "waitlist: repeat sign-ups".
+- `docs/questions/waitlist.md`, "waitlist: sending interface".
+- `docs/questions/waitlist.md`, "waitlist: submission-attempts pruning".
+- `docs/questions/waitlist.md`, "waitlist: IP hash secret".
 
 ## Incidents
 

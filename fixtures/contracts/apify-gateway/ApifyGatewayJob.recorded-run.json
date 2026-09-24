@@ -1,0 +1,21 @@
+{
+  "id": 6,
+  "kind": "run",
+  "runKind": "search",
+  "status": "succeeded",
+  "tags": {},
+  "input": { "inputVersion": 3, "searchTerms": ["gaming pc"], "cityId": "115935195086622" },
+  "memoryMb": 1024,
+  "timeoutSecs": 300,
+  "reserveUsd": "0.3363",
+  "costUsd": "0.0177",
+  "apifyRunId": "VkryjpwS6U2GBDh3k",
+  "itemCount": 21,
+  "error": null,
+  "startedAt": "2026-09-24T01:40:18.718Z",
+  "finishedAt": "2026-09-24T01:40:44.010Z",
+  "settledAt": "2026-09-24T07:09:30.000Z",
+  "announcedAt": null,
+  "createdAt": "2026-09-24T01:40:10.000Z",
+  "updatedAt": "2026-09-24T07:09:30.000Z"
+}

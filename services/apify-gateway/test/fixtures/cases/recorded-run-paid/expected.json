@@ -1,0 +1,27 @@
+{
+  "reserveUsd": "0.3363",
+  "events": [
+    {
+      "type": "apify-gateway.run-collected",
+      "key": "apify-gateway.run-collected:1",
+      "payload": { "jobId": 1, "apifyRunId": "VkryjpwS6U2GBDh3k", "kind": "search" }
+    },
+    {
+      "type": "apify-gateway.run-settled",
+      "key": "apify-gateway.run-settled:1",
+      "payload": { "jobId": 1 }
+    }
+  ],
+  "rows": { "total": 21, "listings": 20, "withSellerKey": 0 },
+  "sellerPresent": 3,
+  "costs": [
+    {
+      "module": "apify-gateway",
+      "refId": "VkryjpwS6U2GBDh3k",
+      "reservedMicros": 336300,
+      "settledMicros": 17700,
+      "status": "succeeded"
+    }
+  ],
+  "replay": { "metered": [], "collected": [], "settled": [] }
+}
