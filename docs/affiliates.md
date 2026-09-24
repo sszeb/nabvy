@@ -11,7 +11,7 @@ Creators (YouTube, TikTok, Discord and Telegram server owners, bloggers) get a l
 | Tiers | 30% base; 35% once 25 referred users are paying at the same time; 40% at 100. Reviewed quarterly, never reduced retroactively |
 | Attribution | Last click, 90-day cookie, first-party tracking through Dub links; codes attribute without a click |
 | Two-sided incentive | The referred user gets £5 of non-expiring usage credit on their first paid invoice, plus any code discount the creator chooses to pass on (creator may split up to 10 points of their commission into a customer discount) |
-| Hold and clawback | Commissions become payable 30 days after the invoice (the money-back window); refunds and chargebacks reverse the commission |
+| Hold and clawback | Commissions become payable 30 days after the invoice (the hold period; there are no refunds, `docs/decisions.md` "No refunds"); chargebacks reverse the commission |
 | Payouts | Monthly, minimum £20, through Dub (Stripe Express bank payout, PayPal where needed); payout fees as published by Dub |
 | Approval | Application reviewed within two working days; UK and international creators accepted; no purchase required |
 | Disclosure | Creators must disclose paid links (#ad or "affiliate link") as required by UK ASA/CAP rules and their platform |
@@ -23,7 +23,7 @@ Creators (YouTube, TikTok, Discord and Telegram server owners, bloggers) get a l
 1. **Links and codes.** Dub issues each partner a short link (`nabvy.link/<slug>`, custom domain on Dub) and a code. The landing page reads Dub's first-party click cookie; sign-up carries it.
 2. **Lead.** On sign-up the server calls Dub's track-lead endpoint with the click ID from the cookie and our `userId` as the external customer ID.
 3. **Sale.** On every paid invoice (subscriptions and top-ups) the billing module's Stripe handler calls Dub's track-sale endpoint with amount, currency, invoice ID and the external customer ID. Dub computes the commission from the programme rules; the 12-month window and tier logic live in Dub's reward configuration.
-4. **Refunds.** The refund handler calls Dub to reverse the sale, which claws back the commission.
+4. **Chargebacks.** The dispute handler calls Dub to reverse the sale, which claws back the commission.
 5. **Two-sided credit.** The same invoice handler writes the £5 `referral` row into `usage_ledger` when the invoice is the user's first and the user has an affiliate attribution.
 6. **Portal.** Partners use Dub's portal for stats and payouts; Nabvy shows a `/partners` page with terms, the application link and assets.
 7. **Payouts.** Monthly, confirmed by a human in Dub with one click; Dub handles KYC, currencies and tax forms.
@@ -44,4 +44,4 @@ Building attribution, a portal, payouts with KYC and tax paperwork is weeks of w
 
 ## Tests
 
-Lead tracked once per user; sale tracked once per invoice (idempotent by invoice ID); refund reverses; the £5 credit written only on the first paid invoice; a user with no click ID and no code produces no calls.
+Lead tracked once per user; sale tracked once per invoice (idempotent by invoice ID); a chargeback reverses; the £5 credit written only on the first paid invoice; a user with no click ID and no code produces no calls.

@@ -16,7 +16,7 @@ Purpose: state what the documentation covers, what remains for humans, and wheth
 | User and admin dashboards, database stance | `docs/dashboards.md` | Complete |
 | Analytics and learning loop (first-party events, PostHog, Langfuse) | `docs/analytics.md` | Complete; PostHog and Langfuse projects pending |
 | Marketing machinery (lifecycle programmes, consent, deliverability, SEO pages, waitlist) | `docs/marketing.md` | Complete; copy and sending domains pending |
-| Monetisation: Stripe catalogue, usage balance, entitlements, trials, tax, refunds, referrals | `docs/billing.md` | Complete; Stripe account setup pending |
+| Monetisation: Stripe catalogue, usage balance, entitlements, trials, tax, no-refunds policy, referrals | `docs/billing.md` | Complete; Stripe account setup pending |
 | Affiliate and creator programme | `docs/affiliates.md` | Complete; Dub workspace setup pending |
 | Identity and sessions (Better Auth), server-only data access, RLS | `docs/security.md`, `docs/contracts.md` | Complete |
 | Security | `docs/security.md` | Complete; external scan pending |
@@ -37,7 +37,7 @@ Purpose: state what the documentation covers, what remains for humans, and wheth
 | Stripe account with legal entity, VAT settings, products and prices | Phase 4 |
 | Resend sending domain, VAPID keys, Sentry, PostHog, Turnstile, Google OAuth client | Phase 4 |
 | Terms, privacy and cookie policies (lawyer-reviewed); ICO registration; affiliate disclosure wording | Launch |
-| UK legal review for the Facebook gate | Facebook alerts to paying users |
+| UK legal review for the Facebook gate (lifted by the owner, 2026-09-24; listed in `docs/legal-review.md`) | Facebook alerts to paying users |
 | Brand assets (logo, palette) | Public launch |
 | Fixture labelling (first 100 items) and design partners (five) | Phase 1 and 4 |
 | Decisions after week one: primary and fallback Facebook actor, model escalation thresholds | End of Phase 1 |

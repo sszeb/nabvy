@@ -110,8 +110,8 @@ Each module is a package under `services/<name>/` with the shape in `CLAUDE.md`.
 - **Purpose:** turn Better Auth's Stripe subscriptions, boosts and lifetime flags into entitlements.
 - **Inputs:** Stripe plugin lifecycle hooks; boost webhook. **Outputs:** `entitlement.changed`.
 - **Owns:** `entitlements`, `usage_ledger`, `usage_balances`, `boosts`, `billing_events`, `referrals`.
-- **Logic:** per `docs/billing.md`; entitlement view answers areas, cadence class, channels and hunt caps per user; the usage balance with expiring and non-expiring buckets, monthly grants, top-ups, charges and refunds; `chargeUsage(userId, action, refId)` is the single function every metered module calls inside the action's transaction.
-- **Tests:** entitlement matrix per plan and status; grant, expiry and bucket order; charge refused at zero and refunded on failure; idempotent top-up webhook; boost expiry; referral credit applied once.
+- **Logic:** per `docs/billing.md`; entitlement view answers areas, cadence class, channels and hunt caps per user; the usage balance with expiring and non-expiring buckets, monthly grants, top-ups, charges and reversals; the no-refunds rules in `docs/billing.md`; `chargeUsage(userId, action, refId)` is the single function every metered module calls inside the action's transaction.
+- **Tests:** entitlement matrix per plan and status; grant, expiry and bucket order; charge refused at zero and reversed on failure; no refund path; idempotent top-up webhook; boost expiry; referral credit applied once.
 
 ## ops-monitor
 - **Purpose:** metrics, incidents, caps, kill switches.
