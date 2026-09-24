@@ -65,7 +65,12 @@ describe('who may reach the gateway', () => {
   it('only this package queues jobs or reads the gateway tables', () => {
     const pattern =
       /apify_gateway\s*\.\s*(enqueue_run|jobs|items|settings|claim_next_job)\b|from\s+['"]@nabvy\/db\/schema\/apify-gateway['"]/
-    const found = offenders(pattern, (path) => path.startsWith(self))
+    // Other modules' tests may seed collected jobs into the gateway's tables in PGlite (never a
+    // live database), as services/listing-ingest/test/support/database.ts does.
+    const found = offenders(
+      pattern,
+      (path) => path.startsWith(self) || /^services\/[a-z0-9-]+\/test\//.test(path),
+    )
     // Other packages read the published views through their v-prefixed Drizzle exports only.
     const viewsOnly = found.filter((path) => {
       const imports = [
