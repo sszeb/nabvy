@@ -26,8 +26,11 @@ into `packages/db` with task 0.3.
    dataset rows go to `apify_gateway.items`, the run's cost (`usageTotalUsd`) and `RUN_SUMMARY`
    to the job's `result`.
 
-**Spend.** `apify_gateway.spend` shows the cap, the committed amount (settled costs plus the
-reservations of runs still going) and what remains. The cap is $5.50, the owner's £5 budget for
+**Spend.** `apify_gateway.spend` shows the cap, the committed amount and what remains. Apify
+finalises a run's `usageTotalUsd` a few minutes after the run ends (the first run read $0.0003 at
+finish and settled at $0.0177), so a started run counts at the larger of its provisional cost and
+its reservation until an invocation at least 10 minutes after it finished re-reads the final cost
+and sets `settled_at`. The cap is $5.50, the owner's £5 budget for
 paid runs. A run's reservation uses upper bounds held in `settings`: $0.40 per compute unit,
 $10/GB of proxy traffic and 0.5 MB per request. A run that costs more than its reservation is
 still counted in full once it settles.
@@ -39,8 +42,11 @@ the schema is not exposed to the Data API.
 **Seller data.** `apify_gateway.items` holds raw actor rows, which can include seller fields. Per
 the brief they are internal only: never copy them into user-facing tables, fixtures or logs.
 
-**Secret.** The function reads `APIFY_TOKEN` from the Edge Function secrets and never logs or
-returns it. An `env_check` job reports which Apify-like secret names exist (names only).
+**Secret.** The function reads the Edge Function secret `APIFY_TOKEN` when it is set, otherwise
+the Vault secret `apify_token`. The project had no Edge Function secret, so on the owner's
+instruction (2026-09-24) the token was stored in Vault; update it there (dashboard, Vault) when the
+token is rotated. The function never logs or returns the token. An `env_check` job reports which
+Apify-like secret names exist and whether the Vault secret is present (names and yes/no only).
 
 **Operating it.**
 
@@ -52,5 +58,7 @@ select * from apify_gateway.spend;
 select id, kind, status, cost_usd, error from apify_gateway.jobs order by id;
 ```
 
-The migration is `migrations/20260924020000_apify_gateway.sql`, applied through the Supabase
-connector on 2026-09-24.
+Migrations in `migrations/` were applied through the Supabase connector on 2026-09-24:
+`20260924020000_apify_gateway.sql` (schema), `20260924021000_apify_gateway_search_path.sql`
+(security advisor fix) and `20260924022000_apify_gateway_settle_cost.sql` (cost settlement).
+Deployed function version: 3.

@@ -18,6 +18,7 @@ type Job = {
   run_options: { memory?: number; timeout?: number }
   apify_run_id: string | null
 }
+type Apify = (path: string, init?: RequestInit) => Promise<unknown>
 
 const pool = new Pool(Deno.env.get('SUPABASE_DB_URL') ?? '', 1, true)
 
@@ -30,39 +31,56 @@ const message = (error: unknown) =>
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
-// Names only, never values: used to find the secret if it is not called APIFY_TOKEN.
+// Names only, never values.
 const apifyEnvNames = () =>
   Object.keys(Deno.env.toObject())
     .filter((name) => /apify/i.test(name))
     .sort()
 
-function apifyToken(): string {
-  const token = Deno.env.get('APIFY_TOKEN')
-  if (!token) {
-    throw new Error(
-      `APIFY_TOKEN is not set; Apify-like secret names: ${apifyEnvNames().join(', ') || 'none'}`,
-    )
-  }
-  return token
+const vaultTokenQuery =
+  "select decrypted_secret as secret from vault.decrypted_secrets where name = 'apify_token'"
+
+// The token comes from the Edge Function secret APIFY_TOKEN when that is set, otherwise from the
+// Vault secret apify_token (stored there on the owner's instruction). Never logged or returned.
+async function apifyToken(client: PoolClient): Promise<string> {
+  const fromEnv = Deno.env.get('APIFY_TOKEN')
+  if (fromEnv) return fromEnv
+  const fromVault = (await client.queryObject<{ secret: string }>(vaultTokenQuery)).rows[0]?.secret
+  if (fromVault) return fromVault
+  throw new Error('No Apify token: neither the APIFY_TOKEN secret nor the Vault secret apify_token')
 }
 
-async function apify(path: string, init: RequestInit = {}): Promise<unknown> {
-  const response = await fetch(`${APIFY}${path}`, {
-    ...init,
-    headers: { Authorization: `Bearer ${apifyToken()}`, 'Content-Type': 'application/json' },
-    signal: AbortSignal.timeout(30_000),
-  })
-  const text = await response.text()
-  if (!response.ok) {
-    const route = path.split('?')[0]
-    throw new Error(
-      `Apify ${init.method ?? 'GET'} ${route} returned ${response.status}: ${text.slice(0, 300)}`,
-    )
+// Resolves the token on first use, so an invocation with no Apify work never reads it.
+function apifyClient(client: PoolClient): Apify {
+  let token: Promise<string> | undefined
+  return async (path, init = {}) => {
+    token ??= apifyToken(client)
+    const response = await fetch(`${APIFY}${path}`, {
+      ...init,
+      headers: { Authorization: `Bearer ${await token}`, 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(30_000),
+    })
+    const text = await response.text()
+    if (!response.ok) {
+      const route = path.split('?')[0]
+      throw new Error(
+        `Apify ${init.method ?? 'GET'} ${route} returned ${response.status}: ${text.slice(0, 300)}`,
+      )
+    }
+    return text ? JSON.parse(text) : null
   }
-  return text ? JSON.parse(text) : null
 }
 
-async function actorInfo(actorId: string): Promise<Json> {
+async function envCheck(client: PoolClient): Promise<Json> {
+  const vault = await client.queryObject<{ secret: string }>(vaultTokenQuery)
+  return {
+    apifyEnvNames: apifyEnvNames(),
+    vaultSecretPresent: Boolean(vault.rows[0]?.secret),
+    hasDbUrl: Boolean(Deno.env.get('SUPABASE_DB_URL')),
+  }
+}
+
+async function actorInfo(apify: Apify, actorId: string): Promise<Json> {
   const act = obj(obj(await apify(`/acts/${actorId}`)).data)
   const buildId = obj(obj(act.taggedBuilds).latest).buildId
   const build =
@@ -113,10 +131,11 @@ async function finish(
   )
 }
 
-async function startRun(client: PoolClient, actorId: string, job: Job) {
+async function startRun(client: PoolClient, apify: Apify, actorId: string, job: Job) {
   const { memory, timeout } = job.run_options
-  if (!memory || !timeout)
+  if (!memory || !timeout) {
     throw new Error('run_options.memory and run_options.timeout are required')
+  }
   const query = new URLSearchParams({ memory: String(memory), timeout: String(timeout) })
   const run = obj(
     obj(
@@ -132,7 +151,7 @@ async function startRun(client: PoolClient, actorId: string, job: Job) {
   )
 }
 
-async function pollRun(client: PoolClient, job: Job) {
+async function pollRun(client: PoolClient, apify: Apify, job: Job) {
   const run = obj(obj(await apify(`/actor-runs/${job.apify_run_id}`)).data)
   if (!TERMINAL.has(String(run.status))) return false
   const items = run.defaultDatasetId
@@ -188,6 +207,7 @@ Deno.serve(async (request) => {
       await client.queryObject<{ actor_id: string }>('select actor_id from apify_gateway.settings')
     ).rows[0]
     if (!settings) throw new Error('apify_gateway.settings is empty')
+    const apify = apifyClient(client)
     const processed: Array<{ id: number; kind: string; outcome: string }> = []
 
     for (let claims = 0; claims < MAX_CLAIMS; claims++) {
@@ -200,14 +220,11 @@ Deno.serve(async (request) => {
       }
       try {
         if (job.kind === 'env_check') {
-          await finish(client, job.id, 'succeeded', {
-            apifyEnvNames: apifyEnvNames(),
-            hasDbUrl: Boolean(Deno.env.get('SUPABASE_DB_URL')),
-          })
+          await finish(client, job.id, 'succeeded', await envCheck(client))
         } else if (job.kind === 'actor_info') {
-          await finish(client, job.id, 'succeeded', await actorInfo(settings.actor_id))
+          await finish(client, job.id, 'succeeded', await actorInfo(apify, settings.actor_id))
         } else {
-          await startRun(client, settings.actor_id, job)
+          await startRun(client, apify, settings.actor_id, job)
         }
         processed.push({
           id: job.id,
@@ -229,12 +246,36 @@ Deno.serve(async (request) => {
     const polled: Array<{ id: number; finished: boolean; error?: string }> = []
     for (const job of running) {
       try {
-        polled.push({ id: job.id, finished: await pollRun(client, job) })
+        polled.push({ id: job.id, finished: await pollRun(client, apify, job) })
       } catch (error) {
         polled.push({ id: job.id, finished: false, error: message(error) })
       }
     }
-    return json({ processed, polled })
+    // Apify finalises usage a few minutes after a run ends; re-read it once to settle the cost.
+    const unsettled = (
+      await client.queryObject<Job>(
+        `select * from apify_gateway.jobs
+         where kind = 'run' and apify_run_id is not null and status in ('succeeded', 'failed')
+           and settled_at is null
+           and coalesce((result ->> 'finishedAt')::timestamptz, updated_at) < now() - interval '10 minutes'
+         order by id`,
+      )
+    ).rows
+    const settled: Array<{ id: number; error?: string }> = []
+    for (const job of unsettled) {
+      try {
+        const run = obj(obj(await apify(`/actor-runs/${job.apify_run_id}`)).data)
+        await client.queryArray(
+          `update apify_gateway.jobs set cost_usd = $1, settled_at = now(), updated_at = now()
+           where id = $2 and settled_at is null`,
+          [Number(run.usageTotalUsd ?? 0), job.id],
+        )
+        settled.push({ id: job.id })
+      } catch (error) {
+        settled.push({ id: job.id, error: message(error) })
+      }
+    }
+    return json({ processed, polled, settled })
   } catch (error) {
     return json({ error: message(error) }, 500)
   } finally {
