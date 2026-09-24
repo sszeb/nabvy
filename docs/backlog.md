@@ -17,6 +17,8 @@ Check-in points are marked **[CHECK-IN]**: stop and wait for a human before cont
 
 **[CHECK-IN]**
 
+- **0.8 Config per module.** Give `@nabvy/config` a `./modules/*` export (rule 14) and a module file per module; move `USD_GBP_RATE` out of the `apify` group into its own group; then move cost-meter's settle delay and price table from `services/cost-meter/src/config.ts` into `packages/config/src/modules/cost-meter.ts`. Raised by the cost-meter build and review (PR #16).
+
 ## Phase 1 — Walking skeleton on Facebook (our actor)
 
 - **1.0 Document the Facebook actor.** Run the deployed actor once by hand; record its real input schema and output fields in `services/source-adapters/README.md`; map every field to the target shape in `docs/providers.md`; fill `cell_provider_locations` for the founder's cell and its neighbours; list any missing required field in `docs/questions.md`. Done: the mapping table exists and one recorded raw response is saved under `fixtures/listings/facebook/`.
@@ -57,6 +59,7 @@ Check-in points are marked **[CHECK-IN]**: stop and wait for a human before cont
 
 - **4.0 Auth service.** Better Auth instance with Drizzle adapter, magic link, Google, admin and captcha plugins; `/api/auth/*` route handler; session helpers for server actions. Done: sign-up by magic link and Google in staging; admin role check test.
 - **4.0a Auth follow-ups.** Make the per-email magic-link counter atomic with `insert … on conflict`; add a line to `services/auth/README.md` that the x-forwarded-for rate-limit key assumes a trusted proxy (Vercel). Done: a concurrency test shows no lost increments.
+- **4.0b Auth: audit admin actions.** Now that `audit-log` exists, make the refusal of unaudited admin actions call its `record()` in the same transaction. Done when every admin action writes an audit row and a test proves the action rolls back if the audit write fails.
 - **4.1 Web app core.** oRPC router and typed client; onboarding with default hunt, hunts CRUD, deal feed, deal card, feedback (`real_deal`, `not_a_deal`, `bought`), all through procedures inside `withUser`. Done: Playwright flow passes; an OpenAPI document is generated from the router.
 - **4.1b User dashboard.** Home dashboard per `docs/dashboards.md`: today block, deals-near-you map (MapLibre, OpenFreeMap), hunts performance, watchlist sparklines, inventory profit, scans, usage; `mv_user_dashboard` refresh. Done: dashboard renders from views only; Lighthouse performance above 90 on mobile.
 - **4.1d Coverage wording.** Replace "UK and Ireland" with UK-only wording on the landing badge and footer (`docs/decisions.md`, "Beta coverage and Apify budget"). Done: no user-facing text mentions Ireland.

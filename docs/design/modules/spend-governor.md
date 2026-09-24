@@ -5,7 +5,7 @@
 ### `spend-governor`
 - **Purpose:** keep every paid call inside the owner's budgets.
 - **Does / does not:** reads settled and reserved costs; an unsettled run counts at the larger of its reservation and its provisional cost (`nabvy/supabase/README.md:45-49`), because displayed costs have been up to 45% low (`fb-scrap-engine/docs/EVIDENCE_LEDGER.md:17-18`). Budgets: the $150 monthly Apify budget (`nabvy/docs/decisions.md:138`; the hard cap itself stays in `apify-gateway`, today a $5.50 lifetime cap, `nabvy/docs/questions.md:10`), the account's recorded plan caps of $85 a month and 10 GB of residential proxy as working ceilings, with proxy GB summed from settled run objects in `v_jobs` (`fb-scrap-engine/docs/EVIDENCE_LEDGER.md:321-322`; `actor-integration.md` 2.12), and later budgets the owner sets, including model spend. At 80% of a budget it raises its throttle level; `check-scheduler` applies the order; queued work is never dropped (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:202-203`; 80% is the brief's starting value). It reports forecasts, and when an Apify plan change would pay (`fb-scrap-engine/docs/design/SCALE_PLAN.md:84-86`); the owner decides. It does not flip switches or set prices.
-- **Inputs:** `v_costs`; `v_jobs` (proxy GB per settled run).
+- **Inputs:** `v_costs` (sum `counted_gbp_micros`, integer micros); `v_jobs` (proxy GB per settled run).
 - **Outputs:** `spend-governor.budget-alerted` (budget).
 - **Owns:** `budgets` (name, limit_minor, currency, period, set_by), `throttle` (budget, level `none | slow-free | slow-paid | slow-sweeps | hold-new`, since).
 - **Views:** internal `v_throttle`, `v_budgets` (limit, committed, remaining, forecast). User-facing: none.

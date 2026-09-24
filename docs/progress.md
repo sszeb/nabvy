@@ -34,7 +34,8 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 3.4 | Scan card | not started | | |
 | 3.5 | Inventory and eBay drafts | not started | | |
 | 4.0 | Auth service | done | 2026-09-24 | Merged in PR #9 (`8f27dd7`); its three better-auth migrations applied by the coordinator at 12:30 UTC. Before anyone signs in, `nabvy_auth` needs login, a password and `DATABASE_URL_AUTH` (owner, out of band): Better Auth server, session helpers, the account standing check with the vague notice, and a `nabvy_auth` role |
-| 4.0a | Auth follow-ups from review | not started | 2026-09-24 | Make the per-email magic-link counter atomic (`insert … on conflict`); note in `services/auth/README.md` that the x-forwarded-for rate-limit key assumes a trusted proxy (Vercel) |
+| 4.0a | Auth follow-ups from review | done: merged in PR #14 (`0a5a119`), no migration | 2026-09-24 | Make the per-email magic-link counter atomic (`insert … on conflict`); note in `services/auth/README.md` that the x-forwarded-for rate-limit key assumes a trusted proxy (Vercel) |
+| 4.0b | Auth: audit admin actions | not started | 2026-09-24 | Added after `audit-log`; see backlog. |
 | 4.1a | Web design system and app shell | done | 2026-09-24 | Merged in PR #7 (`cdd99fc`); branded error pages and the restricted notice follow in PR #10: Next.js, Tailwind and shadcn/ui; the look set by the owner ("MVP scope and pipeline runtime" in `docs/decisions.md`); screens on typed fixture data; photos off behind a flag |
 | 4.1c | Branded error pages and restricted notice | done | 2026-09-24 | Merged in PR #10 (`015d689`), after PR #7 |
 | 4.1d | Remove "Ireland" from the landing badge and footer | not started | 2026-09-24 | Found by the reviewer on PR #7: `main` says "UK and Ireland", but coverage is UK only (`docs/decisions.md`, "Beta coverage and Apify budget") |

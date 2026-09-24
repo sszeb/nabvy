@@ -6,7 +6,7 @@
 - **Purpose:** record the cost of every paid call in one ledger.
 - **Does / does not:** one row per Apify run (reserved, then settled), per model call (tokens × the price table in config) and per counted free call (eBay, CeX). Stores the original amount and currency and the GBP amount converted with `USD_GBP_RATE` (`nabvy/docs/engineering.md:56`). It does not decide whether to spend (`spend-governor`) and does not enforce the gateway's hard cap (`apify-gateway`).
 - **Inputs:** `record()` and `settle()` calls from paying modules.
-- **Outputs:** `v_costs` (module, provider, kind, reserved, settled, currency, at).
+- **Outputs:** `v_costs` (module, provider, kind, ref_id, currency, reserved_micros, settled_micros, reserved_gbp_micros, settled_gbp_micros, counted_gbp_micros, status, settled_at, at). Amounts are integer micros (millionths of the currency unit), not minor units; `counted_gbp_micros` is the settlement once settled, else the reservation (built in PR #16).
 - **Owns:** `provider_calls` (id, module, provider, kind, ref_id, reserved_minor, settled_minor, currency, settled_at, latency_ms, status, at; unique on provider and ref_id).
 - **Views:** internal `v_costs`. User-facing: none.
 - **Contracts:** `CostMeterCall`.
