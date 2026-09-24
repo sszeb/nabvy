@@ -109,7 +109,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | pricing-console | 4 | PR #55 open 18:44 (two migrations after merge; seeds the ladder as initial policy values; no admin page until 4.1 and 4.3af) | `session_01NamNkeC55pewRzgfB6v6YS` | top |
 | subscriptions | 4 | PR #54 open 18:44 (two migrations after merge; Stripe test keys still missing; auth needs a small change to mount the plugin, see its questions); attribution stacked on it | `session_01P4ij9pAr9EjzDnS1bqS21i` | top |
 | city-pages | 5 | started 18:43 [cp 9], stacked on run-coverage #48 (`task/w1-run-coverage`); opens its PR after #48 merges | `session_01MiuqZuB4erg6mpUnsSPPas` | Sonnet |
-| source-health | 5 | started 18:43 [cp 2], stacked on run-coverage #48 | `session_011wTSwKM3earZpvYNFD3MDP` | Sonnet |
+| source-health | 5 | PR #63 open [cp 2]; "Changes needed" 21:48 (three blockers: lost update between concurrent jobs, replay after midnight, ramp advancing while degraded); fresh fix session 21:53 `session_016T1bjosrCcxtzbshmwCTXQ` (top), build session told to stand down | `session_011wTSwKM3earZpvYNFD3MDP` (419k) | Sonnet, fix top |
 | listing-lifecycle | 5 | PR #57 open 19:13 (two migrations after merge) [cp 7]; stacked on #46, main merged in | `session_014oeSpAALFLdsFPxQwxiSam` | top |
 | relist-merge | 5 | PR #56 merged 21:47 (8d97295), both migrations applied 21:50 (ledger 53 rows) [cp 8]; photo-review and seller-key as injected seams | `session_01T4PCF6E1BvXjABjhNMiPqW` | top |
 | parts-ai | 6 | started 19:36 [cp 11], stacked on parts-rules #53; one capped model call per item on recorded fixtures | `session_01XE861nwcZnmic8RQ474RbH` | top |
