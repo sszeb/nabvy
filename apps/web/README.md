@@ -74,7 +74,7 @@ there are no CSP or HSTS headers. Do not deploy the app before tasks 0.5a (waitl
 (auth and the admin role) and 4.3b (security headers and rate limits) land. Fixture listing links
 point at `.invalid` hosts so none can resolve to a real listing.
 
-## Error pages (task 4.1b)
+## Error pages (task 4.1c)
 
 Every error the app can show uses one layout, `components/error-page.tsx`, with its copy in
 `lib/errors.ts`. The layout follows the pattern big tech uses for error pages, adapted to Nabvy:
@@ -92,16 +92,22 @@ Every error the app can show uses one layout, `components/error-page.tsx`, with 
 | `app/global-error.tsx` | 500 in the root layout; brings its own `<html>` |
 | `app/unauthorized.tsx` | 401 from `unauthorized()`, e.g. when `requireUser` fails |
 | `app/forbidden.tsx` | 403 from `forbidden()`, e.g. when `requireAdmin` fails |
-| `app/errors/[code]` | static pages for 400, 401, 403, 404, 408, 410, 429, 500, 502, 503 and 504, plus `restricted`. The proxy, route handlers and the CDN rewrite to these when Next's own boundaries do not apply (a 429 from the rate limiter, a 503 during maintenance) |
+| `app/errors/restricted` | the account-restricted notice (below) |
+| `app/errors/[code]` | static pages for 400, 401, 403, 404, 408, 410, 429, 500, 502, 503 and 504. The proxy, route handlers and the CDN rewrite to these when Next's own boundaries do not apply (a 429 from the rate limiter, a 503 during maintenance) |
 
 - `forbidden()` and `unauthorized()` need Next's `experimental.authInterrupts`, which is on in
-  `next.config.ts`.
-- **`/errors/restricted` stays plain on purpose:** a lock, "Account restricted", and exactly "Your
-  account has been restricted under our terms.", with no illustration or joke and no reason, date
-  or rule (`docs/decisions.md`, "Fair use, suspension and bans"). It offers "Nabvy home" and a
-  generic "Contact us", as big tech does. The generic 403 page never hints at a restriction. The
-  notice's text is duplicated in `lib/errors.ts` until the auth module's contract
-  (`ACCOUNT_RESTRICTED_MESSAGE`, PR #9) can be imported.
+  `next.config.ts`. It is an experimental flag for the whole app, tested on Next.js 16.3.6; check
+  these two pages after any Next.js upgrade.
+- Server error pages show only Next's opaque error digest as the reference, never the error's
+  message or stack (`test/errors.test.ts` checks the source).
+- **`/errors/restricted` stays plain on purpose:** a lock, "Account restricted", and the notice the
+  owner's decision allows (`docs/decisions.md`, "Fair use, suspension and bans"): the step and the
+  policy, for example "Your account has been suspended under our Fair Use Policy.", then "You can
+  ask for a review within 30 days." with an "Ask for a review" action. The app redirects there
+  with `?step=…&policy=…` from the auth module's refusal; anything else in the address is
+  ignored, and without a valid pair the page names the Terms of Service. No illustration, joke,
+  reason, date or rule. The generic 403 page never hints at a restriction. The notice is
+  mirrored in `lib/errors.ts` until the auth module's contract (PR #9) can be imported.
 - The copy follows the app's copy rules (no exclamation marks, no urgency, UK English).
   `test/errors.test.ts` checks it, and `e2e/errors.spec.ts` renders every page in the four
   projects and checks that an unknown address answers 404. The screenshots are

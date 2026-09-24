@@ -15,9 +15,15 @@ export function ErrorPage({
   kind,
   reference,
   action,
+  description,
+  note,
   className,
 }: {
   kind: ErrorKind
+  /** Replaces the kind's description, e.g. the restriction notice for this account. */
+  description?: string
+  /** A second line under the description, e.g. the review offer. */
+  note?: string
   /** Shown for server errors, e.g. Next's error digest. */
   reference?: string
   /** Extra first action, e.g. a "Try again" button that resets the error boundary. */
@@ -51,7 +57,10 @@ export function ErrorPage({
             <h1 className="text-balance font-semibold text-3xl tracking-tight sm:text-4xl">
               {copy.title}
             </h1>
-            <p className="text-pretty text-lg text-muted-foreground">{copy.description}</p>
+            <p className="text-pretty text-lg text-muted-foreground">
+              {description ?? copy.description}
+            </p>
+            {note ? <p className="text-muted-foreground">{note}</p> : null}
             <div className="flex flex-wrap justify-center gap-3 md:justify-start">
               {action}
               <Button asChild size="lg" variant={action ? 'outline' : 'primary'}>

@@ -31,9 +31,13 @@ test('an unknown address answers 404 with the error page', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Go to your dashboard' })).toBeVisible()
 })
 
-test('the restricted notice shows only the vague message', async ({ page }) => {
-  await page.goto('/errors/restricted')
+test('the restricted notice names the step and policy only, and offers a review', async ({
+  page,
+}) => {
+  await page.goto('/errors/restricted?step=suspended&policy=fair-use&reason=chargeback-abuse')
   const text = await page.locator('main').innerText()
-  expect(text).toContain('Your account has been restricted under our terms.')
-  expect(text).not.toMatch(/\b(ban|banned|suspend|suspended|until|reason)\b/i)
+  expect(text).toContain('Your account has been suspended under our Fair Use Policy.')
+  expect(text).toContain('You can ask for a review within 30 days.')
+  expect(text).not.toMatch(/chargeback|abuse|until|reason/i)
+  await expect(page.getByRole('link', { name: 'Ask for a review' })).toBeVisible()
 })

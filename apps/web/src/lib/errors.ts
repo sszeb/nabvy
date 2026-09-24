@@ -1,5 +1,5 @@
 /**
- * Copy for every error page (task 4.1b). One entry per HTTP status the app can show, plus the
+ * Copy for every error page (task 4.1c). One entry per HTTP status the app can show, plus the
  * account-restricted notice. The pattern is the one big tech uses: the code as a graphic, a
  * short human headline, one or two sentences saying what happened and what to do, one main
  * action, and a reference for server errors. Wording is Nabvy's own, in the deal-hunting
@@ -29,12 +29,46 @@ const signIn: ErrorAction = { label: 'Sign in', href: '/sign-in' }
 const contact: ErrorAction = { label: 'Contact us', href: 'mailto:hello@nabvy.com' }
 
 /**
- * The account-restricted notice. It must stay word for word the auth module's
- * ACCOUNT_RESTRICTED_MESSAGE (`@nabvy/contracts/modules/auth`, PR #9), and never gains a reason,
- * rule, date or score (docs/decisions.md, "Fair use, suspension and bans"). It is imported from
- * the contract once that pull request is merged.
+ * The account-restricted notice (docs/decisions.md, "Fair use, suspension and bans"): it names
+ * the step and the policy it was taken under and nothing more, and offers a review within 30
+ * days. No reason, rule, date or score. This mirrors `accountRestrictedNotice` and
+ * `ACCOUNT_REVIEW_OFFER` in `@nabvy/contracts/modules/auth` (PR #9); once that is merged these
+ * are imported from there instead.
  */
-export const ACCOUNT_RESTRICTED_NOTICE = 'Your account has been restricted under our terms.'
+export const RESTRICTION_POLICY_NAMES = {
+  terms: 'Terms of Service',
+  'acceptable-use': 'Acceptable Use Policy',
+  'fair-use': 'Fair Use Policy',
+} as const
+
+export type RestrictionPolicy = keyof typeof RESTRICTION_POLICY_NAMES
+export type RestrictionStep = 'suspended' | 'banned'
+
+export function restrictedNotice(step: RestrictionStep, policy: RestrictionPolicy): string {
+  return `Your account has been ${step} under our ${RESTRICTION_POLICY_NAMES[policy]}.`
+}
+
+export const REVIEW_OFFER = 'You can ask for a review within 30 days.'
+
+/** The step and policy from `/errors/restricted?step=…&policy=…`, or null if either is unknown. */
+export function parseRestriction(params: {
+  step?: string | string[]
+  policy?: string | string[]
+}): { step: RestrictionStep; policy: RestrictionPolicy } | null {
+  const step = params.step
+  const policy = params.policy
+  if (step !== 'suspended' && step !== 'banned') return null
+  if (typeof policy !== 'string' || !Object.hasOwn(RESTRICTION_POLICY_NAMES, policy)) return null
+  return { step, policy: policy as RestrictionPolicy }
+}
+
+/** Shown when the page is opened without a valid step and policy: still names no reason. */
+export const RESTRICTED_FALLBACK = 'Your account has been restricted under our Terms of Service.'
+
+const review: ErrorAction = {
+  label: 'Ask for a review',
+  href: 'mailto:hello@nabvy.com?subject=Account%20review',
+}
 
 export const errorPages = {
   '400': {
@@ -141,9 +175,9 @@ export const errorPages = {
     status: 403,
     tag: 'Restricted',
     title: 'Account restricted',
-    description: ACCOUNT_RESTRICTED_NOTICE,
-    primary: home,
-    secondary: contact,
+    description: RESTRICTED_FALLBACK,
+    primary: review,
+    secondary: home,
     plain: true,
   },
 } as const satisfies Record<string, ErrorPageCopy>
@@ -151,6 +185,9 @@ export const errorPages = {
 export type ErrorKind = keyof typeof errorPages
 
 export const errorKinds = Object.keys(errorPages) as ErrorKind[]
+
+/** The kinds served as static pages under /errors/[code]; `restricted` has its own route. */
+export const staticErrorKinds = errorKinds.filter((kind) => kind !== 'restricted')
 
 export function isErrorKind(value: string): value is ErrorKind {
   return Object.hasOwn(errorPages, value)

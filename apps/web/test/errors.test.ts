@@ -1,5 +1,13 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { ACCOUNT_RESTRICTED_NOTICE, errorKinds, errorPages, isErrorKind } from '@/lib/errors'
+import {
+  errorKinds,
+  errorPages,
+  isErrorKind,
+  parseRestriction,
+  REVIEW_OFFER,
+  restrictedNotice,
+} from '@/lib/errors'
 
 // Copy rules for the error pages (docs/web-app.md, "Copy rules"; docs/decisions.md, "Fair use,
 // suspension and bans").
@@ -41,13 +49,38 @@ describe('error pages', () => {
     }
   })
 
-  it('the restricted notice is the vague message and nothing more', () => {
+  it('the restricted notice names the step and policy only, and offers a review', () => {
+    expect(restrictedNotice('suspended', 'fair-use')).toBe(
+      'Your account has been suspended under our Fair Use Policy.',
+    )
+    expect(restrictedNotice('banned', 'terms')).toBe(
+      'Your account has been banned under our Terms of Service.',
+    )
+    expect(REVIEW_OFFER).toBe('You can ask for a review within 30 days.')
     const copy = errorPages.restricted
-    expect(copy.description).toBe('Your account has been restricted under our terms.')
-    expect(copy.description).toBe(ACCOUNT_RESTRICTED_NOTICE)
     expect(copy.plain).toBe(true)
-    const text = [copy.title, copy.tag, copy.primary.label, copy.secondary.label].join(' ')
-    expect(text).not.toMatch(/\b(ban|banned|suspend|suspended|until|reason|abuse|fraud|score)\b/i)
+    expect(copy.primary.label).toBe('Ask for a review')
+    const text = [copy.title, copy.tag, copy.description, copy.primary.label, copy.secondary.label]
+    expect(text.join(' ')).not.toMatch(/\b(reason|abuse|fraud|score|until|evidence)\b/i)
+  })
+
+  it('reads only a known step and policy from the address', () => {
+    expect(parseRestriction({ step: 'suspended', policy: 'fair-use' })).toEqual({
+      step: 'suspended',
+      policy: 'fair-use',
+    })
+    expect(parseRestriction({ step: 'suspended', policy: 'because we said so' })).toBeNull()
+    expect(parseRestriction({ step: 'kicked', policy: 'terms' })).toBeNull()
+    expect(parseRestriction({ step: ['banned'], policy: 'terms' })).toBeNull()
+    expect(parseRestriction({})).toBeNull()
+  })
+
+  it('server error pages show the opaque digest, never the message or stack', () => {
+    for (const file of ['error.tsx', 'global-error.tsx']) {
+      const source = readFileSync(new URL(`../src/app/${file}`, import.meta.url), 'utf8')
+      expect(source, file).toMatch(/reference=\{error\.digest\}/)
+      expect(source, file).not.toMatch(/error\.(message|stack|cause)/)
+    }
   })
 
   it('the generic 403 never hints at a restriction', () => {
