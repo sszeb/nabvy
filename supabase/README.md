@@ -43,11 +43,12 @@ the schema is not exposed to the Data API.
 the brief they are internal only: never copy them into user-facing tables, fixtures or logs.
 
 **Redacted copies for fixtures.** `apify_gateway.redacted_items(job_id)` returns a job's rows with
-every `seller` and `marketplace_listing_seller` object replaced by a same-shaped placeholder (an
-unknown seller key raises an error rather than passing through), Facebook media and profile URLs
-replaced by placeholders, and emails and UK phone numbers in text masked.
-`apify_gateway.redaction_leaks(job_id)` lists any raw seller ID, name or picture URL still present
-in the redacted rows and must return nothing before rows are exported. Only redacted rows ever
+every `seller` and `marketplace_listing_seller` object replaced by a same-shaped placeholder (the ID
+becomes a placeholder of the same kind; every other value, whatever its key, becomes `[redacted]` or
+a placeholder URL), Facebook media and profile URLs replaced by placeholders, and emails, UK phone
+numbers, social handles and links, and the inward half of full postcodes masked in text.
+`apify_gateway.redaction_leaks(job_id)` lists (by row and length only) any string from a raw seller
+object still present in the redacted rows, and must return nothing before rows are exported. Only redacted rows ever
 leave the database.
 
 **Secret.** The function reads the Edge Function secret `APIFY_TOKEN` (Edge Functions → Secrets
@@ -70,6 +71,7 @@ select id, kind, status, cost_usd, error from apify_gateway.jobs order by id;
 Migrations in `migrations/` were applied through the Supabase connector on 2026-09-24:
 `20260924020000_apify_gateway.sql` (schema), `20260924021000_apify_gateway_search_path.sql`
 (security advisor fix), `20260924022000_apify_gateway_settle_cost.sql` (cost settlement) and
-`20260924023000_apify_gateway_redact.sql` (redacted copies for fixtures, below).
+`20260924023000_apify_gateway_redact.sql` and `20260924024000_apify_gateway_redact_v2.sql` (redacted
+copies for fixtures, below).
 Deployed function version: 7. Versions 4 and 6 were not deployed from this repository (most likely
 the dashboard redeploying when secrets changed); each later deploy replaced them.
