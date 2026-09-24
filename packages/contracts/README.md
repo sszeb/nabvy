@@ -123,7 +123,9 @@ edit.
   routing stay stable across versions.
 - **`Money` is an object, never a bare number,** and `EUR` exists only as its own currency.
 - **`ListingStub.price` is nullable** with a `priceKind`: the actor reports `free`, `unknown` and
-  `ambiguous` prices and `$` (USD) asks. Those keep `price: null`, and the whole row stays in `raw`.
+  `ambiguous` prices and `$` (USD) asks. A `fixed` ask has a price (never negative); `free` is zero
+  or null; `unknown` and `ambiguous` are null, as are `$` asks; the whole row stays in `raw`.
+  `url` and `thumbnailUrl` must be `https`. `Money` itself may be negative (margins, refunds).
 - **`Uuid` accepts any version** for rows (Better Auth IDs are v4), `UuidV7` for events.
 - The build-pack entities in `docs/contracts.md` (Listing, Valuation, Hunt and the rest) are not
   here: their modules add them (re-scoped by "Atomic modules").
