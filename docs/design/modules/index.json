@@ -522,11 +522,12 @@
       "listing-location",
       "seller-reply-reports",
       "asking-price-index",
-      "asking-price-position",
+      "asking-price-position"
+    ],
+    "softDependsOn": [
       "listing-assessment",
       "parts-record"
-    ],
-    "softDependsOn": []
+    ]
   },
   {
     "name": "demand-signals",
@@ -576,11 +577,12 @@
       "quote-redaction",
       "spend-governor",
       "cost-meter",
-      "listing-suppression",
+      "listing-suppression"
+    ],
+    "softDependsOn": [
       "parts-rules",
       "product-catalogue"
-    ],
-    "softDependsOn": []
+    ]
   },
   {
     "name": "gem-finder",
@@ -922,15 +924,16 @@
       "location",
       "noise-filter",
       "listing-suppression",
-      "notifier",
+      "notifier"
+    ],
+    "softDependsOn": [
       "copy-advert",
       "relist-merge",
       "warning-signs",
       "parts-record",
       "listing-feedback",
       "account-integrity"
-    ],
-    "softDependsOn": []
+    ]
   },
   {
     "name": "listing-suppression",
@@ -1415,10 +1418,11 @@
       "want-manager",
       "alert-router",
       "pasted-link-lookup",
-      "notifier",
-      "seller-reply-reports"
+      "notifier"
     ],
-    "softDependsOn": []
+    "softDependsOn": [
+      "seller-reply-reports"
+    ]
   },
   {
     "name": "pricing-console",
