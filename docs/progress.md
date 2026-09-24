@@ -87,9 +87,11 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | apify-gateway | 2 | done: PR #29 merged 15:58 (`b060a99`); migration applied and Edge Function version 10 deployed 16:05 (ledger checked; cap $150 a month, build 1.0.82); inert until an admin switches on `apify` and `apify-gateway` | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
 | waitlist | 2 | done: PR #31 merged 16:18 (`3cf30d1`); both migrations applied 16:29 (ledger checked); email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
 | account | 2 | PR #33 open 16:09, changes needed 16:13 (five blockers), fix round by `session_01JaYi4X3zUDVQy1jZrxN9cG` (Sonnet) from 16:18; after merge apply `account/20260924155208_account_tables.sql` and `account/20260924155222_account_access.sql` (depend on core); standing ownership resolved by delegating to auth (README, "Standing: which function owns what") | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
-| listing-ingest | 3 | PR #35 open 16:31; changes needed 16:37 (lockfile conflict, two-term origins acceptance); after merge apply its migrations listed in the PR body | `session_01HfncCwAz7dL7Kx9LnCeR2U` | top |
+| listing-ingest | 3 | done: PR #35 merged 16:54 (approved at `04b54ba`); both migrations applied 16:57 (ledger checked); first-seen may re-announce on out-of-order replay, so details-queue dedupes on listing ID | `session_01HfncCwAz7dL7Kx9LnCeR2U` | top |
 | spend-governor | 3 | done: PR #36 merged 16:39 (`5c2b7eb`); both migrations applied 16:43 (ledger checked); budgets seeded ($150 Apify month, $85 plan, 10 GB proxy); needs a scheduled recompute and a measured `proxy_gb` before any paying module reads `v_throttle` (backlog 1.6a, 1.6b) | `session_01CC2oetv6aarq9Pyf3wKC7q` | top |
 | route-health | 3 | PR #37 open 16:40; after merge apply its migrations listed in the PR body | `session_01DgJ6WG8sK8FmVprvBHT7Ln` | Sonnet |
+| run-coverage | 4 | started 16:55; card `docs/design/modules/run-coverage.md` | `session_01W9G6WWzHRC5ZWWNB5Ud36i` | top |
+| detail-evidence | 4 | started 16:55; card `docs/design/modules/detail-evidence.md` | `session_019oxS7CYEwPHJ2YpQjxK4Gw` | top |
 
 ## Work outside the backlog
 
