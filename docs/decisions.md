@@ -286,6 +286,19 @@ Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): win
 - **Abuse audit from day one.** A written threat model of cost and abuse exploits (burner accounts, sign-up floods, free-burst farming, credit and referral gaming, card-check bypass, Telegram and webhook replay, Apify cost amplification, account sharing) with a test plan, adversarially checked, before the free tier opens (owner, 17:08).
 - **Surge stop.** Circuit breakers in the synchronous spend gate trip on any of: sign-ups per minute, paid submits per minute, submits from accounts younger than a policy-set age, or cost per minute, each a policy row. A trip sets `hold-new` immediately for free bursts and new accounts (paid watchers keep their funded cadence while under the caps), pauses admission, and alerts the founder. It resets only by an admin, with an audit row. The owner's case: 1,000 bots creating accounts and searching at once trip the breaker within the first minute, so the spend is at most the reservations in flight.
 
+## Free-tier limits, paid users and the daily cap (owner, 2026-09-24, 17:20 and 17:25)
+
+Said by the owner to the 4.3t threat-model session and relayed to the coordinator at 18:20; recorded here verbatim as the owner's decision.
+
+1. On the free pool (17:20): "We do limit the free tier obviously the paid users are welcome to sign up any time at all times - same for upgrading from free to paid plan."
+2. On scans and paid calls (17:25): "You figure this out that we cap max individual user £2 a day so if a daily cap is £20 spend we can either have 10 users who runs their usage dry or a few who does but then a couple which goes slow etc And remember these caps have to be adjustable from admin panel. And the admin panel have to be hardened and adversarial security audit run."
+
+What this means for the build (PR #39, `docs/design/abuse-threat-model.md`):
+- **Only the free tier is limited.** Paid sign-ups and upgrades from free to paid are never queued, throttled or held, at any time.
+- **£2 a day per account**, counting every paid action (checks, scans, pasted links, model calls), as a policy row per tier editable from the admin panel; whether paid tiers get a higher row is open (`docs/questions.md`, from `docs/questions/abuse-threat-model.md`).
+- **The pool drains gracefully.** As a daily pool (the example: £20) runs down, the remaining accounts slow rather than stop at once.
+- **The admin panel is hardened and adversarially audited** before it is exposed (`docs/design/admin-hardening.md`; backlog 4.3af to 4.3ah; the admin gate 4.3af blocks the web deploy 0.5a).
+
 ## Cadence slider and the app's look (owner, 2026-09-24, 17:12)
 
 - **One control for speed.** Each want's check interval is set with a slider modelled on Claude Code's "Effort" control: 1-minute checks at the top as the "ultracode" equivalent, 4 hours at the bottom as the slow pace, with the intermediate steps between. It should be interesting and good-looking in the way that control is.
