@@ -1,0 +1,13 @@
+{
+  "steps": [{ "cards": 20, "sightingsWritten": 20, "firstSeen": 20, "cardChanged": [] }],
+  "listings": 20,
+  "sightings": { "search": 0, "detail": 20 },
+  "priceChanges": [],
+  "listing": {
+    "sourceListingId": "28242423458759790",
+    "priceMinor": 80000,
+    "townLabel": "Harrow",
+    "binding": null,
+    "foundByTerms": []
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "steps": [
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 20, "cardChanged": [] },
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 0, "cardChanged": ["1072745435569624"] }
+  ],
+  "listings": 20,
+  "sightings": { "search": 20, "detail": 20 },
+  "priceChanges": [
+    {
+      "sourceListingId": "1072745435569624",
+      "kind": "detail",
+      "previousMinor": 45000,
+      "priceMinor": 40000,
+      "currency": "GBP"
+    }
+  ],
+  "listing": {
+    "sourceListingId": "1072745435569624",
+    "priceMinor": 40000,
+    "displayedPreviousMinor": 49900
+  }
+}

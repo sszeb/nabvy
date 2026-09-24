@@ -1,0 +1,16 @@
+{
+  "steps": [
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 20, "cardChanged": [] },
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 0, "cardChanged": [] }
+  ],
+  "listings": 20,
+  "sightings": { "search": 20, "detail": 20 },
+  "priceChanges": [],
+  "sighting": {
+    "sourceListingId": "1816901372840238",
+    "kind": "detail",
+    "terms": [],
+    "centreIds": [],
+    "rank": null
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "steps": [
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 20, "cardChanged": [] },
+    { "cards": 20, "sightingsWritten": 20, "firstSeen": 0, "cardChanged": [] }
+  ],
+  "listings": 20,
+  "sightings": { "search": 40, "detail": 0 },
+  "priceChanges": []
+}

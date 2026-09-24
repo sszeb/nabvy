@@ -1,0 +1,761 @@
+{
+  "id": "3a76bec7-d4d7-49ae-acfb-eb3658a79ac0",
+  "prevId": "c6bf931e-f562-4328-83da-16d118b02721",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "listing_ingest.listings": {
+      "name": "listings",
+      "schema": "listing_ingest",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "money_kind": {
+          "name": "money_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listed_at": {
+          "name": "listed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "first_fetched_at": {
+          "name": "first_fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city_page_id": {
+          "name": "city_page_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "town_label": {
+          "name": "town_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "availability": {
+          "name": "availability",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_types": {
+          "name": "delivery_types",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "primary_photo_id": {
+          "name": "primary_photo_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "displayed_previous_minor": {
+          "name": "displayed_previous_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "binding": {
+          "name": "binding",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "found_by_terms": {
+          "name": "found_by_terms",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "item_job_id": {
+          "name": "item_job_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_seq": {
+          "name": "item_seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "listings_city_page_idx": {
+          "name": "listings_city_page_idx",
+          "columns": [
+            {
+              "expression": "city_page_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "listings_source_listing_key": {
+          "name": "listings_source_listing_key",
+          "columns": [
+            "source",
+            "source_listing_id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "listings_source_check": {
+          "name": "listings_source_check",
+          "value": "\"listing_ingest\".\"listings\".\"source\" in ('ebay', 'facebook', 'gumtree', 'vinted', 'cex')"
+        },
+        "listings_currency_check": {
+          "name": "listings_currency_check",
+          "value": "\"listing_ingest\".\"listings\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "listings_price_check": {
+          "name": "listings_price_check",
+          "value": "\"listing_ingest\".\"listings\".\"price_minor\" >= 0 and \"listing_ingest\".\"listings\".\"displayed_previous_minor\" >= 0"
+        },
+        "listings_availability_check": {
+          "name": "listings_availability_check",
+          "value": "\"listing_ingest\".\"listings\".\"availability\" in ('live', 'pending', 'sold', 'hidden', 'unknown')"
+        },
+        "listings_card_hash_check": {
+          "name": "listings_card_hash_check",
+          "value": "\"listing_ingest\".\"listings\".\"card_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "listing_ingest.sightings": {
+      "name": "sightings",
+      "schema": "listing_ingest",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "job_id": {
+          "name": "job_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "centre_ids": {
+          "name": "centre_ids",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "rank": {
+          "name": "rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "availability": {
+          "name": "availability",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seen_at": {
+          "name": "seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "sightings_listing_seen_idx": {
+          "name": "sightings_listing_seen_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "seen_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "sightings_job_idx": {
+          "name": "sightings_job_idx",
+          "columns": [
+            {
+              "expression": "job_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "sightings_listing_id_listings_id_fk": {
+          "name": "sightings_listing_id_listings_id_fk",
+          "tableFrom": "sightings",
+          "columnsFrom": [
+            "listing_id"
+          ],
+          "tableTo": "listings",
+          "schemaTo": "listing_ingest",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "sightings_listing_job_kind_key": {
+          "name": "sightings_listing_job_kind_key",
+          "columns": [
+            "listing_id",
+            "job_id",
+            "kind"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "sightings_kind_check": {
+          "name": "sightings_kind_check",
+          "value": "\"listing_ingest\".\"sightings\".\"kind\" in ('search', 'detail')"
+        },
+        "sightings_currency_check": {
+          "name": "sightings_currency_check",
+          "value": "\"listing_ingest\".\"sightings\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "sightings_price_check": {
+          "name": "sightings_price_check",
+          "value": "\"listing_ingest\".\"sightings\".\"price_minor\" >= 0"
+        },
+        "sightings_rank_check": {
+          "name": "sightings_rank_check",
+          "value": "\"listing_ingest\".\"sightings\".\"rank\" >= 1"
+        },
+        "sightings_availability_check": {
+          "name": "sightings_availability_check",
+          "value": "\"listing_ingest\".\"sightings\".\"availability\" in ('live', 'pending', 'sold', 'hidden', 'unknown')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "listing_ingest": "listing_ingest"
+  },
+  "views": {
+    "listing_ingest.v_city_pages_seen": {
+      "name": "v_city_pages_seen",
+      "schema": "listing_ingest",
+      "columns": {
+        "city_page_id": {
+          "name": "city_page_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "town_label": {
+          "name": "town_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listings": {
+          "name": "listings",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "first_seen_at": {
+          "name": "first_seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "listing_ingest.v_fingerprints": {
+      "name": "v_fingerprints",
+      "schema": "listing_ingest",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fingerprint": {
+          "name": "fingerprint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "listing_ingest.v_listings": {
+      "name": "v_listings",
+      "schema": "listing_ingest",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "money_kind": {
+          "name": "money_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listed_at": {
+          "name": "listed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "first_fetched_at": {
+          "name": "first_fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city_page_id": {
+          "name": "city_page_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "town_label": {
+          "name": "town_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "availability": {
+          "name": "availability",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_types": {
+          "name": "delivery_types",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "primary_photo_id": {
+          "name": "primary_photo_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "displayed_previous_minor": {
+          "name": "displayed_previous_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "binding": {
+          "name": "binding",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "found_by_terms": {
+          "name": "found_by_terms",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_job_id": {
+          "name": "item_job_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "item_seq": {
+          "name": "item_seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "listing_ingest.v_price_changes": {
+      "name": "v_price_changes",
+      "schema": "listing_ingest",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sighting_id": {
+          "name": "sighting_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "previous_minor": {
+          "name": "previous_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "previous_seen_at": {
+          "name": "previous_seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seen_at": {
+          "name": "seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "listing_ingest.v_sightings": {
+      "name": "v_sightings",
+      "schema": "listing_ingest",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "job_id": {
+          "name": "job_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_ids": {
+          "name": "centre_ids",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rank": {
+          "name": "rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "availability": {
+          "name": "availability",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seen_at": {
+          "name": "seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

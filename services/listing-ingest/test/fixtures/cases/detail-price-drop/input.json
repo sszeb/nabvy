@@ -1,0 +1,7 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "steps": [
+    { "kind": "search" },
+    { "kind": "details", "price": { "listingId": "1072745435569624", "amountMinor": 40000 } }
+  ]
+}
