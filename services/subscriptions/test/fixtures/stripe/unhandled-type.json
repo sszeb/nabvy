@@ -1,0 +1,19 @@
+{
+  "id": "evt_TestPriceUpdated",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1917043200,
+  "data": {
+    "object": {
+      "id": "price_TestPro",
+      "object": "price"
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "price.updated"
+}
