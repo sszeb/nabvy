@@ -50,11 +50,7 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
 
-  services/source-adapters:
-    dependencies:
-      zod:
-        specifier: 4.6.5
-        version: 4.6.5
+  services/source-adapters: {}
 
 packages:
 
