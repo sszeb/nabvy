@@ -1,10 +1,12 @@
 # Self-hosted CI runner
 
-Owner's decision, 2026-09-24: Nabvy pays GitHub nothing for Actions. Every job in
-`.github/workflows/ci.yml` runs on `runs-on: [self-hosted, linux, x64]`, a runner the owner
-installs on a machine they control. GitHub bills no minutes for self-hosted runners on any plan.
-While no runner with those labels is online, jobs queue (they do not fail); the queue drains when
-one comes up.
+Owner's decision, 2026-09-24: Nabvy pays GitHub nothing for Actions. While the repository is
+public (owner, 22:40: until the production beta is about 90% built) GitHub-hosted runners are free
+and `.github/workflows/ci.yml` uses `runs-on: ubuntu-24.04`. When the owner makes the repository
+private again, the reviewer or coordinator asks the owner to install a runner from this page, then
+switches every `runs-on` to `[self-hosted, linux, x64]` in the same pull request. Never run a
+self-hosted runner for a public repository. While no runner with those labels is online, jobs
+queue (they do not fail); the queue drains when one comes up.
 
 ## What the machine needs
 
