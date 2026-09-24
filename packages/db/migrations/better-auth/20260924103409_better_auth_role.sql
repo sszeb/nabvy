@@ -15,6 +15,19 @@ begin
   end if;
 end;
 $$;
+-- The attributes hold even if the role existed before this migration (the pattern of
+-- core_hardening): altered only when needed, and login is left to the coordinator.
+do $$
+begin
+  if exists (
+    select 1 from pg_roles
+    where rolname = 'nabvy_auth'
+      and (rolbypassrls or rolsuper or rolcreatedb or rolcreaterole or rolinherit)
+  ) then
+    alter role nabvy_auth nobypassrls nosuperuser nocreatedb nocreaterole noinherit;
+  end if;
+end;
+$$;
 comment on role nabvy_auth is
   'Nabvy auth module (Better Auth). Reads and writes better_auth user, session, account and verification only.';
 alter role nabvy_auth set search_path = better_auth;
@@ -46,5 +59,8 @@ as $$
   )
 $$;
 revoke all on function better_auth.account_active(uuid) from public;
+-- USAGE lets nabvy_app and nabvy_pipeline call this function. Postgres grants EXECUTE on every new
+-- function to PUBLIC, so any later better_auth function must revoke PUBLIC in its migration; the
+-- dry-run fails otherwise (packages/db/tests/better-auth-role.test.sql).
 grant usage on schema better_auth to nabvy_app, nabvy_pipeline;
 grant execute on function better_auth.account_active(uuid) to nabvy_app, nabvy_pipeline, nabvy_auth;

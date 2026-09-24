@@ -2,7 +2,7 @@
 begin;
 set local client_min_messages = warning;
 
--- nabvy_auth: no login in a migration, no RLS bypass, and only Better Auth's four tables.
+-- nabvy_auth: no login in a migration, no RLS bypass, and only Better Auth's own tables.
 do $$
 declare
   t text;
@@ -10,10 +10,11 @@ begin
   if not exists (
     select 1 from pg_roles
     where rolname = 'nabvy_auth' and not rolcanlogin and not rolbypassrls and not rolsuper
+      and not rolcreatedb and not rolcreaterole and not rolinherit
   ) then
     raise exception 'nabvy_auth is missing, can log in, or bypasses RLS';
   end if;
-  foreach t in array array['user', 'session', 'account', 'verification'] loop
+  foreach t in array array['user', 'session', 'account', 'verification', 'rate_limit'] loop
     if not has_table_privilege('nabvy_auth', format('better_auth.%I', t), 'select,insert,update,delete') then
       raise exception 'nabvy_auth cannot use better_auth.%', t;
     end if;
@@ -106,6 +107,61 @@ begin
 end;
 $$;
 reset role;
+
+-- Functions: app and pipeline have USAGE on better_auth for account_active only. Any other
+-- better_auth function must have PUBLIC revoked; the check is proved on a probe function first.
+create function better_auth.probe_later() returns integer language sql as 'select 1';
+create function pg_temp.executable_auth_functions() returns text language sql as $$
+  select string_agg(p.oid::regprocedure::text, ', ' order by p.oid::regprocedure::text)
+  from pg_proc p
+  where p.pronamespace = 'better_auth'::regnamespace
+    and p.proname not in ('account_active', 'account_restriction')
+    and (has_function_privilege('nabvy_app', p.oid, 'execute')
+         or has_function_privilege('nabvy_pipeline', p.oid, 'execute'))
+$$;
+do $$
+begin
+  if pg_temp.executable_auth_functions() is distinct from 'better_auth.probe_later()' then
+    raise exception 'executable-function check did not catch the probe: %', pg_temp.executable_auth_functions();
+  end if;
+end;
+$$;
+drop function better_auth.probe_later();
+do $$
+begin
+  if pg_temp.executable_auth_functions() is not null then
+    raise exception 'better_auth functions executable by application roles: %', pg_temp.executable_auth_functions();
+  end if;
+end;
+$$;
+
+-- The restriction policy takes only the three policy names; account_restriction names the step
+-- and the policy only.
+do $$
+declare
+  found record;
+begin
+  update better_auth."user" set restriction_policy = 'fair-use' where email = 'suspended@example.com';
+  select * into found from better_auth.account_restriction('00000000-0000-4000-8000-00000000a003');
+  if found.step is distinct from 'suspended' or found.policy is distinct from 'fair-use' then
+    raise exception 'suspension reported as % under %', found.step, found.policy;
+  end if;
+  select * into found from better_auth.account_restriction('00000000-0000-4000-8000-00000000a002');
+  if found.step is distinct from 'banned' or found.policy is distinct from 'terms' then
+    raise exception 'ban reported as % under %', found.step, found.policy;
+  end if;
+  if exists (select 1 from better_auth.account_restriction('00000000-0000-4000-8000-00000000a001'))
+     or exists (select 1 from better_auth.account_restriction('00000000-0000-4000-8000-00000000a004')) then
+    raise exception 'an active or lapsed account reported a restriction';
+  end if;
+  begin
+    update better_auth."user" set restriction_policy = 'because we said so' where email = 'banned@example.com';
+    raise exception 'an unknown restriction policy was accepted';
+  exception when check_violation then
+    null;
+  end;
+end;
+$$;
 
 -- anon and authenticated (Supabase's Data API roles) reach nothing in better_auth.
 do $$

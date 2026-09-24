@@ -208,9 +208,10 @@ never edited by hand. Then `pnpm db:generate better-auth`. IDs are UUIDs generat
 
 Better Auth reads sessions before a user is known, so its tables cannot sit behind `withUser`.
 The running instance connects as its own role, `nabvy_auth` (`DATABASE_URL_AUTH`), which can use
-`better_auth.user`, `session`, `account` and `verification` and nothing else; `nabvy_app` and
-`nabvy_pipeline` cannot read them and may only call `better_auth.account_active(user_id)`, which
-answers whether an account may be acted for (task 4.0, `services/auth/README.md`).
+`better_auth.user`, `session`, `account`, `verification` and `rate_limit` and nothing else;
+`nabvy_app` and `nabvy_pipeline` cannot read them and may only call
+`better_auth.account_active(user_id)` and `better_auth.account_restriction(user_id)`, which
+answer whether an account may be acted for, and if not, the step and policy to name (task 4.0, `services/auth/README.md`).
 
 ## Seeds
 
