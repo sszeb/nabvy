@@ -37,3 +37,5 @@ fixtures/
 ## Runner
 
 `pnpm test:fixtures` runs every stage against the set and prints: gate precision, extraction field accuracy, hidden-GPU detection rate, risk rule precision and recall, valuation agreement within tolerance, and identification accuracy for scans. The Review Console exports approved corrections into this folder.
+
+Built in task 0.6: each module registers its stages by file name (`<package>/test/fixtures/<stage>[.<suite>].fixtures.ts`) and records its previous pass rates in its own `test/fixtures/pass-rates.json`; the runner prints the pass rate per module and stage, per stage and per module, and fails when one falls below the recorded run. The stage-specific measures above are what each module's suite counts as its cases. Details in `fixtures/README.md`.

@@ -1,7 +1,7 @@
 # Pull request and main-branch checks (docs/operations.md, "CI/CD"). Still to come, each with the
-# task that enables it: fixture pass rate (0.6), Vercel preview (0.5a), a migration dry-run against
-# a real Supabase branch (needs a SUPABASE_ACCESS_TOKEN repository secret), and the deploy steps on
-# merge (0.3, 1.2, 0.5a).
+# task that enables it: Vercel preview (0.5a), a migration dry-run against a real Supabase branch
+# (needs a SUPABASE_ACCESS_TOKEN repository secret), and the deploy steps on merge (1.2, 0.5a; the
+# coordinator applies merged migrations, packages/db/README.md).
 name: CI
 
 on:
@@ -34,6 +34,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
+      # Fails when a module's stage falls below its recorded pass rate (fixtures/README.md).
+      - run: pnpm test:fixtures
 
   audit:
     name: Dependency audit
@@ -70,7 +72,7 @@ jobs:
   migrations:
     name: Migration dry-run
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:17
@@ -91,6 +93,33 @@ jobs:
       PGDATABASE: postgres
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
       - name: Ensure psql is available
         run: command -v psql || (sudo apt-get update && sudo apt-get install -y postgresql-client)
+      # The live project (Postgres 17) has pgvector and PostGIS; the stock image has neither, so
+      # install them from the image's own PostgreSQL apt repository.
+      - name: Install pgvector and PostGIS in the Postgres container
+        run: >-
+          docker exec ${{ job.services.postgres.id }} bash -c
+          "apt-get update -qq && apt-get install -y -qq --no-install-recommends
+          postgresql-17-pgvector postgresql-17-postgis-3"
       - run: bash scripts/db-dry-run.sh
+      - name: withUser and RLS against the migrated database
+        run: pnpm --filter @nabvy/db test
+        env:
+          DATABASE_URL: postgres://postgres:ci-only@localhost:5432/postgres
+      # Proves `pnpm new:module` end to end on a throwaway module that is never committed.
+      - name: Scaffold a throwaway module end to end
+        run: |
+          pnpm new:module scaffold-probe
+          pnpm install --prefer-offline --no-frozen-lockfile
+          pnpm db:generate scaffold-probe --name scaffold_probe_schema
+          pnpm typecheck
+          pnpm lint
+          pnpm --filter @nabvy/scaffold-probe --filter @nabvy/contracts --filter @nabvy/db test
+          createdb scaffold_probe
+          PGDATABASE=scaffold_probe bash scripts/db-dry-run.sh
