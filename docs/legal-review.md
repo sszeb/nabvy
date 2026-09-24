@@ -166,3 +166,4 @@ The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable u
 - Per-user dynamic prices and targeted offers (`pricing-console`, 2026-09-24).
 - 2026-09-24, free tier: a card check that is never charged before the second and third free windows; one card per account; free-tier terms (lifetime cost cap, bursts, reset) shown before sign-up.
 - Erasing a user's credit ledger (grants, charges, reversals) within 24 hours of account deletion, while Stripe keeps the payment records (`usage-ledger`, 2026-09-24).
+- 2026-09-24, abuse threat model (4.3t): keeping hashed trial keys (canonical email, card fingerprint, device) after account deletion, to stop rejoining for a fresh free tier.
