@@ -46,7 +46,7 @@ Threat model and test plan: `docs/design/abuse-threat-model.md` (task 4.3t).
 - Every paid call (Apify run, model call, scan, pasted-link lookup, API-key request) passes the spend gate before submit; the gate and the run's reservation are one locked step, and a reservation is sized from the run's own cap.
 - Free-tier guards act from day one: never in shadow, and free admission holds when `account-integrity` is off or in shadow.
 - Trial keys (canonical email, card fingerprint, device) survive account deletion as keyed hashes, so deleting and rejoining never resets the free tier.
-- The free pool has a monthly ceiling set as a share of the provider's monthly cap, so free traffic cannot stop paid watchers.
+- Only the free tier is limited: paid sign-ups and upgrades are never queued or held by the throttle, breakers, pool or farm ladder (owner, 2026-09-24). The free pool has a monthly ceiling set as a share of the provider's monthly cap, so free traffic cannot stop paid watchers.
 - Watching is prepaid: credits are reserved per check before submit; each user has a monthly spending limit.
 - First-seen is written once per listing; a replay, a late collection or an admin retry never re-alerts or repeats a model call.
 - Policy rows have ceilings in config that the admin console cannot pass; admin actions need a second factor, fresh within 15 minutes.
