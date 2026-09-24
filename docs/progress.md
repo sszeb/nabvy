@@ -11,7 +11,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 0.5 | CI pipeline | not started | | |
 | 0.5a | Waitlist and marketing site skeleton | not started | | |
 | 0.6 | Fixtures harness | not started | | |
-| 1.0 | Document the Facebook actor | not started | | |
+| 1.0 | Document the Facebook actor | in progress | 2026-09-24 | Started ahead of 0.2–0.6 at the owner's request, while the actor's integration guide is pending. Done: run by hand through the gateway (run `VkryjpwS6U2GBDh3k`, $0.0177); real input schema, output fields and the mapping to the `docs/providers.md` target in `services/source-adapters/README.md`; full reference in `docs/fb-actor-reference.md`; the redacted run saved under `fixtures/listings/facebook/runs/`, verified against the database and checked by a fixture test; differences listed in `docs/questions.md`. Open: `cell_provider_locations` needs the owner's home area and the 0.3 table (`docs/questions.md`) |
 | 1.1 | Apify Facebook adapter | not started | | |
 | 1.2 | Crawl planner (minimal) | not started | | |
 | 1.3 | Listing registry | not started | | |

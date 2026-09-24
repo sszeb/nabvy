@@ -8,6 +8,9 @@ Repository: https://github.com/sebtimize/fb-scrap-engine (private, branch main)
 
 ## Start here
 
+0. `docs/fb-actor-reference.md` in this repository: a checked reference compiled from a full read of the
+   actor repository at `f177a44` (inputs, routes, output fields, costs, failure modes, app duties).
+
 1. `docs/APP_INTEGRATION_GUIDE.md` (being written; check back until it exists)
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/APP_INTEGRATION_GUIDE.md
 2. `docs/HANDOFF.md`: read only the sections "Rules" and "The app: what we want it to do, and
