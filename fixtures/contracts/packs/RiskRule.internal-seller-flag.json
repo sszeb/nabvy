@@ -1,0 +1,8 @@
+{
+  "flag": "new_seller",
+  "test": "new_seller",
+  "action": "internal",
+  "shadowWeight": 0.15,
+  "patterns": [],
+  "params": { "firstSeenDays": 7 }
+}

@@ -85,7 +85,14 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
 
-  packages/packs: {}
+  packages/packs:
+    dependencies:
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
 
   services/source-adapters:
     dependencies:

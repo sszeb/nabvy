@@ -23,12 +23,12 @@
 - **eBay Partner Network:** disclose affiliate links; no incentivised clicks; no cookie stuffing.
 - **CeX:** web API used at low volume; licensing request in progress; stop on request.
 - **Apify:** actors' own terms; our Facebook actor collects only public listing data; no logged-in sessions.
-- **Facebook Marketplace legal gate (before exposing Facebook alerts to paying users):** UK legal review of (1) database right over provider-collected listing data, (2) UK GDPR for the personal data in listings, (3) Meta's automated collection terms as they apply to us as a customer of a data provider. Outcome recorded in `docs/decisions.md`. Until then Facebook alerts go to the founder and design partners only.
+- **Facebook Marketplace legal gate (before exposing Facebook alerts to paying users):** UK legal review of (1) database right over provider-collected listing data, (2) UK GDPR for the personal data in listings, (3) Meta's automated collection terms as they apply to us as a customer of a data provider. Outcome recorded in `docs/decisions.md`. Until then Facebook alerts go to the founder and design partners only. *(Lifted by the owner on 2026-09-24: `docs/decisions.md`, "Legal gates lifted"; points listed in `docs/legal-review.md`.)*
 
 ## Consumer law (UK)
 
 - Prices shown including VAT; clear cadence and speed statements with the measured floor; no fake urgency or scarcity anywhere in the product.
-- Subscriptions: clear renewal terms at checkout, reminder before annual renewal, easy cancellation through the Customer Portal, the no-refunds policy published and accepted at checkout (express consent to start now and acknowledgement of losing the 14-day right to cancel), reminders before a trial converts and before annual renewal.
+- Subscriptions: clear renewal terms at checkout, reminder before annual renewal, easy cancellation through the Customer Portal, the no-refunds policy published.
 - Electronic marketing (PECR): marketing email only with consent or the soft opt-in, one-click unsubscribe in every message, preference centre, suppression within an hour; service messages separated from marketing on different sending subdomains.
 
 ## Content and safety

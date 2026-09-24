@@ -2,8 +2,9 @@
 //
 //   node scripts/migrate.mjs plan            print every migration in apply order, with checksums
 //   node scripts/migrate.mjs apply           apply pending migrations with psql (PG* variables)
-//   node scripts/migrate.mjs emit <m>/<file> print one migration plus its ledger row, for applying
-//                                            through the Supabase connector (coordinator)
+//   node scripts/migrate.mjs emit <m>/<file> print one migration with its lock, guard and ledger row,
+//                                            for the Supabase connector (coordinator); run it as one
+//                                            transaction (apply_migration does; with psql, use -1)
 //
 // Order: modules are sorted by the `dependsOn` lists in migrations/<module>/module.json (core
 // first, ties by name); inside a module, files run in file-name (timestamp) order. Each file runs
@@ -102,6 +103,20 @@ export function ledgerSql({ module, name, checksum }) {
   return `insert into nabvy_core.schema_migrations (module, name, checksum) values (${quote(module)}, ${quote(name)}, ${quote(checksum)});`
 }
 
+// One lock key for every runner, so two runners never apply migrations at the same time.
+const LOCK_KEY = 7_302_952_869
+
+/**
+ * Runs first in each migration's transaction: waits for any other runner, then stops if that
+ * runner already applied this file, so the file's SQL never runs twice.
+ */
+export function guardSql({ module, name }) {
+  return [
+    `select pg_advisory_xact_lock(${LOCK_KEY});`,
+    `do $guard$ begin if exists (select 1 from nabvy_core.schema_migrations where module = ${quote(module)} and name = ${quote(name)}) then raise exception 'migration %/% is already applied', ${quote(module)}, ${quote(name)}; end if; end $guard$;`,
+  ].join('\n')
+}
+
 // Supabase's default search path, so unqualified extension types (vector, geography) resolve.
 const searchPath = `set search_path = "$user", public, extensions; set client_min_messages = warning;`
 
@@ -142,7 +157,17 @@ function apply() {
       )
     }
     console.log(`apply  ${id}`)
-    psql(['-1', '-c', searchPath, '-f', migration.path, '-c', ledgerSql(migration)])
+    psql([
+      '-1',
+      '-c',
+      searchPath,
+      '-c',
+      guardSql(migration),
+      '-f',
+      migration.path,
+      '-c',
+      ledgerSql(migration),
+    ])
     count++
   }
   console.log(`${count} migration(s) applied`)
@@ -151,7 +176,11 @@ function apply() {
 function emit(id) {
   const migration = plan().find((m) => `${m.module}/${m.name}` === id)
   if (!migration) throw new Error(`No migration ${id}; run "plan" to list them`)
-  process.stdout.write(`${searchPath}\n${migration.sql.trimEnd()}\n${ledgerSql(migration)}\n`)
+  // No begin/commit: the Supabase connector's apply_migration already runs its input in one
+  // transaction, and an inner commit would end that transaction early. With psql, use -1.
+  process.stdout.write(
+    `${searchPath}\n${guardSql(migration)}\n${migration.sql.trimEnd()}\n${ledgerSql(migration)}\n`,
+  )
 }
 
 const isMain = process.argv[1] === fileURLToPath(import.meta.url)

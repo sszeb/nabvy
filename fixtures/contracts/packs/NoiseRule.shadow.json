@@ -1,0 +1,6 @@
+{
+  "rule": "swap_advert",
+  "test": "swap_advert",
+  "mode": "shadow",
+  "patterns": [{ "ref": "listingKind.wantedTitle" }]
+}

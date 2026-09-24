@@ -14,4 +14,11 @@ Create one with `pnpm new:module <name>` (kebab case). It writes only files that
   (`packages/db/README.md`).
 
 Then run `pnpm install`, define tables, and run `pnpm db:generate <name>`. A module session edits
-only those four places. `docs/progress.md` belongs to the coordinator.
+only those four places, plus its contract samples in `fixtures/contracts/<name>/` and the
+shared `pnpm-lock.yaml`, where `pnpm install` adds the new package. `docs/progress.md` belongs to
+the coordinator.
+
+The lockfile is the one shared file, so parallel module pull requests conflict there. To
+resolve it, merge `main`, take `main`'s `pnpm-lock.yaml` (`git checkout origin/main --
+pnpm-lock.yaml`), and run `pnpm install` to add this module's entry again. Never edit the
+lockfile by hand.

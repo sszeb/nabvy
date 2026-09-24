@@ -29,7 +29,8 @@ describe.skipIf(!url)('withUser against Postgres', () => {
 
   beforeAll(async () => {
     admin = createDb(url as string, { max: 1 })
-    app = createDb(url as string, { max: 2, options: '-c role=nabvy_app' })
+    // One connection, so the no-leak test really reuses the connection withUser used.
+    app = createDb(url as string, { max: 1, options: '-c role=nabvy_app' })
     await admin.db.execute(
       sql.raw(`
       drop schema if exists with_user_probe cascade;

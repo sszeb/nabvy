@@ -43,11 +43,10 @@ Entitlements derive from the plugin's `subscription` table (status, plan, period
 - **Boosts and exports:** debited from the usage balance; a boost writes a `boosts` row for the Crawl Planner.
 - **Failed payment:** Stripe Smart Retries; the app shows a banner from `invoice.payment_failed`; after the final retry the subscription becomes `unpaid` and the entitlement reverts to Free. Data and hunts are kept.
 - **No refunds** (owner, 2026-09-24; `docs/decisions.md`, "No refunds"):
-  - **Consent at checkout.** Every Checkout that takes or schedules a first payment (subscription, trial, top-up) requires the customer's express consent to start now, their acknowledgement of losing the 14-day right to cancel, and their acceptance that payments are non-refundable. The consent uses Checkout's consent collection plus custom text from `content/legal`, marked `TODO-LEGAL` until reviewed. The session's consent and timestamp are stored in `billing_events`.
   - **Disclosure.** Pricing and Checkout show "Payments are non-refundable" before purchase.
-  - **Reminders.** A reminder email goes out 3 days before a trial converts and 14 days before an annual renewal.
-  - **No refund path** for users or admins. A refund the law requires is issued by the owner through an audited admin action with a stated legal reason; nothing else refunds.
-  - **Chargebacks.** `charge.dispute.created` is recorded, the stored consent is submitted as evidence, and the affiliate commission is reversed.
+  - **Start now.** Every Checkout for a subscription, trial or top-up has one required tick, "Start my plan now", with the wording from `docs/policies/refunds-and-cancellation.md`. The confirmation and its time are stored in `billing_events` (owner, 2026-09-24).
+  - **No refund path** for users or admins.
+  - **Chargebacks.** `charge.dispute.created` is recorded in `billing_events`, and the affiliate commission is reversed.
 - **Referral credit:** £5 non-expiring usage to both the referrer and the referred user when the referred user's first subscription invoice is paid; written as `referral` ledger rows once per pair. Referral codes are per user and stored in `user_profiles`.
 - **Design partners:** admin sets `lifetimeFree` on the profile; entitlement treated as Pro.
 
@@ -69,4 +68,4 @@ The Crawl Planner's cadence rule uses subscription revenue per cell from `entitl
 
 ## Tests
 
-Webhook idempotency (same event twice → one change); entitlement matrix per tier; trial offered once and refused twice; failed-payment downgrade; monthly grant and expiry; balance buckets spend expiring first; a metered action refused at zero balance and reversed on failure; Checkout refuses to proceed without consent; the stored consent matches the session; no user or ordinary admin path can create a refund; downgrades land at period end with no credit; boost expiry removes the unit; referral credit applied once.
+Webhook idempotency (same event twice → one change); entitlement matrix per tier; trial offered once and refused twice; failed-payment downgrade; monthly grant and expiry; balance buckets spend expiring first; a metered action refused at zero balance and reversed on failure; Checkout refuses to proceed without the start-now tick, and the stored confirmation matches the session; no user or admin path can create a refund; downgrades land at period end with no credit; boost expiry removes the unit; referral credit applied once.

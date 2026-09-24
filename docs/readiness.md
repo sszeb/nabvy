@@ -37,7 +37,7 @@ Purpose: state what the documentation covers, what remains for humans, and wheth
 | Stripe account with legal entity, VAT settings, products and prices | Phase 4 |
 | Resend sending domain, VAPID keys, Sentry, PostHog, Turnstile, Google OAuth client | Phase 4 |
 | Terms, privacy and cookie policies (lawyer-reviewed); ICO registration; affiliate disclosure wording | Launch |
-| UK legal review for the Facebook gate | Facebook alerts to paying users |
+| UK legal review for the Facebook gate (lifted by the owner, 2026-09-24; listed in `docs/legal-review.md`) | Facebook alerts to paying users |
 | Brand assets (logo, palette) | Public launch |
 | Fixture labelling (first 100 items) and design partners (five) | Phase 1 and 4 |
 | Decisions after week one: primary and fallback Facebook actor, model escalation thresholds | End of Phase 1 |
