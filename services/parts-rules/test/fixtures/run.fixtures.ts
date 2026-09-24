@@ -103,6 +103,26 @@ describe('run', () => {
     const result = await run(t.db, { listingIds })
     if (!result.ok) throw new Error(result.error.message)
     const all = await observe()
+    // Every quote is the stored text between its UTF-16 offsets (review of PR #53): title and
+    // description against v_text, attributes against the named attribute's value in v_current.
+    const stored = await t.asPipeline(
+      `select p.seq, p.source, p.quote, p."start", p."end", p.attrs, x.title, x.description,
+              c.attributes || c.detail_sections as attributes
+       from parts_rules.v_rule_parts p
+       join detail_evidence.v_text x using (listing_id, evidence_hash)
+       join detail_evidence.v_current c using (listing_id, evidence_hash)`,
+    )
+    const mismatches = stored.filter((p) => {
+      const slice = (text: unknown) => String(text ?? '').slice(Number(p.start), Number(p.end))
+      if (p.source === 'title') return slice(p.title) !== p.quote
+      if (p.source === 'description') return slice(p.description) !== p.quote
+      const name = (p.attrs as { attributeName?: string }).attributeName
+      return !(p.attributes as { name: string | null; label: string | null; value: string }[]).some(
+        (a) => (a.name ?? a.label) === name && slice(a.value) === p.quote,
+      )
+    })
+    expect(mismatches).toEqual([])
+
     const observed: Json = { listings: {} }
     if (expected.totals) {
       observed.totals = { runs: result.value.runsWritten, parts: result.value.partsWritten }

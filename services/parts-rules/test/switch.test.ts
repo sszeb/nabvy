@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { applyCorrection, erase, RULE_VERSION, run } from '../src'
+import { applyCorrection, currentRuleVersion, erase, run } from '../src'
 import {
   ALL_ON,
   createTestDatabase,
@@ -102,7 +102,7 @@ describe('switch', () => {
     const correction = {
       listingId: String(part?.listing_id),
       evidenceHash: String(part?.evidence_hash),
-      ruleVersion: RULE_VERSION,
+      ruleVersion: await currentRuleVersion(t.db),
       seq: Number(part?.seq),
       inclusion: 'mention' as const,
       by: '00000000-0000-7000-8000-000000000009',

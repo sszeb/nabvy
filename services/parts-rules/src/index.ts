@@ -52,8 +52,6 @@ export { detailEvidenceChangedHandler } from './handlers'
 const MODULE = 'parts-rules'
 
 const pack = getPack('gpu-pc').definition.rules
-/** The rules' version: this module's revision and the patterns' checksum. */
-export const RULE_VERSION = ruleVersion(pack.partPatternsSource.sha256)
 const RULES = compileRules(pack.partPatterns)
 const SETTINGS: RuleSettings = {
   contextChars: PARTS_RULES_CONTEXT_CHARS,
@@ -62,10 +60,20 @@ const SETTINGS: RuleSettings = {
   tagBlockMinModels: PARTS_RULES_TAG_BLOCK_MIN_MODELS,
 }
 
+/**
+ * The rule version in force: the patterns, the thresholds, this module's rules and the
+ * catalogue's negative contexts (empty while product-catalogue is off), so a change to any of
+ * them runs stored versions again.
+ */
+export async function currentRuleVersion(q: Queryable): Promise<string> {
+  return ruleVersion(pack.partPatternsSource.sha256, SETTINGS, await selectNegativeContexts(q))
+}
+
 /** What one `run` call did. */
 export interface RunReport {
   /** False while the module or the pipeline is off: nothing was read, written or announced. */
   open: boolean
+  /** The rule version this call ran at; empty when it did not run. */
   ruleVersion: string
   /** Listings with a current version to run over. */
   listings: number
@@ -91,7 +99,7 @@ export async function run(
 ): Promise<Result<RunReport, AppError>> {
   const report: RunReport = {
     open: false,
-    ruleVersion: RULE_VERSION,
+    ruleVersion: '',
     listings: 0,
     runsWritten: 0,
     partsWritten: 0,
@@ -108,14 +116,16 @@ export async function run(
   report.open = true
 
   const listingIds = [...new Set(input.listingIds)]
+  const negativeContexts = await selectNegativeContexts(q)
+  const version = ruleVersion(pack.partPatternsSource.sha256, SETTINGS, negativeContexts)
+  report.ruleVersion = version
   const versions = await selectVersions(q, listingIds)
   report.listings = versions.length
-  const done = await selectDone(q, listingIds, RULE_VERSION)
+  const done = await selectDone(q, listingIds, version)
   const todo = versions.filter((v) => !done.has(`${v.listingId}@${v.evidenceHash}`))
 
   const rows: RunRow[] = []
   if (todo.length > 0) {
-    const negativeContexts = await selectNegativeContexts(q)
     const analysed = todo.map((v) => ({ v, a: analyse(v, RULES, SETTINGS, negativeContexts) }))
     await resolveHits(
       q,
@@ -135,7 +145,7 @@ export async function run(
       })
     }
   }
-  const written = await insertRuns(q, RULE_VERSION, rows)
+  const written = await insertRuns(q, version, rows)
   report.runsWritten = written.runs
   report.partsWritten = written.parts
 
@@ -147,7 +157,7 @@ export async function run(
       'parts-rules.ran',
       1,
       { listingIds: batch.map((v) => v.listingId) },
-      { key: ranKey(RULE_VERSION, batch, i) },
+      { key: ranKey(version, batch, i) },
     ),
   ) as EventEnvelope[]
   return ok(report)
