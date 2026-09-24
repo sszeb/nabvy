@@ -15,6 +15,27 @@
       "when": 1790242770253,
       "tag": "20260924093930_better_auth_access",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790246049976,
+      "tag": "20260924103409_better_auth_role",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790250551266,
+      "tag": "20260924114911_better_auth_rate_limit_policy",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790250553080,
+      "tag": "20260924114913_better_auth_rate_limit_access",
+      "breakpoints": true
     }
   ]
 }

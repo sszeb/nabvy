@@ -1,0 +1,7 @@
+{
+  "code": "auth.account_restricted",
+  "message": "Your account was banned for chargeback abuse.",
+  "step": "banned",
+  "policy": "terms",
+  "reviewWithinDays": 30
+}

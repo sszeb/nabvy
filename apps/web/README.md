@@ -106,8 +106,9 @@ Every error the app can show uses one layout, `components/error-page.tsx`, with 
   ask for a review within 30 days." with an "Ask for a review" action. The app redirects there
   with `?step=…&policy=…` from the auth module's refusal; anything else in the address is
   ignored, and without a valid pair the page names the Terms of Service. No illustration, joke,
-  reason, date or rule. The generic 403 page never hints at a restriction. The notice is
-  mirrored in `lib/errors.ts` until the auth module's contract (PR #9) can be imported.
+  reason, date or rule. The generic 403 page never hints at a restriction. The notice, the
+  policy names and the review offer come from the auth module's contract
+  (`@nabvy/contracts/modules/auth`), re-exported by `lib/errors.ts`.
 - The copy follows the app's copy rules (no exclamation marks, no urgency, UK English).
   `test/errors.test.ts` checks it, and `e2e/errors.spec.ts` renders every page in the four
   projects and checks that an unknown address answers 404. The screenshots are

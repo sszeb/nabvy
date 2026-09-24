@@ -50,6 +50,9 @@ describe('cross-module access', () => {
   const services = readdirSync(join(repoRoot, 'services'), { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
+  // Schemas whose owning service has another name. `auth` is a reserved Supabase schema, so the
+  // auth module's Better Auth tables live in `better_auth` (README.md, "Better Auth").
+  const ownerOf: Record<string, string> = { 'better-auth': 'auth' }
   // Every import or re-export whose source is a module schema file, by package path or by a
   // relative path into packages/db/src/schema.
   const statementPattern =
@@ -102,7 +105,7 @@ describe('cross-module access', () => {
       for (const file of walk(join(repoRoot, 'services', service))) {
         for (const match of readFileSync(file, 'utf8').matchAll(statementPattern)) {
           const [statement, , owner] = match
-          if (owner === service) continue
+          if (owner === service || ownerOf[owner ?? ''] === service) continue
           expect(problems(statement, owner ?? ''), relative(repoRoot, file)).toEqual([])
         }
       }
