@@ -26,11 +26,37 @@ test('view-invoker: flags a create view without security_invoker', () => {
   assert.match(output, /view-invoker create view without security_invoker/)
 })
 
+test('view-invoker: catches a create view whose name is on the next line', () => {
+  const { code, output } = run('view-invoker-multiline')
+  assert.equal(code, 1)
+  assert.match(output, /view-invoker create view without security_invoker/)
+})
+
 test('function-search-path: flags a function with no search_path and no revoke', () => {
   const { code, output } = run('function-search-path')
   assert.equal(code, 1)
   assert.match(output, /function-search-path example\.unsafe has no set search_path/)
   assert.match(output, /function-search-path example\.unsafe has no matching revoke/)
+})
+
+test('function-search-path: flags a bare (non-schema-qualified) function definition too', () => {
+  const { code, output } = run('function-search-path-bare-name')
+  assert.equal(code, 1)
+  assert.match(output, /function-search-path public\.unsafe has no set search_path/)
+  assert.match(output, /function-search-path public\.unsafe has no matching revoke/)
+})
+
+test('function-search-path: a revoke for one overload does not cover a different one', () => {
+  const { code, output } = run('function-search-path-arg-list')
+  assert.equal(code, 1)
+  assert.match(output, /function-search-path example\.foo has no matching revoke/)
+  assert.ok(!output.includes('has no set search_path'))
+})
+
+test('function-search-path: "from public" requires an actual from-public clause', () => {
+  const { code, output } = run('function-search-path-from-public')
+  assert.equal(code, 1)
+  assert.match(output, /function-search-path public\.bar has no matching revoke/)
 })
 
 test('no-process-env: flags a use outside packages/config, honours the matching allowlist', () => {
@@ -47,10 +73,11 @@ test('readme-decisions: flags a module README with no Decisions heading', () => 
   assert.match(output, /readme-decisions missing "## Decisions" heading/)
 })
 
-test('backlog-ids: warns without failing CI', () => {
+test('backlog-ids: warns without failing CI, and ignores an unrelated decimal', () => {
   const { code, output } = run('backlog-ids')
   assert.equal(code, 0)
   assert.match(output, /warning:.*backlog-ids cites backlog id 9\.9z/)
+  assert.ok(!output.includes('0.0177'))
 })
 
 test('module-json: flags a migrations folder with no module.json, exempts better-auth', () => {

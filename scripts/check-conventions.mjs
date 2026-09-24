@@ -42,25 +42,71 @@ function checkTimeouts() {
   })
 }
 // 2. view-invoker: every create view in packages/db/migrations is security_invoker.
+const VIEW_DEF = /create\s+(?:or\s+replace\s+)?view\s+/gi
 function checkViewInvoker() {
   return walk(join(root, 'packages/db/migrations'), (n) => n.endsWith('.sql')).flatMap((file) => {
-    const lines = readFileSync(file, 'utf8').split('\n')
-    return lines.flatMap((line, i) => {
-      if (!/create\s+(?:or\s+replace\s+)?view\s+/i.test(line)) return []
-      const header = lines.slice(i, i + 5).join('\n') // options can trail onto the next few lines
-      return /security_invoker\s*=\s*(?:true|on|1)/i.test(header)
-        ? []
-        : [v(file, i + 1, 'view-invoker', 'create view without security_invoker = true')]
-    })
+    const text = readFileSync(file, 'utf8') // matched against the whole file, not line by line, so
+    const out = [] // a view name or options trailing onto the next line is still found
+    for (const m of text.matchAll(VIEW_DEF)) {
+      const header = text.slice(m.index, m.index + 400)
+      if (!/security_invoker\s*=\s*(?:true|on|1)/i.test(header)) {
+        const line = text.slice(0, m.index).split('\n').length
+        out.push(v(file, line, 'view-invoker', 'create view without security_invoker = true'))
+      }
+    }
+    return out
   })
 }
 // 3. function-search-path: header sets search_path; a revoke, exact or schema-wide, covers it
-// somewhere in the migration history — grants persist across create-or-replace.
-const SCHEMA_FN = '([a-z_][a-z0-9_]*)\\.([a-z_][a-z0-9_]*)\\s*\\('
+// somewhere in the migration history — grants persist across create-or-replace. A revoke's
+// argument list only ever carries types (`revoke ... on function f(text)`), while a definition's
+// parameter list carries `name type`, so both are reduced to their bare type list before
+// comparing; that also means a revoke for one overload never silently covers a different one.
+// A definition's schema is optional in Postgres (it falls back to search_path); treat a bare
+// name as `public`, same as the revoke checks below already assume.
 const WIDE_REVOKE = /revoke\s+all\s+on\s+all\s+functions\s+in\s+schema\s+([a-z_][a-z0-9_]*)/i
 const FN_REVOKE = /revoke\s+all\s+on\s+function/i
-const FN_NAME = new RegExp(SCHEMA_FN, 'gi')
-const FN_DEF = new RegExp(`create\\s+(?:or\\s+replace\\s+)?function\\s+${SCHEMA_FN}`, 'i')
+const SCHEMA_FN = /([a-z_][a-z0-9_]*)\.([a-z_][a-z0-9_]*)\s*\(/gi
+const FN_DEF =
+  /create\s+(?:or\s+replace\s+)?function\s+(?:([a-z_][a-z0-9_]*)\.)?([a-z_][a-z0-9_]*)\s*\(/gi
+const BODY_MARKER = /\$\$|\bas\s*\$/i
+// The text between a '(' at openIndex and its matching ')', respecting nesting (e.g. numeric(10,2)).
+function matchParens(text, openIndex) {
+  let depth = 0
+  for (let i = openIndex; i < text.length; i++) {
+    if (text[i] === '(') depth++
+    else if (text[i] === ')' && --depth === 0) return text.slice(openIndex + 1, i)
+  }
+  return text.slice(openIndex + 1)
+}
+// Splits a raw parameter list on its top-level commas (not ones nested inside a type's parens).
+function splitTopLevel(args) {
+  const parts = []
+  let depth = 0
+  let cur = ''
+  for (const ch of args) {
+    if (ch === '(') depth++
+    if (ch === ')') depth--
+    if (ch === ',' && depth === 0) {
+      parts.push(cur)
+      cur = ''
+    } else cur += ch
+  }
+  parts.push(cur)
+  return parts
+}
+// A parameter is `[mode] [name] type [default ...]`; only its type distinguishes an overload.
+const paramType = (chunk) => {
+  const tokens = chunk
+    .replace(/\bdefault\b.*$/i, '')
+    .trim()
+    .split(/\s+/)
+  return tokens[tokens.length - 1] ?? ''
+}
+const normalizeSig = (rawArgs) => {
+  const trimmed = rawArgs.trim()
+  return trimmed === '' ? '' : splitTopLevel(trimmed).map(paramType).join(',')
+}
 function collectRevokes(sqlDirs) {
   const bySig = new Set()
   const bySchema = new Set()
@@ -70,9 +116,11 @@ function collectRevokes(sqlDirs) {
   for (const stmt of stmts) {
     const wide = WIDE_REVOKE.exec(stmt)
     if (wide) bySchema.add(wide[1].toLowerCase())
-    else if (FN_REVOKE.test(stmt) && /\bpublic\b/i.test(stmt))
-      for (const [, s, n] of stmt.matchAll(FN_NAME))
-        bySig.add(`${s.toLowerCase()}.${n.toLowerCase()}`)
+    else if (FN_REVOKE.test(stmt) && /from\s+public\b/i.test(stmt))
+      for (const m of stmt.matchAll(SCHEMA_FN)) {
+        const args = matchParens(stmt, m.index + m[0].length - 1)
+        bySig.add(`${m[1].toLowerCase()}.${m[2].toLowerCase()}(${normalizeSig(args)})`)
+      }
   }
   return { bySig, bySchema }
 }
@@ -80,21 +128,23 @@ function checkFunctionSearchPath() {
   const dbMigrations = join(root, 'packages/db/migrations')
   const { bySig, bySchema } = collectRevokes([dbMigrations, join(root, 'supabase/migrations')])
   return walk(dbMigrations, (n) => n.endsWith('.sql')).flatMap((file) => {
-    const lines = readFileSync(file, 'utf8').split('\n')
-    return lines.flatMap((line, i) => {
-      const m = FN_DEF.exec(line)
-      if (!m) return []
-      const fn = `${m[1].toLowerCase()}.${m[2].toLowerCase()}`
-      let end = i
-      while (end < lines.length && !/\$\$|\bas\s*\$/.test(lines[end])) end++
-      const header = lines.slice(i, end + 1).join('\n')
-      const out = []
-      const report = (msg) => out.push(v(file, i + 1, 'function-search-path', msg))
+    const text = readFileSync(file, 'utf8')
+    const out = []
+    for (const m of text.matchAll(FN_DEF)) {
+      const schema = (m[1] ?? 'public').toLowerCase()
+      const name = m[2].toLowerCase()
+      const fn = `${schema}.${name}`
+      const args = matchParens(text, m.index + m[0].length - 1)
+      const sig = `${fn}(${normalizeSig(args)})`
+      const relEnd = text.slice(m.index).search(BODY_MARKER)
+      const header = text.slice(m.index, relEnd === -1 ? text.length : m.index + relEnd)
+      const line = text.slice(0, m.index).split('\n').length
+      const report = (msg) => out.push(v(file, line, 'function-search-path', msg))
       if (!/set\s+search_path/i.test(header)) report(`${fn} has no set search_path in its header`)
-      if (!bySchema.has(fn.split('.')[0]) && !bySig.has(fn))
+      if (!bySchema.has(schema) && !bySig.has(sig))
         report(`${fn} has no matching revoke ... from public`)
-      return out
-    })
+    }
+    return out
   })
 }
 // 4. no-process-env: reads env only under packages/config/.
@@ -127,7 +177,9 @@ function checkBacklogIds() {
   const backlogText = tryRead(backlogFile)
   if (backlogText === null) return []
   const known = new Set([...backlogText.matchAll(/^-\s+\*\*(\S+)\s/gm)].map((m) => m[1]))
-  const idPattern = /(?:backlog|task)\s+(\d+\.\d+[a-z]?)\b|\((\d+\.\d+[a-z]?)\)/gi
+  // Anchored to the backlog-id shape (1-2 digits, a dot, 1-2 digits, an optional letter suffix)
+  // so an unrelated decimal such as a cost figure "(0.0177)" isn't mistaken for a citation.
+  const idPattern = /(?:backlog|task)\s+(\d{1,2}\.\d{1,2}[a-z]*)\b|\((\d{1,2}\.\d{1,2}[a-z]*)\)/gi
   const files = walk(join(root, 'docs'), (n) => n.endsWith('.md')).filter((f) => f !== backlogFile)
   return files.flatMap((file) =>
     readFileSync(file, 'utf8')
@@ -154,7 +206,9 @@ function checkModuleJson() {
       return [v(file, 1, 'module-json', 'module.json has no dependsOn array')]
     })
 }
-// 8. module-shape: every services/<module>/ has README.md, src/index.ts and test/.
+// 8. module-shape: every services/<module>/ has README.md, src/index.ts and test/. A violation
+// points at the module directory, which has no line an allowlist comment could sit on, so this
+// rule fails closed: it can never be silenced.
 function checkModuleShape() {
   const servicesDir = join(root, 'services')
   return dirs(servicesDir).flatMap((name) => {
