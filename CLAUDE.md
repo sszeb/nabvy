@@ -29,6 +29,16 @@ You are building Nabvy, a UK deal-finding engine. Before any task read `README.m
 - **Legal points are listed, not reviewed** (owner, 2026-09-24). Build what the owner instructs. When something may need a lawyer, add one line to `docs/legal-review.md`, with no analysis. Never run legal research, reviews or checks unless the owner asks.
 - **Ask, don't guess.** Product decisions (pricing, tiers, categories, wording shown to users) are not yours to change. Write the question in `docs/questions.md`, pick the conservative option, and continue.
 
+## Working economy (owner, 2026-09-24)
+
+The owner asked to cut token use without weakening the work.
+- **Pick the model by the job.** Top model for design, security, money, the pipeline core and adversarial review; a mid-tier model (Sonnet) for reading, searching, summarising, UI screens, docs edits and routine CRUD; the smallest model (Haiku) only for pure extraction. Use `effort: low` for mechanical steps.
+- **Lean workflows by default:** two or three readers on the mid-tier model, one designer on the top model, one combined critic, and a revise step only when the critic finds a blocker or a major problem. Do not re-read sources another agent has already summarised; pass the summary.
+- **Tight briefs.** Tell each session or agent exactly which files to read; never "read the whole build pack".
+- **Batch pushes.** Collect small docs changes and push them together, at most about every 30–60 minutes, so each push costs one review.
+- **Incremental reviews.** The reviewer reviews only the commits since the head it last reviewed. For a docs-only delta, it relies on CI instead of re-running install, typecheck and tests.
+- **Short sessions.** Hand off to a fresh session, with a handoff note in the repo, once a session's context grows large, instead of carrying a huge context into every turn.
+
 ## Repository conventions
 
 - TypeScript strict mode. pnpm workspaces + Turborepo. Biome for lint and format. Vitest for tests.
