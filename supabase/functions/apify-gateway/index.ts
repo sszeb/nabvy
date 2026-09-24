@@ -6,6 +6,11 @@
 // Collection is lossless (owner's decision: keep everything the actor returns): every dataset page
 // is downloaded without Apify's "clean" filter, and raw response text goes straight to Postgres,
 // never through JavaScript number parsing.
+//
+// The apify-gateway module (services/apify-gateway) owns this function. It works only while
+// apify_gateway.enabled() is true (the module switch not off, the `apify` provider and the global
+// `pipeline` switch on); otherwise an invocation does nothing at all. Runs start on the pinned
+// build (settings.actor_build).
 import { Pool, type PoolClient } from 'jsr:@db/postgres@0.19.5'
 
 const APIFY = 'https://api.apify.com/v2'
@@ -21,7 +26,7 @@ type Job = {
   run_options: { memory?: number; timeout?: number }
   apify_run_id: string | null
 }
-type Settings = { actor_id: string; download_page_size: number }
+type Settings = { actor_id: string; actor_build: string; download_page_size: number }
 type Apify = {
   /** Response body as text, exactly as Apify sent it. */
   text: (path: string, init?: RequestInit) => Promise<string>
@@ -147,15 +152,19 @@ async function finish(
   )
 }
 
-async function startRun(client: PoolClient, apify: Apify, actorId: string, job: Job) {
+async function startRun(client: PoolClient, apify: Apify, settings: Settings, job: Job) {
   const { memory, timeout } = job.run_options
   if (!memory || !timeout) {
     throw new Error('run_options.memory and run_options.timeout are required')
   }
-  const query = new URLSearchParams({ memory: String(memory), timeout: String(timeout) })
+  const query = new URLSearchParams({
+    build: settings.actor_build,
+    memory: String(memory),
+    timeout: String(timeout),
+  })
   const run = obj(
     (
-      await apify.json(`/acts/${actorId}/runs?${query}`, {
+      await apify.json(`/acts/${settings.actor_id}/runs?${query}`, {
         method: 'POST',
         body: JSON.stringify(job.input),
       })
@@ -168,7 +177,9 @@ async function startRun(client: PoolClient, apify: Apify, actorId: string, job: 
 }
 
 // Every dataset row, page by page until a short page. No `clean`: Apify then keeps empty rows and
-// hidden fields. The page text is inserted as-is, so numbers keep their exact digits.
+// hidden fields. The page text is inserted as-is, so numbers keep their exact digits. Each page is
+// stored in one statement, so the stored rows are always seq 0..n-1 without gaps; a download that
+// an earlier invocation left short resumes after the last stored row instead of starting again.
 async function downloadDataset(
   client: PoolClient,
   apify: Apify,
@@ -176,7 +187,11 @@ async function downloadDataset(
   datasetId: string,
   pageSize: number,
 ): Promise<number> {
-  let offset = 0
+  const stored = await client.queryObject<{ next: number }>(
+    'select coalesce(max(seq) + 1, 0)::integer as next from apify_gateway.items where job_id = $1',
+    [jobId],
+  )
+  let offset = stored.rows[0]?.next ?? 0
   for (;;) {
     const page = await apify.text(
       `/datasets/${datasetId}/items?format=json&offset=${offset}&limit=${pageSize}`,
@@ -287,9 +302,13 @@ Deno.serve(async (request) => {
   if (request.method !== 'POST') return json({ error: 'POST only' }, 405)
   const client = await pool.connect()
   try {
+    const gate = await client.queryObject<{ enabled: boolean }>(
+      'select apify_gateway.enabled() as enabled',
+    )
+    if (!gate.rows[0]?.enabled) return json({ off: true, processed: [], polled: [], settled: [] })
     const settings = (
       await client.queryObject<Settings>(
-        'select actor_id, download_page_size from apify_gateway.settings',
+        'select actor_id, actor_build, download_page_size from apify_gateway.settings',
       )
     ).rows[0]
     if (!settings) throw new Error('apify_gateway.settings is empty')
@@ -313,7 +332,7 @@ Deno.serve(async (request) => {
         } else if (job.kind === 'collect') {
           outcome = `collected ${await collectRun(client, apify, settings, job)} rows`
         } else {
-          await startRun(client, apify, settings.actor_id, job)
+          await startRun(client, apify, settings, job)
           outcome = 'started'
         }
         processed.push({ id: job.id, kind: job.kind, outcome })
