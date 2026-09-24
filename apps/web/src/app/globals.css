@@ -203,3 +203,22 @@
 @utility animate-enter {
   animation: nabvy-fade-in 160ms ease-out;
 }
+
+/* Error pages: the price tag swings on its string and comes to rest at 0deg, so reduced motion
+   (one near-instant iteration) leaves it still. */
+@keyframes nabvy-tag-swing {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(4deg);
+  }
+  70% {
+    transform: rotate(-3deg);
+  }
+}
+
+@utility animate-tag-swing {
+  animation: nabvy-tag-swing 4s ease-in-out infinite;
+}

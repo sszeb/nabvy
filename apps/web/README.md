@@ -74,6 +74,46 @@ there are no CSP or HSTS headers. Do not deploy the app before tasks 0.5a (waitl
 (auth and the admin role) and 4.3b (security headers and rate limits) land. Fixture listing links
 point at `.invalid` hosts so none can resolve to a real listing.
 
+## Error pages (task 4.1c)
+
+Every error the app can show uses one layout, `components/error-page.tsx`, with its copy in
+`lib/errors.ts`. The layout follows the pattern big tech uses for error pages, adapted to Nabvy:
+- the status code as a graphic: a teal price tag swinging on a string, in front of dashed
+  search-radius rings (the swing stops when reduced motion is on);
+- a short human headline in the deal-hunting register ("This one got away" for 404);
+- one or two sentences on what happened and what to do next;
+- one main action, an optional second one, and a few helpful links;
+- "Error 404" in small print, and a reference (Next's error digest) on server errors.
+
+| Route | When |
+| --- | --- |
+| `app/not-found.tsx` | 404: unknown address or `notFound()` |
+| `app/error.tsx` | 500 inside the app, with "Try again" (resets the boundary) |
+| `app/global-error.tsx` | 500 in the root layout; brings its own `<html>` |
+| `app/unauthorized.tsx` | 401 from `unauthorized()`, e.g. when `requireUser` fails |
+| `app/forbidden.tsx` | 403 from `forbidden()`, e.g. when `requireAdmin` fails |
+| `app/errors/restricted` | the account-restricted notice (below) |
+| `app/errors/[code]` | static pages for 400, 401, 403, 404, 408, 410, 429, 500, 502, 503 and 504. The proxy, route handlers and the CDN rewrite to these when Next's own boundaries do not apply (a 429 from the rate limiter, a 503 during maintenance) |
+
+- `forbidden()` and `unauthorized()` need Next's `experimental.authInterrupts`, which is on in
+  `next.config.ts`. It is an experimental flag for the whole app, tested on Next.js 16.3.6; check
+  these two pages after any Next.js upgrade.
+- Server error pages show only Next's opaque error digest as the reference, never the error's
+  message or stack (`test/errors.test.ts` checks the source).
+- **`/errors/restricted` stays plain on purpose:** a lock, "Account restricted", and the notice the
+  owner's decision allows (`docs/decisions.md`, "Fair use, suspension and bans"): the step and the
+  policy, for example "Your account has been suspended under our Fair Use Policy.", then "You can
+  ask for a review within 30 days." with an "Ask for a review" action. The app redirects there
+  with `?step=…&policy=…` from the auth module's refusal; anything else in the address is
+  ignored, and without a valid pair the page names the Terms of Service. No illustration, joke,
+  reason, date or rule. The generic 403 page never hints at a restriction. The notice, the
+  policy names and the review offer come from the auth module's contract
+  (`@nabvy/contracts/modules/auth`), re-exported by `lib/errors.ts`.
+- The copy follows the app's copy rules (no exclamation marks, no urgency, UK English).
+  `test/errors.test.ts` checks it, and `e2e/errors.spec.ts` renders every page in the four
+  projects and checks that an unknown address answers 404. The screenshots are
+  `docs/design/screens/error-*.png`.
+
 ## Commands
 
 ```
