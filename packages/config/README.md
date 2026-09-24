@@ -11,6 +11,21 @@ env.APIFY_FB_ACTOR_ID // string
 env.FB_DAILY_CAP_MINOR // number, default 1000
 ```
 
+## Module thresholds
+
+Rule 14 of `docs/design/modules/_rules.md`: every threshold a module needs lives in
+`packages/config/src/modules/<module>.ts`, one file per module, exported through the package's
+`./modules/*` subpath (`@nabvy/config/modules/<module>`) and imported nowhere else. A module file:
+
+- validates its values with a Zod schema at load, the same way `env.ts` validates variables, so a
+  malformed constant fails at start-up rather than at first use;
+- carries a comment on each value's basis (a cited measurement or rule) and marks it a starting
+  value until the module's fixtures calibrate it;
+- is read only through `@nabvy/config`; a module never re-defines its own thresholds locally.
+
+`packages/config/src/modules/cost-meter.ts` is the first: `APIFY_SETTLE_DELAY_MS` and
+`MODEL_PRICES_NANO_USD`, moved from `services/cost-meter/src/config.ts` (task 0.8).
+
 ## Decisions
 
 - **Groups, not one schema.** Variables are grouped by the part of the system that uses them
@@ -30,6 +45,10 @@ env.FB_DAILY_CAP_MINOR // number, default 1000
   installed ahead of its keys existing (`@nabvy/telemetry`, task 0.10) has a different contract —
   run with reduced function, not refuse to start — so it safe-parses its group instead. `loadEnv`
   stays the default for every other caller.
+- **`USD_GBP_RATE` has its own group.** It sat in `apify` with `APIFY_TOKEN`, but the token is an
+  Edge Function secret read only by `apify-gateway` (`CLAUDE.md`), so no pipeline module could load
+  that group just for the rate (`docs/questions.md`, "cost-meter: USD_GBP_RATE outside the apify
+  group"). It is now its own `exchangeRate` group, loadable on its own (task 0.8).
 - **URL checks.** Provider endpoints must be `https://`. The app's own URLs (`BETTER_AUTH_URL`,
   `SUPABASE_URL`) may be `http://` so local development (`supabase start`, Next.js) works, but must
   have a scheme and a host.

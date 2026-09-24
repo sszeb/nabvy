@@ -50,8 +50,11 @@ export const envGroups = {
   apify: z.object({
     APIFY_TOKEN: required(),
     APIFY_FB_ACTOR_ID: required(),
-    USD_GBP_RATE: z.coerce.number().positive(),
   }),
+  // Separate from `apify`: the token is an Edge Function secret read only by `apify-gateway`
+  // (`CLAUDE.md`), but the rate is plain configuration a pipeline module (cost-meter) can load on
+  // its own (docs/questions.md, "cost-meter: USD_GBP_RATE outside the apify group").
+  exchangeRate: z.object({ USD_GBP_RATE: z.coerce.number().positive() }),
   apifyFacebookFallback: z.object({ APIFY_FB_ACTOR_FALLBACK_ID: required() }),
   apifyGumtree: z.object({ APIFY_GUMTREE_ACTOR_ID: required() }),
   sellerHash: z.object({ SELLER_HASH_SALT: required() }),

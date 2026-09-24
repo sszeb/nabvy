@@ -1,3 +1,4 @@
+import { APIFY_SETTLE_DELAY_MS, MODEL_PRICES_NANO_USD } from '@nabvy/config/modules/cost-meter'
 import { err, ok, type Result } from '@nabvy/contracts'
 import {
   COST_METER_KIND_OF,
@@ -10,7 +11,6 @@ import {
   type CostMeterSwitchState,
 } from '@nabvy/contracts/modules/cost-meter'
 import type { providerCalls } from '@nabvy/db/schema/cost-meter'
-import { APIFY_SETTLE_DELAY_MS, MODEL_PRICES_NANO_USD } from '../config'
 import { modelCostMicros, storedRate, toGbpMicros } from './amounts'
 
 // The ledger rules, pure: what a record writes, whether a settlement applies, and what a

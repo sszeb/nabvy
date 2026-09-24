@@ -121,7 +121,7 @@ describe('loadEnv', () => {
   it('reports malformed values as invalid without echoing them', () => {
     const secretLookingValue = 'mysql://nabvy_app:hunter2@db.example.com/postgres'
     const error = failure(() =>
-      loadEnv(['database', 'ebay', 'apify'], {
+      loadEnv(['database', 'ebay', 'exchangeRate'], {
         ...complete,
         DATABASE_URL: secretLookingValue,
         EBAY_ENV: 'staging',

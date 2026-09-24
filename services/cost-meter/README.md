@@ -103,11 +103,13 @@ Other tests: `domain.test.ts` (rounding, conversion, prices, the settle-delay bo
 - **2026-09-24: switch and rate are passed in.** The `switches` module is not built, so there is no
   `switches.is_on()` to call. **Stub:** callers pass the state in `CostMeterContext`; `readCosts`
   applies it, and `v_costs` is not yet filtered in SQL (its migration says how it will be). The rate
-  is passed in too, because `USD_GBP_RATE` sits in the `apify` config group with `APIFY_TOKEN`,
-  which only the gateway holds (`docs/questions.md`).
-- **2026-09-24: config lives in the module for now.** The settle delay and price table are in
-  `src/config.ts` until `@nabvy/config` gains per-module files
-  (`packages/config/src/modules/cost-meter.ts`, rule 14).
+  is still passed in too: `USD_GBP_RATE` now has its own `exchangeRate` config group, loadable
+  without `APIFY_TOKEN` (task 0.8), but reading it directly here is a separate change from moving
+  where it is grouped, and is not part of this module's scope yet.
+- **2026-09-24: config moved to `@nabvy/config`.** The settle delay and price table were in
+  `src/config.ts` until `@nabvy/config` gained per-module files; they now live in
+  `packages/config/src/modules/cost-meter.ts` (rule 14), imported as
+  `@nabvy/config/modules/cost-meter` (task 0.8).
 - **2026-09-24: v_costs row type.** `CostMeterCall` is a Zod schema in contracts; the repository has
   no `drizzle-zod`, so a test checks the Drizzle view's columns equal the schema's keys instead of
   deriving one from the other.

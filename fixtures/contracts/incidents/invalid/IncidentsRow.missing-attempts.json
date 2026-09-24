@@ -1,0 +1,18 @@
+{
+  "id": "00000000-0000-7000-8000-000000000001",
+  "eventType": "listing-ingest.first-seen",
+  "eventKey": "facebook:123:abc",
+  "payload": {
+    "id": "00000000-0000-7000-8000-000000000002",
+    "type": "listing-ingest.first-seen",
+    "v": 1,
+    "at": "2026-09-24T00:00:00.000Z",
+    "key": "facebook:123:abc",
+    "payload": { "listingIds": ["00000000-0000-7000-8000-000000000003"] }
+  },
+  "error": { "code": "listing-ingest.timeout", "message": "the adapter timed out" },
+  "firstFailedAt": "2026-09-24T00:00:00.000Z",
+  "resolvedAt": null,
+  "createdAt": "2026-09-24T00:00:00.000Z",
+  "updatedAt": "2026-09-24T00:00:00.000Z"
+}

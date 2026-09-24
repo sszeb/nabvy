@@ -1,5 +1,5 @@
+import type { ModelPrice } from '@nabvy/config/modules/cost-meter'
 import type { CostMeterCurrency, CostMeterModelUsage } from '@nabvy/contracts/modules/cost-meter'
-import type { ModelPrice } from '../config'
 
 // Integer micros (millionths of a currency unit) and their GBP conversion. Every rounding goes
 // up, so the ledger never understates a cost. Pure: no I/O.
