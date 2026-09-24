@@ -56,7 +56,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 4.10c | Stripe integration plan and review of PR #54 | PR #64 approved 21:50 (docs), merging; gap tasks 4.10d onward become backlog rows at the merge | 2026-09-24 | `session_01Vmzb8zTcit1ie6z5Y13CNE`, top |
 | 4.3t | Abuse and cost-exploit threat model | done: PR #39 merged 21:49 (`4761f75`), docs only | 2026-09-24 | `session_01Y4xYvmajeh5wX2ghYYWfyM`, top |
 | 4.3af | Web: admin gate before any deploy | started 21:55 (blocks 0.5a; from the #39 audit) | 2026-09-24 | `session_016GNggixVkbUZZ8T3qa1ent`, top |
-| 1.2m, 4.3r | Governor recompute schedule; account purge schedule | 1.2m done: PR #45 merged 17:45 (`2bc0534`), no migration; adds the `@nabvy/trigger` workspace package and `@trigger.dev/sdk` (MIT); 4.3r next in the same session | 2026-09-24 | `session_01PrKA1b7kzJ6CkMpxiS93Y9`, Sonnet |
+| 1.2m, 4.3r | Governor recompute schedule; account purge schedule | 1.2m done: PR #45 merged 17:45 (`2bc0534`), no migration; adds the `@nabvy/trigger` workspace package and `@trigger.dev/sdk` (MIT); 4.3r next in the same session; 4.3r: PR #59 "Changes needed" 21:55 for a docs/questions conflict only; the coordinator merged main and re-created the questions file at head b2f8b0a (22:03) and re-requested the review; no migration | 2026-09-24 | `session_01PrKA1b7kzJ6CkMpxiS93Y9`, Sonnet |
 | 4.1q | Cadence slider (web) | PR #49 open 17:48; six steps in the PR (the 30-minute step, 4.1r, was briefed at 17:48 and may follow) | 2026-09-24 | `session_01KVppkxjxt2jWHXVoP4JRgF`, Sonnet |
 | 4.3b | Security hardening | not started | | |
 | 4.4 | Crawl planner v1 | not started | | |
@@ -108,7 +108,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | travel-cost | 3 | PR #50 open 17:52 (three migrations after merge: tables, access, seed) | `session_01UMS77L76YWgX1RrcfbsayV` | Sonnet |
 | listing-suppression | 5 | PR #52 open 18:10 (two migrations after merge); listing-feedback stacked on it | `session_018ji68bXcGtLAMEqYBdVp1v` | top |
 | parts-rules | 5 | PR #53 open 18:23 (two migrations after merge) [cp 11]; parts-ai stacked on it | `session_01DNsNA5egQBU1HGTkfhMNx3` | top |
-| pricing-console | 4 | PR #55 open 18:44 (two migrations after merge; seeds the ladder as initial policy values; no admin page until 4.1 and 4.3af) | `session_01NamNkeC55pewRzgfB6v6YS` | top |
+| pricing-console | 4 | done: PR #55 merged 21:56 (`6b332f8`); both migrations applied 22:06 (ledger 55 rows, 26 initial policy rows seeded from "Starting prices"); no admin page until 4.1 and 4.3af | `session_01NamNkeC55pewRzgfB6v6YS` | top |
 | subscriptions | 4 | PR #54 open (two migrations after merge; Stripe test keys still missing; auth needs a small change to mount the plugin, see its questions); round-2 review 21:55 "Changes needed" (one blocker: invoice.paid before the subscription row is active loses the first period's grant); fresh fix session 22:00 `session_01MnrRSFwhS6juphnpX6nruU` (top), build session (396k) told to stand down; attribution stacked on it | `session_01P4ij9pAr9EjzDnS1bqS21i` | top |
 | city-pages | 5 | done: PR #62 merged 21:49 (`a3a6dfa`) [cp 9]; both migrations sent for apply 21:57 (771 seed pages, 5 verified centres; ledger check pending); reviewer's non-blocking notes 1 to 4 for a later push; rule-16 fixture carried into the details-selector brief | `session_01MiuqZuB4erg6mpUnsSPPas` | Sonnet |
 | location | 6 | started 21:55 [cp 8] on main | `session_0176Bmog6ujKPKrMXMcC3ztr` | Sonnet |
