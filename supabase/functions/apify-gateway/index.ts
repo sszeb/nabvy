@@ -36,6 +36,12 @@ const apifyEnvNames = () =>
   Object.keys(Deno.env.toObject())
     .filter((name) => /apify/i.test(name))
     .sort()
+// Secrets the project added itself, so a token saved under an unexpected name can be found.
+const PLATFORM_ENV = /^(SUPABASE_|SB_|DENO|EDGE_|OTEL_|NODE_|PATH$|HOME$|HOSTNAME$|PWD$|LANG$|TZ$)/
+const customEnvNames = () =>
+  Object.keys(Deno.env.toObject())
+    .filter((name) => !PLATFORM_ENV.test(name))
+    .sort()
 
 const vaultTokenQuery =
   "select decrypted_secret as secret from vault.decrypted_secrets where name = 'apify_token'"
@@ -75,6 +81,7 @@ async function envCheck(client: PoolClient): Promise<Json> {
   const vault = await client.queryObject<{ secret: string }>(vaultTokenQuery)
   return {
     apifyEnvNames: apifyEnvNames(),
+    customEnvNames: customEnvNames(),
     vaultSecretPresent: Boolean(vault.rows[0]?.secret),
     hasDbUrl: Boolean(Deno.env.get('SUPABASE_DB_URL')),
   }

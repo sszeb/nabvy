@@ -46,7 +46,8 @@ the brief they are internal only: never copy them into user-facing tables, fixtu
 the Vault secret `apify_token`. The project had no Edge Function secret, so on the owner's
 instruction (2026-09-24) the token was stored in Vault; update it there (dashboard, Vault) when the
 token is rotated. The function never logs or returns the token. An `env_check` job reports which
-Apify-like secret names exist and whether the Vault secret is present (names and yes/no only).
+Apify-like and project-added secret names exist and whether the Vault secret is present (names and
+yes/no only), so a token saved under an unexpected name can be found.
 
 **Operating it.**
 
@@ -61,4 +62,4 @@ select id, kind, status, cost_usd, error from apify_gateway.jobs order by id;
 Migrations in `migrations/` were applied through the Supabase connector on 2026-09-24:
 `20260924020000_apify_gateway.sql` (schema), `20260924021000_apify_gateway_search_path.sql`
 (security advisor fix) and `20260924022000_apify_gateway_settle_cost.sql` (cost settlement).
-Deployed function version: 3.
+Deployed function version: 5 (version 4 was created outside this repository between deploys and has been replaced).
