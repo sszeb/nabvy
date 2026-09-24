@@ -43,10 +43,6 @@ export type CostMeterMicros = z.infer<typeof CostMeterMicros>
 export const CostMeterStatus = z.enum(['pending', 'succeeded', 'failed'])
 export type CostMeterStatus = z.infer<typeof CostMeterStatus>
 
-/** The module switch (docs/design/modules/_rules.md, rule 11). Off by default. */
-export const CostMeterSwitchState = z.enum(['off', 'shadow', 'on'])
-export type CostMeterSwitchState = z.infer<typeof CostMeterSwitchState>
-
 /** The provider's own ID for the call: the Apify run ID, the model response ID, a request ID. */
 export const CostMeterRefId = z.string().min(1).max(200)
 

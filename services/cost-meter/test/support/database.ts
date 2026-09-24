@@ -5,9 +5,12 @@ import { PGlite } from '@electric-sql/pglite'
 import type { Queryable } from '@nabvy/db'
 import { drizzle } from 'drizzle-orm/pglite'
 
-// An in-process Postgres (PGlite) with the real core and cost-meter migrations applied, used as
-// nabvy_pipeline, the role paying modules write through. PGlite has no PostGIS, pgvector or
-// pg_trgm, so their `create extension` lines are skipped; the full set runs in `pnpm db:dry-run`.
+// An in-process Postgres (PGlite) with the real core, switches and cost-meter migrations applied,
+// used as nabvy_pipeline, the role paying modules write through. v_costs filters by the live
+// switch (task 0.11), so the seeded 'cost-meter' row is switched on here: most tests write and
+// read through v_costs and only care about the switch through CostMeterContext, which they still
+// pass explicitly. PGlite has no PostGIS, pgvector or pg_trgm, so their `create extension` lines
+// are skipped; the full set runs in `pnpm db:dry-run`.
 
 const migrations = fileURLToPath(new URL('../../../../packages/db/migrations/', import.meta.url))
 
@@ -31,7 +34,11 @@ export interface TestDatabase {
 
 export async function createTestDatabase(): Promise<TestDatabase> {
   const pg = new PGlite()
-  for (const file of [...migrationFiles('core'), ...migrationFiles('cost-meter')]) {
+  for (const file of [
+    ...migrationFiles('core'),
+    ...migrationFiles('switches'),
+    ...migrationFiles('cost-meter'),
+  ]) {
     const text = readFileSync(file, 'utf8')
       .split('\n')
       .filter((line) => !/^create extension /i.test(line))
@@ -39,6 +46,7 @@ export async function createTestDatabase(): Promise<TestDatabase> {
       .replaceAll('--> statement-breakpoint', '')
     await pg.exec(text)
   }
+  await pg.exec(`update switches.switches set state = 'on' where name = 'cost-meter'`)
   await pg.exec('set role nabvy_pipeline')
   return {
     db: drizzle(pg) as unknown as Queryable,

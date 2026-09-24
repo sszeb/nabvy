@@ -9,6 +9,7 @@ import {
   CostMeterSettleInput,
 } from '@nabvy/contracts/modules/cost-meter'
 import type { Queryable } from '@nabvy/db'
+import { state } from '@nabvy/switches'
 import {
   type CostMeterContext,
   checkSameCall,
@@ -30,6 +31,14 @@ export { type CostMeterContext, modelCostMicros, toGbpMicros, unitsToMicros } fr
 export interface CostMeterWrite {
   call: CostMeterCall
   changed: boolean
+}
+
+/**
+ * Builds a CostMeterContext by reading the module's own switch through `@nabvy/switches`
+ * (task 0.11), which fails closed to 'off'. Callers still supply today's USD_GBP_RATE (task 0.8).
+ */
+export async function contextFor(q: Queryable, usdGbpRate: number): Promise<CostMeterContext> {
+  return { state: await state(q, 'cost-meter'), usdGbpRate }
 }
 
 async function writeCall(

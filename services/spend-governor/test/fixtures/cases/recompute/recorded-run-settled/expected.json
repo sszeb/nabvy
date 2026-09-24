@@ -1,0 +1,28 @@
+{
+  "first": {
+    "written": ["apify-monthly", "apify-plan-usage", "apify-residential-proxy"],
+    "eventKeys": []
+  },
+  "committed": {
+    "apify-monthly": 17700,
+    "apify-plan-usage": 17700,
+    "apify-residential-proxy": null
+  },
+  "throttle": [
+    {
+      "budget": "apify-monthly",
+      "level": "none",
+      "reason": "computed"
+    },
+    {
+      "budget": "apify-plan-usage",
+      "level": "none",
+      "reason": "computed"
+    },
+    {
+      "budget": "apify-residential-proxy",
+      "level": "none",
+      "reason": "unmeasured"
+    }
+  ]
+}

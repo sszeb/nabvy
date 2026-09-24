@@ -2,7 +2,6 @@
 import type {
   QuoteRedactionMasked,
   QuoteRedactionResult,
-  QuoteRedactionSwitchState,
 } from '@nabvy/contracts/modules/quote-redaction'
 import { detectors } from './patterns'
 
@@ -24,16 +23,4 @@ export function redact(text: string): QuoteRedactionResult {
     })
   }
   return { text: out, masked }
-}
-
-/**
- * The fail-closed entry point for callers that show a quote or send listing text to a model.
- * Returns null unless the module's switch is 'on': the caller then shows no quote and sends no
- * text, and carries on with its other facts. A missing or unreadable state counts as off.
- */
-export function quoteFor(
-  text: string,
-  state: QuoteRedactionSwitchState | null | undefined,
-): QuoteRedactionResult | null {
-  return state === 'on' ? redact(text) : null
 }

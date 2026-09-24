@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "Synthetic, built from the seeded budgets (packages/db/migrations/spend-governor) and the throttle steps of actor-integration.md 2.12.",
+  "now": "2026-09-24T12:00:00.000Z",
+  "usdGbpRate": 0.75,
+  "calls": [],
+  "unmetered": [],
+  "proxyGb": [0.5, null]
+}

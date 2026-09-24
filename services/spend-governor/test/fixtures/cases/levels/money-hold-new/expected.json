@@ -1,0 +1,16 @@
+{
+  "budgets": {
+    "apify-monthly": {
+      "committedMicros": 120000000,
+      "level": "slow-free"
+    },
+    "apify-plan-usage": {
+      "committedMicros": 120000000,
+      "level": "hold-new"
+    },
+    "apify-residential-proxy": {
+      "committedMicros": 0,
+      "level": "none"
+    }
+  }
+}

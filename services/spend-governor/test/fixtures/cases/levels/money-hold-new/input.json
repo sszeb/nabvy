@@ -1,0 +1,26 @@
+{
+  "synthetic": true,
+  "source": "Synthetic, built from the seeded budgets (packages/db/migrations/spend-governor) and the throttle steps of actor-integration.md 2.12.",
+  "now": "2026-09-24T12:00:00.000Z",
+  "usdGbpRate": 0.75,
+  "calls": [
+    {
+      "provider": "apify",
+      "currency": "USD",
+      "reservedMicros": 60000000,
+      "settledMicros": 60000000,
+      "provisionalUsdMicros": null,
+      "at": "2026-09-10T10:00:00.000Z"
+    },
+    {
+      "provider": "apify",
+      "currency": "USD",
+      "reservedMicros": 60000000,
+      "settledMicros": 60000000,
+      "provisionalUsdMicros": null,
+      "at": "2026-09-20T08:00:00.000Z"
+    }
+  ],
+  "unmetered": [],
+  "proxyGb": []
+}

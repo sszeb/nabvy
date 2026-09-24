@@ -42,20 +42,18 @@ begin
 end;
 $$;
 
--- Fail closed: without a switches module, quote() shows nothing.
+-- Fail closed: the seeded switch is off (task 0.11: switch_on() calls the real
+-- switches.is_on('quote-redaction'), no existence check), so quote() shows nothing by default.
 do $$
 begin
   if quote_redaction.switch_on() or quote_redaction.quote('PO19 1AB') is not null then
-    raise exception 'quote() shows text while the switch cannot be read';
+    raise exception 'quote() shows text while the switch is off';
   end if;
 end;
 $$;
 
--- With a switch that says on, quote() masks; with one that says off, nothing.
-create schema if not exists switches;
-create or replace function switches.is_on(m text) returns boolean language sql as $f$
-  select m = 'quote-redaction'
-$f$;
+-- With the switch on, quote() masks.
+update switches.switches set state = 'on' where name = 'quote-redaction';
 do $$
 begin
   if quote_redaction.quote('Call 07700 900123') is distinct from 'Call [phone redacted]' then
@@ -63,16 +61,17 @@ begin
   end if;
 end;
 $$;
-create or replace function switches.is_on(m text) returns boolean language sql as $f$
-  select null::boolean
-$f$;
+
+-- Shadow is not on (rule 11): quote() still shows nothing.
+update switches.switches set state = 'shadow' where name = 'quote-redaction';
 do $$
 begin
   if quote_redaction.quote('Call 07700 900123') is not null then
-    raise exception 'quote() shows text while the switch reads null';
+    raise exception 'quote() shows text while the switch is shadow';
   end if;
 end;
 $$;
+update switches.switches set state = 'off' where name = 'quote-redaction';
 
 -- Callers: nabvy_app and nabvy_pipeline may execute; Supabase's Data API roles may not.
 do $$

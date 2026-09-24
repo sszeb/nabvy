@@ -1,0 +1,30 @@
+{
+  "first": {
+    "written": ["apify-monthly", "apify-plan-usage", "apify-residential-proxy"],
+    "eventKeys": [
+      "spend-governor.budget-alerted:apify-plan-usage@2026-08-31T23:00:00.000Z@slow-free"
+    ]
+  },
+  "committed": {
+    "apify-monthly": 70000000,
+    "apify-plan-usage": 70000000,
+    "apify-residential-proxy": 0
+  },
+  "throttle": [
+    {
+      "budget": "apify-monthly",
+      "level": "none",
+      "reason": "computed"
+    },
+    {
+      "budget": "apify-plan-usage",
+      "level": "slow-free",
+      "reason": "computed"
+    },
+    {
+      "budget": "apify-residential-proxy",
+      "level": "none",
+      "reason": "computed"
+    }
+  ]
+}

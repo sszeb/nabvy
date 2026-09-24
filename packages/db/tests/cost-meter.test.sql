@@ -28,6 +28,10 @@ $$;
 
 set local role nabvy_pipeline;
 
+-- v_costs filters by the live switch (task 0.11); the seed leaves cost-meter off, so this test
+-- switches it on to exercise the rest of the file, then checks the filter itself below.
+update switches.switches set state = 'on' where name = 'cost-meter';
+
 -- A reservation for the recorded run, then the same (provider, ref_id) again: one row.
 insert into cost_meter.provider_calls
   (module, provider, kind, ref_id, currency, reserved_micros, usd_gbp_rate, reserved_gbp_micros, status, at)
@@ -84,6 +88,20 @@ begin
   end;
 end;
 $$;
+
+-- v_costs shows nothing once the module is switched off, even though the row is still there.
+update switches.switches set state = 'off' where name = 'cost-meter';
+do $$
+begin
+  if exists (select 1 from cost_meter.v_costs) then
+    raise exception 'v_costs shows rows while cost-meter is off';
+  end if;
+  if not exists (select 1 from cost_meter.provider_calls) then
+    raise exception 'the switch filter deleted the underlying row';
+  end if;
+end;
+$$;
+update switches.switches set state = 'on' where name = 'cost-meter';
 
 reset role;
 

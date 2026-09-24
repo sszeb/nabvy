@@ -1,0 +1,13 @@
+{
+  "now": "2026-09-24T12:00:00.000Z",
+  "usdGbpRate": 0.75,
+  "calls": [
+    {
+      "refId": "synthetic-1",
+      "reservedMicros": 150000000,
+      "settledMicros": 143000000,
+      "at": "2026-09-05T10:00:00.000Z"
+    }
+  ],
+  "jobs": []
+}
