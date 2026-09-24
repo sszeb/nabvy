@@ -1,0 +1,30 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "one recorded listing alerted, then a details run returns the removed-ID row",
+  "steps": [
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T01:40:43.415Z"
+      }
+    },
+    {
+      "request": {
+        "reason": "alerted",
+        "ids": ["1816901372840238"]
+      }
+    },
+    {
+      "job": {
+        "kind": "details",
+        "collectedAt": "2026-09-24T02:40:43.415Z",
+        "only": ["1816901372840238"],
+        "unresolved": ["1816901372840238"]
+      }
+    },
+    {
+      "tickAfterHours": 7
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "module": "listing-lifecycle",
+  "schema": "listing_lifecycle",
+  "dependsOn": ["core", "switches"]
+}

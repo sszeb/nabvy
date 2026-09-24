@@ -1,0 +1,15 @@
+{
+  "counts": {
+    "live": 19,
+    "marked-sold": 1
+  },
+  "listings": {
+    "1816901372840238": {
+      "status": "marked-sold",
+      "basis": "search-card",
+      "missedSweeps": 0
+    }
+  },
+  "announced": 21,
+  "queued": {}
+}

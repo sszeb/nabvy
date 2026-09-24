@@ -1,0 +1,33 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "the recorded run's rows, re-collected at +12 h and +24 h without row 0",
+  "steps": [
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T01:40:43.415Z"
+      }
+    },
+    {
+      "tick": "2026-09-24T02:40:43.415Z"
+    },
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T13:40:43.415Z",
+        "drop": ["1816901372840238"]
+      }
+    },
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-25T01:40:43.415Z",
+        "drop": ["1816901372840238"]
+      }
+    },
+    {
+      "tick": "2026-09-25T02:00:00.000Z"
+    }
+  ]
+}
