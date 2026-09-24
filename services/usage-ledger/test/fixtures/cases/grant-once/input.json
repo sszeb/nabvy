@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "Card usage-ledger: a repeated grant() with the same refId writes once (docs/billing.md:70, webhook idempotency)",
+  "steps": [
+    { "grant": { "kind": "topup", "credits": 100, "refId": "pi_3Q", "cashMinor": 1000 } },
+    { "grant": { "kind": "topup", "credits": 100, "refId": "pi_3Q", "cashMinor": 1000 } },
+    { "grant": { "kind": "topup", "credits": 250, "refId": "pi_3Q", "cashMinor": 1000 } }
+  ]
+}

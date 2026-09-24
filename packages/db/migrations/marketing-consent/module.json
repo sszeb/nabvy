@@ -1,0 +1,5 @@
+{
+  "module": "marketing-consent",
+  "schema": "marketing_consent",
+  "dependsOn": ["core", "switches"]
+}

@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "recognition": {
+      "passed": 10,
+      "total": 10
+    }
+  }
+}

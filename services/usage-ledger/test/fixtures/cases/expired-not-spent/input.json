@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "source": "docs/billing.md: unused included usage expires monthly; pricing-model: use it or lose it",
+  "steps": [
+    {
+      "grant": {
+        "kind": "allowance",
+        "credits": 100,
+        "refId": "allowance:last-month",
+        "expiresInHours": -1
+      }
+    },
+    { "grant": { "kind": "topup", "credits": 10, "refId": "pi_small", "cashMinor": 100 } },
+    { "charge": { "action": "scan_live", "credits": 20, "refId": "scan:too-big" } },
+    { "charge": { "action": "scan_live", "credits": 10, "refId": "scan:fits" } }
+  ]
+}
