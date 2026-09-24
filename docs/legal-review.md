@@ -117,6 +117,12 @@ Rows 23–83 below come from the five 2026-09-24 design-draft integrations (`doc
 | 82 | Data | Masking postcodes and addresses in description text shown to users, and the gaps found in the gateway's fixture redaction | `docs/design/listing-location.md` (§12 item 11) |
 | 83 | Licensing | PostGIS (GPL-2.0-or-later) used as a managed database extension, outside the permissive licence list in `CLAUDE.md` | `docs/design/listing-location.md` (§12 item 12) |
 
+### actor-app-guide
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 84 | Wording | `fb-scrap-engine/docs/design/COPY_ADVERT_SPAM.md`'s new "Suspected trade seller" and shadow-only "Suspected scam" labels, their fact templates, and criminal-offence-data treatment for scam labels under UK GDPR Art 10 | `docs/design/actor-app-guide.md`, "What changes" 11; extends item 13 |
+
 ## Points in the policy drafts
 
 The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable use, fair use) carry `TODO-LEGAL (LR-nn)` markers. They are modelled on big tech's UK-facing terms and on Apify's and Supabase's, in Nabvy's own words (`docs/policies/SOURCES.md`). These lines extend item 7 above; no review has been run.
