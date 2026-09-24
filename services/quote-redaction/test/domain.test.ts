@@ -33,7 +33,7 @@ describe('redact', () => {
 
   it('keeps the detectors free of syntax PostgreSQL reads differently', () => {
     for (const d of detectors) {
-      expect(d.source).not.toMatch(/\\[bBwWdD]|\\[AZz]|\*\?|\+\?|\?\?|\}\?/)
+      expect(d.source).not.toMatch(/\\[bBwWdDsS]|\\[AZz]|\*\?|\+\?|\?\?|\}\?/)
     }
   })
 

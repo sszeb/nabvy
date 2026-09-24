@@ -248,6 +248,55 @@
         "phone": 1,
         "postcode": 1
       }
+    },
+    {
+      "id": "phone-no-break-space",
+      "note": "U+00A0 inside the number; PostgreSQL's \\s does not match it",
+      "input": "Call 07700 900123",
+      "text": "Call [phone redacted]",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "phone-figure-space",
+      "input": "+44 7700 900 123",
+      "text": "[phone redacted]",
+      "masked": {
+        "phone": 1
+      }
+    },
+    {
+      "id": "postcode-no-break-space",
+      "input": "Collection PO19 1AB only",
+      "text": "Collection PO19 [redacted] only",
+      "masked": {
+        "postcode": 1
+      }
+    },
+    {
+      "id": "postcode-narrow-no-break-space",
+      "input": "BH16 6FA",
+      "text": "BH16 [redacted]",
+      "masked": {
+        "postcode": 1
+      }
+    },
+    {
+      "id": "link-ends-at-no-break-space",
+      "input": "www.pcshop.co.uk today",
+      "text": "[link redacted] today",
+      "masked": {
+        "link": 1
+      }
+    },
+    {
+      "id": "handle-label-no-break-space",
+      "input": "insta: jo_pcs",
+      "text": "insta: [handle redacted]",
+      "masked": {
+        "handle": 1
+      }
     }
   ]
 }

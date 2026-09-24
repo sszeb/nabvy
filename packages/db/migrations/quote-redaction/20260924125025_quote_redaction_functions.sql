@@ -18,17 +18,17 @@ begin
       (1, 'email', 'gi', '[email redacted]',
         '(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}(?![A-Za-z0-9-])'),
       (2, 'link', 'gi', '[link redacted]',
-        '(?:https?://|www\.)[^\s<>"]*[^\s<>".,;:!?)\]]'),
+        '(?:https?://|www\.)[^ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF<>"]*[^ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF<>".,;:!?)\]]'),
       (3, 'link', 'gi', '[link redacted]',
-        '(?<![A-Za-z0-9._@-])[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9-]+)*\.(?:com|co\.uk|org\.uk|uk|net|org|io|me|shop|store|biz|info)(?![A-Za-z0-9-])(?:/[^\s<>"]*[^\s<>".,;:!?)\]])?'),
+        '(?<![A-Za-z0-9._@-])[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9-]+)*\.(?:com|co\.uk|org\.uk|uk|net|org|io|me|shop|store|biz|info)(?![A-Za-z0-9-])(?:/[^ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF<>"]*[^ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF<>".,;:!?)\]])?'),
       (4, 'handle', 'gi', '[handle redacted]',
         '(?<![A-Za-z0-9._%+-])@[A-Za-z0-9_](?:[A-Za-z0-9_.]{0,28}[A-Za-z0-9_])?'),
       (5, 'handle', 'gi', '\1[handle redacted]',
-        '(?<![A-Za-z0-9])((?:insta(?:gram)?|snap(?:chat)?|tiktok|telegram)\s*:\s*)[A-Za-z0-9_](?:[A-Za-z0-9_.]{0,28}[A-Za-z0-9_])?'),
+        '(?<![A-Za-z0-9])((?:insta(?:gram)?|snap(?:chat)?|tiktok|telegram)[ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*:[ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*)[A-Za-z0-9_](?:[A-Za-z0-9_.]{0,28}[A-Za-z0-9_])?'),
       (6, 'phone', 'g', '[phone redacted]',
-        '(?<![A-Za-z0-9+])(?:(?:\+|00)44[\s.-]?(?:\(0\)[\s.-]?)?|\(?0)[1-9][0-9]{1,4}\)?(?:[\s.-]?[0-9]){5,8}(?![0-9])'),
+        '(?<![A-Za-z0-9+])(?:(?:\+|00)44[ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF.-]?(?:\(0\)[ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF.-]?)?|\(?0)[1-9][0-9]{1,4}\)?(?:[ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF.-]?[0-9]){5,8}(?![0-9])'),
       (7, 'postcode', 'gi', '\1\2 [redacted]',
-        '(?<![A-Za-z0-9_])(AB|AL|BA|BB|BD|BF|BH|BL|BN|BR|BS|BT|BX|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|EC|EH|EN|EX|FK|FY|GL|GU|GY|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|LA|LD|LE|LL|LN|LS|LU|ME|MK|ML|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE|B|E|G|L|M|N|S|W)([0-9][0-9A-Z]?)\s?[0-9][ABD-HJLNP-UW-Z]{2}(?![A-Za-z0-9_])')
+        '(?<![A-Za-z0-9_])(AB|AL|BA|BB|BD|BF|BH|BL|BN|BR|BS|BT|BX|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|EC|EH|EN|EX|FK|FY|GL|GU|GY|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|LA|LD|LE|LL|LN|LS|LU|ME|MK|ML|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE|B|E|G|L|M|N|S|W)([0-9][0-9A-Z]?)[ \t\n\r\f\v\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?[0-9][ABD-HJLNP-UW-Z]{2}(?![A-Za-z0-9_])')
     ) as detectors(step, kind, flags, mask, source)
     order by step
   loop

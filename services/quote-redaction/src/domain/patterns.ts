@@ -18,11 +18,18 @@ export type Detector = {
   mask: string
 }
 
+/**
+ * Whitespace, written out: JavaScript's \s also matches no-break and other Unicode spaces
+ * (U+00A0, U+2007, U+202F…) and PostgreSQL's does not, so neither engine's \s is used. This is
+ * the JavaScript \s set, spelled with escapes both engines read the same way.
+ */
+const space =
+  ' \\t\\n\\r\\f\\v\\u00A0\\u1680\\u2000-\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000\\uFEFF'
 /** Characters that may not sit directly before or after a match. */
 const notWord = '[A-Za-z0-9_]'
 const notEmailChar = '[A-Za-z0-9._%+-]'
 /** Trailing punctuation is left outside a link, so a sentence keeps its full stop. */
-const linkTail = '[^\\s<>"]*[^\\s<>".,;:!?)\\]]'
+const linkTail = `[^${space}<>"]*[^${space}<>".,;:!?)\\]]`
 const tlds = [
   'com',
   'co\\.uk',
@@ -197,7 +204,7 @@ export const detectors: readonly Detector[] = [
   {
     // "insta: name", "snapchat : name": the label stays, the name goes.
     kind: 'handle',
-    source: `(?<![A-Za-z0-9])((?:insta(?:gram)?|snap(?:chat)?|tiktok|telegram)\\s*:\\s*)[A-Za-z0-9_](?:[A-Za-z0-9_.]{0,28}[A-Za-z0-9_])?`,
+    source: `(?<![A-Za-z0-9])((?:insta(?:gram)?|snap(?:chat)?|tiktok|telegram)[${space}]*:[${space}]*)[A-Za-z0-9_](?:[A-Za-z0-9_.]{0,28}[A-Za-z0-9_])?`,
     flags: 'gi',
     mask: '$1[handle redacted]',
   },
@@ -205,7 +212,7 @@ export const detectors: readonly Detector[] = [
     // UK numbers: 0 or +44 / 0044 (optionally "(0)"), then 7 to 13 more digits with single
     // spaces, dots or dashes between them; wider than the numbering plan on purpose.
     kind: 'phone',
-    source: `(?<![A-Za-z0-9+])(?:(?:\\+|00)44[\\s.-]?(?:\\(0\\)[\\s.-]?)?|\\(?0)[1-9][0-9]{1,4}\\)?(?:[\\s.-]?[0-9]){5,8}(?![0-9])`,
+    source: `(?<![A-Za-z0-9+])(?:(?:\\+|00)44[${space}.-]?(?:\\(0\\)[${space}.-]?)?|\\(?0)[1-9][0-9]{1,4}\\)?(?:[${space}.-]?[0-9]){5,8}(?![0-9])`,
     flags: 'g',
     mask: '[phone redacted]',
   },
@@ -213,7 +220,7 @@ export const detectors: readonly Detector[] = [
     // Full postcodes: the outward code (area, district) stays, the inward half goes. Any case:
     // only real postcode areas start one, so model names such as "i7 9th" are left alone.
     kind: 'postcode',
-    source: `(?<!${notWord})(${postcodeAreas.join('|')})([0-9][0-9A-Z]?)\\s?[0-9][ABD-HJLNP-UW-Z]{2}(?!${notWord})`,
+    source: `(?<!${notWord})(${postcodeAreas.join('|')})([0-9][0-9A-Z]?)[${space}]?[0-9][ABD-HJLNP-UW-Z]{2}(?!${notWord})`,
     flags: 'gi',
     mask: '$1$2 [redacted]',
   },

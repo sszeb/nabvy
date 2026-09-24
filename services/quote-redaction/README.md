@@ -53,19 +53,22 @@ Detectors run in this order; each masks its whole match unless stated. Sources a
 
 ## Fixtures and pass rate
 
-`test/fixtures/cases.json` holds 32 cases, shared by the TypeScript (`test/domain.test.ts` and
+`test/fixtures/cases.json` holds 38 cases, shared by the TypeScript (`test/domain.test.ts` and
 stage `redact`, `test/fixtures/redact.fixtures.ts`) and the SQL (`packages/db/tests/quote-redaction.test.sql`,
 run by `pnpm db:dry-run`, which reads the same file). Cases cover each kind, separators, several
-matches, multi-line text, PC specifications that must stay (`i7 9th gen`, `L2 5MB`, `RTX 2070`,
+matches, multi-line text, no-break, figure and narrow no-break spaces (U+00A0, U+2007, U+202F), PC specifications that must stay (`i7 9th gen`, `L2 5MB`, `RTX 2070`,
 `M.2`, dates) and one known false positive (`M2 2TB`, a real postcode shape). The recorded run's
 business postcode, masked at export (`fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/README.md:35-37`),
 is the synthetic case `postcode-recorded-run` with a made-up inward half. The checks the
 source-adapters fixture test runs on the recorded dataset are run on `redact()` output too.
-Latest pass rate: stage `redact` 32/32.
+Latest pass rate: stage `redact` 38/38.
 
 Other tests: `test/switch.test.ts` (fail closed), `test/idempotency.test.ts` (a second pass masks
 nothing), `test/contracts.test.ts`, `test/sql-parity.test.ts` (every TypeScript detector appears
-in the migration verbatim, in order, with the same flags and mask, and no extra one).
+in the migration verbatim, in order, with the same flags and mask, and no extra one). The parity
+test compares pattern text only: it cannot tell whether the two engines read the same text the
+same way. That is what the shared cases in both engines are for, so a case goes into
+`cases.json` for every input where the engines might differ.
 
 ## Decisions
 
@@ -74,6 +77,12 @@ in the migration verbatim, in order, with the same flags and mask, and no extra 
   PostgreSQL `\b` is a backspace), explicit lookarounds for boundaries, greedy quantifiers only,
   so PostgreSQL's longest match and JavaScript's backtracking pick the same span. A test pins the
   migration to the TypeScript sources, and both engines run the same cases.
+- **2026-09-24: whitespace spelled out (review of PR #17).** JavaScript's `\s` matches no-break
+  and other Unicode spaces (U+00A0, U+2007, U+202F…) and PostgreSQL's does not, so a number or
+  postcode written with a no-break space was masked in TypeScript and passed through the SQL
+  unmasked. No pattern uses `\s` now: both engines use one explicit class, the JavaScript `\s`
+  set written with `\t`, `\uXXXX` and similar escapes, which both read the same way. A test
+  refuses `\s` in any detector.
 - **2026-09-24: counts, not positions.** The result reports how many of each kind were masked,
   never the masked strings or their positions, so the report itself leaks nothing.
 - **2026-09-24: masking too much is the safe side.** Phone and link rules are wider than strictly
@@ -87,10 +96,24 @@ in the migration verbatim, in order, with the same flags and mask, and no extra 
   `switches.is_on('quote-redaction')` if that function exists and otherwise answers `false`, so
   every quote stays hidden until `switches` is built and this module is switched on. Replace both
   with the `switches` contract when it lands.
-- **2026-09-24: not detected.** Names, shop names, logos and faces (the brief lists them;
-  `fb-scrap-engine/docs/design/SELLER_DATA.md:296-298`), spelled-out or obfuscated contact details
-  ("seven seven zero…", "jo at gmail dot com") and non-UK numbers. Quotes therefore stay short;
-  choosing the quote is the caller's job.
+- **2026-09-24: not detected (known limits).** Quotes therefore stay short; choosing the quote
+  is the caller's job.
+  - Names, shop names, logos and faces (the brief lists them;
+    `fb-scrap-engine/docs/design/SELLER_DATA.md:296-298`).
+  - Spelled-out or obfuscated contact details ("seven seven zero…", "jo at gmail dot com").
+  - Phone numbers with two spaces in a row (`07700  900123`), `447700900123` with no plus
+    sign, `0 1243 555 0199` (a space after the leading 0), full-width digits, and non-UK numbers.
+  - Links on shorteners or top-level domains outside the list (`bit.ly/abc`, `example.co`).
+  - The labels `ig:` and `whatsapp:` (only `insta:`, `instagram:`, `snap:`, `snapchat:`,
+    `tiktok:` and `telegram:` are recognised).
+  - Email addresses with non-ASCII local parts: in `café@exämple.com` the part before the
+    `@` is not masked, so part of the address leaks.
+- **2026-09-24: masked on the safe side (known over-masking).** `serial 0123456789` is masked
+  as a phone number, `ASP.NET` as a link and `M2 2TB` as a postcode.
+- **2026-09-24: `immutable` depends on the locale.** The SQL functions are `immutable`, but case-insensitive
+  matching follows the database's character-type locale, so a locale change could change results.
+  That is fine while they back no index or generated column; do not use
+  them in one.
 
 ## Open questions
 
