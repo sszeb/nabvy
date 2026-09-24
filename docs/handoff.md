@@ -91,14 +91,15 @@ The predecessor's design workflows write raw drafts. As each finishes, it is com
 
 | Draft | Subject | State at handoff |
 | --- | --- | --- |
-| `modules.md` | The atomic module catalogue (about 290 KB) | Landed |
-| `copy-advert.md` | The copy-advert spam module | Being revised |
-| `actor-integration.md` | How Nabvy uses the actor: planning, scheduling, spend, ingest | Being revised |
+| `modules.md` | The atomic module catalogue (about 320 KB; 89 modules, 15 build rounds, final audited version) | Landed |
+| `catalogue-audit-changes.md` | The final audit's change log. It has three points to take to the owner: five dependencies made soft so the rtx3090 test does not wait for billing or photos; three placeholder modules; task-ID clashes with the account-sharing and listing-reuse drafts | Landed |
+| `copy-advert.md` | The copy-advert spam module | Landed |
+| `actor-integration.md` | How Nabvy uses the actor: planning, scheduling, spend, ingest | Landed |
 | `account-sharing.md` | Account-integrity: sharing protection, bans, ban evasion | Landed |
-| `listing-location.md` | Where an item really is: the location field, "collection from X", autofill mistakes | Being critiqued |
-| `search-map-routes.md` | eBay-style filters, the map with approximate markers, distance with "worth the trip" hints, pickup route planner | Being designed |
-| `too-good-to-be-true.md` | Marking scam-like listings from listing signals plus one-tap user reports | Being designed |
-| `listing-reuse.md` | Reusing listings other than the one searched for (by-catch): shared pool, price learning, cross-hunt matching, gems, similar picks | Being read |
+| `listing-location.md` | Where an item really is: the location field, "collection from X", autofill mistakes | Landed |
+| `search-map-routes.md` | eBay-style filters, the map with approximate markers, distance with "worth the trip" hints, pickup route planner | Landed |
+| `too-good-to-be-true.md` | Marking scam-like listings from listing signals plus one-tap user reports | Landed |
+| `listing-reuse.md` | Reusing listings other than the one searched for (by-catch): shared pool, price learning, cross-hunt matching, gems, similar picks | Landed |
 
 Treat the drafts as design notes, not decisions. A product choice in them goes to the owner or to `docs/questions.md`; a legal point goes to `docs/legal-review.md`, one line each.
 
@@ -127,6 +128,7 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
 
 ## Next steps, in order
 
+0. **Pull request subscriptions** are per session and do not carry over. Subscribe with `subscribe_pr_activity` to your own pull requests only. Build sessions and the reviewer subscribe to theirs, so you do not need events from #7, #9 or #10.
 1. **Set one scheduled sweep, every two hours from about 12:30 UTC,** with `send_later`. This replaces the old hourly fleet check and the separate actor-documents check. Each sweep does the following:
    - **Re-arm first.** Before any other call, re-arm the next sweep two hours ahead, so a sweep that fails part-way still leaves one armed. Record its trigger ID in this note.
    - **Fleet.** Call `get_session` by ID for each session in the fleet table. In the message to the owner, name any session that is blocked or has `needs_action` set (session ID and what it waits on), and any idle session over 300k used tokens; do not wake them. Keep each session's `cost_usd` and `used_tokens` for **Spend** below, written at the next batched push only.
@@ -154,7 +156,7 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
    - scan (vision AI per scan, capped per user);
    - account-integrity;
    - billing, once Stripe is set up.
-5. **Keep records current.** Record PR #10 as 4.1c. Keep `docs/progress.md` current after every merge.
+5. **Keep records current.** Add a 4.1c task to `docs/backlog.md` for PR #10's scope: branded error pages and the restricted-account notice, stacked on PR #7. Then record PR #10 against it in `docs/progress.md`. Keep `docs/progress.md` current after every merge.
 
 ## Waiting on the owner
 
@@ -162,7 +164,7 @@ An adversarial review of the lean rules (five lenses, two skeptics per finding) 
 
 - **Stripe test mode.**
   - Add a test secret key as an environment secret.
-  - Allow `api.stripe.com` in the environment's network policy.
+  - Allow Stripe in the environment's network policy: `*.stripe.com` and `*.stripe.network`. If wildcards are not accepted, add `api.stripe.com`, `checkout.stripe.com`, `js.stripe.com` and `m.stripe.network`.
   - Enable Stripe Tax.
 
   Until then 4.3 is blocked. When explaining how, use `read_documentation` with the `environment.secrets` and `environment.network` topics.
