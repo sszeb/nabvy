@@ -1,0 +1,1 @@
+The golden path: an issued code confirmed once, before it expires, against the chat that sent it. One `account.telegram_links` row, and `confirmTelegramLink` returns the `account.channel-linked` event.
