@@ -52,11 +52,11 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 4.8 | Admin dashboard, monitoring and runbooks | not started | | |
 | 5.1 | Gumtree adapter | blocked | 2026-09-24 | Out of scope for this push (Facebook only), and the gateway allows one actor only |
 | 5.2 | Facebook fallback adapter | superseded | 2026-09-24 | Ruled out: one actor only (`CLAUDE.md`) |
-| 5.3 | Discord and Telegram channel bots | blocked | 2026-09-24 | Precedence row "Resale of listing data" |
+| 5.3 | Discord and Telegram channel bots | not started | 2026-09-24 | The resale gate was lifted by the owner (`docs/decisions.md`, "Legal gates lifted") |
 | 5.3a | MCP server (read-only) | not started | | |
 | 5.4 | Second pack (consoles) | not started | | |
-| 5.4a | Public API (Business tier) | blocked | 2026-09-24 | Precedence row "Resale of listing data" |
-| 5.5 | Legal gate checklist | not started | | The LIA and DPIA are needed before further collection (Precedence row "Legal gates"), so this moves earlier in the backlog rewrite |
+| 5.4a | Public API (Business tier) | not started | 2026-09-24 | The resale gate was lifted by the owner (`docs/decisions.md`, "Legal gates lifted") |
+| 5.5 | Legal gate checklist | not started | 2026-09-24 | The gates were lifted by the owner; legal points are listed in `docs/legal-review.md` and reviewed only on the owner's request |
 | 5.6 | Load check and launch checklist | not started | | |
 
 Status values: not started, in progress, blocked (see `docs/questions.md`), done, superseded.

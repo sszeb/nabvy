@@ -13,14 +13,14 @@ This file lists points a lawyer may want to look at. It gives no analysis, and n
 | 5 | Enforcement | Whether users need a way to contest an automated ban, or a human review, and how subject access requests are answered about enforcement data | `docs/decisions.md`, "Fair use, suspension and bans" |
 | 6 | Enforcement | No refund on a ban; no new account for a banned person; ban-evasion checks using email and payment card | `docs/decisions.md`, "Fair use, suspension and bans" |
 | 7 | Terms | The Terms of Service, No-refunds and Cancellation Policy, Acceptable Use Policy and Fair Use Policy drafts. They are modelled on Apify's and Supabase's terms in Nabvy's own wording; their own list of points is added here when they land | `docs/progress.md`, task 4.7 |
-| 8 | Data | Using Facebook Marketplace listings collected through Apify (database right, copyright, the platform's terms), and the LIA and DPIA the actor brief asks for before further collection | Precedence row "Legal gates" |
+| 8 | Data | Using Facebook Marketplace listings collected through Apify (database right, copyright, the platform's terms), and the LIA and DPIA the actor brief asked for before further collection (gate lifted by the owner) | Precedence row "Legal gates"; `docs/decisions.md`, "Legal gates lifted" |
 | 9 | Data | Keeping all actor data unredacted, including seller data, for internal use; the retention period; any notice to sellers | `docs/decisions.md`, "Actor data kept in full"; `docs/questions.md` |
 | 10 | Data | Showing listing photos in the app (off until the owner decides) | `docs/decisions.md`, "MVP scope and pipeline runtime" |
 | 11 | Data | Photos users upload for scan recognition, and their processing by an AI model | `docs/decisions.md`, "MVP scope and pipeline runtime" |
 | 12 | Data | Anti-sharing controls: device, IP and location data, any device identification, internal risk scores | Account-sharing design (in progress) |
 | 13 | Wording | "Suspected ..." labels shown to users; the brief asks for legal review before launch | Precedence row "Labels and scores" |
 | 14 | Wording | Asking-price position and "Estimates, not advice" wording | Precedence row "Price wording"; `docs/web-app.md` |
-| 15 | Resale | Any sharing of listing data with third parties (export, feeds, public API) | Precedence row "Resale of listing data" |
+| 15 | Resale | Sharing listing data with third parties through export, feeds and the public API (gate lifted by the owner) | Precedence row "Resale of listing data"; `docs/decisions.md`, "Legal gates lifted" |
 | 16 | Privacy | Privacy notice, cookie and analytics consent (PostHog), sub-processor list, ICO registration | `docs/compliance.md` |
 | 17 | Marketing | Affiliate programme terms and ad disclosure; marketing consent | `docs/affiliates.md`; `docs/marketing.md` |
 | 18 | Terms | The owner asked to "copy over" Apify's and Supabase's terms. The drafts follow their structure in Nabvy's own wording rather than copying text | Terms drafts (in progress) |

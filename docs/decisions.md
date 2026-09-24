@@ -21,8 +21,8 @@ These are standing rules. Change them only with a human decision recorded here.
 | Per-user work | Scan mode's on-demand fetch includes Facebook asks via Apify per scan (`docs/scan-mode.md`) | Never run Facebook fetches or AI per user. Pasted links join the shared, deduplicated details queue |
 | Search planning | One watch per marketplace, category and 40 km cell, H3 resolution 4 (`docs/architecture.md`, `docs/engineering.md`) | Per region: a verified centre `cityId` × a few terms, never per user (seed: `city-pages.seed.json`, 771 city IDs, 5 verified centres). Newest-first checks, default-order catch-up, daily sweeps; the app chooses which IDs get details and sends them as `listingIds` batches; the actor never filters or judges |
 | Photos | Photo fingerprint and embedding per listing; Storage for listing photos (`docs/engineering.md`, `docs/architecture.md`) | Photo review only when the text is silent; photos fetched through Apify; bytes deleted after review; never serve photos from our own storage |
-| Resale of listing data | Business tier: export, channel feeds and a public deals API (`docs/decisions.md`, Pricing; backlog 5.3, 5.4a) | Avoid any resale of listings, descriptions or photos; sale or sharing with third parties waits for legal advice (`PARTS_INTELLIGENCE.md` §3, §6) |
-| Legal gates | Facebook alerts reach paying users only after a UK legal review (`docs/compliance.md`) | Do not charge before legal advice (Meta's terms, database right, copyright, UK GDPR). An LIA and a DPIA come before further collection, not only before launch; get the legal view before collecting seller data at scale (`PARTS_INTELLIGENCE.md` §6, `SELLER_DATA.md` §5) |
+| Resale of listing data | Business tier: export, channel feeds and a public deals API (`docs/decisions.md`, Pricing; backlog 5.3, 5.4a) | Avoid any resale of listings, descriptions or photos; sale or sharing with third parties waits for legal advice (`PARTS_INTELLIGENCE.md` §3, §6) *The legal-advice gate was lifted by the owner on 2026-09-24 ("Legal gates lifted" below).* |
+| Legal gates | Facebook alerts reach paying users only after a UK legal review (`docs/compliance.md`) | Do not charge before legal advice (Meta's terms, database right, copyright, UK GDPR). An LIA and a DPIA come before further collection, not only before launch; get the legal view before collecting seller data at scale (`PARTS_INTELLIGENCE.md` §6, `SELLER_DATA.md` §5) *Lifted by the owner on 2026-09-24 ("Legal gates lifted" below); the points stay listed in `docs/legal-review.md`.* |
 | Apify token | `APIFY_TOKEN` in the pipeline's platform vault (`docs/secrets.md`) | A Supabase Edge Function secret; never in code or chat. Only actor `YfdUav3sZ2BgEf8rh`, never `JR2fdK8Nj6OLCwKkP`. It is the Edge Function secret `APIFY_TOKEN` on `fbapfy`, read only by the `apify-gateway` Edge Function (`supabase/README.md`) |
 
 ## Actor data kept in full
@@ -82,7 +82,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 ## MVP scope and pipeline runtime
 
 **Owner's decisions, 2026-09-24.**
-- **Scope.** The production MVP for this push is a **public beta with full functionality and one source: Facebook Marketplace through Nabvy's actor**. eBay, CeX, Gumtree and the other sources come later. Features that the build pack fed from other sources work from Facebook data alone. For example, price information is the asking-price position from Facebook asks (the Precedence row "Price wording"), with no eBay sold prices or CeX prices. The legal gates in the Precedence table still apply: no charging before legal advice, and an LIA and a DPIA before further collection (row "Legal gates").
+- **Scope.** The production MVP for this push is a **public beta with full functionality and one source: Facebook Marketplace through Nabvy's actor**. eBay, CeX, Gumtree and the other sources come later. Features that the build pack fed from other sources work from Facebook data alone. For example, price information is the asking-price position from Facebook asks (the Precedence row "Price wording"), with no eBay sold prices or CeX prices. The legal gates are lifted ("Legal gates lifted" below): the operational instruction is a fully working production app.
 - **Frontend.** A modern, professional design, in the spirit of the Apify console, eBay and ChatGPT:
   - an app shell with a left sidebar;
   - clean listing cards with the price up front;
@@ -90,7 +90,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - light and dark themes.
 
   Built on the build pack's stack (Next.js, Tailwind, shadcn/ui); the owner lets the build choose the look.
-- **Charging from launch** (owner's explicit override, 2026-09-24). Billing is built and live at the public beta launch. This overrides the brief's "do not charge before legal advice" (Precedence row "Legal gates") on the owner's instruction. The rest of that row still stands: an LIA and a DPIA come before further collection. Plans and prices are those under "Pricing and cadence" below. What each tier promises in cadence stays open until T2 reports (Precedence row "Cadence and tiers"), so plans are not sold on speed meanwhile.
+- **Charging from launch** (owner's explicit override, 2026-09-24). Billing is built and live at the public beta launch. This overrides the brief's "do not charge before legal advice" (Precedence row "Legal gates") on the owner's instruction. The rest of that row was lifted too ("Legal gates lifted" below). Plans and prices are those under "Pricing and cadence" below. What each tier promises in cadence stays open until T2 reports (Precedence row "Cadence and tiers"), so plans are not sold on speed meanwhile.
 - **Listing photos.** Not shown in the web app until legal advice says they may be (owner, 2026-09-24). Cards show a neutral placeholder and an "Open on Facebook" link; a feature flag, off by default, lets photos be switched on later without a redesign.
 - **Scan mode uses vision AI per scan** (owner's explicit override, 2026-09-24). Photo recognition runs a model call per scan, capped per user by `SCAN_SPEND_CAP_MINOR`. This overrides the brief's "never run AI per user" (Precedence row "Per-user work") for scan recognition only. Facebook fetches are still never run per user: pasted links join the shared, deduplicated details queue.
 - **No refunds** (owner, 2026-09-24). A strict no-refunds policy replaces the 14-day money-back. Nothing is refunded at the customer's request:
@@ -126,6 +126,12 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - throttling and hunt or alert limits as fair-use steps short of suspension;
   - checks against ban evasion (the same email or payment card);
   - a CI test that fails if any user-facing output carries an enforcement reason, rule, signal or score.
+- **Legal gates lifted** (owner, 2026-09-24): "Lift the gates. The operational instruction is to have the production app fully working as intended." The gates are:
+  - further Facebook collection no longer waits for an LIA and a DPIA;
+  - sharing or reselling listing data no longer waits for legal advice, so the build pack's Business features (export, channel feeds, public API) are back in the plan;
+  - Facebook alerts go to every user, paying or not.
+
+  Collection runs as the product needs, within the Apify spend cap the owner sets. The points stay listed in `docs/legal-review.md`. The owner's own product decisions are unchanged, for example listing photos stay off until the owner decides otherwise.
 - **Policies and conduct match big tech** (owner, 2026-09-24): "Any and all policies and conduct just match to the big tech. I'm sure their policies and terms were vetted by legal professionals already." For every policy and every piece of conduct toward users, Nabvy takes the position that leading consumer tech companies share in their UK-facing terms and practice, written in Nabvy's own words. Examples:
   - terms, refunds, cancellation and trials;
   - fair use, acceptable use and account sharing;
@@ -147,7 +153,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 ## Data access
 
 - **APIs first, Apify for the rest, no scrapers of our own.** eBay through its official APIs (Browse for live listings and image search; Marketplace Insights for sold prices when approved; Sell APIs for listing drafts with the user's OAuth consent). CeX through its web API at low volume, cached and capped, with a licensing request to CeX and CeXDB in progress. Facebook Marketplace, Gumtree and later Vinted through third-party Apify actors behind the provider adapter contract, two actors per marketplace with fail-over and spend caps; managed APIs such as ScrapeCreators only as a fallback. *(Superseded for Facebook: one actor only, `YfdUav3sZ2BgEf8rh`, no fallback, CLAUDE.md and the Precedence row "Apify token". For this push Facebook is the only source.)*
-- **Facebook go-live gate:** Facebook alerts are not exposed to paying users until a UK legal review of using provider-collected data (database right, UK GDPR) is complete. A per-provider kill switch exists from day one.
+- **Facebook go-live gate:** Facebook alerts are not exposed to paying users until a UK legal review of using provider-collected data (database right, UK GDPR) is complete. A per-provider kill switch exists from day one. *(Lifted by the owner on 2026-09-24: "Legal gates lifted" above.)*
 - **eBay Partner Network:** eBay alert clicks carry the EPN campaign ID; affiliate links are disclosed in the app.
 
 ## Platform
