@@ -1,0 +1,18 @@
+{
+  "synthetic": true,
+  "source": "module card, \"Does / does not\": forwards to PostHog only with consent",
+  "userId": "00000000-0000-7000-8000-000000000001",
+  "consent": true,
+  "switchState": "on",
+  "sessionId": "session-abc",
+  "trackInput": {
+    "event": "alert_delivered",
+    "properties": {
+      "source": "facebook",
+      "channel": "telegram",
+      "dealScore": 82,
+      "freshnessSeconds": 45,
+      "valuationState": "valued"
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AmountMinor, defineEvents, Uuid } from '../index'
+import { AmountMinor, defineEvents, IsoTimestamp, Uuid } from '../index'
 
 // Contracts of the product-events module (services/product-events, not yet built: catalogue
 // card docs/design/modules/product-events.md). This file adds only what task 0.10 needs first:
@@ -134,3 +134,53 @@ export type ProductEventsName = z.infer<typeof ProductEventsName>
 
 /** The product-events module publishes no domain events: it is read through `v_events`. */
 export const events = defineEvents(module, {})
+
+/**
+ * A module switch state as `track()`'s caller read it (rule 11 of `_rules.md`). Unlike a handler,
+ * `track()` never refuses on this: while `off` it silently records and forwards nothing (module
+ * card, "When off": "nothing recorded; features unaffected"). This module has no user-facing view
+ * to hide rows from, so `shadow` and `on` behave the same (services/product-events/README.md,
+ * "Decisions").
+ */
+export const ProductEventsSwitchState = z.enum(['off', 'shadow', 'on'])
+export type ProductEventsSwitchState = z.infer<typeof ProductEventsSwitchState>
+
+/** The caller's own session id (Better Auth), the same shape `account.ts` uses for its channels. */
+export const ProductEventsSessionId = z.string().trim().min(1).max(200)
+export type ProductEventsSessionId = z.infer<typeof ProductEventsSessionId>
+
+/**
+ * One row of `product_events.v_events`. Its shape follows the Drizzle table declaration in
+ * `packages/db/src/schema/product-events.ts`; `services/product-events/test/contracts.test.ts`
+ * fails if they drift. `properties` stays a plain record here (not the discriminated union
+ * `ProductEventsEvent` uses): the union enforces the allowlist at write time in `track()`, and a
+ * stored row is read back as whatever passed that check.
+ */
+export const ProductEventsRecord = z.strictObject({
+  id: Uuid,
+  userId: Uuid,
+  event: ProductEventsName,
+  properties: z.record(z.string(), z.unknown()),
+  sessionId: ProductEventsSessionId.nullable(),
+  at: IsoTimestamp,
+})
+export type ProductEventsRecord = z.infer<typeof ProductEventsRecord>
+
+/** Error codes the module returns as values (`docs/engineering.md`, "Errors"). */
+export const ProductEventsErrorCode = z.enum([
+  'product-events.invalid_input', // the input failed ProductEventsEvent (unknown event or property)
+])
+export type ProductEventsErrorCode = z.infer<typeof ProductEventsErrorCode>
+
+export const ProductEventsError = z.strictObject({
+  code: ProductEventsErrorCode,
+  message: z.string(),
+})
+export type ProductEventsError = z.infer<typeof ProductEventsError>
+
+/** What `track()` returns: whether the row was written, and whether it reached PostHog. */
+export const ProductEventsTracked = z.strictObject({
+  recorded: z.boolean(),
+  forwarded: z.boolean(),
+})
+export type ProductEventsTracked = z.infer<typeof ProductEventsTracked>

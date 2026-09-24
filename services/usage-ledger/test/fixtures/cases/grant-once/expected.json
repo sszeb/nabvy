@@ -1,0 +1,5 @@
+{
+  "outcomes": [{ "changed": true }, { "changed": false }, { "refused": "usage-ledger.mismatch" }],
+  "buckets": { "pi_3Q": 100 },
+  "balance": 100
+}

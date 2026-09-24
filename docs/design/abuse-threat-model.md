@@ -117,7 +117,7 @@ Farming is mass account creation for free bursts, referral credit, trial or tast
 4. **Hold.** No free window; the account keeps the digest (L2). Proven by `farm-hold`: a held account's want never submits.
 5. **Ban with evasion links.** The group is banned (L4) and its keys (canonical email, card, device, Telegram chat, want set) go into `evasion_keys`, so a new account matching any key starts at step 4. Proven by `farm-evasion`.
 
-Precision guard: the honest cohort (couples, shared flats, one campus network) never passes step 2.
+Precision: the honest cohort (couples, shared flats, one campus) never passes step 2.
 
 ## Resource extraction: quotas, anomalies and variation
 
