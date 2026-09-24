@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "source": "task 0.5a, \"Done\": an entry lands in the database with its UTM",
+  "calls": [
+    {
+      "ip": "203.0.113.101",
+      "state": "on",
+      "input": {
+        "email": "Fixture-Basic@Example.com",
+        "utm": { "source": "reddit", "medium": "social", "campaign": "launch" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "results": [{ "ok": true, "joined": true }],
+  "storedRows": [
+    {
+      "email": "fixture-basic@example.com",
+      "postcode": null,
+      "wantedProducts": [],
+      "utmSource": "reddit",
+      "utmMedium": "social",
+      "utmCampaign": "launch",
+      "utmTerm": null,
+      "utmContent": null
+    }
+  ]
+}
