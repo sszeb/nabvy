@@ -90,6 +90,9 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - light and dark themes.
 
   Built on the build pack's stack (Next.js, Tailwind, shadcn/ui); the owner lets the build choose the look.
+- **Charging from launch** (owner's explicit override, 2026-09-24). Billing is built and live at the public beta launch. This overrides the brief's "do not charge before legal advice" (Precedence row "Legal gates") on the owner's instruction. The rest of that row still stands: an LIA and a DPIA come before further collection. Plans and prices are those under "Pricing and cadence" below. What each tier promises in cadence stays open until T2 reports (Precedence row "Cadence and tiers"), so plans are not sold on speed meanwhile.
+- **Listing photos.** Not shown in the web app until legal advice says they may be (owner, 2026-09-24). Cards show a neutral placeholder and an "Open on Facebook" link; a feature flag, off by default, lets photos be switched on later without a redesign.
+- **Scan mode uses vision AI per scan** (owner's explicit override, 2026-09-24). Photo recognition runs a model call per scan, capped per user by `SCAN_SPEND_CAP_MINOR`. This overrides the brief's "never run AI per user" (Precedence row "Per-user work") for scan recognition only. Facebook fetches are still never run per user: pasted links join the shared, deduplicated details queue.
 - **Pipeline runtime.** **Trigger.dev** runs the pipeline modules, as the build pack planned. Apify is still called only through the Supabase `apify-gateway` Edge Function: pipeline tasks queue gateway jobs in the database and read the collected rows back. This answers the runtime question in `docs/questions.md`.
 
 ## Product
