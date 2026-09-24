@@ -239,7 +239,7 @@ async function storeRun(
          result = ($2::jsonb -> 'data') || jsonb_build_object('itemCount', $3::integer, 'runSummary', $4::jsonb),
          cost_usd = coalesce($5::numeric, cost_usd),
          updated_at = now()
-     where id = $6`,
+     where id = $6 and status = 'running'`,
     [status, runText, itemCount, runSummary, costUsd, job.id],
   )
   return itemCount
