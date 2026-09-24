@@ -1,0 +1,6 @@
+{
+  "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+  "action": "audit-log.restricted-read",
+  "target": "view:apify_gateway.v_restricted_rows",
+  "reason": "checking scam report 42"
+}
