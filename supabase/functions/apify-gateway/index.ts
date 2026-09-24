@@ -43,27 +43,19 @@ const customEnvNames = () =>
     .filter((name) => !PLATFORM_ENV.test(name))
     .sort()
 
-const vaultTokenQuery =
-  "select decrypted_secret as secret from vault.decrypted_secrets where name = 'apify_token'"
-
-// The token comes from the Edge Function secret APIFY_TOKEN when that is set, otherwise from the
-// Vault secret apify_token (stored there on the owner's instruction). Never logged or returned.
-async function apifyToken(client: PoolClient): Promise<string> {
-  const fromEnv = Deno.env.get('APIFY_TOKEN')
-  if (fromEnv) return fromEnv
-  const fromVault = (await client.queryObject<{ secret: string }>(vaultTokenQuery)).rows[0]?.secret
-  if (fromVault) return fromVault
-  throw new Error('No Apify token: neither the APIFY_TOKEN secret nor the Vault secret apify_token')
+// The token is the Edge Function secret APIFY_TOKEN. It is never logged or returned.
+function apifyToken(): string {
+  const token = Deno.env.get('APIFY_TOKEN')
+  if (!token) throw new Error('No Apify token: the APIFY_TOKEN Edge Function secret is not set')
+  return token
 }
 
-// Resolves the token on first use, so an invocation with no Apify work never reads it.
-function apifyClient(client: PoolClient): Apify {
-  let token: Promise<string> | undefined
+function apifyClient(): Apify {
   return async (path, init = {}) => {
-    token ??= apifyToken(client)
+    const token = apifyToken()
     const response = await fetch(`${APIFY}${path}`, {
       ...init,
-      headers: { Authorization: `Bearer ${await token}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       signal: AbortSignal.timeout(30_000),
     })
     const text = await response.text()
@@ -77,12 +69,10 @@ function apifyClient(client: PoolClient): Apify {
   }
 }
 
-async function envCheck(client: PoolClient): Promise<Json> {
-  const vault = await client.queryObject<{ secret: string }>(vaultTokenQuery)
+function envCheck(): Json {
   return {
     apifyEnvNames: apifyEnvNames(),
     customEnvNames: customEnvNames(),
-    vaultSecretPresent: Boolean(vault.rows[0]?.secret),
     hasDbUrl: Boolean(Deno.env.get('SUPABASE_DB_URL')),
   }
 }
@@ -214,7 +204,7 @@ Deno.serve(async (request) => {
       await client.queryObject<{ actor_id: string }>('select actor_id from apify_gateway.settings')
     ).rows[0]
     if (!settings) throw new Error('apify_gateway.settings is empty')
-    const apify = apifyClient(client)
+    const apify = apifyClient()
     const processed: Array<{ id: number; kind: string; outcome: string }> = []
 
     for (let claims = 0; claims < MAX_CLAIMS; claims++) {
@@ -227,7 +217,7 @@ Deno.serve(async (request) => {
       }
       try {
         if (job.kind === 'env_check') {
-          await finish(client, job.id, 'succeeded', await envCheck(client))
+          await finish(client, job.id, 'succeeded', envCheck())
         } else if (job.kind === 'actor_info') {
           await finish(client, job.id, 'succeeded', await actorInfo(apify, settings.actor_id))
         } else {

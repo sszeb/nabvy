@@ -42,12 +42,12 @@ the schema is not exposed to the Data API.
 **Seller data.** `apify_gateway.items` holds raw actor rows, which can include seller fields. Per
 the brief they are internal only: never copy them into user-facing tables, fixtures or logs.
 
-**Secret.** The function reads the Edge Function secret `APIFY_TOKEN` when it is set, otherwise
-the Vault secret `apify_token`. The project had no Edge Function secret, so on the owner's
-instruction (2026-09-24) the token was stored in Vault; update it there (dashboard, Vault) when the
+**Secret.** The function reads the Edge Function secret `APIFY_TOKEN` (Edge Functions → Secrets
+in the `fbapfy` dashboard) and fails with a clear error if it is missing. Update it there when the
 token is rotated. The function never logs or returns the token. An `env_check` job reports which
-Apify-like and project-added secret names exist and whether the Vault secret is present (names and
-yes/no only), so a token saved under an unexpected name can be found.
+Apify-like and project-added secret names exist (names only), so a token saved under an unexpected
+name can be found. Until the owner added `APIFY_TOKEN`, the token was held briefly in Supabase Vault;
+that copy was deleted on 2026-09-24 once the secret was confirmed working.
 
 **Operating it.**
 
@@ -62,4 +62,5 @@ select id, kind, status, cost_usd, error from apify_gateway.jobs order by id;
 Migrations in `migrations/` were applied through the Supabase connector on 2026-09-24:
 `20260924020000_apify_gateway.sql` (schema), `20260924021000_apify_gateway_search_path.sql`
 (security advisor fix) and `20260924022000_apify_gateway_settle_cost.sql` (cost settlement).
-Deployed function version: 5 (version 4 was created outside this repository between deploys and has been replaced).
+Deployed function version: 7. Versions 4 and 6 were not deployed from this repository (most likely
+the dashboard redeploying when secrets changed); each later deploy replaced them.
