@@ -4,15 +4,15 @@
 
 ### `details-selector`
 - **Purpose:** choose which newly seen listings get a detail fetch.
-- **Does / does not:** selects every new listing ID that is in area (its city page is in an active centre's area) or offers shipping, and whose category is electronics, a container, a GPU or unknown, whatever its price or title (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:67,164-166`): of bare "Pc" or "Gaming pc" titles, 107 of 135 name a GPU only in the description. No title keyword filter. Stamps T2. The category IDs counted as electronics are configuration; Facebook's category is unreliable (full PCs filed under "Computer cases"), so unknown counts as in (`…/dataset.json:540-541`). It never selects in order to find sellers (`fb-scrap-engine/docs/design/SELLER_DATA.md:200-204`). It does not fetch or judge.
-- **Inputs:** `listing-ingest.first-seen`; `v_listings`; `v_area_membership`.
+- **Does / does not:** selects every new listing ID that is in area, or offers shipping when an active want at that centre accepts delivery, and whose category is electronics, a container, a GPU or unknown, whatever its price or title (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:67,164-166`): of bare "Pc" or "Gaming pc" titles, 107 of 135 name a GPU only in the description. No title keyword filter. "In area" means the listing's city page lies within the radius of at least one active want mapped to that centre, measured from the want's point; 100 km from the centre applies only when no want there sets a radius, or while `want-manager` is not built (starting values; `actor-integration.md` 2.8). It reads `want-manager`'s `v_want_areas`, which carries no user IDs. Stamps T2. The category IDs counted as electronics are configuration; Facebook's category is unreliable (full PCs filed under "Computer cases"), so unknown counts as in (`…/dataset.json:540-541`). It never selects in order to find sellers (`fb-scrap-engine/docs/design/SELLER_DATA.md:200-204`). It does not fetch or judge.
+- **Inputs:** `listing-ingest.first-seen`; `v_listings`; `v_area_membership`; `v_want_areas` (soft).
 - **Outputs:** `detailsQueue.enqueue()`.
 - **Owns:** `selections` (source, source_listing_id, card_hash, reason `in_area | shipped`, selected_at as T2).
 - **Views:** internal `v_selections`. User-facing: none.
 - **Contracts:** `DetailsSelectorSelection`, `DetailsSelectorReason`.
-- **Depends on:** `switches`, `listing-ingest`, `city-pages`, `details-queue`.
+- **Depends on:** `switches`, `listing-ingest`, `city-pages`, `details-queue`, `want-manager` (soft).
 - **When off:** no automatic detail fetches; pasted links and rechecks still use the queue.
 - **Tests and fixtures:** a bare "Gaming pc" title is selected; out of area and not shipped is not; unknown category is selected; replay writes nothing.
-- **Priority and phase:** P1; Gated with collection (question 8).
-- **Sources:** `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:67,164-166`; `fb-scrap-engine/docs/HANDOFF.md:148-150`; `fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:147-151`; `nabvy/docs/architecture.md:88`.
-- **Open questions:** 8, 33.
+- **Priority and phase:** P1; runs for active hunts (`nabvy/docs/decisions.md:131-135`).
+- **Sources:** `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:67,164-166`; `fb-scrap-engine/docs/HANDOFF.md:148-150`; `fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:147-151`; `nabvy/docs/architecture.md:88`; `nabvy/docs/decisions.md:131-135,143`.
+- **Open questions:** 33; `actor-integration.md` questions 6 and 17.

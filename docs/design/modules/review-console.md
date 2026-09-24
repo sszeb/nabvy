@@ -4,13 +4,13 @@
 
 ### `review-console`
 - **Purpose:** run the human loop: review queues, corrections and fixture export.
-- **Does / does not:** shows each module's review and quarantine views (`parts-ai` quarantine, the `suspected-labels` review queue, `v_verdict_counts` from `listing-feedback`). An approved correction is applied by calling the owning module's `applyCorrection()`, never by writing its tables; it is recorded, audited and exported as a fixture case (`nabvy/docs/fixtures.md:39`). A correction never creates a sold observation from Facebook data, because opt-in user reports are the only route to sale prices (`nabvy/docs/decisions.md:16`); the build pack's rule is narrowed here (`nabvy/docs/modules.md:127`).
-- **Inputs:** `v_quarantine`, `v_review_queue`, `v_rule_parts`, `v_parts`, `v_assessments`, `v_deliveries`, `v_verdict_counts`, `v_bands`, `v_actions` and `v_contests` (account integrity; admins only).
+- **Does / does not:** shows each module's review and quarantine views (`parts-ai` quarantine, the `suspected-labels` and `copy-advert` review queues, `v_verdict_counts` from `listing-feedback`). An approved correction is applied by calling the owning module's `applyCorrection()`, never by writing its tables; it is recorded, audited and exported as a fixture case (`nabvy/docs/fixtures.md:39`). A correction never creates a sold observation from Facebook data, because opt-in user reports are the only route to sale prices (`nabvy/docs/decisions.md:16`); the build pack's rule is narrowed here (`nabvy/docs/modules.md:127`).
+- **Inputs:** `v_quarantine`, `suspected_labels.v_review_queue`, `copy_advert.v_review_queue`, `v_rule_parts`, `v_parts`, `v_assessments`, `v_deliveries`, `v_verdict_counts`, `v_bands`, `v_actions` and `v_contests` (account integrity; admins only).
 - **Outputs:** `review-console.corrected` (correction IDs); `applyCorrection()` calls; `override()` calls to `account-integrity`.
 - **Owns:** `corrections` (id, module, target, before, after, by, at), `fixtures_index` (case, module, source correction).
 - **Views:** internal `v_corrections` (admin). User-facing: none.
 - **Contracts:** `ReviewConsoleCorrection`, `ReviewConsoleCorrectedEvent`.
-- **Depends on:** `switches`, `parts-ai`, `parts-rules`, `parts-record`, `listing-assessment`, `suspected-labels`, `sold-price-book` (soft), `notifier`, `audit-log`, `account-integrity`, `listing-feedback`.
+- **Depends on:** `switches`, `parts-ai`, `parts-rules`, `parts-record`, `listing-assessment`, `suspected-labels`, `copy-advert`, `sold-price-book` (soft), `notifier`, `audit-log`, `account-integrity`, `listing-feedback`.
 - **When off:** review waits; nothing else changes.
 - **Tests and fixtures:** a correction reaches the owning module and adds a fixture (`nabvy/docs/backlog.md:65`).
 - **Priority and phase:** BP4 (`nabvy/docs/backlog.md:65`).

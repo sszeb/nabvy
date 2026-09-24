@@ -15,4 +15,4 @@
 - **Tests and fixtures:** recorded responses; no-op when disabled (`nabvy/docs/backlog.md:39`).
 - **Priority and phase:** After MVP: the MVP has one source, Facebook (`nabvy/docs/decisions.md:85`). BP2; Gated on eBay's approval.
 - **Sources:** `nabvy/docs/providers.md:32`; `nabvy/docs/backlog.md:39`.
-- **Open questions:** `nabvy/docs/decisions.md:193`.
+- **Open questions:** `nabvy/docs/decisions.md:244`.

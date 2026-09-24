@@ -4,7 +4,7 @@
 
 ### `auth`
 - **Purpose:** identity, sessions and roles, through Better Auth.
-- **Does / does not:** Better Auth with the Drizzle adapter: magic link, Google, admin and captcha plugins; database-generated IDs; email verification; its generated tables are never edited by hand (`nabvy/docs/modules.md:96-100`; `nabvy/CLAUDE.md:34`). The Stripe plugin's `subscription` table is generated here and read by `subscriptions`.
+- **Does / does not:** Better Auth with the Drizzle adapter: magic link, Google, admin and captcha plugins; database-generated IDs; email verification; its generated tables are never edited by hand (`nabvy/docs/modules.md:96-100`; `nabvy/CLAUDE.md:59`). The Stripe plugin's `subscription` table is generated here and read by `subscriptions`.
 - **Inputs:** sign-in flows.
 - **Outputs:** sessions; `userId` for every module.
 - **Owns:** the Better Auth generated tables.

@@ -4,7 +4,7 @@
 
 ### `listing-feedback`
 - **Purpose:** record each user's verdict and state on a listing or alert.
-- **Does / does not:** takes the deal-card feedback, `real_deal`, `not_a_deal` or `bought` (`nabvy/docs/backlog.md:58`; `nabvy/docs/web-app.md:30`), which the build pack kept as `Alert.userVerdict` (`nabvy/docs/contracts.md:112`), and the brief's per-user `user_listing_state` (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:145`): saved or dismissed. Publishes verdict counts without user IDs, for alert precision, a guardrail metric (`nabvy/docs/decisions.md:200`), and for the review loop. The `alert_feedback` analytics event (`nabvy/docs/web-app.md:54`) is recorded by the procedure through `product-events`, not here. A user's rows are purged on `account.deleted`. It changes no match, label or alert, and a verdict is never a sale price (`nabvy/docs/decisions.md:16`).
+- **Does / does not:** takes the deal-card feedback, `real_deal`, `not_a_deal` or `bought` (`nabvy/docs/backlog.md:58`; `nabvy/docs/web-app.md:30`), which the build pack kept as `Alert.userVerdict` (`nabvy/docs/contracts.md:112`), and the brief's per-user `user_listing_state` (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:145`): saved or dismissed. Publishes verdict counts without user IDs, for alert precision, a guardrail metric (`nabvy/docs/decisions.md:236`), and for the review loop. The `alert_feedback` analytics event (`nabvy/docs/web-app.md:54`) is recorded by the procedure through `product-events`, not here. A user's rows are purged on `account.deleted`. It changes no match, label or alert, and a verdict is never a sale price (`nabvy/docs/decisions.md:16`).
 - **Inputs:** web forms through oRPC procedures inside `withUser`; `account.deleted`; `v_suppressed`.
 - **Outputs:** `listing-feedback.recorded` (verdict IDs).
 - **Owns:** `verdicts` (user_id, listing, alert_id, verdict `real_deal | not_a_deal | bought`, at), `listing_state` (user_id, listing, state `saved | dismissed`, at). Row-level security on `user_id`.
@@ -14,5 +14,5 @@
 - **When off:** feedback controls are hidden and alert precision gets no new data; nothing else changes.
 - **Tests and fixtures:** a user cannot read another user's verdicts; `v_verdict_counts` carries no user ID; the same verdict sent twice writes one row; purge on deletion.
 - **Priority and phase:** MVP; BP4 (`nabvy/docs/backlog.md:58`).
-- **Sources:** `nabvy/docs/backlog.md:58`; `nabvy/docs/web-app.md:30,54`; `nabvy/docs/contracts.md:112`; `nabvy/docs/decisions.md:16,200`; `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:145`.
+- **Sources:** `nabvy/docs/backlog.md:58`; `nabvy/docs/web-app.md:30,54`; `nabvy/docs/contracts.md:112`; `nabvy/docs/decisions.md:16,236`; `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:145`.
 - **Open questions:** none.

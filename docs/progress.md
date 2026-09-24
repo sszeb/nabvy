@@ -67,7 +67,7 @@ Status values: not started, in progress, blocked (see `docs/questions.md`), done
 
 ## Wave 1 (atomic modules)
 
-Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when its hard dependencies are merged (`docs/design/modules/index.json`, "round"); round 0 first. Next: `switches` once `audit-log` merges, then round 2.
+Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when its hard dependencies are merged (`docs/design/modules/index.json`, "round", regenerated at 13:00 from the final audited catalogue: 89 modules, rounds 0 to 14); round 0 first. Next: `switches` once `audit-log` merges, then round 2.
 
 | Module | Round | Status | Session | Model |
 | --- | --- | --- | --- | --- |
