@@ -5,8 +5,16 @@ import { z } from 'zod'
 // Defaults are the configuration values docs/secrets.md states; secrets never have defaults.
 
 const required = () => z.string().min(1)
-const postgresUrl = () => z.url({ protocol: /^postgres(ql)?$/ })
-const httpsUrl = () => z.url({ protocol: /^https$/ })
+const postgresUrl = () =>
+  z.url({ protocol: /^postgres(ql)?$/, error: 'must be a postgres:// or postgresql:// URL' })
+const httpsUrl = () => z.url({ protocol: /^https$/, error: 'must be an https:// URL' })
+// The app's own URLs, which are http:// in local development (Next.js, `supabase start`).
+const appUrl = () =>
+  z.url({
+    protocol: /^https?$/,
+    hostname: z.regexes.hostname,
+    error: 'must be an http:// or https:// URL with a host',
+  })
 const count = () => z.coerce.number().int().nonnegative()
 const flag = () => z.stringbool()
 const emailList = () =>
@@ -23,10 +31,10 @@ const emailList = () =>
 export const envGroups = {
   database: z.object({ DATABASE_URL: postgresUrl() }),
   pipelineDatabase: z.object({ DATABASE_URL_PIPELINE: postgresUrl() }),
-  storage: z.object({ SUPABASE_URL: httpsUrl(), SUPABASE_SERVICE_ROLE_KEY: required() }),
+  storage: z.object({ SUPABASE_URL: appUrl(), SUPABASE_SERVICE_ROLE_KEY: required() }),
   auth: z.object({
     BETTER_AUTH_SECRET: required(),
-    BETTER_AUTH_URL: z.url(),
+    BETTER_AUTH_URL: appUrl(),
     ADMIN_EMAILS: emailList(),
   }),
   captcha: z.object({ TURNSTILE_SITE_KEY: required(), TURNSTILE_SECRET_KEY: required() }),
@@ -51,11 +59,13 @@ export const envGroups = {
   ebay: z.object({
     EBAY_CLIENT_ID: required(),
     EBAY_CLIENT_SECRET: required(),
-    EBAY_RUNAME: required(),
     EBAY_ENV: z.enum(['sandbox', 'production']),
     EBAY_INSIGHTS_ENABLED: flag().default(false),
-    EBAY_EPN_CAMPAIGN_ID: required(),
   }),
+  // Phase 3 (Sell API consent flow), and Partner Network once approved: separate so the Phase 2
+  // Browse adapter does not wait for them.
+  ebaySell: z.object({ EBAY_RUNAME: required() }),
+  ebayPartnerNetwork: z.object({ EBAY_EPN_CAMPAIGN_ID: required() }),
   cex: z.object({
     CEX_API_BASE: httpsUrl().default('https://wss2.cex.uk.webuy.io/v3'),
     CEX_DAILY_CAP_CALLS: count().default(300),

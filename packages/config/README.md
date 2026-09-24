@@ -20,13 +20,24 @@ env.FB_DAILY_CAP_MINOR // number, default 1000
   at once. The message holds names and reasons, never values, so it is safe to log.
 - **Empty means unset.** `.env.example` ships every variable with an empty value; a blank or
   whitespace-only value counts as missing, never as a valid empty string.
-- **Defaults only for configuration.** The values `docs/secrets.md` labels "Config" (CeX base and
-  cap, model IDs, postcodes.io, PostHog host, spend caps, the two flags) have defaults. Secrets
-  never do.
+- **Defaults only where docs/secrets.md states a value.** `CEX_API_BASE`, `CEX_DAILY_CAP_CALLS`,
+  the three `MODEL_*` IDs, `POSTCODES_IO_BASE`, `POSTHOG_HOST`, the three spend caps,
+  `EBAY_INSIGHTS_ENABLED` and `LIVE_PROVIDERS` have defaults. `USD_GBP_RATE` and `ADMIN_EMAILS` are
+  configuration without a default. Secrets never have defaults; a test proves that every other
+  variable is missing from an empty environment.
+- **URL checks.** Provider endpoints must be `https://`. The app's own URLs (`BETTER_AUTH_URL`,
+  `SUPABASE_URL`) may be `http://` so local development (`supabase start`, Next.js) works, but must
+  have a scheme and a host.
 - **Later choices get their own group.** The Facebook fallback actor and the Gumtree actor are
   chosen after week one, so they sit in `apifyFacebookFallback` and `apifyGumtree` and are
   required only by the adapters that use them. `FOUNDER_TELEGRAM_CHAT_ID` is in `founderTelegram`
-  because only the Phase 1 dispatcher needs it.
+  because only the Phase 1 dispatcher needs it. `EBAY_RUNAME` (`ebaySell`, Phase 3) and
+  `EBAY_EPN_CAMPAIGN_ID` (`ebayPartnerNetwork`, after approval) are kept out of the Phase 2 Browse
+  group. The actor brief allows only one Facebook actor, so `apifyFacebookFallback` may go when the
+  build pack is rewritten (`docs/decisions.md`, "Precedence").
+- **Test-time variables.** Turborepo passes `LIVE_PROVIDERS` (hashed into the cache key) and the
+  two database URLs through to `pnpm test`; `tsconfig.base.json`, `.env.example` and
+  `docs/secrets.md` are global cache inputs, so editing them re-runs the checks.
 - **Drift is a test failure.** Tests check that the schema, `docs/secrets.md`, `.env.example` and
   the test fixture list the same variables.
 

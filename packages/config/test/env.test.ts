@@ -55,26 +55,65 @@ describe('loadEnv', () => {
     expect(env).toEqual({ DATABASE_URL: complete.DATABASE_URL })
   })
 
-  it('applies the configuration defaults from docs/secrets.md, but never to secrets', () => {
-    const groups = ['spendCaps', 'cex', 'models', 'postcodes', 'posthog', 'testing'] as const
-    expect(failure(() => loadEnv(groups, {})).missing).toEqual(['ANTHROPIC_API_KEY', 'POSTHOG_KEY'])
-
-    const env = loadEnv(groups, { ANTHROPIC_API_KEY: 'placeholder', POSTHOG_KEY: 'placeholder' })
-    expect(env).toEqual({
-      ANTHROPIC_API_KEY: 'placeholder',
-      POSTHOG_KEY: 'placeholder',
-      POSTHOG_HOST: 'https://eu.i.posthog.com',
+  it('gives defaults only to the variables whose value docs/secrets.md states', () => {
+    // Against an empty environment every variable is missing except exactly these.
+    const defaults = {
       FB_DAILY_CAP_MINOR: 1000,
       GUMTREE_DAILY_CAP_MINOR: 500,
       SCAN_SPEND_CAP_MINOR: 5,
+      EBAY_INSIGHTS_ENABLED: false,
       CEX_API_BASE: 'https://wss2.cex.uk.webuy.io/v3',
       CEX_DAILY_CAP_CALLS: 300,
       MODEL_DEFAULT: 'claude-haiku-4-5-20251001',
       MODEL_ESCALATION: 'claude-sonnet-5',
       MODEL_VISION: 'claude-sonnet-5',
       POSTCODES_IO_BASE: 'https://api.postcodes.io',
+      POSTHOG_HOST: 'https://eu.i.posthog.com',
       LIVE_PROVIDERS: false,
-    })
+    }
+    const error = failure(() => loadEnv(allGroups, {}))
+    expect(error.missing).toEqual(envVariableNames.filter((name) => !(name in defaults)))
+
+    const groups = [
+      'spendCaps',
+      'ebay',
+      'cex',
+      'models',
+      'postcodes',
+      'posthog',
+      'testing',
+    ] as const
+    const secrets = without(...Object.keys(defaults))
+    expect(loadEnv(groups, secrets)).toMatchObject(defaults)
+  })
+
+  it('accepts local http URLs for the app and Supabase, but not a missing scheme', () => {
+    const local = {
+      ...complete,
+      SUPABASE_URL: 'http://127.0.0.1:54321',
+      BETTER_AUTH_URL: 'http://localhost:3000',
+    }
+    expect(loadEnv(['storage', 'auth'], local).SUPABASE_URL).toBe('http://127.0.0.1:54321')
+
+    const error = failure(() =>
+      loadEnv(['storage', 'auth', 'cex'], {
+        ...complete,
+        SUPABASE_URL: 'ftp://example.com',
+        BETTER_AUTH_URL: 'localhost:3000',
+        CEX_API_BASE: 'http://wss2.cex.uk.webuy.io/v3',
+      }),
+    )
+    expect(error.invalid).toEqual(['SUPABASE_URL', 'BETTER_AUTH_URL', 'CEX_API_BASE'])
+    expect(error.message).toContain('CEX_API_BASE (must be an https:// URL)')
+  })
+
+  it('keeps later-phase eBay variables out of the Browse group', () => {
+    const browse = without('EBAY_RUNAME', 'EBAY_EPN_CAMPAIGN_ID')
+    expect(loadEnv(['ebay'], browse).EBAY_ENV).toBe('sandbox')
+    expect(failure(() => loadEnv(['ebaySell', 'ebayPartnerNetwork'], browse)).missing).toEqual([
+      'EBAY_RUNAME',
+      'EBAY_EPN_CAMPAIGN_ID',
+    ])
   })
 
   it('reports malformed values as invalid without echoing them', () => {
