@@ -1,0 +1,1 @@
+2.10 rows 2-3: a partial or missing description is requeued once (starting value; 1-2% stay missing, EVIDENCE_LEDGER.md:189-190), then left as it is: done, with the outcome recorded so readers know the text is not full.

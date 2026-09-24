@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "source": "actor-integration.md 2.10 (docs/design/drafts/actor-integration.md:235-250); actor guide item 8",
+  "items": [
+    {
+      "id": "1000000000000031",
+      "attempts": 0,
+      "requeues": 0
+    }
+  ],
+  "rows": [
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000031",
+      "directItemUnresolved": true,
+      "detailOutcome": "extraction-error"
+    }
+  ]
+}

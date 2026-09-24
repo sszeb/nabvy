@@ -1,0 +1,1 @@
+Synthetic. A sweep's listings are queued first, a newest check's later; the batch sends the newest check's follow-ups first (priority `new-listing` before `sweep`), then the older sweep follow-ups, one region per batch.

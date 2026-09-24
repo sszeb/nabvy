@@ -1,0 +1,1 @@
+Recorded run `VkryjpwS6U2GBDh3k`: every listing row is `detailOutcome: collected`, `descriptionStatus: full_verified` (run-summary.json `detailOutcomes: {collected: 20}`). Replayed as the rows of a details batch of the same 20 IDs, all 20 are done: 2.10 row 1. The `sourceOutcome` row is ignored (not a listing row).
