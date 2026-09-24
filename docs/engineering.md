@@ -76,6 +76,6 @@ Sign-up 5 per hour per IP; magic-link requests 5 per hour per email; scans 30 pe
 
 ## Branches, pull requests, progress
 
-- One branch per task: `task/<id>-<slug>`. One pull request per task with the definition of done as its checklist. CI must be green; a human merges.
+- One branch per task: `task/<id>-<slug>`. One pull request per task with the definition of done as its checklist. CI must be green; the reviewer session reviews, approves and merges (owner, 2026-09-24; "Atomic modules" in `docs/decisions.md`).
 - At the end of every task the agent updates `docs/progress.md` (status, date, PR link, notes) and the module `README.md`. A new session starts by reading `docs/progress.md`.
 - Never rewrite history on `main`; never force-push.

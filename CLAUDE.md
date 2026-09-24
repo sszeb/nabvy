@@ -9,7 +9,7 @@ You are building Nabvy, a UK deal-finding engine. Before any task read `README.m
 - **Facebook actor rules** (owner, 2026-09-24). Call only the private Apify actor `YfdUav3sZ2BgEf8rh`; never touch `JR2fdK8Nj6OLCwKkP`. Never contact Facebook directly: all Facebook traffic goes through Apify runs. The Apify token is the Supabase Edge Function secret `APIFY_TOKEN`, read only by the `apify-gateway` Edge Function, and never appears in code, commits, logs or chat. Apify is called only through that gateway (`supabase/README.md`). In Supabase, leave the deprecated `marketplace_monitor` schema alone.
 - **No scrapers.** Never write code that fetches HTML or undocumented endpoints from Facebook, Gumtree or Vinted. Those sources are reached only through the Apify client and the provider adapter contract. eBay is reached only through its official APIs. CeX is reached through its web API behind the adapter, with the caps in `docs/providers.md`.
 - **No browser automation** against any marketplace, and never store or use a user's marketplace cookies or passwords. eBay seller access uses OAuth tokens only.
-- **No personal data beyond need.** Never store seller names or profile links. Public seller IDs are hashed before storage. Raw provider responses live in snapshot storage for 30 days, then expire. *(Seller data: superseded by the brief, which keeps it internal-only in a restricted private schema and never shows seller identity to users. Raw snapshots contain the actor's seller fields, so they fall under the same restrictions. See "Precedence" in `docs/decisions.md`.)*
+- **No personal data beyond need.** Never store seller names or profile links. Public seller IDs are hashed before storage. Raw provider responses live in snapshot storage for 30 days, then expire. *(Superseded for actor data by the owner's decision of 2026-09-24: keep everything the actor returns, unredacted and unstripped, including seller data; developers see all of it; only end users of the app are never shown seller identity. See "Actor data kept in full" in `docs/decisions.md`.)*
 - **No invented numbers.** Prices, margins and days-to-sell come from `services/valuation` over real comparables. Model output is facts and text only, validated against a Zod schema before use.
 - **No database access from the browser.** All reads and writes go through oRPC procedures in `apps/web/src/rpc/` (or a plain server action that calls the same procedure) which validate input with the contracts schemas, check the session, and call module functions inside `withUser(userId)` from `@nabvy/db`. Never import Drizzle or a database client into client components; never use supabase-js for application data; never put business logic in a procedure or action, only in module functions.
 - **No HTTP between modules.** Modules import each other's exported functions and publish events. A module that needs another module's data reads its `v_` view or calls its function; it never fetches a URL.
@@ -18,8 +18,8 @@ You are building Nabvy, a UK deal-finding engine. Before any task read `README.m
 
 ## How to work
 
-- **One task at a time** from `docs/backlog.md`, in order, unless a human says otherwise. Do not start the next task in the same session without a check-in.
-- **Definition of done** is stated per task. It always includes: types in contracts or schema in db, a fixture-based test, lint and typecheck clean, a short note in the module's `README.md` on anything decided, and an updated row in `docs/progress.md`. Work on a branch `task/<id>-<slug>` and open one pull request per task; a human merges.
+- **One task at a time** from `docs/backlog.md`, in order, unless a human says otherwise. Do not start the next task in the same session without a check-in. *(Exception, owner 2026-09-24: atomic modules are built in parallel waves, one session and one pull request per module, under a coordinator session; see "Atomic modules" in `docs/decisions.md`.)*
+- **Definition of done** is stated per task. It always includes: types in contracts or schema in db, a fixture-based test, lint and typecheck clean, a short note in the module's `README.md` on anything decided, and an updated row in `docs/progress.md`. Work on a branch `task/<id>-<slug>` and open one pull request per task; the reviewer session reviews, approves and merges it (owner, 2026-09-24, for the production MVP; "Atomic modules" in `docs/decisions.md`).
 - **Fixture-first.** Every extraction, valuation or risk change must run against `fixtures/` and keep the pass rate at or above the previous run. Add a fixture when you find a case the tests miss.
 - **Batches, not items.** Pipeline tasks process arrays of listings (100–500). Never write a task that handles one listing per run.
 - **Idempotent handlers.** Every event handler must be safe to run twice. The idempotency key is `source + sourceListingId + contentHash`.
@@ -45,6 +45,7 @@ pnpm lint
 pnpm test            # runs fixture tests
 pnpm db:generate     # generate a Drizzle migration from schema changes
 pnpm db:migrate      # apply migrations
+pnpm db:dry-run      # apply supabase/migrations + run supabase/tests on a local throwaway Postgres (PG* env)
 pnpm auth:generate   # regenerate Better Auth schema after plugin changes
 pnpm dev:web         # Next.js app
 pnpm trigger:dev     # Trigger.dev local runner

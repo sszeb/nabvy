@@ -7,8 +7,9 @@ Supabase-side code for project `fbapfy` (`rlgufxmsrkhyeiabdeic`, eu-west-1).
 The owner's rule is that the Apify token lives only as a Supabase Edge Function secret
 (`docs/fb-actor-sources.md`), so the one piece of code that talks to Apify is the Edge Function
 `functions/apify-gateway`. It is a bootstrap for connecting to the actor and recording its real
-fields (task 1.0). When the actor brief's `APP_INTEGRATION_GUIDE.md` lands, this gateway is
-reviewed against it and folded into the provider adapter (task 1.1), and the schema below moves
+fields (task 1.0). Once Nabvy's own integration plan is agreed (`docs/decisions.md`, "The actor is a
+tool"), this gateway is reviewed against
+it and folded into the provider adapter (task 1.1), and the schema below moves
 into `packages/db` with task 0.3.
 
 **How it works.**
@@ -23,8 +24,23 @@ into `packages/db` with task 0.3.
 3. `apify_gateway.claim_next_job()` hands out jobs one at a time under a lock and refuses any run
    whose reservation would take committed spend past `settings.cap_usd`.
 4. The function starts runs asynchronously and, on later invocations, collects finished runs: the
-   dataset rows go to `apify_gateway.items`, the run's cost (`usageTotalUsd`) and `RUN_SUMMARY`
-   to the job's `result`.
+   dataset rows go to `apify_gateway.items`; the whole Apify run object, with `itemCount` and the
+   `RUN_SUMMARY` record added, goes to the job's `result`; the run's cost (`usageTotalUsd`) goes
+   to `cost_usd`.
+
+**Lossless collection** (owner's decision: keep everything the actor returns). The function
+downloads every page of the dataset (`settings.download_page_size` rows per request, 1,000 by
+default) without Apify's `clean` filter, so empty rows and hidden fields are kept. Response text is
+handed to Postgres as-is and never parsed by JavaScript first, so numbers keep their exact digits.
+A job is not finished until the rows stored match the dataset's `itemCount`. A short download, or a
+`RUN_SUMMARY` read that fails for any reason except "not found", leaves a `run` job running for the
+next invocation to try again, and marks a `collect` job failed (queue another). Rows are keyed by
+`(job_id, seq)`, so a repeated download adds nothing twice.
+
+A free `collect` job re-downloads any finished run of the configured actor by its Apify run ID. It
+starts nothing, so it costs no actor spend and the cap does not apply. On 2026-09-24, collect job 15
+re-downloaded run `VkryjpwS6U2GBDh3k` in pages of 5; all 21 rows matched the rows stored by job 6
+exactly.
 
 **Spend.** `apify_gateway.spend` shows the cap, the committed amount and what remains. Apify
 finalises a run's `usageTotalUsd` a few minutes after the run ends (the first run read $0.0003 at
@@ -39,8 +55,9 @@ still counted in full once it settles.
 functions are revoked from `public`, `anon` and `authenticated`, RLS is on with no policies, and
 the schema is not exposed to the Data API.
 
-**Seller data.** `apify_gateway.items` holds raw actor rows, which can include seller fields. Per
-the brief they are internal only: never copy them into user-facing tables, fixtures or logs.
+**Seller data.** `apify_gateway.items` holds the actor's rows complete and unredacted, seller fields
+included (owner's decision, `docs/decisions.md` "Actor data kept in full"). Developers see all of it;
+only end users of the app are never shown seller identity.
 
 **Redacted copies for fixtures.** `apify_gateway.redacted_items(job_id)` returns a job's rows with
 every `seller` and `marketplace_listing_seller` object replaced by a same-shaped placeholder (the ID
@@ -58,10 +75,18 @@ Apify-like and project-added secret names exist (names only), so a token saved u
 name can be found. Until the owner added `APIFY_TOKEN`, the token was held briefly in Supabase Vault;
 that copy was deleted on 2026-09-24 once the secret was confirmed working.
 
+**Tests.** `pnpm db:dry-run` applies every migration to a local throwaway Postgres (with stand-ins
+for Supabase's roles and `pg_net` from `tests/supabase-stubs.sql`) and runs `tests/*.test.sql`:
+input validation, reservations, the spend cap, cost settlement, `collect` jobs, redaction and
+privileges. CI runs it
+on every pull request. The script refuses any non-local database.
+
 **Operating it.**
 
 ```sql
 insert into apify_gateway.jobs (kind) values ('actor_info');           -- free
+insert into apify_gateway.jobs (kind, input)
+  values ('collect', '{"apifyRunId": "<run id>"}');                     -- free, re-download a run
 select apify_gateway.enqueue_run('{...}'::jsonb, 1024, 300, 'why');     -- paid, capped
 select apify_gateway.invoke();                                          -- start or collect
 select * from apify_gateway.spend;
@@ -72,6 +97,8 @@ Migrations in `migrations/` were applied through the Supabase connector on 2026-
 `20260924020000_apify_gateway.sql` (schema), `20260924021000_apify_gateway_search_path.sql`
 (security advisor fix), `20260924022000_apify_gateway_settle_cost.sql` (cost settlement) and
 `20260924023000_apify_gateway_redact.sql` and `20260924024000_apify_gateway_redact_v2.sql` (redacted
-copies for fixtures, below).
-Deployed function version: 7. Versions 4 and 6 were not deployed from this repository (most likely
+copies for fixtures, above) and `20260924025000_apify_gateway_collect.sql` (the `collect` job and
+the download page size).
+Deployed function version: 8. The repository version also restores the `status = 'running'` guard
+on the final job update (dropped in version 8); the coordinator deploys it as version 9 after merge. Versions 4 and 6 were not deployed from this repository (most likely
 the dashboard redeploying when secrets changed); each later deploy replaced them.

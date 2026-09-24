@@ -4,7 +4,7 @@ These are standing rules. Change them only with a human decision recorded here.
 
 ## Precedence: the Facebook actor brief
 
-**Owner's decision, 2026-09-24.** Where this build pack conflicts with the Facebook actor brief in `sebtimize/fb-scrap-engine` (`docs/HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows", and the designs they link; reading list and rules in `docs/fb-actor-sources.md`), the brief wins because it is more up to date. The brief's `docs/APP_INTEGRATION_GUIDE.md` (contracts, Supabase schema, how to call the actor) and `docs/design/COPY_ADVERT_SPAM.md` are still being written. When they land, the build-pack documents affected below are rewritten to match, before task 0.2 (contracts) starts. Until then, read the build pack through this table.
+**Owner's decision, 2026-09-24.** Where this build pack conflicts with the Facebook actor brief in `sebtimize/fb-scrap-engine` (`docs/HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows", and the designs they link; reading list and rules in `docs/fb-actor-sources.md`), the brief wins because it is more up to date. The brief's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` do not exist yet; Nabvy writes its own integration plan and copy-advert design either way ("The actor is a tool" below). The build-pack documents affected below are rewritten to match before task 0.2 (contracts) starts. Until then, read the build pack through this table.
 
 | Topic | Build pack says | Brief says (wins) |
 | --- | --- | --- |
@@ -25,9 +25,59 @@ These are standing rules. Change them only with a human decision recorded here.
 | Legal gates | Facebook alerts reach paying users only after a UK legal review (`docs/compliance.md`) | Do not charge before legal advice (Meta's terms, database right, copyright, UK GDPR). An LIA and a DPIA come before further collection, not only before launch; get the legal view before collecting seller data at scale (`PARTS_INTELLIGENCE.md` §6, `SELLER_DATA.md` §5) |
 | Apify token | `APIFY_TOKEN` in the pipeline's platform vault (`docs/secrets.md`) | A Supabase Edge Function secret; never in code or chat. Only actor `YfdUav3sZ2BgEf8rh`, never `JR2fdK8Nj6OLCwKkP`. It is the Edge Function secret `APIFY_TOKEN` on `fbapfy`, read only by the `apify-gateway` Edge Function (`supabase/README.md`) |
 
+## Actor data kept in full
+
+**Owner's decision, 2026-09-24.** Keep all the data the actor returns: nothing is removed, redacted or stripped at ingest, including seller names, IDs and pictures and the full listing text. It is needed for scam detection and other internal analysis, and developers see the full data at all times. The one rule is that **end users of the app are never shown seller identity**. The simplest way to meet it:
+
+- users only read through the app's API and its `v_` views;
+- those views select an explicit allowlist of fields, and seller fields are never on it;
+- a CI test on user-facing output enforces this when the web app arrives.
+
+This replaces minimisation and stripping wherever the build pack or the brief call for them (`CLAUDE.md` "No personal data beyond need"; `SELLER_DATA.md` §5; `PARTS_INTELLIGENCE.md` on stripping descriptions). It does not change what users may see (Precedence table above). How long raw data is kept has not been set; it is kept until the owner decides otherwise.
+
+**Storage shape (plan for task 0.3):** each actor row is stored whole as `jsonb`, so no field is lost even when the actor adds new ones. The fields Nabvy filters and sorts on also get real columns (listing ID, price, currency, title, listed time, town, coordinates, availability, category, description status).
+
 Not a conflict in price: the brief's money section (Plus at about £4.99 a month) is labelled "inputs, not decisions", so the price points below stand until the owner decides otherwise. What each tier promises in cadence is a conflict (row "Cadence and tiers").
 
-New work from the brief, to be placed in the backlog when the integration guide lands: a parts record per listing (listing kind; every part quoted from the listing with its inclusion status; rules first from `part-patterns.json`, AI only for gaps, once per listing, shared by every user); spec search and alerts, where silence is never a "no" ("GPU not stated — ask the seller"); a free noise filter (wanted, swap and "I buy" adverts, keyword stuffing, laptops, mention-only hits); the copy-advert spam flag; suspected-behaviour labels; asking-price position; the price-drop watch; demand signals (first-party wants plus wanted adverts, cells under 5 suppressed); seller objection and erasure with a suppression list keyed by a hash of the listing ID (before launch); CI tests that fail if user-facing output carries seller fields, contact details, suppressed listings or aggregates under the display threshold (`SELLER_DATA.md` §3, §5).
+New work from the brief, to be placed in the backlog with Nabvy's own integration plan ("The actor is a tool" below): a parts record per listing (listing kind; every part quoted from the listing with its inclusion status; rules first from `part-patterns.json`, AI only for gaps, once per listing, shared by every user); spec search and alerts, where silence is never a "no" ("GPU not stated — ask the seller"); a free noise filter (wanted, swap and "I buy" adverts, keyword stuffing, laptops, mention-only hits); the copy-advert spam flag; suspected-behaviour labels; asking-price position; the price-drop watch; demand signals (first-party wants plus wanted adverts, cells under 5 suppressed); seller objection and erasure with a suppression list keyed by a hash of the listing ID (before launch); CI tests that fail if user-facing output carries seller fields, contact details, suppressed listings or aggregates under the display threshold (`SELLER_DATA.md` §3, §5).
+
+## The actor is a tool; Nabvy owns the rest
+
+**Owner's decision, 2026-09-24.** The Facebook actor is a plain fetch tool: it runs searches and fetches listing details, and nothing more. Everything else is Nabvy's to design and build: copy-advert spam detection, the parts record, noise filtering, suspected-behaviour labels, asking-price position, the price-drop watch, scam signals, alerts and the rest. Nabvy writes its own integration plan and copy-advert spam design (in progress, `docs/progress.md`). The actor repo's `docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` are on the owner's reading list but not written yet (checked at `f177a44`); they are checked for until they land, and anything useful in them is folded into Nabvy's own plans.
+
+**Only the listed actor files are read** (owner, 2026-09-24). The owner asked for the actor's documents to be used "as knowledge to help you in developing the app as a whole", and then limited that to the files in the owner's reading list, `docs/fb-actor-sources.md`; the actor repository is a separate project and the rest of it is not scanned. In scope:
+- `HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows" only;
+- the designs `PARTS_INTELLIGENCE.md`, `CONTAINER_LISTINGS.md` and `SELLER_DATA.md`;
+- the data files `city-pages.seed.json` and `part-patterns.json`;
+- `app/route-health.js` and `test/route-health.test.js`;
+- `.actor/input_schema.json`;
+- the optional references `SCALE_PLAN.md`, `MONETISATION_INPUTS.md`, `EVIDENCE_LEDGER.md` and `README.md`.
+
+What these files teach informs the whole app, not only the calls to the actor. The Precedence table above still decides conflicts; knowledge that points at a product decision (pricing, tiers, categories, user-facing wording) goes to `docs/questions.md` rather than being decided.
+
+## Atomic modules
+
+**Owner's decision, 2026-09-24.** Each function of the app is a stand-alone atomic module, starting with copy-advert spam detection; the other functions (the parts record, the noise filter, suspected-behaviour labels, asking-price position, the price-drop watch and the rest) are treated the same way. Working definition, until the owner amends it:
+
+- **One job.** A module does one function, lives in `services/<module>/` with the shape in `CLAUDE.md`, and has its own `README.md`, fixtures and tests.
+- **Own data.** It owns its tables; no other module writes them. Others read its output only through its `v_` views or its exported functions.
+- **Contracts only.** Its types live in `packages/contracts` under its own name. It talks to other modules only through those contracts and thin events; it never imports another module's internals and never calls another module over HTTP.
+- **Stands alone.** It can be built, tested, switched off and replaced on its own. When it is off, the modules that read its output carry on without it.
+- **Pipeline rules.** Handlers take batches, are idempotent (key `source + sourceListingId + contentHash`) and stamp their T-timestamps.
+
+The build pack's larger modules (`docs/modules.md`) are split to match; the module catalogue that does this is in progress (`docs/progress.md`).
+
+**How modules are built** (owner, 2026-09-24): foundation first, then parallel waves.
+1. **Foundation, one session.** After the owner approves the module catalogue, one session lays what every module builds on:
+   - per-module contract files and database-schema namespaces in `packages/contracts` and `packages/db`;
+   - an event registry with one file per module;
+   - a scaffold script for the module shape;
+   - the rule that a module session touches only its own folder, contract file and migration file.
+2. **Waves.** Every module whose inputs and owner decisions are ready starts at the same time, each in its own session, on its own branch `task/<id>-<module>`, with one pull request per module. Each module is built and tested against fixtures. Migrations are tested only on a local throwaway Postgres (`pnpm db:dry-run`); the coordinator session applies them to Supabase after the pull request is merged. A module waiting on an owner decision or a legal gate waits for a later wave.
+3. **One coordinator session.** It writes each module session's brief, checks each pull request for consistency with the contracts, keeps `docs/progress.md` itself so branches do not conflict over it, and applies merged migrations to Supabase.
+4. **One reviewer session reviews, approves and merges every pull request** (owner, 2026-09-24, for the production MVP). It merges only when its review passes and CI is green on the exact commit it reviewed. GitHub does not let an account approve its own pull request, and every session acts as the owner's account, so the approval is recorded as a review comment whose verdict reads "Approved". It never pushes to a pull request's branch; the authoring session fixes what the review finds. A pull request that needs an owner decision (pricing, tiers, categories, wording shown to users) waits for the owner.
+
+For module work this replaces `CLAUDE.md`'s "one task at a time".
 
 ## Product
 

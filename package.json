@@ -17,6 +17,7 @@
     "test:fixtures": "node scripts/pending.mjs test:fixtures 0.6",
     "db:generate": "node scripts/pending.mjs db:generate 0.3",
     "db:migrate": "node scripts/pending.mjs db:migrate 0.3",
+    "db:dry-run": "bash scripts/db-dry-run.sh",
     "db:seed": "node scripts/pending.mjs db:seed 0.3",
     "auth:generate": "node scripts/pending.mjs auth:generate 0.3",
     "dev:web": "node scripts/pending.mjs dev:web 0.5a",

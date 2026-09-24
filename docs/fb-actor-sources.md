@@ -6,12 +6,19 @@ read it through the session's GitHub access, never by fetching Facebook.
 
 Repository: https://github.com/sebtimize/fb-scrap-engine (private, branch main)
 
+**Scope** (owner, 2026-09-24): only the files in this list are read from the actor repository. It is a
+separate project and the rest of it is not scanned. What these files teach informs the whole app, not
+only calling the actor. See `docs/decisions.md`, "The actor is a tool".
+
 ## Start here
 
 0. `docs/fb-actor-reference.md` in this repository: a checked reference compiled from a full read of the
    actor repository at `f177a44` (inputs, routes, output fields, costs, failure modes, app duties).
+   **Being rebuilt from the listed files only** (owner, 2026-09-24). Until the rebuilt version lands,
+   do not rely on anything in it that the files below do not support.
 
-1. `docs/APP_INTEGRATION_GUIDE.md` (being written; check back until it exists)
+1. `docs/APP_INTEGRATION_GUIDE.md` (not written yet; checked for until it lands. Nabvy writes its own
+   integration plan either way: `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/APP_INTEGRATION_GUIDE.md
 2. `docs/HANDOFF.md`: read only the sections "Rules" and "The app: what we want it to do, and
    what the data allows"
@@ -22,7 +29,8 @@ Repository: https://github.com/sebtimize/fb-scrap-engine (private, branch main)
 3. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/PARTS_INTELLIGENCE.md
 4. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/CONTAINER_LISTINGS.md
 5. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/SELLER_DATA.md
-6. `docs/design/COPY_ADVERT_SPAM.md` (being written; check back until it exists)
+6. `docs/design/COPY_ADVERT_SPAM.md` (not written yet; checked for until it lands. Nabvy writes its own
+   copy-advert spam design either way: `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/COPY_ADVERT_SPAM.md
 
 ## Data and code to copy into the app
