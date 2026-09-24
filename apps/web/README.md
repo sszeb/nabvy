@@ -66,6 +66,39 @@ this is the start of the CI check on user-facing output that `docs/decisions.md`
 - **`sharp` is removed** from the tree (`pnpm-workspace.yaml` override): it is Next's optional
   image optimiser and brings LGPL binaries; the app serves no optimised images.
 
+## Error pages (task 4.1b)
+
+Every error the app can show uses one layout, `components/error-page.tsx`, with its copy in
+`lib/errors.ts`. The layout follows the pattern big tech uses for error pages, adapted to Nabvy:
+- the status code as a graphic: a teal price tag swinging on a string, in front of dashed
+  search-radius rings (the swing stops when reduced motion is on);
+- a short human headline in the deal-hunting register ("This one got away" for 404);
+- one or two sentences on what happened and what to do next;
+- one main action, an optional second one, and a few helpful links;
+- "Error 404" in small print, and a reference (Next's error digest) on server errors.
+
+| Route | When |
+| --- | --- |
+| `app/not-found.tsx` | 404: unknown address or `notFound()` |
+| `app/error.tsx` | 500 inside the app, with "Try again" (resets the boundary) |
+| `app/global-error.tsx` | 500 in the root layout; brings its own `<html>` |
+| `app/unauthorized.tsx` | 401 from `unauthorized()`, e.g. when `requireUser` fails |
+| `app/forbidden.tsx` | 403 from `forbidden()`, e.g. when `requireAdmin` fails |
+| `app/errors/[code]` | static pages for 400, 401, 403, 404, 408, 410, 429, 500, 502, 503 and 504, plus `restricted`. The proxy, route handlers and the CDN rewrite to these when Next's own boundaries do not apply (a 429 from the rate limiter, a 503 during maintenance) |
+
+- `forbidden()` and `unauthorized()` need Next's `experimental.authInterrupts`, which is on in
+  `next.config.ts`.
+- **`/errors/restricted` stays plain on purpose:** a lock, "Account restricted", and exactly "Your
+  account has been restricted under our terms.", with no illustration or joke and no reason, date
+  or rule (`docs/decisions.md`, "Fair use, suspension and bans"). It offers "Nabvy home" and a
+  generic "Contact us", as big tech does. The generic 403 page never hints at a restriction. The
+  notice's text is duplicated in `lib/errors.ts` until the auth module's contract
+  (`ACCOUNT_RESTRICTED_MESSAGE`, PR #9) can be imported.
+- The copy follows the app's copy rules (no exclamation marks, no urgency, UK English).
+  `test/errors.test.ts` checks it, and `e2e/errors.spec.ts` renders every page in the four
+  projects and checks that an unknown address answers 404. The screenshots are
+  `docs/design/screens/error-*.png`.
+
 ## Commands
 
 ```
