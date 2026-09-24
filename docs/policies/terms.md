@@ -15,7 +15,7 @@ This summary helps you find your way around. The full terms below are what apply
 - Plans renew automatically until you cancel. You can cancel at any time, and your plan runs until the end of the period you have paid for.
 - Payments are non-refundable, except where required by law. Nothing in these terms affects your legal rights.
 - Plan allowances assume normal personal use (see the [Fair Use Policy](fair-use.md)). The [Acceptable Use Policy](acceptable-use.md) lists what is not allowed.
-- If we notice abuse, we may restrict or suspend your account, or ban it permanently. This happens automatically, and we do not give reasons, except where the law requires us to. You can ask us to review a decision. A banned person may not open a new account.
+- If we notice abuse, we may restrict or suspend your account, or ban it permanently. This happens automatically. We tell you only which of our policies the step was taken under, with no further detail, except where the law requires us to. You can ask us to review a decision within 30 days. A banned person may not open a new account.
 
 ---
 
@@ -142,7 +142,7 @@ TODO-LEGAL (LR-06)
 
 6.2 In return, you can cancel at any time, and your plan runs until the end of the period you have paid for. We remind you before a trial ends and before an annual plan renews. Usage for a failed action goes back to your balance. If we stop providing a paid service for reasons other than a suspension or ban under section 10, we refund the unused part (section 12.3).
 
-6.3 When you buy, we ask you to confirm that you want the service to start straight away. The [No-refunds and Cancellation Policy](refunds-and-cancellation.md) explains what this means for your right to cancel within 14 days. TODO-LEGAL (LR-08) [OWNER TO CONFIRM: `docs/billing.md` has no such Checkout confirmation yet. It must be added to the billing task before this sentence is published.]
+6.3 When you buy, we ask you to confirm that you want the service to start straight away. The [No-refunds and Cancellation Policy](refunds-and-cancellation.md) explains what this means for your right to cancel within 14 days. TODO-LEGAL (LR-08)
 
 6.4 Nothing in these terms affects your legal rights. The full rules are in the [No-refunds and Cancellation Policy](refunds-and-cancellation.md). TODO-LEGAL (LR-09)
 
@@ -210,11 +210,10 @@ We do not have to take these steps in order. We may ban an account without a war
 10.3 **How enforcement works.** TODO-LEGAL (LR-13)
 
 - **Automatic.** Enforcement is automatic. Our automated systems detect abuse and apply these steps, and they can act without a person being involved and without warning you first.
-- **The notice.** When a step is taken, we send you a short notice in the app or by email. It says that your account has been restricted, suspended or banned under our terms, and how to ask us to review the decision (section 10.4). If a suspension is temporary, we tell you the date it ends.
-- **No reasons.** Except where the law requires us to, we do not give reasons for enforcement decisions, and we do not share the rules, evidence, signals or scores behind them, in the app, by email, through support or in any other way, because that would help people get round our protections.
-- **Reasons.** The notice tells you which of our documents the step was taken under: these terms, the Acceptable Use Policy or the Fair Use Policy. We do not give more detail, or share the rules, evidence, signals or scores behind a decision, where we reasonably believe that doing so would help someone get round our protections, harm another user, a seller or Nabvy, compromise an investigation, or break the law. [OWNER TO DECIDE: keep one of these two bullets and delete the other. This "Reasons" bullet is close to the position YouTube, Google and Anthropic take in their UK terms (Meta's UK terms promise notice and review options, with similar exceptions), which the user asked Nabvy to match. The recorded decision in `docs/decisions.md` ("Automatic, autonomous and internal") is no reasons at all, which is the "No reasons" bullet above. If the owner chooses "Reasons", mirror it in fair-use.md 6.3, acceptable-use.md 12.3, terms 10.4 and the short version.]
+- **The notice.** When a step is taken, we send you a short notice in the app or by email. It says that your account has been restricted, suspended or banned, which of our documents the step was taken under, and how to ask us to review the decision (section 10.4). If a suspension is temporary, we tell you the date it ends.
+- **Which policy, and nothing more.** The notice tells you which of our documents the step was taken under: these terms, the Acceptable Use Policy or the Fair Use Policy. Except where the law requires us to, we give no further reasons, and we do not share the rules, evidence, signals or scores behind a decision, in the app, by email, through support or in any other way, because that would help people get round our protections.
 
-10.4 **Asking us to look again.** If you think we have made a mistake, you can ask us to review the decision. Reply to the notice or write to [APPEALS CONTACT] within [OWNER TO SET: appeal window, for example 6 months] of the notice. A member of our team will review the decision. We will tell you whether it stands, has been changed or has been lifted, but, except where the law requires us to, we will not give reasons. We review each decision once. Please do not open a new account to ask about a restricted one; use the route above. TODO-LEGAL (LR-14)
+10.4 **Asking us to look again.** If you think we have made a mistake, you can ask us to review the decision. Reply to the notice or write to [APPEALS CONTACT] within 30 days of the notice. A member of our team will review the decision. We will tell you whether it stands, has been changed or has been lifted, but, except where the law requires us to, we will not give reasons. We review each decision once. Please do not open a new account to ask about a restricted one; use the route above. TODO-LEGAL (LR-14)
 
 10.5 **During a suspension.**
 

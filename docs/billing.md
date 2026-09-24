@@ -44,6 +44,7 @@ Entitlements derive from the plugin's `subscription` table (status, plan, period
 - **Failed payment:** Stripe Smart Retries; the app shows a banner from `invoice.payment_failed`; after the final retry the subscription becomes `unpaid` and the entitlement reverts to Free. Data and hunts are kept.
 - **No refunds** (owner, 2026-09-24; `docs/decisions.md`, "No refunds"):
   - **Disclosure.** Pricing and Checkout show "Payments are non-refundable" before purchase.
+  - **Start now.** Every Checkout for a subscription, trial or top-up has one required tick, "Start my plan now", with the wording from `docs/policies/refunds-and-cancellation.md`. The confirmation and its time are stored in `billing_events` (owner, 2026-09-24).
   - **No refund path** for users or admins.
   - **Chargebacks.** `charge.dispute.created` is recorded in `billing_events`, and the affiliate commission is reversed.
 - **Referral credit:** £5 non-expiring usage to both the referrer and the referred user when the referred user's first subscription invoice is paid; written as `referral` ledger rows once per pair. Referral codes are per user and stored in `user_profiles`.
@@ -67,4 +68,4 @@ The Crawl Planner's cadence rule uses subscription revenue per cell from `entitl
 
 ## Tests
 
-Webhook idempotency (same event twice → one change); entitlement matrix per tier; trial offered once and refused twice; failed-payment downgrade; monthly grant and expiry; balance buckets spend expiring first; a metered action refused at zero balance and reversed on failure; no user or admin path can create a refund; downgrades land at period end with no credit; boost expiry removes the unit; referral credit applied once.
+Webhook idempotency (same event twice → one change); entitlement matrix per tier; trial offered once and refused twice; failed-payment downgrade; monthly grant and expiry; balance buckets spend expiring first; a metered action refused at zero balance and reversed on failure; Checkout refuses to proceed without the start-now tick, and the stored confirmation matches the session; no user or admin path can create a refund; downgrades land at period end with no credit; boost expiry removes the unit; referral credit applied once.

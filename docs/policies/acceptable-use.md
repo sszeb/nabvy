@@ -110,7 +110,7 @@ You must not do anything similar to the conduct listed above that we reasonably 
 
 12.2 **Other actions.** We may also remove content and reverse promotional usage or referral credits gained by breaking this policy.
 
-12.3 **Automatic enforcement.** Enforcement is automatic. You receive only a short notice, and, except where the law requires us to, we do not give reasons (section 10.3 of the terms). You can ask us to review a decision (section 10.4 of the terms).
+12.3 **Automatic enforcement.** Enforcement is automatic. You receive only a short notice naming the policy the step was taken under and, except where the law requires us to, no further reasons (section 10.3 of the terms). You can ask us to review a decision within 30 days (section 10.4 of the terms).
 
 12.4 **Monitoring.** We use automated systems to detect abuse. We do not promise to monitor everything that happens on Nabvy.
 

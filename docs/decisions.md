@@ -101,6 +101,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - **Cancellation.** Customers can cancel at any time in the billing portal. It takes effect at the end of the paid period, and access continues until then.
   - **Plan changes.** Downgrades are scheduled for the period end, so no credit arises. Upgrades take effect at once and charge the difference.
   - **Disclosure.** The pricing page, Checkout and the terms state "Payments are non-refundable" before purchase.
+  - **Start now at Checkout** (owner, 2026-09-24, as big tech does). Checkout has one required tick, "Start my plan now", for subscriptions, trials and top-ups. It is stored with the payment.
   - **No refund button** anywhere, for users or admins.
   - **Chargebacks** are recorded, and they reverse any affiliate commission.
   - **Failed actions.** A metered action that fails returns its usage credits (a ledger reversal, not a refund of money).
@@ -117,7 +118,7 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
   - no reasons, evidence, rule names, signals or scores;
   - nothing in the app, email, notifications, API, exports or support replies.
 
-  The user receives only a short, vague notice, for example "Your account has been restricted under our terms." A generic appeal or contact route is offered only if big tech offers one, and it reveals nothing ("Policies and conduct match big tech" below). Developers and admins see everything. Points a lawyer may want to look at are listed in `docs/legal-review.md`.
+  The user receives only a short notice that names the policy the step was taken under and nothing more (owner, 2026-09-24, as big tech does), for example "Your account has been suspended under our Fair Use Policy." The notice offers a review route: the user may ask for a review within **30 days**, a person looks internally, and the reply says only whether the decision stands, changed or was lifted. Developers and admins see everything. Points a lawyer may want to look at are listed in `docs/legal-review.md`.
 
   The product enforces it:
   - an account status (active, suspended until a date, banned) checked on every signed-in request and by every job that acts for a user;

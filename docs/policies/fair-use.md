@@ -86,7 +86,7 @@ TODO-LEGAL (LR-12)
 
 6.2 **The notice.** When a step applies, you receive a short notice in the app or by email saying that your account has been restricted under our terms and how to ask us to review the decision. If a suspension is temporary, we tell you the date it ends.
 
-6.3 **No reasons.** Except where the law requires us to, we do not give reasons, and we do not share the rules, evidence, signals, thresholds or scores behind any step, because that would help people get round them.
+6.3 **Which policy, and nothing more.** The notice names the policy the step was taken under. Except where the law requires us to, we give no further reasons, and we do not share the rules, evidence, signals, thresholds or scores behind any step, because that would help people get round them.
 
 6.4 **Reviews.** If you think we have made a mistake, you can ask us to review the decision (section 10.4 of the terms).
 
