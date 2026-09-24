@@ -71,7 +71,11 @@ event are new (route-health's "Depends on" line does not include source-adapters
 `test/idempotency.test.ts` (a replayed run writes nothing new; history is pruned to 11 rows),
 `test/switch.test.ts` (rule 11), `test/handlers.test.ts` (the full `apify-gateway.run-collected`
 path: region lookup, search runs ignored, a missing region tag refused) and
-`test/contracts.test.ts`.
+`test/contracts.test.ts`. `packages/db/tests/route-health.test.sql` (run by `pnpm db:dry-run`):
+only `nabvy_pipeline` can write, and only `route_state`/`route_runs`, never a delete on
+`route_state` or an update on `route_runs`; `route_runs.apify_run_id` is unique; `v_decisions` is
+`security_invoker`, has exactly its column allowlist, is read by `nabvy_pipeline` only, shows a
+region's decision in shadow and on, and no rows while off.
 
 ## Decisions
 
