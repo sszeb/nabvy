@@ -16,6 +16,14 @@ $$;
 delete from apify_gateway.items;
 delete from apify_gateway.jobs;
 
+-- The gateway claims nothing while switched off (packages/db/migrations/apify-gateway), and its cap
+-- is now $150 a month. These checks were written for the bootstrap: switched on, $5.50 cap. The
+-- module's own behaviour is tested in packages/db/tests/apify-gateway.test.sql.
+insert into switches.switches (name, kind, state) values ('apify-gateway', 'module', 'on')
+  on conflict (name) do update set state = 'on';
+update switches.switches set state = 'on' where name in ('apify', 'pipeline');
+update apify_gateway.settings set cap_usd = 5.50;
+
 -- 1. enqueue_run rejects every input the gateway must refuse, and accepts a valid one.
 do $$
 declare
