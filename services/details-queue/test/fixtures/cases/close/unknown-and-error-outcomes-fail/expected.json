@@ -1,0 +1,22 @@
+{
+  "items": {
+    "1000000000000041": {
+      "status": "queued",
+      "attempts": 1,
+      "requeues": 0,
+      "lastOutcome": "extraction-error"
+    },
+    "1000000000000042": {
+      "status": "queued",
+      "attempts": 1,
+      "requeues": 0,
+      "lastOutcome": "unknown:something-new"
+    },
+    "1000000000000043": {
+      "status": "queued",
+      "attempts": 0,
+      "requeues": 1,
+      "lastOutcome": "stale-fallback"
+    }
+  }
+}

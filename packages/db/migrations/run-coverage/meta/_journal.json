@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790269381736,
+      "tag": "20260924170301_run_coverage_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790269383561,
+      "tag": "20260924170303_run_coverage_access",
+      "breakpoints": true
+    }
+  ]
+}

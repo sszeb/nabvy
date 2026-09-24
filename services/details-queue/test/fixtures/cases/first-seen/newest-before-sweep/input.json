@@ -1,0 +1,55 @@
+{
+  "synthetic": true,
+  "source": "CONTAINER_LISTINGS.md:194-196: frequent-check follow-ups before sweep follow-ups",
+  "jobTags": {
+    "11": {
+      "module": "check-scheduler",
+      "region": "leeds",
+      "purpose": "sweep",
+      "shape": "sweep-broad"
+    },
+    "12": {
+      "module": "check-scheduler",
+      "region": "leeds",
+      "purpose": "newest",
+      "shape": "newest-check"
+    }
+  },
+  "listings": [
+    {
+      "id": "01930000-0000-7000-8000-000000000021",
+      "sourceListingId": "3000000000000001",
+      "jobId": 11,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000022",
+      "sourceListingId": "3000000000000002",
+      "jobId": 11,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000023",
+      "sourceListingId": "3000000000000003",
+      "jobId": 12,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000024",
+      "sourceListingId": "3000000000000004",
+      "jobId": 12,
+      "kind": "search"
+    }
+  ],
+  "steps": [
+    {
+      "firstSeen": ["01930000-0000-7000-8000-000000000021", "01930000-0000-7000-8000-000000000022"]
+    },
+    {
+      "firstSeen": ["01930000-0000-7000-8000-000000000023", "01930000-0000-7000-8000-000000000024"]
+    },
+    {
+      "submit": true
+    }
+  ]
+}

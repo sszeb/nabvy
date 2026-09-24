@@ -1,0 +1,60 @@
+{
+  "steps": [
+    {
+      "written": 1,
+      "statuses": ["capped"],
+      "degraded": 0,
+      "events": 0
+    },
+    {
+      "written": 1,
+      "statuses": ["complete"],
+      "degraded": 0,
+      "events": 0
+    }
+  ],
+  "outcomes": [
+    {
+      "step": 1,
+      "kind": "sweep",
+      "route": "http",
+      "stopReason": "page-cap",
+      "reportedRoute": "http",
+      "reportedStopReason": "page-cap",
+      "pages": 100,
+      "listings": 2400,
+      "feedType": null,
+      "binding": "verified",
+      "pageOneOverlap": null,
+      "previousStep": null,
+      "status": "capped",
+      "reasons": []
+    },
+    {
+      "step": 2,
+      "kind": "sweep",
+      "route": "http",
+      "stopReason": "source-no-new-listings",
+      "reportedRoute": "http",
+      "reportedStopReason": "source-no-new-listings",
+      "pages": 40,
+      "listings": 1000,
+      "feedType": "long",
+      "binding": "verified",
+      "pageOneOverlap": 20,
+      "previousStep": 1,
+      "status": "complete",
+      "reasons": []
+    }
+  ],
+  "baselines": [
+    {
+      "centreId": "115935195086622",
+      "term": "gaming pc",
+      "kind": "sweep",
+      "basis": "complete",
+      "searchIndex": 0,
+      "step": 2
+    }
+  ]
+}

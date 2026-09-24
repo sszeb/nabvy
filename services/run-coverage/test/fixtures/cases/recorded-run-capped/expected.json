@@ -1,0 +1,38 @@
+{
+  "steps": [
+    {
+      "written": 1,
+      "statuses": ["capped"],
+      "degraded": 0,
+      "events": 0
+    }
+  ],
+  "outcomes": [
+    {
+      "step": 1,
+      "kind": "newest",
+      "route": "http",
+      "stopReason": "results-limit",
+      "reportedRoute": "http",
+      "reportedStopReason": "results-limit",
+      "pages": 1,
+      "listings": 20,
+      "feedType": null,
+      "binding": "verified",
+      "pageOneOverlap": null,
+      "previousStep": null,
+      "status": "capped",
+      "reasons": []
+    }
+  ],
+  "baselines": [
+    {
+      "centreId": "115935195086622",
+      "term": "gaming pc",
+      "kind": "newest",
+      "basis": "bounded",
+      "searchIndex": 0,
+      "step": 1
+    }
+  ]
+}
