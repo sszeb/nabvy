@@ -188,9 +188,27 @@ describe('recommendDetailRoute (Nabvy)', () => {
   })
 
   it('counts listings with no description as failed replays (behaviour pinned; see docs/questions.md)', () => {
-    // The actor's 1.0.82 live check: 50 replays, 47 answered, 3 for listings with no description.
+    // The actor's 1.0.82 live check: 50 replays, 3 of them failed as description-missing
+    // (fb-scrap-engine/docs/EVIDENCE_LEDGER.md:237,241-243). The ledger gives no detailOk; 47 is
+    // computed as 50 - 3.
     // Unchanged from the actor, one such run moves the region to the dearer page route with an alert.
     const decision = recommendDetailRoute([run(50, 47)])
     expect([decision.route, decision.reason, decision.alert]).toEqual(['page', 'low-success', true])
+  })
+
+  it('never calls no replays low success, even with minAttempts 0 (Nabvy divergence, pinned)', () => {
+    // fb-scrap-engine/app/route-health.js:54 evaluates `null < minSuccess` as true here and
+    // returns page / low-success with an alert. Nabvy stays on graphql: see route-health.ts.
+    for (const history of [[], [pageRun()], [run(0, 0)]]) {
+      const decision = recommendDetailRoute(history, null, { minAttempts: 0 })
+      expect([decision.route, decision.reason, decision.successRate, decision.alert]).toEqual([
+        'graphql',
+        'healthy',
+        null,
+        false,
+      ])
+    }
+    // With replays, minAttempts 0 behaves like the actor: low success still switches.
+    expect(recommendDetailRoute([run(10, 5)], null, { minAttempts: 0 }).reason).toBe('low-success')
   })
 })

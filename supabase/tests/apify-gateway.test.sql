@@ -20,24 +20,41 @@ delete from apify_gateway.jobs;
 do $$
 declare
   good jsonb := '{"inputVersion":3,"searchTerms":["gaming pc"],"cityId":"115935195086622",
-    "maxRequests":60,"maxRunSeconds":240,"browserFallback":false,
-    "proxyConfiguration":{"useApifyProxy":true}}';
+    "maxRequests":60,"maxRunSeconds":240,"browserFallback":false,"useDetailCache":false,
+    "proxyConfiguration":{"useApifyProxy":true,"apifyProxyGroups":["RESIDENTIAL"],"apifyProxyCountry":"GB"}}';
+  proxy jsonb := good -> 'proxyConfiguration';
   bad record;
   rejected integer := 0;
 begin
   for bad in select * from (values
-    (good, 3000, 300, 'memory not allowed'),
-    (good, 1024, 30, 'timeout below 60 s'),
-    (good, 1024, 1801, 'timeout above 1800 s'),
-    (good - 'maxRequests', 1024, 300, 'maxRequests missing'),
-    (good || '{"maxRequests":1001}', 1024, 300, 'maxRequests above 1000'),
-    (good || '{"maxRunSeconds":900}', 1024, 300, 'maxRunSeconds above timeout'),
-    (good || '{"startUrls":["https://www.facebook.com/marketplace/"]}', 1024, 300, 'startUrls'),
-    (good || '{"browserFallback":true}', 1024, 300, 'browserFallback true'),
-    (good - 'browserFallback', 1024, 300, 'browserFallback missing'),
-    (good - 'proxyConfiguration', 1024, 300, 'proxyConfiguration missing'),
-    (good || '{"inputVersion":2}', 1024, 300, 'inputVersion 2')
-  ) as t (input, memory, timeout, label) loop
+    (good, 3000, 300, 'memory not allowed', 'memory must'),
+    (good, 1024, 30, 'timeout below 60 s', 'timeout must be between'),
+    (good, 1024, 1801, 'timeout above 1800 s', 'timeout must be between'),
+    (good - 'maxRequests', 1024, 300, 'maxRequests missing', 'maxRequests is required'),
+    (good || '{"maxRequests":1001}', 1024, 300, 'maxRequests above 1000', 'maxRequests is required'),
+    (good || '{"maxRunSeconds":900}', 1024, 300, 'maxRunSeconds above timeout', 'timeout must be at least'),
+    (good || '{"startUrls":["https://www.facebook.com/marketplace/"]}', 1024, 300, 'startUrls', 'startUrls is not allowed'),
+    (good || '{"browserFallback":true}', 1024, 300, 'browserFallback true', 'browserFallback'),
+    (good - 'browserFallback', 1024, 300, 'browserFallback missing', 'browserFallback'),
+    (good - 'proxyConfiguration', 1024, 300, 'proxyConfiguration missing', 'proxyConfiguration must'),
+    (good || '{"inputVersion":2}', 1024, 300, 'inputVersion 2', 'inputVersion must be 3'),
+    -- Hardening (20260924030000).
+    (good, 1024, 240, 'timeout equal to maxRunSeconds', 'timeout must be at least'),
+    (good, 1024, 299, 'timeout under maxRunSeconds + 60 s', 'timeout must be at least'),
+    (good || '{"useDetailCache":true}', 1024, 300, 'useDetailCache true', 'useDetailCache'),
+    (good - 'useDetailCache', 1024, 300, 'useDetailCache missing', 'useDetailCache'),
+    (good || jsonb_build_object('proxyConfiguration', proxy - 'apifyProxyCountry'), 1024, 300, 'proxy without country', 'proxyConfiguration must'),
+    (good || jsonb_build_object('proxyConfiguration', proxy || '{"apifyProxyCountry":"IE"}'), 1024, 300, 'proxy country IE', 'proxyConfiguration must'),
+    (good || jsonb_build_object('proxyConfiguration', proxy || '{"apifyProxyGroups":["DATACENTER"]}'), 1024, 300, 'datacenter proxy', 'proxyConfiguration must'),
+    (good || jsonb_build_object('proxyConfiguration', proxy || '{"useApifyProxy":false}'), 1024, 300, 'Apify proxy off', 'proxyConfiguration must'),
+    (good || '{"maxRequests":"60"}', 1024, 300, 'maxRequests as a string', 'maxRequests must be a JSON integer'),
+    (good || '{"maxRunSeconds":"240"}', 1024, 300, 'maxRunSeconds as a string', 'maxRunSeconds must be a JSON integer'),
+    (good || '{"inputVersion":"3"}', 1024, 300, 'inputVersion as a string', 'inputVersion must be a JSON integer'),
+    (good || '{"maxListings":"20"}', 1024, 300, 'maxListings as a string', 'maxListings must be a JSON integer'),
+    (good || '{"maxPagesPerSearch":1.5}', 1024, 300, 'maxPagesPerSearch not an integer', 'maxPagesPerSearch must be a JSON integer'),
+    (good || '{"listingIds":["1234567890123456"]}', 1024, 300, 'searches and listingIds together', 'not both'),
+    ('[]'::jsonb, 1024, 300, 'input not an object', 'JSON object')
+  ) as t (input, memory, timeout, label, expected) loop
     begin
       perform apify_gateway.enqueue_run(bad.input, bad.memory, bad.timeout, bad.label);
       raise exception 'NOT REJECTED: %', bad.label;
@@ -45,11 +62,22 @@ begin
       if sqlerrm like 'NOT REJECTED%' then
         raise;
       end if;
+      -- Refused by the intended rule, not by some other error.
+      if position(bad.expected in sqlerrm) = 0 then
+        raise exception 'WRONG REASON for %: %', bad.label, sqlerrm;
+      end if;
       rejected := rejected + 1;
     end;
   end loop;
-  perform pg_temp.check(rejected = 11, 'all 11 invalid inputs rejected');
+  perform pg_temp.check(rejected = 26, 'all 26 invalid inputs rejected');
   perform pg_temp.check(apify_gateway.enqueue_run(good, 1024, 300, 'valid') is not null, 'valid input accepted');
+  -- A detail batch alone, and searches with an empty listingIds, are accepted.
+  perform pg_temp.check(apify_gateway.enqueue_run(
+    good - 'searchTerms' - 'cityId' || '{"listingIds":["1234567890123456"]}', 1024, 300, 'detail batch') is not null,
+    'listingIds alone accepted');
+  perform pg_temp.check(apify_gateway.enqueue_run(
+    good || '{"listingIds":[]}', 1024, 300, 'empty ids') is not null, 'searches with empty listingIds accepted');
+  delete from apify_gateway.jobs where note in ('detail batch', 'empty ids');
 end;
 $$;
 
@@ -69,7 +97,8 @@ select pg_temp.check(committed_usd = 0.3363, 'a running job counts at its reserv
 from apify_gateway.spend;
 
 select apify_gateway.enqueue_run(
-  '{"inputVersion":3,"maxRequests":1000,"maxRunSeconds":1800,"browserFallback":false,"proxyConfiguration":{}}',
+  '{"inputVersion":3,"maxRequests":1000,"maxRunSeconds":1740,"browserFallback":false,"useDetailCache":false,
+    "proxyConfiguration":{"useApifyProxy":true,"apifyProxyGroups":["RESIDENTIAL"],"apifyProxyCountry":"GB"}}',
   2048, 1800, 'big');
 select pg_temp.check(reserve_usd = 5.2928, 'worst-case reservation for a maximal run is $5.2928')
 from apify_gateway.jobs where note = 'big';

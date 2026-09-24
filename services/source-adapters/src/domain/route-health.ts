@@ -1,9 +1,11 @@
-// Port of fb-scrap-engine app/route-health.js (f177a44), kept behaviour-for-behaviour identical;
-// its tests are ported in test/route-health.test.ts. Chooses the actor's `detailRoute` per region
-// from recent runs' RUN_SUMMARY.detailRoute stats: stay on the cheaper replayed query (graphql)
-// while it works, switch to the item page when it stops working, and probe graphql again now and
-// then to recover. Known caveat, decision pending (docs/questions.md): a reply for a listing with
-// no description counts as a failed replay.
+// Port of fb-scrap-engine app/route-health.js (f177a44; fb-scrap-engine/app/route-health.js:1-97),
+// kept behaviour-for-behaviour identical except for one guarded divergence (below); its tests are
+// ported in test/route-health.test.ts. Chooses the actor's `detailRoute` per region from recent
+// runs' RUN_SUMMARY.detailRoute stats: stay on the cheaper replayed query (graphql) while it works,
+// switch to the item page when it stops working, and probe graphql again now and then to recover.
+// Known caveat, decision pending (docs/questions.md): a reply for a listing with no description
+// counts as a failed replay (fb-scrap-engine/docs/EVIDENCE_LEDGER.md:241-243;
+// fb-scrap-engine/app/route-health.js:13-14).
 
 export type DetailRoute = 'graphql' | 'page'
 
@@ -141,6 +143,13 @@ export function recommendDetailRoute(
   const unhealthy =
     tripped ||
     bootstrapFailing ||
+    // Divergence from fb-scrap-engine/app/route-health.js:54, which compares `successRate <
+    // minSuccess` directly; in JavaScript `null < 0.95` is true. With a caller's `minAttempts` of
+    // 0 or less and no graphql replays, the actor's helper switches to page with `low-success` and
+    // an alert on no evidence at all. None of the actor's tests reach that case, and its test that
+    // an empty history starts on graphql (fb-scrap-engine/test/route-health.test.js:58-59) points
+    // the other way, so Nabvy treats it as a bug: no replays is never low success. Pinned in
+    // test/route-health.test.ts; the defaults (minAttempts 50) never reach it.
     (attempts >= minAttempts && successRate !== null && successRate < minSuccess)
 
   const decide = (
