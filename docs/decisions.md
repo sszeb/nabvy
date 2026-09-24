@@ -292,6 +292,27 @@ Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): win
 - **Look like Claude and ChatGPT.** The app's overall look stays close to Claude and ChatGPT: easy to read, calm, never tiring on the eyes. This refines "a calm, spacious layout" under "MVP scope and pipeline runtime".
 - The control's design is in `docs/design/cadence-slider.md` (coordinator, from a two-designer panel with a critic); wording shown to users in it is provisional until the owner approves it.
 
+## Paid ladder (owner, 2026-09-24, 17:35)
+
+The owner, on coordinator 5's recalculation of the ladder (17:00: Starter 3 h base to 1 h with credits, Pro 2 h base, Max 1 h base to 1 min, with Pro's floor at 5 minutes recommended):
+- **Pro starts at 30 minutes and bundles credits to power up.** Pro's base cadence is 30 minutes, and the plan comes with credits so a user can buy faster checks on a want, down to the plan's floor.
+- **Base and floor for every tier are the coordinator's to set** ("I will let you figure out all the base floor").
+- **Every value is adjustable from the admin panel.** Base cadence, floor, bundle size, price, top-up rate, unit prices, area and want counts, per tier: versioned policy rows in `pricing-console`, edited from the admin console, audited, applied without a deploy, never a constant in code. The floor rule ("Always profitable") still refuses any value that sells below cost plus the minimum margin.
+- **Cloudflare stays on the free plan** until the production app is ready; the owner pays and upgrades then. Waiting Room is out until that upgrade; Turnstile, rate-limiting rules and Bot Fight Mode are on every plan and stay.
+- **Slider wording is the coordinator's to settle** and can change later.
+
+This changes "Speed is a property of the cell, never an artificial delay" under "Pricing and cadence": a want's cadence is now capped by its plan's base, or by the floor it has bought credits for, and that cap is a paid entitlement. Below the cap, delivered speed still follows the 60% rule per area ("delivered where the area funds it"); plans are marketed as "up to" their cadence.
+
+Coordinator 6's ladder, 17:40, on the slider's steps (initial policy values, not owner decisions; prices are the placeholders from `docs/design/pricing-model.md` until the owner confirms them):
+
+| Tier | Monthly | Base cadence (included for the plan's areas, funded by the fee) | Floor (fastest a want can buy with credits) | Bundled credits (starting point; `pricing-console` sizes them against the 60% rule with the base funded by the fee) |
+|---|---|---|---|---|
+| Free | £0 | bursts, as decided at 16:50 | none | none |
+| Starter | £12 | 2 h | 1 h | 1,200 |
+| Pro | £29 | 30 min (owner) | 5 min | 6,000 |
+| Max | £99 | 15 min | 1 min | 24,000 |
+| Business | from £299 | 15 min | 1 min, round the clock | 80,000 |
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.

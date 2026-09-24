@@ -1,16 +1,16 @@
-<!-- Coordinator 5, 2026-09-24 17:20: from a two-designer panel (Claude-faithful and hunt-native angles) with a critic; the critic chose the first and grafted the inline lock hint from the second. Wording shown to users (the mode names, captions) is provisional until the owner approves it; see docs/questions.md. -->
+<!-- Coordinator 5, 2026-09-24 17:20: from a two-designer panel (Claude-faithful and hunt-native angles) with a critic; the critic chose the first and grafted the inline lock hint from the second. Mode names were settled by the coordinator on 2026-09-24 17:37 on the owner's delegation (seven steps, 30 min added); captions and popover copy remain provisional. See docs/decisions.md "Paid ladder". -->
 
 # Cadence Slider — final spec
 
-**One-screen summary.** A single control in the want editor replaces the interval dropdown: a vertical, six-step, square-dot density slider modelled on Claude Code's Effort control, with **1 min at the top (Ultracheck) and 4 h at the bottom (Slow Watch)**. Label row shows the current mode name in the accent colour; a caption reads `Fastest ⟶ Slowest`. Dot count and accent intensity climb toward the top step. Steps above the plan's cadence ceiling stay visible, dim, and keyboard-reachable, with an inline (non-modal) "Requires Pro" hint — never hidden, never silently blocked. Below the track, two calm, muted-text lines report the estimated monthly credit cost and, only when it differs, the area's currently *delivered* cadence — both sourced from the estimate procedure, never computed or invented client-side. Free accounts see the same track in a read-only burst timeline. One accent colour throughout, low-contrast surfaces, no red/alarm colour anywhere on this control, motion limited to a single ~150 ms transition that collapses to 0 ms under `prefers-reduced-motion`.
+**One-screen summary.** A single control in the want editor replaces the interval dropdown: a vertical, seven-step, square-dot density slider modelled on Claude Code's Effort control, with **1 min at the top (Ultracheck) and 4 h at the bottom (Slow Watch)**. Label row shows the current mode name in the accent colour; a caption reads `Fastest ⟶ Slowest`. Dot count and accent intensity climb toward the top step. Steps above the plan's cadence ceiling stay visible, dim, and keyboard-reachable, with an inline (non-modal) "Requires Pro" hint — never hidden, never silently blocked. Below the track, two calm, muted-text lines report the estimated monthly credit cost and, only when it differs, the area's currently *delivered* cadence — both sourced from the estimate procedure, never computed or invented client-side. Free accounts see the same track in a read-only burst timeline. One accent colour throughout, low-contrast surfaces, no red/alarm colour anywhere on this control, motion limited to a single ~150 ms transition that collapses to 0 ms under `prefers-reduced-motion`.
 
 ## Concept
-A six-notch vertical dot-density slider — modelled directly on Claude Code's Effort control — lets a user pick how fast a want is checked, from **Slow Watch** (4 h) at the bottom to **Ultracheck** (1 min) at the top. Density and accent intensity climb with speed. Locked steps above the plan ceiling stay visible but dim, with an inline upgrade hint. A caption line under the track always shows the credit estimate and, when it differs, the area's currently delivered cadence — so the trade-off between speed, cost and what's actually funded right now is never hidden, and no number is ever invented.
+A seven-notch vertical dot-density slider — modelled directly on Claude Code's Effort control — lets a user pick how fast a want is checked, from **Slow Watch** (4 h) at the bottom to **Ultracheck** (1 min) at the top. Density and accent intensity climb with speed. Locked steps above the plan ceiling stay visible but dim, with an inline upgrade hint. A caption line under the track always shows the credit estimate and, when it differs, the area's currently delivered cadence — so the trade-off between speed, cost and what's actually funded right now is never hidden, and no number is ever invented.
 
 ## Anatomy and states
 1. **Label row** — `Cadence` (text-sm, muted-foreground) + current mode name (`text-primary font-medium`, e.g. `Ultracheck`) + `?` help icon opening a small popover ("chosen vs. delivered, explained").
 2. **Caption row** — `Fastest` (top) / `Slowest` (bottom), text-xs muted-foreground.
-3. **Track** — 6 stacked dot-rows, top→bottom fastest→slowest. Each row is a cluster of small square dots (`rounded-[2px]`); dot count rises 6→1 from top to bottom. States:
+3. **Track** — 7 stacked dot-rows, top→bottom fastest→slowest. Each row is a cluster of small square dots (`rounded-[2px]`); dot count rises 7→1 from top to bottom. States:
    - *Available, unselected*: `bg-muted-foreground/40`.
    - *Selected step and faster steps up to it*: `bg-primary` (opacity ramps toward full at the chosen step, not a hard fill line — mirrors the Claude reference).
    - *Locked (above plan ceiling)*: `bg-muted-foreground/20`, row label at `text-muted-foreground/60`, small lock glyph (reuses `text-muted-foreground`, never a warning colour).
@@ -27,14 +27,15 @@ A six-notch vertical dot-density slider — modelled directly on Claude Code's E
 | 1 (top, fastest) | 1 min | **Ultracheck** |
 | 2 | 5 min | **Rapid** |
 | 3 | 15 min | **Brisk** |
-| 4 | 1 h | **Regular** |
-| 5 | 2 h | **Steady** |
-| 6 (bottom, slowest) | 4 h | **Slow Watch** |
+| 4 | 30 min | **Steady** |
+| 5 | 1 h | **Regular** |
+| 6 | 2 h | **Relaxed** |
+| 7 (bottom, slowest) | 4 h | **Slow Watch** |
 
 Names are Nabvy's own words (no borrowed branding), one word each, chosen for a calm deal-hunting register rather than urgency/alarm language.
 
 ## Plan limit and locked steps
-The ceiling is a policy value read at run time (provisionally: Starter → Regular, Pro → Rapid, Max → Ultracheck). Steps above the ceiling render in the locked visual state (§Anatomy 3–5) but remain visible, present in tab/arrow-key order, and describable to assistive tech — satisfying "never hidden." Selecting a locked step never saves silently; it surfaces the inline hint and, on commit, the plan's upgrade detail names the plan that unlocks it.
+The ceiling is a policy value read at run time (provisionally: Starter → Regular, Pro → Rapid, Max → Ultracheck; the plan's base cadence and bought floor come from `pricing-console` policy rows, see `docs/decisions.md` "Paid ladder"). Steps above the ceiling render in the locked visual state (§Anatomy 3–5) but remain visible, present in tab/arrow-key order, and describable to assistive tech — satisfying "never hidden." Selecting a locked step never saves silently; it surfaces the inline hint and, on commit, the plan's upgrade detail names the plan that unlocks it.
 
 ## Cost and live-cadence notes
 Both lines are server-derived from the estimate procedure and re-fetched (debounced) as the user drags or steps the slider — never computed in the client. The cost line always shows; the live-cadence line shows only when delivered cadence < chosen cadence, worded as a structural fact ("delivered where the area funds it"), not a dismissible toast and not styled as a warning.
@@ -73,6 +74,6 @@ Below ~480 px, the same vertical track runs full-bleed within the 16 px gutters.
 - **Plan downgrade**: any want whose stored cadence is now above the new ceiling auto-locks visually on next load (does not silently change the interval). A one-time banner lists the affected wants and lets the user pick a new pace per want; the stored interval is left untouched until the user re-saves that want, so a later re-upgrade restores the original choice with no data loss.
 
 ## Open questions for the owner (product wording only)
-1. Confirm the six mode names (Slow Watch, Steady, Regular, Brisk, Rapid, Ultracheck) are the ones to ship, or whether marketing prefers different wording.
+1. ~~Confirm the mode names.~~ Settled by the coordinator on the owner's delegation (17:37): Ultracheck, Rapid, Brisk, Steady (30 min, added for Pro's base), Regular, Relaxed, Slow Watch. The owner can change them later.
 2. Confirm the exact copy for the help-icon popover explaining "chosen vs. delivered" cadence.
 3. Confirm whether the pin-price CTA copy is `Pin this pace — from £X/mo` or a different phrase.
