@@ -2,11 +2,14 @@
 
 You are building Nabvy, a UK deal-finding engine. Before any task read `README.md`, `docs/decisions.md`, `docs/engineering.md` and `docs/progress.md`; read `docs/security.md` before any task that touches auth, tokens, uploads, webhooks or migrations. `packages/db` (Drizzle) is the source of truth for persisted shapes and `packages/contracts` (Zod) for everything that crosses a boundary: events, fact templates, packs, API input and output, model output. Never type the same thing twice; derive.
 
+**Precedence.** Where this build pack conflicts with the Facebook actor brief listed in `docs/fb-actor-sources.md`, the brief wins (owner's decision, 2026-09-24). The known conflicts are listed under "Precedence" in `docs/decisions.md`; read that section before any task.
+
 ## Non-negotiables
 
+- **Facebook actor rules** (owner, 2026-09-24). Call only the private Apify actor `YfdUav3sZ2BgEf8rh`; never touch `JR2fdK8Nj6OLCwKkP`. Never contact Facebook directly: all Facebook traffic goes through Apify runs. The Apify token is a Supabase Edge Function secret and never appears in code, commits, logs or chat. In Supabase, leave the deprecated `marketplace_monitor` schema alone.
 - **No scrapers.** Never write code that fetches HTML or undocumented endpoints from Facebook, Gumtree or Vinted. Those sources are reached only through the Apify client and the provider adapter contract. eBay is reached only through its official APIs. CeX is reached through its web API behind the adapter, with the caps in `docs/providers.md`.
 - **No browser automation** against any marketplace, and never store or use a user's marketplace cookies or passwords. eBay seller access uses OAuth tokens only.
-- **No personal data beyond need.** Never store seller names or profile links. Public seller IDs are hashed before storage. Raw provider responses live in snapshot storage for 30 days, then expire.
+- **No personal data beyond need.** Never store seller names or profile links. Public seller IDs are hashed before storage. Raw provider responses live in snapshot storage for 30 days, then expire. *(Seller data: superseded by the brief, which keeps it internal-only in a restricted private schema and never shows seller identity to users; see "Precedence" in `docs/decisions.md`.)*
 - **No invented numbers.** Prices, margins and days-to-sell come from `services/valuation` over real comparables. Model output is facts and text only, validated against a Zod schema before use.
 - **No database access from the browser.** All reads and writes go through oRPC procedures in `apps/web/src/rpc/` (or a plain server action that calls the same procedure) which validate input with the contracts schemas, check the session, and call module functions inside `withUser(userId)` from `@nabvy/db`. Never import Drizzle or a database client into client components; never use supabase-js for application data; never put business logic in a procedure or action, only in module functions.
 - **No HTTP between modules.** Modules import each other's exported functions and publish events. A module that needs another module's data reads its `v_` view or calls its function; it never fetches a URL.

@@ -2,6 +2,27 @@
 
 These are standing rules. Change them only with a human decision recorded here.
 
+## Precedence: the Facebook actor brief
+
+**Owner's decision, 2026-09-24.** Where this build pack conflicts with the Facebook actor brief in `sebtimize/fb-scrap-engine` (`docs/HANDOFF.md`, sections "Rules" and "The app: what we want it to do, and what the data allows", and the designs they link; reading list and rules in `docs/fb-actor-sources.md`), the brief wins because it is more up to date. The brief's `docs/APP_INTEGRATION_GUIDE.md` (contracts, Supabase schema, how to call the actor) and `docs/design/COPY_ADVERT_SPAM.md` are still being written. When they land, the build-pack documents affected below are rewritten to match, before task 0.2 (contracts) starts. Until then, read the build pack through this table.
+
+| Topic | Build pack says | Brief says (wins) |
+| --- | --- | --- |
+| Seller data | Never store seller names or profile links; hash public seller IDs before storage (`CLAUDE.md`) | Keep seller data for internal use only, in a restricted private schema the Data API cannot reach. Never show seller identity (names, IDs, pictures, account links) or anything derived that identifies a seller. The internal seller key is an HMAC of the ID with a secret held as an Edge Function secret. Minimisation still applies: no measured use needs names or pictures (`SELLER_DATA.md` §5) |
+| Labels | Risk flags are signals, never accusations; wording avoids calling a seller a scammer (`docs/compliance.md`) | "Suspected scam", "suspected trade seller", "suspected flipper" and similar are allowed, each worded as a suspicion, shown with its evidence, from a documented rule with calibrated thresholds, with a report and correction route, never revealing seller identity. Scam labels run in shadow mode first; wording gets legal review before launch. Other warning signs are neutral facts; never an unexplained score |
+| Price-drop watch | Not in version 1 (`docs/decisions.md`, Product) | Build first: price history within one listing ID only. Relists are merged silently; never show history across listing IDs, "relisted" or "seen before" |
+| Price wording | Fair-value range; `ask_based` valuations from asks (`docs/valuation.md`) | Never present asking prices as sale prices or as what something is "worth". Show asking-price position (same spec and condition) only at n≥10, marked thin at 5–9, hidden below 5 |
+| Region and currency | UK; GBP only (`docs/operations.md`) | UK and Ireland. Irish asks form their own EUR groups, never converted into GBP ones |
+| Per-user work | Scan mode's on-demand fetch includes Facebook asks via Apify per scan (`docs/scan-mode.md`) | Never run Facebook fetches or AI per user. Pasted links join the shared, deduplicated details queue |
+| Search planning | One watch per marketplace, category and H3 resolution-4 cell (`docs/architecture.md`) | Per region: a verified centre `cityId` × a few terms, never per user (seed: `city-pages.seed.json`, 771 city IDs, 5 verified centres). Newest-first checks, default-order catch-up, daily sweeps; the app chooses which IDs get details and sends them as `listingIds` batches; the actor never filters or judges |
+| Photos | Photo fingerprint and embedding per listing; `scans` bucket (`docs/engineering.md`) | Photo review only when the text is silent; photo bytes deleted after review; never serve photos from our own storage |
+| Charging | Facebook alerts go to paying users only after the legal gate (`docs/compliance.md`) | Do not charge before legal advice: Meta's terms, database right, copyright, UK GDPR (LIA, DPIA, Art 14 notice) |
+| Apify token | `APIFY_TOKEN` in the Trigger.dev vault (`docs/secrets.md`) | A Supabase Edge Function secret; never in code or chat. Only actor `YfdUav3sZ2BgEf8rh`, never `JR2fdK8Nj6OLCwKkP` |
+
+Not a conflict: the brief's money section (Plus at about £4.99 a month) is labelled "inputs, not decisions", so the pricing below stands until the owner decides otherwise.
+
+New work from the brief, to be placed in the backlog when the integration guide lands: a parts record per listing (listing kind; every part quoted from the listing with its inclusion status; rules first from `part-patterns.json`, AI only for gaps, once per listing, shared by every user); spec search and alerts, where silence is never a "no" ("GPU not stated — ask the seller"); a free noise filter (wanted, swap and "I buy" adverts, keyword stuffing, laptops, mention-only hits); the copy-advert spam flag; suspected-behaviour labels; asking-price position; the price-drop watch.
+
 ## Product
 
 - **Audience and first category:** Nabvy is for anyone in the UK who buys second-hand to resell or to get a good deal; it is not limited to tech flippers. The first category pack is GPUs and gaming PCs, chosen for clean product keys and strong price data; the first design partners are tech flippers. Other categories arrive as category packs (data, not code), in this order of intent: consoles and controllers, phones, laptops and PC parts, collectables, then cars. DVDs are out: CeX pays a penny for them and demand is falling.
