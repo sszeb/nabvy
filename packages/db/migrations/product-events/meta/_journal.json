@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790269501631,
+      "tag": "20260924170501_product_events_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790269505799,
+      "tag": "20260924170505_product_events_access",
+      "breakpoints": true
+    }
+  ]
+}
