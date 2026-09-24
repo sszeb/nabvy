@@ -2,7 +2,7 @@
 
 Provider adapters behind the `ProviderAdapter` contract (`docs/contracts.md`, `docs/providers.md`).
 Task 1.0 records the Facebook actor's real fields and maps them to the target shape; task 1.1 builds
-the adapter on this record. Implemented so far: the route-health helper (below).
+the adapter on this record. Implemented so far: the route-health helper and actor-input validation with run presets (below).
 
 ## Facebook Marketplace actor (task 1.0)
 
@@ -181,3 +181,38 @@ breaker, failing bootstraps or low success. It then probes graphql every tenth r
 - **Where state lives.** The caller keeps one state object per region, plus each run's
   `detailRoute` object tagged with its Apify run ID. Their table arrives with the adapter's storage
   (tasks 0.3 and 1.1).
+
+## Actor input and run presets (task 1.1 groundwork)
+
+`src/domain/facebook-actor-input.ts` validates what Nabvy sends to the actor, so a bad input is
+rejected before it can cost a failed run.
+
+- **Validation.** `FacebookActorInput` (Zod) mirrors the actor's own v3 rules (`src/gateway-input.js`
+  at `f177a44`): the 23 allowed keys, JSON integers, digit-string IDs, limits and cross-field rules.
+  It adds the gateway's stricter rules:
+  - `maxRequests` 1–1,000 and `maxRunSeconds` always sent;
+  - `browserFallback` and `useDetailCache` false, `sourceDiagnostics` true;
+  - no `startUrls`;
+  - residential GB proxy only.
+- **Nabvy's own rules.** A run is either searches or a detail batch, never both, because searches that
+  fill `maxListings` crowd out the IDs (reference §2.5). Terms and IDs must be distinct.
+  `parseFacebookActorRun` also checks the Apify run options: memory of 512, 1,024 or 2,048 MB, a
+  timeout of 60–1,800 s and longer than `maxRunSeconds`, and a pinned build.
+- **Request budget.** `actorDefaultMaxRequests` is the actor's own formula. The tests check it
+  against the actor's worked examples (12, 1,226 and 950).
+- **Presets** (reference §2.5), each sized with that formula and refused if it would pass the
+  gateway's cap:
+
+  | Preset | Shape | Size limit |
+  | --- | --- | --- |
+  | `newestFirstCheck` | Page 1, newest first; 512 MB, 240 s | |
+  | `catchUpCheck` | Pages 1–4, default order; 512 MB, 420 s | |
+  | `fullSweep` | Up to 60 pages; 1,024 MB, 1,100 s | At most 3 terms |
+  | `detailBatch` | Listing IDs on the route-health route; 1,024 MB, 1,100 s | At most 225 IDs on graphql, 450 on page |
+
+- **Build pin.** Every preset pins build 1.0.82. The gateway does not pass the build to Apify yet;
+  that change comes with the adapter (`docs/questions.md`).
+- **Where it lives.** The schema lives in this module because only the adapter speaks the actor's
+  dialect. If another module needs it, it moves to `@nabvy/contracts` with task 0.2.
+
+**Dependency:** `zod` 4.6.5 (MIT), the version `@nabvy/config` already uses.
