@@ -14,7 +14,8 @@ send **no listing text to a model**; other facts still show. Priority: Launch (m
 ## Inputs
 
 Calls only. No events consumed, no views read. The SQL entry point `quote_redaction.quote` reads
-`switches.is_on('quote-redaction')` when that function exists (see "Decisions").
+`switches.is_on('quote-redaction')` directly (task 0.11: the `switches` module now exists, so the
+stub existence check is gone). `quoteFor` reads the same switch through `@nabvy/switches`.
 
 ## Outputs
 
@@ -23,15 +24,15 @@ No events, no views, no tables. Functions:
 | Function | Where | Returns |
 | --- | --- | --- |
 | `redact(text)` | `@nabvy/quote-redaction` | `QuoteRedactionResult`: `{ text, masked: { email, link, handle, phone, postcode } }` (counts) |
-| `quoteFor(text, switchState)` | `@nabvy/quote-redaction` | `redact(text)` when the state is `'on'`, otherwise `null` (fail closed) |
+| `quoteFor(q, text)` | `@nabvy/quote-redaction` | `redact(text)` while `isOn(q, 'quote-redaction')` (`@nabvy/switches`), otherwise `null` (fail closed) |
 | `quote_redaction.redact_result(text)` | SQL | the same result as `jsonb` |
 | `quote_redaction.redact(text)` | SQL | the masked text only, for `app.` views (for example on listing titles); `null` in, `null` out |
 | `quote_redaction.quote(text)` | SQL | the masked text while the switch is on, otherwise `null` |
-| `quote_redaction.switch_on()` | SQL | whether the switch reads on (stub, see "Decisions") |
+| `quote_redaction.switch_on()` | SQL | whether the switch reads on (`switches.is_on('quote-redaction')`) |
 
 The SQL functions are granted to `nabvy_app` and `nabvy_pipeline` and revoked from `public`, so
 Supabase's Data API roles cannot call them. Contracts: `@nabvy/contracts/modules/quote-redaction`
-(`QuoteRedactionResult`, `QuoteRedactionMasked`, `QuoteRedactionKind`, `QuoteRedactionSwitchState`).
+(`QuoteRedactionResult`, `QuoteRedactionMasked`, `QuoteRedactionKind`).
 
 ## Tables
 
@@ -63,7 +64,8 @@ is the synthetic case `postcode-recorded-run` with a made-up inward half. The ch
 source-adapters fixture test runs on the recorded dataset are run on `redact()` output too.
 Latest pass rate: stage `redact` 38/38.
 
-Other tests: `test/switch.test.ts` (fail closed), `test/idempotency.test.ts` (a second pass masks
+Other tests: `test/switch.test.ts` (fail closed, against a real `switches` seed through PGlite),
+`test/idempotency.test.ts` (a second pass masks
 nothing), `test/contracts.test.ts`, `test/sql-parity.test.ts` (every TypeScript detector appears
 in the migration verbatim, in order, with the same flags and mask, and no extra one). The parity
 test compares pattern text only: it cannot tell whether the two engines read the same text the
@@ -90,12 +92,17 @@ same way. That is what the shared cases in both engines are for, so a case goes 
   real UK postcode area are masked, which keeps `i7 9th` and `L2 5MB` intact.
 - **2026-09-24: placeholders.** The masks are the ones `apify_gateway.redact_text` already uses
   for fixtures. The wording users see is the owner's to set (`docs/questions.md`).
-- **2026-09-24: switch stubs.** The `switches` module is not built yet. `quoteFor` takes the
-  state the caller read, typed by a stub `QuoteRedactionSwitchState` (`off`, `shadow`, `on`), and
-  returns `null` unless it is `on`. `quote_redaction.switch_on()` calls
-  `switches.is_on('quote-redaction')` if that function exists and otherwise answers `false`, so
-  every quote stays hidden until `switches` is built and this module is switched on. Replace both
-  with the `switches` contract when it lands.
+- **2026-09-24: switch stubs, replaced (task 0.11).** Until the `switches` module existed,
+  `quoteFor` took the state the caller had already read, typed by a stub `QuoteRedactionSwitchState`,
+  and `quote_redaction.switch_on()` checked whether `switches.is_on` existed before calling it. Now
+  that `switches` is built, `quoteFor(q, text)` reads the live switch itself through
+  `isOn(q, 'quote-redaction')` (`@nabvy/switches`), the stub type is gone, and
+  `quote_redaction.switch_on()` calls `switches.is_on('quote-redaction')` directly (a new migration,
+  `packages/db/migrations/quote-redaction/20260924180000_quote_redaction_switch.sql`; grants are
+  unchanged since the signature didn't change). `quote-redaction` now depends on `switches`
+  (`packages/db/migrations/quote-redaction/module.json`, `package.json`): its own SQL function is a
+  plain `language sql` call into `switches.is_on`, which Postgres validates against the real
+  function at creation time, so the migration order requires it.
 - **2026-09-24: not detected (known limits).** Quotes therefore stay short; choosing the quote
   is the caller's job.
   - Names, shop names, logos and faces (the brief lists them;
