@@ -27,12 +27,19 @@ begin
     raise exception 'nabvy_auth reaches beyond better_auth';
   end if;
   -- No grant on a table in any other schema (grants to PUBLIC, such as PostGIS's
-  -- spatial_ref_sys, are everyone's and not counted).
+  -- spatial_ref_sys, are everyone's and not counted), except insert on audit_log.entries for
+  -- audited admin actions (task 4.0b).
   if exists (
     select 1 from information_schema.role_table_grants
     where grantee = 'nabvy_auth' and table_schema <> 'better_auth'
+      and not (table_schema = 'audit_log' and table_name = 'entries' and privilege_type = 'INSERT')
   ) then
     raise exception 'nabvy_auth has a grant on a table outside better_auth';
+  end if;
+  if not has_table_privilege('nabvy_auth', 'audit_log.entries', 'insert')
+     or has_table_privilege('nabvy_auth', 'audit_log.entries', 'select')
+     or has_table_privilege('nabvy_auth', 'audit_log.v_entries', 'select') then
+    raise exception 'nabvy_auth must insert audit rows and read none';
   end if;
 end;
 $$;
@@ -46,6 +53,22 @@ insert into better_auth."user" (id, name, email, email_verified)
          ('00000000-0000-4000-8000-00000000a004', '', 'lapsed@example.com', true);
 insert into better_auth.session (token, expires_at, updated_at, user_id)
   values ('probe-token', now() + interval '1 day', now(), '00000000-0000-4000-8000-00000000a001');
+-- Audited admin actions: nabvy_auth records a row whose actor is an existing account, and no other.
+insert into audit_log.entries (id, actor_user_id, action, target)
+  values ('00000000-0000-7000-8000-00000000b001', '00000000-0000-4000-8000-00000000a001',
+          'auth.role-changed', 'user:00000000-0000-4000-8000-00000000a002');
+do $$
+begin
+  begin
+    insert into audit_log.entries (id, actor_user_id, action, target)
+      values ('00000000-0000-7000-8000-00000000b002', '00000000-0000-4000-8000-00000000ffff',
+              'auth.role-changed', 'user:00000000-0000-4000-8000-00000000a002');
+    raise exception 'nabvy_auth recorded an actor that is not an account';
+  exception when insufficient_privilege then
+    null;
+  end;
+end;
+$$;
 update better_auth."user" set banned = true, ban_reason = 'internal only'
   where email = 'banned@example.com';
 update better_auth."user" set banned = true, ban_expires = (now() at time zone 'UTC') + interval '7 days'
