@@ -1,0 +1,5 @@
+{
+  "module": "spend-governor",
+  "schema": "spend_governor",
+  "dependsOn": ["core", "switches", "cost-meter", "apify-gateway"]
+}

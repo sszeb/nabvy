@@ -1,0 +1,5 @@
+{
+  "module": "waitlist",
+  "schema": "waitlist",
+  "dependsOn": ["core", "switches"]
+}

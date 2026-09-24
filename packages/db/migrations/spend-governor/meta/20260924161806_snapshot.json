@@ -1,0 +1,335 @@
+{
+  "id": "0a4e3c10-9d5f-405b-8bbc-404efe8a8589",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "spend_governor.budgets": {
+      "name": "budgets",
+      "schema": "spend_governor",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unit": {
+          "name": "unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period": {
+          "name": "period",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "limit_micros": {
+          "name": "limit_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "set_by": {
+          "name": "set_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "budgets_name_check": {
+          "name": "budgets_name_check",
+          "value": "\"spend_governor\".\"budgets\".\"name\" ~ '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'"
+        },
+        "budgets_provider_check": {
+          "name": "budgets_provider_check",
+          "value": "\"spend_governor\".\"budgets\".\"provider\" is null or \"spend_governor\".\"budgets\".\"provider\" in ('apify', 'anthropic', 'ebay', 'cex')"
+        },
+        "budgets_unit_check": {
+          "name": "budgets_unit_check",
+          "value": "\"spend_governor\".\"budgets\".\"unit\" in ('USD', 'GBP', 'GB')"
+        },
+        "budgets_period_check": {
+          "name": "budgets_period_check",
+          "value": "\"spend_governor\".\"budgets\".\"period\" = 'month'"
+        },
+        "budgets_limit_check": {
+          "name": "budgets_limit_check",
+          "value": "\"spend_governor\".\"budgets\".\"limit_micros\" > 0"
+        },
+        "budgets_set_by_check": {
+          "name": "budgets_set_by_check",
+          "value": "length(\"spend_governor\".\"budgets\".\"set_by\") > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "spend_governor.throttle": {
+      "name": "throttle",
+      "schema": "spend_governor",
+      "columns": {
+        "budget": {
+          "name": "budget",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "level": {
+          "name": "level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "since": {
+          "name": "since",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period_start": {
+          "name": "period_start",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "committed_micros": {
+          "name": "committed_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "forecast_micros": {
+          "name": "forecast_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "computed_at": {
+          "name": "computed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valid_until": {
+          "name": "valid_until",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "throttle_budget_budgets_name_fk": {
+          "name": "throttle_budget_budgets_name_fk",
+          "tableFrom": "throttle",
+          "tableTo": "budgets",
+          "schemaTo": "spend_governor",
+          "columnsFrom": [
+            "budget"
+          ],
+          "columnsTo": [
+            "name"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "throttle_level_check": {
+          "name": "throttle_level_check",
+          "value": "\"spend_governor\".\"throttle\".\"level\" in ('none', 'slow-free', 'slow-paid', 'slow-sweeps', 'hold-new')"
+        },
+        "throttle_amounts_check": {
+          "name": "throttle_amounts_check",
+          "value": "coalesce(\"spend_governor\".\"throttle\".\"committed_micros\", 0) >= 0 and coalesce(\"spend_governor\".\"throttle\".\"forecast_micros\", 0) >= 0"
+        },
+        "throttle_measured_check": {
+          "name": "throttle_measured_check",
+          "value": "(\"spend_governor\".\"throttle\".\"committed_micros\" is null) = (\"spend_governor\".\"throttle\".\"forecast_micros\" is null)"
+        },
+        "throttle_valid_check": {
+          "name": "throttle_valid_check",
+          "value": "\"spend_governor\".\"throttle\".\"valid_until\" > \"spend_governor\".\"throttle\".\"computed_at\""
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "spend_governor": "spend_governor"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "spend_governor.v_budgets": {
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unit": {
+          "name": "unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period": {
+          "name": "period",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "limit_micros": {
+          "name": "limit_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "committed_micros": {
+          "name": "committed_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "remaining_micros": {
+          "name": "remaining_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "forecast_micros": {
+          "name": "forecast_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "level": {
+          "name": "level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "period_start": {
+          "name": "period_start",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "computed_at": {
+          "name": "computed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "set_by": {
+          "name": "set_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_budgets",
+      "schema": "spend_governor",
+      "isExisting": true,
+      "materialized": false
+    },
+    "spend_governor.v_throttle": {
+      "columns": {
+        "budget": {
+          "name": "budget",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "level": {
+          "name": "level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "since": {
+          "name": "since",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "computed_at": {
+          "name": "computed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "name": "v_throttle",
+      "schema": "spend_governor",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "synthetic": true,
+  "source": "Synthetic, built from the seeded budgets (packages/db/migrations/spend-governor) and the throttle steps of actor-integration.md 2.12.",
+  "now": "2026-09-24T12:00:00.000Z",
+  "usdGbpRate": 0.75,
+  "calls": [
+    {
+      "provider": "apify",
+      "currency": "USD",
+      "reservedMicros": 336300,
+      "settledMicros": null,
+      "provisionalUsdMicros": 300,
+      "at": "2026-09-24T09:00:00.000Z"
+    },
+    {
+      "provider": "apify",
+      "currency": "USD",
+      "reservedMicros": 1000000,
+      "settledMicros": null,
+      "provisionalUsdMicros": 1500000,
+      "at": "2026-09-24T09:30:00.000Z"
+    },
+    {
+      "provider": "apify",
+      "currency": "USD",
+      "reservedMicros": 200000,
+      "settledMicros": null,
+      "provisionalUsdMicros": null,
+      "at": "2026-08-31T20:00:00.000Z"
+    },
+    {
+      "provider": "apify",
+      "currency": "USD",
+      "reservedMicros": 900000,
+      "settledMicros": 800000,
+      "provisionalUsdMicros": null,
+      "at": "2026-08-31T22:30:00.000Z"
+    },
+    {
+      "provider": "anthropic",
+      "currency": "USD",
+      "reservedMicros": 5000,
+      "settledMicros": 5000,
+      "provisionalUsdMicros": null,
+      "at": "2026-09-24T09:00:00.000Z"
+    }
+  ],
+  "unmetered": [
+    {
+      "status": "pending",
+      "started": false,
+      "reserveUsdMicros": 500000,
+      "costUsdMicros": null,
+      "settled": false,
+      "createdAt": "2026-09-24T11:59:00.000Z"
+    },
+    {
+      "status": "refused",
+      "started": false,
+      "reserveUsdMicros": 400000,
+      "costUsdMicros": null,
+      "settled": false,
+      "createdAt": "2026-09-24T11:00:00.000Z"
+    },
+    {
+      "status": "running",
+      "started": true,
+      "reserveUsdMicros": 300000,
+      "costUsdMicros": 450000,
+      "settled": false,
+      "createdAt": "2026-09-24T11:30:00.000Z"
+    }
+  ],
+  "proxyGb": []
+}
