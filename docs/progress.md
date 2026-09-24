@@ -82,9 +82,9 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | incidents | 0 | done: PR #19 merged 15:03 (`fa7d90f`); both migrations applied 15:10 (ledger checked) | `session_01WENzUdPXvaK5xkdy2unUvu` | Sonnet |
 | quote-redaction | 0 | done: PR #17 merged 14:42 (`f4ded65`); both migrations applied 14:45 (ledger checked); mask wording approved by the owner | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
 | switches | 1 | done: PR #23 merged 15:03 (`c30e3af`); both migrations applied 15:10 (ledger checked) | `session_01CtxXRGTqrS7tCXgFaNfw2J` | top |
-| product-catalogue | 2 | PR #32 open 15:43; after merge apply `product-catalogue/20260924151843_product_catalogue_tables.sql`, `20260924151851_product_catalogue_access.sql` and `20260924151942_product_catalogue_seed.sql` (depend on core, switches, audit-log) | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
+| product-catalogue | 2 | done: PR #32 merged 16:19 (`d9fc189`); three migrations applied 16:33 (ledger checked) | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
 | apify-gateway | 2 | done: PR #29 merged 15:58 (`b060a99`); migration applied and Edge Function version 10 deployed 16:05 (ledger checked; cap $150 a month, build 1.0.82); inert until an admin switches on `apify` and `apify-gateway` | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
-| waitlist | 2 | PR #31 open 15:42; after merge apply `waitlist/20260924152710_waitlist_tables.sql` and `waitlist/20260924152712_waitlist_access.sql` (depend on core and switches); email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
+| waitlist | 2 | done: PR #31 merged 16:18 (`3cf30d1`); both migrations applied 16:29 (ledger checked); email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
 | account | 2 | in progress, started 15:35 from the amended card on `claude/coordinator-4` | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
 | listing-ingest | 3 | started 16:13; card `docs/design/modules/listing-ingest.md`; soft dependencies ebay-adapter and gumtree-adapter not built | `session_01HfncCwAz7dL7Kx9LnCeR2U` | top |
 | spend-governor | 3 | started 16:13; card `docs/design/modules/spend-governor.md`; $150-a-month Apify budget | `session_01CC2oetv6aarq9Pyf3wKC7q` | top |
