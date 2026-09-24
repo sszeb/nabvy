@@ -79,7 +79,7 @@ Below: 31 exploits with guard, owner, fixture, run-off and gap; farming; extract
 
 | # | Exploit | Guard | Owner | Fixture that proves it | Run-off | Gap |
 | --- | --- | --- | --- | --- | --- | --- |
-| E1 | **Account sharing** across a household or reseller group | One live screen, device cap, ladder; shadow until the owner's thresholds (question 37) | `account-integrity` | The card's timeline fixtures (couples, commuters, VPNs, resellers) at or above their pass rate | Revenue, not spend (watching is metered) | None new; owner's thresholds |
+| E1 | **Account sharing** across a household or reseller group | One live screen, device cap, ladder; shadow until the owner's thresholds (question 37) | `account-integrity` | The card's timeline fixtures (couples, commuters, VPNs, resellers) at or above their pass rate | Revenue only | None new; owner's thresholds |
 | E2 | **API key leaked or abused** (5.4a, Business tier) | Hashed at rest, per user, 600 requests a minute, revocable (security.md, engineering). Planned | `account`, `usage-ledger` | `api-key-spend`: calls made with a key charge the owner's ledger, pass the spend gate and stop at the key's own daily limit. A key is shown once, with a prefix that secret scanners can match | ≤ the key's daily limit | **G15** |
 | E3 | **Pasted-link abuse**: each paste starts a paid details run; an arbitrary URL invites SSRF | `pasted-link-lookup` exists. The rules against fetching the pasted URL and on cost are not written; scraping is banned (CLAUDE.md) | `pasted-link-lookup`, `details-queue` | `paste-cost`: a pasted URL is parsed to (source, listing ID) and never fetched. A repeat within 24 hours hits the cache, and each paste is charged or counted to the free cap | ≤ one details run per new listing | **G10** |
 | E4 | **Scan abuse**: 30 a minute per user is 43,200 vision calls a day | Rate limit only (engineering) | `scan-lookup`, `scan-recognition`, `usage-ledger` | `scan-quota`: a free account stops at the policy's daily scan count and at its £2 cap; every scan passes the gate | ≤ £2 per free account; paid accounts are charged | **G10** |
@@ -134,7 +134,7 @@ Extraction means pulling Nabvy's data or paid work out at scale: scripted search
 | A shared account serving many people | One live screen, device cap (card) | Device and network diversity | None | `account-integrity` | Designed (shadow) | E1 |
 | Alerts forwarded to groups | Private chats only (G4) | Alert links opened by many devices (foreign-opener weight) | Per-account alert-link tokens, rotated on request (`AlertLinksRotateRequested`) | `account`, `account-integrity`, `alert-router` | Designed | 4.3y |
 
-Every quota refusal is a product event, so repeated hits feed the ladder.
+Quota refusals are product events that feed the ladder.
 
 ## Gaps
 
