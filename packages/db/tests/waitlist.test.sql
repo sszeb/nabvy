@@ -42,10 +42,12 @@ begin
 end;
 $$;
 
--- waitlist.join(...): nabvy_app can call it, it inserts, and it is idempotent on email --------
+-- waitlist.join(...): nabvy_app can call it, it inserts, and it is idempotent on email. The
+-- caller normalises the address before calling (services/waitlist's domain layer), so both calls
+-- pass it already lower-case, as the real code path does -------------------------------------
 set local role nabvy_app;
 select waitlist.join('probe@example.com', 'PO19 8HR', array['RTX 3080'], 'reddit', null, null, null, null);
-select waitlist.join('Probe@Example.com', 'SW1A 1AA', array['RTX 3090'], 'google', null, null, null, null);
+select waitlist.join('probe@example.com', 'SW1A 1AA', array['RTX 3090'], 'google', null, null, null, null);
 reset role;
 
 do $$

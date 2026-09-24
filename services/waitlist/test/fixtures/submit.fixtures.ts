@@ -71,7 +71,11 @@ describe('submit', () => {
       const outcome = await harness.as('nabvy_app', (db) =>
         submit(db, call.input, { state: call.state, ip: call.ip }),
       )
-      results.push(outcome.ok ? outcome.value : { ok: false as const, code: outcome.error.code })
+      results.push(
+        outcome.ok
+          ? { ok: true as const, ...outcome.value }
+          : { ok: false as const, code: outcome.error.code },
+      )
     }
     expect(results).toEqual(expected.results)
 
