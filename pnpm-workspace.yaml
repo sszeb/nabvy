@@ -6,5 +6,10 @@ packages:
 
 # sharp (Next's optional image optimiser) pulls in LGPL libvips binaries; apps/web serves no
 # optimised images (listing photos are off), so it is removed from the tree.
+#
+# ws: @trigger.dev/sdk pulls socket.io-client > engine.io-client > ws, which resolves below the
+# patched line for two advisories (GHSA-96hv-2xvq-fx4p, GHSA-58qx-3vcg-4xpx); pinned forward to
+# the latest 8.x release, which both fix (`pnpm audit`, CI's "Dependency audit").
 overrides:
   sharp: '-'
+  ws: '8.21.3'
