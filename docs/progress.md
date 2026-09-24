@@ -82,7 +82,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | quote-redaction | 0 | done: PR #17 merged 14:42 (`f4ded65`); both migrations applied 14:45 (ledger checked); mask wording approved by the owner | `session_013JDvtoKAXsUKX3tHsudwM2` | top |
 | switches | 1 | done: PR #23 merged 15:03 (`c30e3af`); both migrations applied 15:10 (ledger checked) | `session_01CtxXRGTqrS7tCXgFaNfw2J` | top |
 | product-catalogue | 2 | in progress, started 15:08 | `session_017SEV6VX5p4BgAjMVyVMEic` | Sonnet |
-| apify-gateway | 2 | in progress, started 15:08; the live gateway folds in | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
+| apify-gateway | 2 | PR #29 open 15:35; after merge apply `apify-gateway/20260924170000_apify_gateway_module.sql` (depends on switches; raises the gateway cap from $5.50 lifetime to $150 a month, the owner's decision), then deploy the Edge Function `supabase/functions/apify-gateway` (verify_jwt off); inert until an admin switches on `apify` and `apify-gateway` | `session_01Mc3zCoHbPpwPfirnZxpqqF` | top |
 | waitlist | 2 | in progress, started 15:08; email sending stubbed until the owner's accounts exist | `session_01REmUhAiyrnyeJEGGNFzEHz` | Sonnet |
 | account | 2 | in progress, started 15:35 from the amended card on `claude/coordinator-4` | `session_019z1ZHft2YbdK31o3y4i7i3` | Sonnet |
 
