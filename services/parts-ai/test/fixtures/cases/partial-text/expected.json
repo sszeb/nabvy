@@ -1,0 +1,22 @@
+{
+  "report": {
+    "openVersions": 1,
+    "cached": 0,
+    "called": 0,
+    "extracted": 0,
+    "quarantined": 0,
+    "refreshRequested": 0,
+    "deferred": 0,
+    "failed": 0,
+    "paused": null,
+    "modelCalls": 0,
+    "events": []
+  },
+  "queue": ["1380502417485603:partial-text:parts-ai:sweep"],
+  "listings": {
+    "1380502417485603": {
+      "status": "none",
+      "parts": []
+    }
+  }
+}

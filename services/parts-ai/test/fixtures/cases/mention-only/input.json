@@ -1,0 +1,36 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1639721697586478"],
+  "edits": [
+    {
+      "listingId": "1639721697586478",
+      "fields": {
+        "description": "One month old high end gaming pc. Upgraded to an RTX 4070 so this has to go.\nGraphics card not included, it goes in my new build.\n16GB RAM, 1TB SSD."
+      }
+    }
+  ],
+  "responses": {
+    "1639721697586478": {
+      "responseId": "msg_syn_mention",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "gpu",
+            "name": "RTX 4070",
+            "quote": "Upgraded to an RTX 4070",
+            "inclusion": "mention"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 700,
+        "outputTokens": 40,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 800
+    }
+  }
+}

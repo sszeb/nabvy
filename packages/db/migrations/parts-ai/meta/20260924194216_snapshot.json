@@ -1,0 +1,717 @@
+{
+  "id": "6213d1d0-601d-48c0-8696-7ab6a32718e4",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "parts_ai.ai_parts": {
+      "name": "ai_parts",
+      "schema": "parts_ai",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "part_type": {
+          "name": "part_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inclusion": {
+          "name": "inclusion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote": {
+          "name": "quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote_start": {
+          "name": "quote_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote_end": {
+          "name": "quote_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "correction": {
+          "name": "correction",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "ai_parts_catalogue_idx": {
+          "name": "ai_parts_catalogue_idx",
+          "columns": [
+            {
+              "expression": "catalogue_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "ai_parts_call_seq_key": {
+          "name": "ai_parts_call_seq_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "listing_id",
+            "evidence_hash",
+            "prompt_version",
+            "seq"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "ai_parts_part_type_check": {
+          "name": "ai_parts_part_type_check",
+          "value": "part_type in ('gpu', 'cpu', 'ram_size', 'ram_generation', 'storage_size', 'storage_type', 'psu_wattage', 'chipset')"
+        },
+        "ai_parts_inclusion_check": {
+          "name": "ai_parts_inclusion_check",
+          "value": "\"parts_ai\".\"ai_parts\".\"inclusion\" in ('offered', 'mention', 'not_included')"
+        },
+        "ai_parts_source_check": {
+          "name": "ai_parts_source_check",
+          "value": "source in ('title', 'description')"
+        },
+        "ai_parts_position_check": {
+          "name": "ai_parts_position_check",
+          "value": "\"parts_ai\".\"ai_parts\".\"quote_start\" >= 0 and \"parts_ai\".\"ai_parts\".\"quote_end\" > \"parts_ai\".\"ai_parts\".\"quote_start\""
+        },
+        "ai_parts_seq_check": {
+          "name": "ai_parts_seq_check",
+          "value": "\"parts_ai\".\"ai_parts\".\"seq\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "parts_ai.calls": {
+      "name": "calls",
+      "schema": "parts_ai",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model": {
+          "name": "model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "trace_id": {
+          "name": "trace_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cost_gbp_micros": {
+          "name": "cost_gbp_micros",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_source": {
+          "name": "kind_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_quote": {
+          "name": "kind_quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_start": {
+          "name": "kind_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_end": {
+          "name": "kind_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "done_at": {
+          "name": "done_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "calls_done_at_idx": {
+          "name": "calls_done_at_idx",
+          "columns": [
+            {
+              "expression": "done_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "calls_listing_hash_version_key": {
+          "name": "calls_listing_hash_version_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "listing_id",
+            "evidence_hash",
+            "prompt_version"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "calls_hash_check": {
+          "name": "calls_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "calls_version_check": {
+          "name": "calls_version_check",
+          "value": "prompt_version ~ '^p[0-9]+\\.[0-9a-f]{8}$'"
+        },
+        "calls_status_check": {
+          "name": "calls_status_check",
+          "value": "\"parts_ai\".\"calls\".\"status\" in ('extracted', 'quarantined')"
+        },
+        "calls_cost_check": {
+          "name": "calls_cost_check",
+          "value": "\"parts_ai\".\"calls\".\"cost_gbp_micros\" >= 0"
+        },
+        "calls_kind_check": {
+          "name": "calls_kind_check",
+          "value": "kind in ('wanted_or_swap', 'laptop', 'pc', 'not_a_pc')"
+        },
+        "calls_kind_source_check": {
+          "name": "calls_kind_source_check",
+          "value": "kind_source in ('title', 'description')"
+        },
+        "calls_kind_complete_check": {
+          "name": "calls_kind_complete_check",
+          "value": "(\"parts_ai\".\"calls\".\"kind\" is null and \"parts_ai\".\"calls\".\"kind_source\" is null and \"parts_ai\".\"calls\".\"kind_quote\" is null and \"parts_ai\".\"calls\".\"kind_start\" is null and \"parts_ai\".\"calls\".\"kind_end\" is null) or (\"parts_ai\".\"calls\".\"kind\" is not null and \"parts_ai\".\"calls\".\"kind_source\" is not null and \"parts_ai\".\"calls\".\"kind_quote\" is not null and \"parts_ai\".\"calls\".\"kind_start\" >= 0 and \"parts_ai\".\"calls\".\"kind_end\" > \"parts_ai\".\"calls\".\"kind_start\" and \"parts_ai\".\"calls\".\"status\" = 'extracted')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "parts_ai.quarantine": {
+      "name": "quarantine",
+      "schema": "parts_ai",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "problem": {
+          "name": "problem",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "detail": {
+          "name": "detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "quarantine_listing_hash_version_key": {
+          "name": "quarantine_listing_hash_version_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "listing_id",
+            "evidence_hash",
+            "prompt_version"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "quarantine_problem_check": {
+          "name": "quarantine_problem_check",
+          "value": "\"parts_ai\".\"quarantine\".\"problem\" in ('invalid_output', 'quote_not_found')"
+        },
+        "quarantine_detail_check": {
+          "name": "quarantine_detail_check",
+          "value": "length(\"parts_ai\".\"quarantine\".\"detail\") <= 500"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "parts_ai.refreshes": {
+      "name": "refreshes",
+      "schema": "parts_ai",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "requested_at": {
+          "name": "requested_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "refreshes_listing_hash_key": {
+          "name": "refreshes_listing_hash_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "listing_id",
+            "evidence_hash"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "refreshes_hash_check": {
+          "name": "refreshes_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "parts_ai": "parts_ai"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "parts_ai.v_ai_parts": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "part_type": {
+          "name": "part_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inclusion": {
+          "name": "inclusion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote": {
+          "name": "quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start": {
+          "name": "start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "end": {
+          "name": "end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "correction": {
+          "name": "correction",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "name": "v_ai_parts",
+      "schema": "parts_ai",
+      "isExisting": true,
+      "materialized": false
+    },
+    "parts_ai.v_quarantine": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "problem": {
+          "name": "problem",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "detail": {
+          "name": "detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_quarantine",
+      "schema": "parts_ai",
+      "isExisting": true,
+      "materialized": false
+    },
+    "parts_ai.v_runs": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_version": {
+          "name": "prompt_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_source": {
+          "name": "kind_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_quote": {
+          "name": "kind_quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_start": {
+          "name": "kind_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_end": {
+          "name": "kind_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "done_at": {
+          "name": "done_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_runs",
+      "schema": "parts_ai",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
