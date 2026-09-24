@@ -1,0 +1,16 @@
+{
+  "source": "facebook",
+  "sourceListingId": "998877",
+  "url": "https://www.facebook.com/marketplace/item/998877/",
+  "title": "Wanted: GPU",
+  "price": null,
+  "priceKind": "unknown",
+  "listedAtPrecision": "day",
+  "fetchedAt": "2026-09-24T01:40:43.415Z",
+  "deliveryMethod": "collection",
+  "raw": {
+    "money": {
+      "kind": "unknown"
+    }
+  }
+}

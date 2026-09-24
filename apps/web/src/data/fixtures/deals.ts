@@ -10,7 +10,8 @@ const facts = (entries: Array<[label: string, value: string | undefined]>): List
     value === undefined ? { label, status: 'not_stated' } : { label, value, status: 'stated' },
   )
 
-const item = (id: string) => `https://www.facebook.com/marketplace/item/${id}/`
+/** Clearly invalid placeholder links, so no fixture can resolve to a real listing. */
+const item = (id: string) => `https://marketplace.example.invalid/item/${id}/`
 
 const standardChecklist = [
   'Ask for a photo of the card running a benchmark, with today’s date on paper',
@@ -65,10 +66,7 @@ export const deals: Deal[] = [
     },
     suspicions: [],
     warnings: [{ id: 'w-1', text: 'Collection only' }],
-    priceChanges: [
-      { at: '2026-09-22T09:10:00Z', ask: { amountMinor: 23000, currency: 'GBP' } },
-      { at: '2026-09-24T13:02:00Z', ask: { amountMinor: 21000, currency: 'GBP' } },
-    ],
+    priceChanges: [],
     preparedMessage:
       'Hello, is the RTX 3070 still available? Could you tell me whether it has been used for mining and whether you still have the receipt? I can collect this week.',
     checklist: standardChecklist,
@@ -85,7 +83,7 @@ export const deals: Deal[] = [
       ask: { amountMinor: 55000, currency: 'GBP' },
       town: 'Bognor Regis',
       distanceKm: 10,
-      delivery: 'collection_or_delivery',
+      delivery: 'both',
       condition: 'Used, like new',
       keyFacts: facts([
         ['CPU', 'Ryzen 5 5600X'],
@@ -242,7 +240,6 @@ export const deals: Deal[] = [
             label: 'Matching text',
             detail: '6 listings in the last 7 days share 94% of this text',
           },
-          { label: 'Towns', detail: 'Portsmouth, Southampton, Brighton' },
         ],
         rule: 'Copy-advert text similarity (rule CA-1)',
       },
@@ -269,7 +266,7 @@ export const deals: Deal[] = [
       ask: { amountMinor: 34000, currency: 'GBP' },
       town: 'Worthing',
       distanceKm: 28,
-      delivery: 'collection_or_delivery',
+      delivery: 'both',
       keyFacts: facts([
         ['GPU', 'RTX 3080 10GB'],
         ['Box', 'Original box'],
@@ -300,7 +297,10 @@ export const deals: Deal[] = [
     },
     suspicions: [],
     warnings: [{ id: 'w-4', text: 'Condition is not stated' }],
-    priceChanges: [],
+    priceChanges: [
+      { at: '2026-09-24T08:44:00Z', ask: { amountMinor: 36000, currency: 'GBP' } },
+      { at: '2026-09-24T11:30:00Z', ask: { amountMinor: 34000, currency: 'GBP' } },
+    ],
     preparedMessage:
       'Hello, is the RTX 3080 still available? What condition would you say it is in?',
     checklist: standardChecklist,

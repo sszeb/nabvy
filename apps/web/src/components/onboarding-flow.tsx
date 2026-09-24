@@ -22,7 +22,7 @@ const channelOptions: Array<{
   {
     value: 'telegram',
     label: 'Telegram',
-    hint: 'Fastest. Link with a one-time code.',
+    hint: 'Link with a one-time code.',
     icon: SendIcon,
   },
   {
@@ -149,7 +149,7 @@ export function OnboardingFlow({ examples }: { examples: Deal[] }) {
         <div className="grid gap-6">
           <div className="grid gap-2">
             <h1 className="font-semibold text-2xl tracking-tight">What alerts look like</h1>
-            <p className="text-muted-foreground">Three examples from the last day.</p>
+            <p className="text-muted-foreground">Three example alerts.</p>
             <EstimatesNote />
           </div>
           <div className="grid gap-3">

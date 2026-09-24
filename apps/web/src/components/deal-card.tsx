@@ -2,7 +2,7 @@ import { AlertTriangleIcon, ArrowDownIcon, MapPinIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { Deal } from '@/data/types'
 import { formatDistance, formatMoney } from '@/lib/format'
-import { suspicionKindLabel } from '@/lib/labels'
+import { suspicionText } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { FreshnessStamp } from './freshness-stamp'
 import { ListingPhoto } from './listing-photo'
@@ -61,7 +61,7 @@ export function DealCard({ deal, className }: { deal: Deal; className?: string }
               <li key={suspicion.id}>
                 <Badge tone="warning" className="whitespace-normal">
                   <AlertTriangleIcon aria-hidden />
-                  {suspicionKindLabel[suspicion.kind]}
+                  {suspicionText(suspicion)}
                 </Badge>
               </li>
             ))}

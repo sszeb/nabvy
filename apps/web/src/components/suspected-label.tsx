@@ -74,7 +74,7 @@ export function ReportMistake({ label }: { label: string }) {
       <DialogContent>
         <DialogTitle>Report a mistake</DialogTitle>
         <DialogDescription>
-          Tell us why “{label}” looks wrong. A person reviews every report.
+          Tell us why “{label}” looks wrong. Your report goes to the review queue.
         </DialogDescription>
         {sent ? (
           <p

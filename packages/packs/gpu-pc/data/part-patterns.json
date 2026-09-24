@@ -1,0 +1,100 @@
+{
+ "about": "Case-insensitive regular expressions from the 2026-09-24 offline parts analysis (docs/validation/PARTS_PRICE_ANALYSIS_2026-09-24.md). A starting point for the app rule pass: coverage was measured, precision and recall were not. Written for Python re; checked to compile as JavaScript RegExp with the i flag. Remove office \"OptiPlex 3080/3090\" strings before GPU matching, and parse spec lines rather than hashtag blocks.",
+ "flags": "i",
+ "listingKind": {
+  "wantedTitle": "\\b(wanted|wtb|want to buy|want|looking for|l/f|lf|i\\s*b\\s*u\\s*y|we buy|i'?m buying|buying|buyer of|cash for|cash paid|sell (me )?your|swap|swaps|swapping|trade|trading|trades|px|p/x|part ex(change)?|exchange|in need of|need an?|iso)\\b|£{2,}|\\bbuy(ing)? (your|all|any|broken)",
+  "wantedDescriptionFirst400Chars": "^\\W*(i|we)\\s+(buy|am buying|are buying|'m buying|'re buying)|\\b(i|we) buy (all|any|your|pc|gaming|graphics|gpu|broken|laptops|computers)|\\bwanted\\b.*\\b(pc|gpu|graphics|laptop)s?\\b|\\bcash (paid )?for (your|pc|gaming|graphics|gpu)|\\bsell (me )?your\\b|\\blooking to buy\\b|\\bpay (top|good|cash)",
+  "laptopTitle": "laptop|notebook|zephyrus|\\bscar\\b|strix g1[68]|strix g16|aorus 1[5-7]|aorus 16x|\\blegion\\b|omen (1[67]|transcend)|\\braider\\b|\\bstealth 1|blade 1[4-8]|\\btuf (gaming )?[fa]1[5-7]|victus|alienware (m|x)1|helios|nitro (5|v)|\\bgt7[0-9]|macbook|chromebook|\\bsodimm\\b|so-dimm",
+  "pcTitle": "\\b(pc|pcs|build|built|computer|tower|desktop|rig|setup|set up|system|prebuilt|pre-built|workstation|machine|bundle)\\b|gaming\\s*pc",
+  "notAPcTitle": "\\b(desk|chair|speaker|speakers|games?|monitor only|case only|empty case|pc case|computer case|tower case|case\\b(?!.*\\b(rtx|gtx|ryzen|i[3579]|intel)\\b)|headset|keyboard|mouse|controller|console|handheld|ps[345]|xbox|steam deck|rog ally|ayaneo|imac|macbook|mac mini|mac studio|ipad|tablet|cable|fan[s]?\\b(?!.*pc)|cooler only|graphics card|gpu only|psu only|power supply|motherboard(?!.*(rtx|gtx|pc))|nas\\b|server|router|printer|tv\\b|projector|stand|shelf|cabinet)\\b",
+  "cpuOrPcTitle": "ryzen|\\bi[3579][\\s-]*\\d{4,5}|intel core|core ultra|\\bultra [579]\\b|x3d|threadripper|xeon|optiplex|precision|prodesk|thinkcentre|elitedesk|alienware aurora|omen \\d\\dl|legion t|predator orion"
+ },
+ "fields": {
+  "GPU model": "\\b(rtx|gtx|gt)\\s*-?\\s*a?\\d{3,4}(\\s*(ti|super|s))?\\b|\\b(rtx|gtx)\\s*a?\\d{3,4}|\\b(20[678]0|30[5-9]0|40[5-9]0|50[5-9]0|1[06][5-8]0)\\s*(ti|super|s)?\\b(?!\\s*(mhz|w\\b))|\\brx\\s*-?\\s*\\d{3,4}\\s*(xtx|xt|gre)?\\b|\\b(5[5-7]00|6[4-9][05]0|7[6-9]00|90[67]0)\\s*-?\\s*(xtx|xt|gre)\\b|\\barc\\s*[ab]\\d{3}\\b|\\bquadro\\b|\\btesla [pmkv]\\d|\\bradeon\\s*(hd\\s*)?\\d{3,4}|\\bvega\\s*\\d{2}\\b|\\b(a[2-6]000|a4500|a5500)\\b|founders edition",
+  "CPU model": "\\bi[3579]\\s*-?\\s*\\d{4,5}[a-z]{0,3}\\b|\\bcore\\s*(ultra\\s*)?[3579]\\s*-?\\s*\\d{3,5}[a-z]{0,3}\\b|\\bultra\\s*[579]\\s*-?\\s*\\d{3}[a-z]{0,2}\\b|\\bryzen\\s*[3579]\\s*(pro\\s*)?\\d{4}[a-z0-9]{0,4}\\b|\\b[3-9]\\d{3}x3d\\b|\\b[1-9]\\d{3}(x|g|f|ge)\\b(?!\\s*(mhz|w))|\\b[5789]\\d{2}0x\\b|\\bthreadripper\\s*(pro\\s*)?\\d{4}|\\bxeon\\s*[a-z]?\\d?-?\\s*\\d{4}|\\b(e[35]-\\d{4})\\b|\\bfx[\\s-]?\\d{4}\\b|\\bathlon\\b|\\bpentium\\s*[g]?\\d{3,4}|\\bi[3579]\\s*\\d{1,2}(st|nd|rd|th)\\s*gen\\b.*?\\b\\d{4,5}",
+  "RAM size": "\\b(4|8|12|16|24|32|48|64|96|128|256)\\s*(gb|g|gig|gigs)\\b\\s*(of\\s*)?(\\w+\\s*){0,3}?(ram|memory|ddr[345]|dimm|3200|3600|6000|6400)|\\b(ram|memory)\\b\\s*[:\\-–=]?\\s*(\\w+\\s*){0,3}?(4|8|12|16|24|32|48|64|96|128|256)\\s*(gb|g)\\b|\\b\\d\\s*x\\s*(4|8|16|24|32|48)\\s*gb\\b|\\b(8|16|32|48|64|128)\\s*gb\\s*\\(\\s*\\d\\s*x",
+  "RAM generation": "(?<!g)ddr\\s*-?\\s*[345]\\b|\\bpc[345]-\\d{4,5}",
+  "Storage size": "\\b\\d+(\\.\\d+)?\\s*tb\\b|\\b(120|128|240|250|256|480|500|512|960|1000)\\s*gb\\b|\\b(ssd|nvme|hdd|m\\.?2|storage|hard drive)\\b\\s*[:\\-–]?\\s*\\d+\\s*(tb|gb)",
+  "Storage type": "\\bnvme\\b|\\bm\\.?2\\b|\\bssd\\b|\\bhdd\\b|hard (disk|drive)|\\bsata\\b|\\bgen\\s*[345]\\s*(x4\\s*)?(nvme|ssd|m\\.2)|\\b(990|980|970|870|860)\\s*(pro|evo)|\\bsn\\d{3,4}\\b|firecuda|\\bmp600\\b|\\bkc3000\\b",
+  "PSU wattage": "\\b[3-9]\\d{2}\\s*-?\\s*(w|watt|watts)\\b(?!\\s*(tdp))|\\b1[0-6]\\d{2}\\s*-?\\s*(w|watt|watts)\\b|\\b(rm|rmx|rme|hx|cx|cxm|tx|sf|mwe|mpg a)\\s*-?\\s*[5-9]\\d0\\s*[a-z]?\\b(?=.*\\b(psu|power|gold|bronze|platinum|corsair|modular))",
+  "Motherboard chipset": "\\b(a320|a520|a620|b350|b450|b550|b650e?|b840|b850|b860|x370|x470|x570s?|x670e?|x870e?|h110|h170|h270|h310|h370|b150|b250|b360|b365|z170|z270|z370|z390|b460|h410|h470|z490|b560|h510|h570|z590|b660|h610|h670|z690|b760|z790|z890|x99|x299|trx40|x399|b85|h81|h97|z97|z87|h61|z68|p67|b75|z77|q370|q470|q570)m?\\b"
+ },
+ "gpuModels": [
+  {
+   "model": "RTX 5090",
+   "pattern": "5090"
+  },
+  {
+   "model": "RTX 5080",
+   "pattern": "5080"
+  },
+  {
+   "model": "RTX 5070 Ti",
+   "pattern": "5070\\s*-?\\s*ti"
+  },
+  {
+   "model": "RTX 5070",
+   "pattern": "5070(?!\\s*-?\\s*ti)"
+  },
+  {
+   "model": "RTX 5060 Ti",
+   "pattern": "5060\\s*-?\\s*ti"
+  },
+  {
+   "model": "RTX 4090",
+   "pattern": "4090"
+  },
+  {
+   "model": "RTX 4080 Super",
+   "pattern": "4080\\s*s(uper)?\\b"
+  },
+  {
+   "model": "RTX 4080",
+   "pattern": "4080(?!\\s*s(uper)?\\b)"
+  },
+  {
+   "model": "RTX 4070 Ti Super",
+   "pattern": "4070\\s*-?\\s*ti\\s*s(uper)?"
+  },
+  {
+   "model": "RTX 4070 Ti",
+   "pattern": "4070\\s*-?\\s*ti(?!\\s*s(uper)?)"
+  },
+  {
+   "model": "RTX 4070 Super",
+   "pattern": "4070\\s*s(uper)?\\b"
+  },
+  {
+   "model": "RTX 4070",
+   "pattern": "4070(?!\\s*-?\\s*(ti|s(uper)?\\b))"
+  },
+  {
+   "model": "RTX 3090 Ti",
+   "pattern": "(rtx|geforce|nvidia)?\\s*3090\\s*-?\\s*ti"
+  },
+  {
+   "model": "RTX 3090",
+   "pattern": "(?<!optiplex )(?<!optiplex ultra )3090(?!\\s*-?\\s*ti)"
+  },
+  {
+   "model": "RTX 3080 Ti",
+   "pattern": "3080\\s*-?\\s*ti"
+  },
+  {
+   "model": "RTX 3080",
+   "pattern": "(?<!optiplex )3080(?!\\s*-?\\s*ti)"
+  },
+  {
+   "model": "RX 9070 XT",
+   "pattern": "9070\\s*-?\\s*xt"
+  },
+  {
+   "model": "RX 7900 XTX",
+   "pattern": "7900\\s*-?\\s*xtx"
+  },
+  {
+   "model": "RX 7900 XT",
+   "pattern": "7900\\s*-?\\s*xt(?!x)"
+  }
+ ]
+}

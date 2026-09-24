@@ -21,7 +21,7 @@ const steps = [
   {
     icon: FileSearchIcon,
     title: 'Each listing is read',
-    body: 'New Facebook Marketplace listings near you are checked for the facts that matter, and for what they leave out.',
+    body: 'New listings near you are checked for the facts that matter, and for what they leave out.',
   },
   {
     icon: GaugeIcon,
@@ -39,7 +39,7 @@ const principles = [
   {
     icon: ShieldAlertIcon,
     title: 'Suspicions, with their evidence',
-    body: 'A label such as “Suspected trade seller” always shows the facts behind it, and you can report a mistake. No hidden scores.',
+    body: 'A label such as “Suspected trade seller” always shows the facts behind it, and you can report a mistake.',
   },
   {
     icon: EyeOffIcon,
@@ -56,13 +56,13 @@ export default async function LandingPage() {
       <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-16 sm:px-6 lg:grid-cols-2 lg:pt-20">
         <div className="grid gap-6">
           <p className="w-fit rounded-full bg-accent px-3 py-1 font-medium text-accent-foreground text-xs">
-            Public beta · Facebook Marketplace · UK and Ireland
+            UK and Ireland
           </p>
           <h1 className="text-balance font-semibold text-4xl tracking-tight sm:text-5xl">
             Second-hand deals near you, checked before they reach you.
           </h1>
           <p className="max-w-xl text-lg text-muted-foreground">
-            Nabvy watches Facebook Marketplace around your postcode, reads each new listing, and
+            Nabvy watches second-hand listings around your postcode, reads each new listing, and
             tells you where the asking price sits among comparable asks. You decide what to do.
           </p>
           <div className="flex flex-wrap gap-3">
@@ -120,11 +120,10 @@ export default async function LandingPage() {
       <section className="border-t bg-surface">
         <div className="mx-auto grid max-w-6xl gap-4 px-4 py-16 sm:px-6 md:grid-cols-2 md:items-center">
           <div className="grid gap-3">
-            <h2 className="font-semibold text-2xl tracking-tight">Speed, measured and shown</h2>
+            <h2 className="font-semibold text-2xl tracking-tight">The timing of every alert</h2>
             <p className="text-muted-foreground">
               Every alert carries its own freshness stamp: when the listing went up, when we found
-              it and when it reached you. We will publish the daily median, measured, never
-              promised.
+              it and when it reached you.
             </p>
           </div>
           {example ? (

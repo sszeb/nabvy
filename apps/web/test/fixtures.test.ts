@@ -1,3 +1,4 @@
+import { Source } from '@nabvy/contracts'
 import { describe, expect, it } from 'vitest'
 import * as data from '@/data'
 import { suspicionText } from '@/lib/labels'
@@ -79,6 +80,11 @@ describe('user-facing data', () => {
       }
       const last = deal.priceChanges.at(-1)
       if (last) expect(last.ask.amountMinor).toBe(deal.listing.ask.amountMinor)
+      // No history from before this listing existed: that would be the relist pattern.
+      const listedAt = Date.parse(deal.listing.freshness.listedAt)
+      const times = deal.priceChanges.map((change) => Date.parse(change.at))
+      for (const time of times) expect(time).toBeGreaterThanOrEqual(listedAt)
+      expect(times).toEqual([...times].sort((a, b) => a - b))
     }
   })
 
@@ -108,12 +114,18 @@ describe('user-facing data', () => {
     expect(found).toEqual([])
   })
 
-  it('uses Facebook as the only source', async () => {
+  it('names a contracts source and links only to placeholder hosts', async () => {
     for (const deal of await data.listDeals()) {
-      expect(deal.listing.source).toBe('facebook')
-      expect(deal.listing.listingUrl).toMatch(
-        /^https:\/\/www\.facebook\.com\/marketplace\/item\/\d+\/$/,
-      )
+      expect(Source.safeParse(deal.listing.source).success).toBe(true)
+      expect(new URL(deal.listing.listingUrl).hostname).toMatch(/\.invalid$/)
+    }
+  })
+
+  it('never ties evidence to other listings by place', async () => {
+    for (const deal of await data.listDeals()) {
+      for (const suspicion of deal.suspicions) {
+        for (const item of suspicion.evidence) expect(item.label).not.toMatch(/town|place|area/i)
+      }
     }
   })
 
@@ -122,7 +134,6 @@ describe('user-facing data', () => {
       if (typeof value !== 'string') return
       expect(value).not.toContain('!')
       expect(value).not.toMatch(/\b(worth|fair value|relisted|seen before|hurry|last chance)\b/i)
-      expect(value).not.toMatch(/\b(ebay|cex|gumtree)\b/i)
     })
   })
 })
