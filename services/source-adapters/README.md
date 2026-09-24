@@ -9,9 +9,9 @@ the adapter on this record. Implemented so far: the route-health helper (below).
 - **Actor.** The private Apify actor `YfdUav3sZ2BgEf8rh` ("Marketplace Verification Private"),
   build **1.0.82**, from `sebtimize/fb-scrap-engine` at `f177a44`. Called only through the
   `apify-gateway` Edge Function (`supabase/README.md`).
-- **Reference.** `docs/fb-actor-reference.md` is being rebuilt from the owner's listed files only
-  (`docs/fb-actor-sources.md`). Until the rebuilt version lands, rely only on what the listed files,
-  the recorded run and this README support.
+- **Reference.** `docs/fb-actor-reference.md`, rebuilt from the owner's listed files only
+  (`docs/fb-actor-sources.md`). Some claims in this README came from the earlier full read;
+  `docs/fb-actor-scope-report.md` lists them, and task 1.1a re-sources or corrects them.
 - **Recorded run.** `fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/`. Details are
   in the table below.
 
