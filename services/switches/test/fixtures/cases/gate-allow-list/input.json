@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "source": "switches card: named gates with allow-lists (the Facebook alert gate)",
+  "changes": [
+    {
+      "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+      "name": "facebook-alerts",
+      "kind": "gate",
+      "state": "on",
+      "allowList": ["00000000-0000-4000-8000-0000000000c1"]
+    }
+  ],
+  "gateChecks": [
+    { "gate": "facebook-alerts", "userId": "00000000-0000-4000-8000-0000000000c1" },
+    { "gate": "facebook-alerts", "userId": "00000000-0000-4000-8000-0000000000c2" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "source": "rule 11: shadow is a module state",
+  "changes": [
+    {
+      "actorUserId": "00000000-0000-4000-8000-0000000000a1",
+      "name": "anthropic",
+      "kind": "provider",
+      "state": "shadow"
+    }
+  ]
+}

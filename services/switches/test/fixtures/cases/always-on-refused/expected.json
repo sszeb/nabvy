@@ -1,0 +1,5 @@
+{
+  "states": { "incidents": "on", "switches": "on" },
+  "audits": { "incidents": 0, "switches": 0 },
+  "refused": ["switches.always_on", "switches.always_on"]
+}

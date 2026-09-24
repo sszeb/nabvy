@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "source": "switches card: an unknown name reads off",
+  "changes": [],
+  "gateChecks": [
+    { "gate": "never-registered-gate", "userId": "00000000-0000-4000-8000-0000000000c1" }
+  ]
+}
