@@ -13,6 +13,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 0.6 | Fixtures harness | done | 2026-09-24 | Merged in PR #3 (`688c66d`): per-module stage discovery, pass-rate report and a CI check that fails on a drop (`fixtures/README.md`) |
 | 1.0 | Document the Facebook actor | blocked | 2026-09-24 | Started ahead of 0.2–0.6 at the owner's request, while Nabvy's own integration plan is written. Done: run by hand through the gateway (run `VkryjpwS6U2GBDh3k`, $0.0177); real input schema, output fields and the mapping to the `docs/providers.md` target in `services/source-adapters/README.md`; the reference in `docs/fb-actor-reference.md`, rebuilt from the owner's listed files only (`docs/fb-actor-scope-report.md` records what was dropped); the redacted run saved under `fixtures/listings/facebook/runs/`, verified against the database and checked by a fixture test; differences listed in `docs/questions.md`; the gateway collects losslessly (version 9 live, matching `main`: every dataset page, no `clean`, raw text to Postgres, whole run object; a free `collect` job re-read the recorded run and matched all 21 rows, `supabase/README.md`). Blocked on: the owner's home area and the region model (verified city-page centres replace `cell_provider_locations`, Precedence row "Search planning"), and 0.3 |
 | 1.1 | Apify Facebook adapter | in progress | 2026-09-24 | Groundwork only, while Nabvy's own integration plan is written: the route-health helper ported from the actor with its tests, plus a pinned test for the description-missing caveat; the actor-input validation and run presets were withdrawn on review (derived from an actor file outside the owner's list) and return re-derived from the listed files after the reference rebuild (`services/source-adapters/README.md`). The adapter itself waits for that plan and task 0.2 |
+| 1.1a | Actor scope clean-up and gateway input hardening | in progress | 2026-09-24 | In review: PR #11 (`task/1.1a-actor-scope-hardening`), CI green |
 | 1.2 | Crawl planner (minimal) | not started | | |
 | 1.3 | Listing registry | not started | | |
 | 1.4 | Cheap gate and detail fetch | not started | | |
@@ -34,6 +35,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 3.5 | Inventory and eBay drafts | not started | | |
 | 4.0 | Auth service | in progress | 2026-09-24 | In review: PR #9 (`task/4.0-auth`): Better Auth server, session helpers, the account standing check with the vague notice, and a `nabvy_auth` role |
 | 4.1a | Web design system and app shell | in progress | 2026-09-24 | In review: PR #7 (`task/4.1a-web-design-system`); branded error pages and the restricted notice follow in PR #10: Next.js, Tailwind and shadcn/ui; the look set by the owner ("MVP scope and pipeline runtime" in `docs/decisions.md`); screens on typed fixture data; photos off behind a flag |
+| 4.1c | Branded error pages and restricted notice | in progress | 2026-09-24 | In review: PR #10, stacked on PR #7 (opened by the 4.0 auth session under the title 4.1b; 4.1b is the user dashboard) |
 | 4.1 | Web app core | not started | | |
 | 4.1b | User dashboard | not started | | |
 | 4.2 | Web push and email | not started | | |
@@ -66,6 +68,6 @@ Status values: not started, in progress, blocked (see `docs/questions.md`), done
 | Item | Status | Date | Notes |
 | --- | --- | --- | --- |
 | Apify gateway | done | 2026-09-24 | Edge Function `apify-gateway` version 9 live, matching `main`; six `apify_gateway` migrations; lossless collection; $5.50 cap (`supabase/README.md`) |
-| Integration plan, module catalogue, copy-advert spam design | in progress | 2026-09-24 | Drafted from the owner's listed actor files and Nabvy's own records; the catalogue goes to the owner for approval |
+| Integration plan, module catalogue, copy-advert spam design | in progress | 2026-09-24 | Drafted from the owner's listed actor files and Nabvy's own records; the catalogue goes to the owner for approval. Catalogue split into one card per module in `docs/design/modules/` (`scripts/split-module-cards.mjs`, with `index.json`) and condensed into one page for the owner's approval; wave 1 waits for that approval |
 | Actor reference rebuild | done | 2026-09-24 | `docs/fb-actor-reference.md` rebuilt from the owner's listed files and the recorded run (about 890 citations, all in scope); `docs/fb-actor-scope-report.md` lists what was dropped and what still relied on it (re-sourcing is task 1.1a) |
 | Reviewer and coordinator process | done | 2026-09-24 | A reviewer session reviews, approves and merges; the reviewer applies a merged pull request's migrations straight after merging it, and the coordinator keeps this file in a sweep every two hours (`docs/decisions.md`, "Atomic modules") |

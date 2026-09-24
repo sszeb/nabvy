@@ -98,6 +98,13 @@ The predecessor's design workflows write raw drafts. As each finishes, it is com
 
 Treat the drafts as design notes, not decisions. A product choice in them goes to the owner or to `docs/questions.md`; a legal point goes to `docs/legal-review.md`, one line each.
 
+## Coordinator 2 progress (11:40 UTC)
+
+- Coordinator 2 is `session_01XSTcLZmm35nVGEa6LhMoUj`. Its sweep is a `send_later` one-shot (first `trig_01CwBXXkRWpiedQRwLUWehdB`, 12:30 UTC), re-armed two hours ahead at each sweep.
+- Step 1 done. 1.1a has opened PR #11 (CI green) and was sent the lean rules (`trig_01C6kjk9gD4WMtKcxvDap5YU`).
+- Step 2 done: cards in `docs/design/modules/` (re-run `node scripts/split-module-cards.mjs` when the draft changes), catalogue page https://claude.ai/artifact/TYppyezuT2g3Nmv2CGSxbD. It proposes starting each module when its hard dependencies are merged, rounds 0 to 2 first, so the earlier wave-1 list below moves to rounds 3 to 16. Model tiers are set in the page (top model for 40 modules: pipeline core, security, money; Sonnet for the rest).
+- Step 5: PR #10 recorded as 4.1c, PR #11 as 1.1a in `docs/progress.md`.
+
 ## Next steps, in order
 
 1. **Set one scheduled sweep, every two hours from about 12:30 UTC,** with `send_later`. This replaces the old hourly fleet check and the separate actor-documents check. Each sweep does the following:
