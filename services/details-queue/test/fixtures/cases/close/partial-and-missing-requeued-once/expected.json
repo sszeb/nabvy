@@ -1,0 +1,28 @@
+{
+  "items": {
+    "1000000000000011": {
+      "status": "queued",
+      "attempts": 0,
+      "requeues": 1,
+      "lastOutcome": "partial"
+    },
+    "1000000000000012": {
+      "status": "queued",
+      "attempts": 0,
+      "requeues": 1,
+      "lastOutcome": "missing"
+    },
+    "1000000000000013": {
+      "status": "done",
+      "attempts": 0,
+      "requeues": 1,
+      "lastOutcome": "partial"
+    },
+    "1000000000000014": {
+      "status": "done",
+      "attempts": 0,
+      "requeues": 1,
+      "lastOutcome": "missing"
+    }
+  }
+}

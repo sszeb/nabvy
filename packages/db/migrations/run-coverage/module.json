@@ -1,0 +1,5 @@
+{
+  "module": "run-coverage",
+  "schema": "run_coverage",
+  "dependsOn": ["core", "switches", "apify-gateway", "listing-ingest"]
+}
