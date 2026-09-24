@@ -49,6 +49,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 4.3 | Billing | blocked | 2026-09-24 | Charging from launch and strict no refunds decided by the owner (`docs/decisions.md`). Blocked on the Stripe test key and network access in the environment, then 0.3, 4.0 and 4.1a |
 | 4.3a | Account and channels | not started | | |
 | 0.11 | Replace the switch stubs | done: PR #34 merged 16:36 (`19f68e6`); both migrations applied 16:43 (ledger checked); cost-meter is seeded off, so `v_costs` is empty until an admin switches it on | 2026-09-24 | `session_01Lb6LJFC25YwtRsFqvxXgff`, Sonnet |
+| 1.1d | Actor app integration guide condensed | started 16:42; `fb-scrap-engine/docs/APP_INTEGRATION_GUIDE.md` and `COPY_ADVERT_SPAM.md` landed 14:22 | 2026-09-24 | `session_012jNJ1yAmFo3qjybDMsQYg9`, Sonnet |
 | 4.3b | Security hardening | not started | | |
 | 4.4 | Crawl planner v1 | not started | | |
 | 4.5 | Review console | not started | | |
