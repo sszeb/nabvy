@@ -242,6 +242,16 @@ For module work this replaces `CLAUDE.md`'s "one task at a time".
 
 The owner approved the wording `quote-redaction` shows in place of contact details: `[phone redacted]`, `[email redacted]`, `[handle redacted]`, `[link redacted]`, and a full postcode cut to its outward half plus `[redacted]` (for example `PO19 [redacted]`). Approved as "Approve and carry on" on PR #17.
 
+## Watching is metered, prices are dynamic (owner, 2026-09-24)
+
+The owner, after missing a £350 RTX 3090 Ti in Redhill that sold within hours:
+- **Radius.** A want's radius goes up to about a three-hour drive (about 150 miles). Redhill from Chichester is well inside it.
+- **Speed is the user's choice and is paid for.** Each want has a check interval the user picks (for example 1, 5, 15 or 60 minutes) and a delivery speed (Instant, Batched, Daily digest). The app shows the estimated monthly cost in credits before saving and suggests a top-up when the balance will not cover it. This replaces the flat "watching" entitlement in "Pricing and cadence" for check speed; tiers become included credit and bundle discounts.
+- **Always profitable.** Every price is measured cost times a margin, with a floor that refuses any price, bundle or offer below cost plus the minimum margin.
+- **Bundles.** Credit bundles with volume discounts, in the style of Claude's and ChatGPT's usage packs, scaled to Nabvy's costs.
+- **Dynamic pricing.** An admin page (`pricing-console`) with sliders for margins, bundles and discounts, and per-user or per-segment offers and promotions.
+- **Precedence.** How fast Facebook can actually be checked still follows the actor brief and test T2; the price of a faster interval follows from its measured cost.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.

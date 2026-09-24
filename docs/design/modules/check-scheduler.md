@@ -12,7 +12,7 @@
 - **Contracts:** `CheckSchedulerKind` (`newest | catch-up | sweep`), `CheckSchedulerRun`.
 - **Depends on:** `switches`, `search-planner`, `run-coverage`, `spend-governor`, `source-health`, `apify-gateway`, `listing-ingest`.
 - **When off:** no scheduled checks.
-- **Tests and fixtures:** one run per region per tick; every search run sends `includeDetails: false` and an explicit `sort`; a degraded search reruns once; the throttle order at 80%; the ramp cap; a retried tick submits once.
+- **Tests and fixtures:** one run per region per tick; every search run sends `includeDetails: false` and an explicit `sort`; a degraded search reruns once; the throttle order at 80%; the ramp cap; a retried tick submits once. Acceptance: a newly posted listing for a hot term near an active Instant want is found within a few minutes of posting (target set by the owner's missed £350 RTX 3090 Ti in Redhill, 2026-09-24); the achievable interval within the $150-a-month budget is confirmed by actor test T2, and demand-driven scheduling spends the budget on cells with live Instant wants first.
 - **Priority and phase:** P1.
 - **Sources:** `fb-scrap-engine/docs/HANDOFF.md:140-145`; `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:63-65,77-88,202-203,217-229`; `fb-scrap-engine/docs/design/SCALE_PLAN.md:50-56,74-79,97-98`; `fb-scrap-engine/docs/EVIDENCE_LEDGER.md:430-432`; `nabvy/docs/decisions.md:131-139,176`.
 - **Open questions:** `actor-integration.md` questions 3, 4 and 5.

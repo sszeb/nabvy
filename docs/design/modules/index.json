@@ -1024,6 +1024,16 @@
     "softDependsOn": []
   },
   {
+    "name": "pricing-console",
+    "group": "Accounts, billing and marketing",
+    "job": "Set prices, bundles, per-user offers and promotions, never below cost plus margin",
+    "priority": "MVP",
+    "round": 4,
+    "scope": "MVP",
+    "dependsOn": ["switches", "audit-log", "cost-meter", "account", "usage-ledger"],
+    "softDependsOn": []
+  },
+  {
     "name": "boosts",
     "group": "Accounts, billing and marketing",
     "job": "Paid product boosts (parked)",
