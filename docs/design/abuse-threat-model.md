@@ -96,28 +96,49 @@ The table below lists 31 exploits. Each row gives the guard, the module that own
 | F3 | **Switch misuse**: turning a guard off to "fix" an outage, or resetting a breaker in a loop | `spend-governor` and `cost-meter` fail closed (built). The breaker resets only by an audited admin (1.6e) | `switches`, `spend-governor`, `account-integrity` | `integrity-off-holds-free` (A7); `breaker-reset-rate`: a third reset in an hour needs a written reason and alerts the founder | Pool + C × R per reset | G1 |
 | F4 | **Insider export of restricted rows** (seller data, which developers may see) | `restricted_rows` is owner-only SQL; the owner's decision "Actor data kept in full" | `apify-gateway` | Privileges test (built): no role but the owner reads `restricted_rows` | None | None |
 
+## Sign-up farming: identify and stop from day one
+
+Farming is mass account creation for free bursts, referral credit, trial or taste credit, or resale of access (owner addition, 17:07). Rows A1–A4, B1–B3 and E1 bound its cost. This section is about **recognising a farm and stopping it**. The signals are scored together into a farm score per new account and per linked group (`linkedGroupOf`), and the score picks the step on the ladder. The farm rules run in `hard` mode from day one (G1); they never wait in shadow. Nothing of the score, signal or rule reaches the user (card).
+
+| Signal | What it catches | Owner | Exists | Row | Fixture |
+| --- | --- | --- | --- | --- | --- |
+| Sign-up velocity per IP, /24 and ASN (hosting and proxy ASNs weighted up) | Scripted creation from a proxy pool | edge (4.3u), `account-integrity` | Per IP only: 5 an hour (engineering) | 4.3q, **4.3ab** | `farm-velocity`: 30 sign-ups from one ASN in 10 minutes score as a farm; 30 from 30 home ISPs do not |
+| Device fingerprint and cookie reuse | Many accounts from one browser | `account-integrity` (`devices`) | Designed, not built | 4.3q | `farm-device`: a 3rd account on one device is held |
+| Email pattern (`name123`, sequential), domain age, disposable and catch-all domains, canonical email | Aliases and throwaway domains | `account-integrity` | Disposable list planned | 4.3q, 4.3w, **4.3ab** | `farm-email`: sequential local parts, a domain under 30 days old, a catch-all domain seen 5 times a day |
+| The same want and area on several new accounts | One farmer, many accounts | `account-integrity` reading `v_wants` | No | **4.3ab** | `farm-same-want`: 5 new accounts with one keyword and area within an hour form one group |
+| Time-of-day clustering (sign-ups and first actions inside seconds of each other) | Scripts | `account-integrity` reading `product-events` | No | **4.3ab** | `farm-cadence`: 10 accounts whose steps are 2 s apart score up; humans with the usual spread do not |
+| Card fingerprint reuse, prepaid funding | Card-check bypass | `account-integrity`, `subscriptions` | Planned | 4.3q, 4.3x | `card-check` (B1) |
+| Referral links shared by a linked group | Referral farming | `attribution` | No | 4.9d | `referral-self` (B3) |
+
+**Response ladder, automatic**, cheapest first. Each step is an `enforcement_actions` row with an audit row (card):
+1. **Queue.** Admission slows for accounts scored as a possible farm: they wait behind everyone else (4.3s). Proven by `farm-queue`: a farm-scored account is admitted after every clean account queued before the end of the same minute.
+2. **Re-verify.** A fresh Turnstile challenge and a second email confirmation before the first window (L1). Proven by `farm-reverify`.
+3. **Card check early.** A card check before window one, not only before windows two and three (4.3x). Proven by `farm-card-early`.
+4. **Hold.** No free window; the account keeps the digest (L2). Proven by `farm-hold`: a held account's want never submits.
+5. **Ban with evasion links.** The group is banned (L4) and its keys (canonical email, card, device, Telegram chat, want set) go into `evasion_keys`, so a new account matching any key starts at step 4. Proven by `farm-evasion`.
+
+The honest cohort fixture (card: couples, shared flats, students on one campus network) never passes step 2. That is the precision guard.
+
+## Resource extraction: quotas, anomalies and variation
+
+Extraction means pulling Nabvy's data or paid work out at scale: scripted searches and exports, API-key sharing, pasted-link lookups in bulk, scan spam, scraping the app's own pages and feeds, shared accounts serving many people, and alerts forwarded to groups. The defence has four parts. **Quotas** per account and per route cap the volume. **Anomaly rules** look at volume and diversity (how many distinct areas, products and IPs an account touches). **Per-account variation** traces leaks where outputs allow it. The **enforcement ladder** is the same one as above, with steps L1–L4.
+
+| Channel | Quota (starting value, a policy row) | Anomaly signal | Variation or trace | Owner | Exists | Row |
+| --- | --- | --- | --- | --- | --- | --- |
+| Scripted searches and listing reads | Per account and route a day, in the oRPC middleware counter | Distinct areas or products a day far above the account's want set | None | web layer, `account-integrity` | Per-minute rate limits only | **4.3ac**, 4.3aa |
+| Exports (CSV, the JSON account archive) | 5 exports a day | Export right after a large read | Per-account ordering and a keyed row marker in each export | `account`, web layer | No | **4.3ad** |
+| API-key sharing | Per-key daily limit (G15) | One key used from many IPs or ASNs at once | Key ID in every response log | `account`, `usage-ledger` | Scaffold only | 5.4b, **4.3ac** |
+| Pasted links in bulk | Per account a day; free accounts count to the £2 cap | Pastes spanning many sellers or areas | None | `pasted-link-lookup`, `usage-ledger` | No | 3.3a |
+| Scan spam | Per account a day (G10) | Repeated near-identical images | None | `scan-recognition`, `usage-ledger` | Rate limit only | 3.3a |
+| Scraping the app's pages and feeds | Cloudflare rate rules and Bot Fight Mode on listing and search routes; no unauthenticated listing feed; public SEO pages carry aggregates only | Requests without a session to deep listing URLs | None | edge, web layer | Planned | 4.3u, **4.3ac** |
+| A shared account serving many people | One live screen, device cap (card) | Device and network diversity | None | `account-integrity` | Designed (shadow) | E1 |
+| Alerts forwarded to groups | Private chats only (G4) | Alert links opened by many devices (foreign-opener weight) | Per-account alert-link tokens, rotated on request (`AlertLinksRotateRequested`) | `account`, `account-integrity`, `alert-router` | Designed | 4.3y |
+
+Every quota refusal is a product event, so repeated quota hits feed the ladder (the card's "repeated rate-limit hits" rule).
+
 ## Gaps
 
-Each gap is one row in `docs/backlog.md`, under "Abuse threat model gaps (4.3t)". G1–G16 map to IDs as follows.
-
-| Gap | Backlog | One line |
-| --- | --- | --- |
-| G1 | 4.3v | Free-tier guards are hard from day one, not shadow; free admission holds when `account-integrity` is off |
-| G2 | 4.3w | Canonical email; trial keys survive deletion; the lifetime cap and windows follow the linked group |
-| G3 | 4.3x | Card check hardening: prepaid refused, attempt limits, Radar rules, check only after a verified email |
-| G4 | 4.3y | Telegram: attempt limit per chat, private chats only, secret-token header, `update_id` dedupe |
-| G5 | 4.3z | Global magic-link send cap; admin step-up (Google 2-step verification or passkey, fresh within 15 minutes) |
-| G6 | 1.6f | Reservation sized from the run's own cap, 45% uplift over measured cost; gate and reservation in one locked step |
-| G7 | 1.6g | Free pool ceiling as a share of the provider monthly cap; lone-area sub-pool; risk-weighted admission; policy ceilings |
-| G8 | 7.1b | Free burst cost per window fixed whatever the radius (cadence scales with areas) |
-| G9 | 4.9b | Prepaid watching: credits reserved per check before submit; a monthly spending limit per user |
-| G10 | 3.3a | Scans and pasted links charged or counted to the free cap and gated; pasted URLs parsed, never fetched; pixel cap |
-| G11 | 1.3i | First-seen written once per listing; alert dedupe per (user, listing, kind); replay fixture |
-| G12 | 4.9c | Dispute clawback and reversal rules in the ledger |
-| G13 | 4.9d | Referral credit rules: after a cleared paid purchase, never within a linked group, monthly cap |
-| G14 | 1.6h | Failure-rate breaker and a retry budget per area and shape |
-| G15 | 5.4b | API keys: per-key daily spend limit, charged and gated, scanner-friendly prefix |
-| G16 | 4.3aa | Bulk-read rule (shadow first) against scraping the data set |
+G1–G16 in the tables are backlog rows under "Abuse threat model gaps (4.3t)" in `docs/backlog.md`. G1 is 4.3v, G2 4.3w, G3 4.3x, G4 4.3y, G5 4.3z, G6 1.6f, G7 1.6g, G8 7.1b, G9 4.9b, G10 3.3a, G11 1.3i, G12 4.9c, G13 4.9d, G14 1.6h, G15 5.4b, G16 4.3aa. The farming and extraction sections add three more: 4.3ab (farm signals and score), 4.3ac (per-route quotas and extraction anomalies) and 4.3ad (export variation).
 
 ## Day-one checklist (owner)
 
