@@ -1,0 +1,1 @@
+Recorded run `VkryjpwS6U2GBDh3k` (input.json: `includeDetails: true`): its 20 first-seen listings already carry a `full_verified` description from that same run. They are recorded as done and nothing is submitted: every ID sent forces a paid fetch (EVIDENCE_LEDGER.md:250-253). A later caller must ask for a refresh to pay for them again.
