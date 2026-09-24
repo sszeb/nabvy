@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "source": "fb-scrap-engine/test/route-health.test.js: every session page failing to supply the replay template switches to page",
+  "history": [
+    {
+      "runId": "run1",
+      "route": "graphql",
+      "detailRequests": 0,
+      "detailOk": 0,
+      "bootstraps": 3,
+      "failedBootstraps": 3,
+      "queryIds": []
+    }
+  ],
+  "state": null
+}

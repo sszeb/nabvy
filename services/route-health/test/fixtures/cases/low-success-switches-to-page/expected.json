@@ -1,0 +1,8 @@
+{
+  "route": "page",
+  "reason": "low-success",
+  "successRate": 0.6,
+  "attempts": 100,
+  "newQueryIds": [],
+  "alert": true
+}

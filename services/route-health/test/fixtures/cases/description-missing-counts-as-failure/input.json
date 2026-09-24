@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "source": "fb-scrap-engine/docs/EVIDENCE_LEDGER.md:237,241-243: the actor's 1.0.82 live check, 50 replays, 3 without a description",
+  "history": [
+    {
+      "runId": "run1",
+      "route": "graphql",
+      "detailRequests": 50,
+      "detailOk": 47,
+      "queryIds": ["q1"]
+    }
+  ],
+  "state": null
+}

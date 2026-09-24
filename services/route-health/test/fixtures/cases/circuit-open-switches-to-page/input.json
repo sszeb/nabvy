@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "source": "fb-scrap-engine/test/route-health.test.js: a tripped breaker switches to page",
+  "history": [
+    {
+      "runId": "run1",
+      "route": "graphql",
+      "detailRequests": 30,
+      "detailOk": 10,
+      "circuitOpen": true,
+      "queryIds": ["q1"]
+    }
+  ],
+  "state": null
+}

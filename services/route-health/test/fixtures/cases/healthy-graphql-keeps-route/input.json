@@ -1,0 +1,21 @@
+{
+  "synthetic": true,
+  "source": "docs/design/modules/route-health.md: stay on graphql while at least 95% of 50 or more replays in the last 10 runs succeed",
+  "history": [
+    {
+      "runId": "run1",
+      "route": "graphql",
+      "detailRequests": 100,
+      "detailOk": 98,
+      "queryIds": ["q1"]
+    },
+    {
+      "runId": "run2",
+      "route": "graphql",
+      "detailRequests": 100,
+      "detailOk": 97,
+      "queryIds": ["q1"]
+    }
+  ],
+  "state": null
+}

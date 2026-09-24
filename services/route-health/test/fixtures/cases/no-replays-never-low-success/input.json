@@ -1,0 +1,7 @@
+{
+  "synthetic": true,
+  "source": "Nabvy divergence from fb-scrap-engine/app/route-health.js:54 (null < minSuccess is true in JavaScript); see src/domain/route-health.ts",
+  "history": [],
+  "state": null,
+  "options": { "minAttempts": 0 }
+}
