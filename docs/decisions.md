@@ -326,6 +326,14 @@ Coordinator 6's ladder, 17:40, on the slider's steps (initial policy values, not
 | Max | £99 | 15 min | 1 min | 24,000 |
 | Business | from £299 | 15 min | 1 min, round the clock | 80,000 |
 
+## Faster build: fresh-session reviewer, merge clerk, Sonnet by default (owner, 2026-09-24, 18:50)
+
+The owner, on the coordinator's speed-up findings ("Go ahead implement your findings then pause all work and resume in 40min"):
+- **The usage allowance is model-weighted.** Anthropic's Claude Code usage page: "Opus uses meaningfully more of your quota, so you should consider switching to Sonnet for routine work" (support.claude.com, "Models, usage and limits in Claude Code"); all surfaces, subagents and Routines draw on the same pool. So Sonnet is the tier for every remaining module that is not money, security or pipeline core, and the top model stays only where `CLAUDE.md` names it. Re-tiered today: parts-record, pickup-location, details-selector, copy-advert.
+- **The reviewer is a fresh session per fire** (backlog 0.14): one Routine on the top model with a standalone brief, fired with the PR number by build sessions and the watchdog, instead of a long-lived reviewer that hands off hourly. The reviewer still reviews, approves and merges everything and never touches Supabase.
+- **A merge clerk Routine may apply merged migrations** (backlog 0.15): a Sonnet fresh session that reads `docs/security.md`, applies the merge's pending migrations, checks the ledger and records the merge, so the coordinator wakes only for exceptions and the sweep. This amends "the coordinator applies every merged migration" in `CLAUDE.md`; the coordinator remains accountable and checks the ledger at each sweep.
+- **Pauses.** When the owner says pause, the coordinator interrupts every running session, disables the watchdog, and re-wakes them with one-shot triggers at the resume time.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
