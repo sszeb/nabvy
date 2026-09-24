@@ -212,6 +212,23 @@ reset role;
 
 rollback;
 
+-- Schema-name drift: the checks below and view_violations() find a module's schema as
+-- replace(module, '-', '_'), the rule schemaNameOf() applies in TypeScript. Every module in the
+-- ledger must have that schema, or those checks would silently skip it.
+do $$
+declare
+  missing text;
+begin
+  select string_agg(distinct m.module || ' -> ' || replace(m.module, '-', '_'), ', ') into missing
+  from nabvy_core.schema_migrations m
+  where m.module <> 'core'
+    and not exists (select 1 from pg_namespace where nspname = replace(m.module, '-', '_'));
+  if missing is not null then
+    raise exception 'ledger modules without their derived schema: %', missing;
+  end if;
+end;
+$$;
+
 -- Conventions on the real migrations (not the probe) -----------------------------------------
 do $$
 declare
