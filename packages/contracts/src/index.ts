@@ -45,3 +45,4 @@ export {
   TStampName,
   TStamps,
 } from './core/time'
+export { DeadLetter, DeliveryAttempt, HandledEvent, TransportErrorCode } from './core/transport'

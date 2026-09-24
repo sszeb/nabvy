@@ -198,8 +198,18 @@ Nothing leaves the machine.
 - **Rate limits** (`docs/engineering.md`; values in `rateLimits` from `@nabvy/config`): Better
   Auth's limiter is on in every environment with its Postgres store (`better_auth.rate_limit`),
   so every instance shares the counters. Sign-in and sign-up requests (magic link, Google) are
-  limited to 5 an hour per IP, keyed on `x-forwarded-for`, which Vercel sets. Magic-link emails
-  are limited to 5 an hour per address, counted in the same table under a SHA-256 of the address
-  (never the address itself). Better Auth's own defaults cover the other endpoints.
+  limited to 5 an hour per IP, keyed on `x-forwarded-for`. Magic-link emails are limited to 5 an
+  hour per address, counted in the same table under a SHA-256 of the address (never the address
+  itself). Better Auth's own defaults cover the other endpoints.
+  - **The per-IP key trusts `x-forwarded-for`.** That is safe only behind a proxy that overwrites
+    the header with the real client address, as Vercel's edge does. A deployment without such a
+    proxy must change `advanced.ipAddress` in `src/auth.ts`, or a client could send any value
+    and get a fresh bucket each time.
+  - **The per-address counter is one atomic statement** (`consumeMagicLinkQuota`: an `insert …
+    on conflict do update … returning count`), so simultaneous requests are counted one after
+    another and exactly 5 get through. `test/quota.test.ts` checks it with 20 connections at once
+    on real Postgres when `DATABASE_URL` points at a local database; PGlite, which the other
+    tests use, has a single connection. A refused request still counts, which only keeps the
+    window shut until it ends.
 - **Better Auth timestamps** are `timestamp` without time zone (generated schema) and hold UTC
   wall-clock time. The server runs in UTC, and `account_active` pins `timezone = 'UTC'`.

@@ -21,7 +21,7 @@ beforeAll(async () => {
   db = await createTestDatabase()
   await db.sql('create table public.probe (id int primary key)')
   await db.sql('grant insert on public.probe to nabvy_app')
-})
+}, 60_000) // PGlite startup plus migrations is slow on a loaded runner
 afterAll(() => db.close())
 
 describe('record', () => {

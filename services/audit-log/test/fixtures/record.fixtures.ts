@@ -33,7 +33,7 @@ const cases = readdirSync(casesDir)
 let db: TestDatabase
 beforeAll(async () => {
   db = await createTestDatabase()
-})
+}, 60_000) // PGlite startup plus migrations is slow on a loaded runner
 afterAll(() => db.close())
 
 describe('record', () => {

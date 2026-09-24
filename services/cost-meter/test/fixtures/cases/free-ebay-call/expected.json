@@ -1,0 +1,8 @@
+{
+  "steps": [
+    { "ok": true, "changed": true, "countedMicros": 0, "countedGbpMicros": 0 },
+    { "ok": true, "changed": false, "countedMicros": 0, "countedGbpMicros": 0 },
+    { "ok": true, "changed": true, "countedMicros": 0, "countedGbpMicros": 0 }
+  ],
+  "rows": 2
+}

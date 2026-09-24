@@ -1,0 +1,5 @@
+{
+  "error": { "code": "transport.handler_threw", "message": "connection reset" },
+  "attempts": 3,
+  "firstFailedAt": "2026-09-24T01:40:46.000Z"
+}

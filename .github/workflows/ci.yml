@@ -112,6 +112,11 @@ jobs:
         run: pnpm --filter @nabvy/db test
         env:
           DATABASE_URL: postgres://postgres:ci-only@localhost:5432/postgres
+      # The magic-link quota under 20 simultaneous connections (PGlite in the checks job has one).
+      - name: Auth rate-limit counter against the migrated database
+        run: pnpm --filter @nabvy/auth test
+        env:
+          DATABASE_URL: postgres://postgres:ci-only@localhost:5432/postgres
       # Proves `pnpm new:module` end to end on a throwaway module that is never committed.
       - name: Scaffold a throwaway module end to end
         run: |

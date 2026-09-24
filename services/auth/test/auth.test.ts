@@ -436,6 +436,18 @@ describe('rate limits', () => {
     expect(JSON.stringify(keys)).not.toContain(email)
   })
 
+  it('holds at exactly 5 per address when requests arrive at the same time', async () => {
+    const email = 'burst@example.com'
+    const responses = await Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        requestMagicLink(harness, email, PASS_TOKEN, `192.0.2.${i + 1}`),
+      ),
+    )
+    const statuses = responses.map((response) => response.status).sort()
+    expect(statuses).toEqual([200, 200, 200, 200, 200, 429, 429, 429, 429, 429])
+    expect(harness.sender.sent.filter((link) => link.email === email)).toHaveLength(5)
+  })
+
   it('allows 5 sign-in requests an hour per IP, in the shared Postgres counter', async () => {
     const ip = '203.0.113.7'
     for (let i = 0; i < 5; i++) {
