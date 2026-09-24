@@ -1,0 +1,8 @@
+{
+  "code": "auth.account_restricted",
+  "message": "Your account has been banned under our Terms of Service.",
+  "step": "banned",
+  "policy": "terms",
+  "reviewWithinDays": 30,
+  "until": "2026-10-01"
+}

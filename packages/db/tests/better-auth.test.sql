@@ -29,13 +29,18 @@ begin
 end;
 $$;
 
--- No application role reaches the auth tables until task 4.0 grants it.
+-- No application role reaches the auth tables: nabvy_app and nabvy_pipeline may only ask
+-- better_auth.account_active (task 4.0; better-auth-role.test.sql covers nabvy_auth).
 do $$
+declare
+  t text;
 begin
-  if has_schema_privilege('nabvy_app', 'better_auth', 'usage')
-     or has_schema_privilege('nabvy_pipeline', 'better_auth', 'usage') then
-    raise exception 'an application role can use better_auth before task 4.0 decides';
-  end if;
+  foreach t in array array['user', 'session', 'account', 'verification', 'subscription'] loop
+    if has_table_privilege('nabvy_app', format('better_auth.%I', t), 'select,insert,update,delete')
+       or has_table_privilege('nabvy_pipeline', format('better_auth.%I', t), 'select,insert,update,delete') then
+      raise exception 'an application role can use better_auth.%', t;
+    end if;
+  end loop;
 end;
 $$;
 

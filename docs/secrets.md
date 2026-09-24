@@ -6,6 +6,7 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | --- | --- | --- |
 | `DATABASE_URL` | all services (Drizzle, pooled connection), migrations | Supabase project `fbapfy` → Connect → transaction pooler URL, using the `nabvy_app` role |
 | `DATABASE_URL_PIPELINE` | trigger/ tasks | Same host, `nabvy_pipeline` role |
+| `DATABASE_URL_AUTH` | auth (Better Auth's Drizzle adapter only) | Same transaction pooler URL, `nabvy_auth` role (`services/auth/README.md`) |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | source-adapters, recognition (Storage only, server-side) | Supabase project settings |
 | `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | auth | Generated once; the app's public URL |
 | `TRIGGER_SECRET_KEY`, `TRIGGER_PROJECT_ID` | trigger/ | Trigger.dev project |
