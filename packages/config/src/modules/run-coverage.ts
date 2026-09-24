@@ -22,11 +22,12 @@ const config = runCoverageConfig.parse({
   /** Or with fewer listings than this. Same basis. Status: starting value. */
   shortFeedMinListings: 150,
   /**
-   * Sightings ranked this high or better count as page 1 for the gap check. Basis: about 90
-   * listings over 4 pages is about 23 per page; the recorded run read 20 on its one page
-   * (run-summary.json:9-14). Status: starting value.
+   * Sightings ranked this high or better count as page 1 for the gap check. Basis: the recorded
+   * run's one page held 20 listings (run-summary.json:9-14); about 90 listings over 4 pages is
+   * about 23 per page. The lower figure is taken: a smaller page 1 finds overlap less easily, so
+   * it degrades more readily (review of PR #48). Status: starting value.
    */
-  pageOneRanks: 24,
+  pageOneRanks: 20,
   /** Search IDs per `search-degraded` event. Basis: rule 7 (at most 500 IDs). Status: fixed. */
   eventBatchSize: 500,
 })

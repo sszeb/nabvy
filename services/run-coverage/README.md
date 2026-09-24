@@ -59,11 +59,11 @@ Schema `run_coverage`:
 | Rule | Value | Basis | Status |
 | --- | --- | --- | --- |
 | Complete | Route `http`, stop `source-no-new-listings` | `fb-scrap-engine/README.md:101-102`; actor-integration.md 2.9 | Fixed |
-| Capped | Route `http`, stop `page-cap`, `results-limit` or `time-limit` | README.md:101,106-108; recorded run `run-summary.json:9-14` | Fixed |
+| Capped | Route `http`, stop `page-cap`, `results-limit` or `time-limit` | README.md:101,106-108; recorded run `run-summary.json:9-14`. The card names only `page-cap` and `results-limit`; `time-limit` follows README.md:106-108 ("never as failed") and actor-integration.md 2.9 | Fixed; `time-limit` to confirm |
 | Degraded | Failed run; route `browser-fallback`, `failed` or unknown; stop reason unknown; no listings; no page-1 overlap with the previous check | CONTAINER_LISTINGS.md:189-192; README.md:103-105; the card | Fixed |
 | Unknown vocabulary | Any other route or stop reason reads `unknown` (the reported value is kept) and counts as degraded | `docs/questions.md:20` | Fixed |
-| Page 1 | Sightings ranked 1–24 | About 90 listings over 4 pages; the recorded run read 20 on its one page (`RUN_COVERAGE_PAGE_ONE_RANKS`) | Starting value |
-| Gap check | Page 1 of this read against every listing of the previous healthy read of the scope (route `http`, run not failed, listings > 0, earlier by collection time then job) | CONTAINER_LISTINGS.md:66,190-191 | Starting value |
+| Page 1 | Sightings ranked 1–20 | The recorded run's one page held 20; about 90 listings over 4 pages is about 23 a page; the lower figure degrades more readily (`RUN_COVERAGE_PAGE_ONE_RANKS`) | Starting value |
+| Gap check | Page 1 of this read against every listing of the previous healthy read of the scope (not degraded, route `http`, run not failed, listings > 0, sightings stored, earlier by collection time then job). Skipped for kind `unknown` | CONTAINER_LISTINGS.md:66,190-191 | Starting value |
 | Short feed | Complete default-order read of ≤ 6 pages or < 150 listings | EVIDENCE_LEDGER.md:112,131-134 as cited by the card; README.md:125-128 | Starting value |
 | Baseline | First complete scan of a scope; else its first healthy capped read (`bounded`), replaced once by the first complete scan. Never from a degraded read, an unverified binding, or a search without centre, term or known kind | actor-integration.md 2.9 | Starting value |
 | Check kind | Facebook's reported sort, then the URL's `sortBy`, then the run's `searchSort`; contradictions read `unknown` | README.md:117-122 | Fixed |
@@ -79,6 +79,8 @@ gateway jobs and ingested by `listing-ingest`. Synthetic cases edit that run's
 - `recorded-run-capped`: the recorded search is `capped` (stop `results-limit`), not degraded; a
   bounded baseline.
 - `second-check-overlap`: the same page twice; overlap 20, still capped.
+- `previous-skips-degraded` (synthetic): the gap check compares with the last healthy read, not a
+  degraded one in between.
 - `no-page-one-overlap` (synthetic, listing IDs changed): degraded, one event.
 - `browser-fallback`, `route-failed`, `run-failed` (synthetic): degraded.
 - `short-feed` (synthetic sweep, 4 pages, 90 listings): complete, feed `short`, complete baseline.
@@ -86,7 +88,7 @@ gateway jobs and ingested by `listing-ingest`. Synthetic cases edit that run's
   bounded baseline is replaced by the complete scan.
 - `empty-search`, `unknown-stop-reason`, `unknown-route` (synthetic): degraded, `unknown` stored.
 
-Pass rate 11/11 (2026-09-24). Other tests: `domain.test.ts` (every threshold's boundary, reading
+Pass rate 12/12 (2026-09-24). Other tests: `domain.test.ts` (every threshold's boundary, reading
 searches from the summary, `sourceOutcome` rows and the actor input), `idempotency.test.ts` (a
 replayed job writes nothing and returns the same key; an earlier read judged late takes the
 baseline back; a run listing-ingest has not stored yet is retried; the handler publishes once),
@@ -109,8 +111,16 @@ foundation's view check).
   succeeded run that returned listings, `assess` returns `run-coverage.not_ingested` and the
   handler retries. While listing-ingest is off, the check is skipped and noted
   (`overlap-unchecked`), not degraded (`docs/questions/run-coverage.md`).
+- **2026-09-24: no run is left unjudged** (review of PR #48). On the last delivery attempt a run
+  whose sightings listing-ingest never stored is judged without the gap check (`overlap-unchecked`)
+  instead of dead-lettering with no row.
+- **2026-09-24: baselines follow stored judgements** (review of PR #48), so a replay never
+  re-derives a different one.
+- **2026-09-24: `searches[].status` is not judged or stored** (review of PR #48): the vocabulary
+  is undocumented beyond `truncated`; route and stop reason decide.
 - **2026-09-24: a gap check with nothing to compare is skipped, not failed.** No previous healthy
-  read, or a previous read with no stored sightings, leaves `page_one_overlap` null.
+  read leaves `page_one_overlap` null; a page 1 with no ranked sighting of the scope is noted
+  `overlap-unchecked` (`docs/questions/run-coverage.md`).
 - **2026-09-24: searches come from `RUN_SUMMARY.searches[]`, then `sourceOutcome` rows, then the
   actor input.** The actor reports URL-sourced searches only through `sourceOutcomes`
   (EVIDENCE_LEDGER at `main`, pasted links); those rows use another route vocabulary (`search`),
@@ -131,7 +141,8 @@ foundation's view check).
 ## Open questions
 
 `docs/questions/run-coverage.md` (folded into `docs/questions.md` by the coordinator): coverage
-while listing-ingest is off; jobs judged out of order; the page-1 size.
+while listing-ingest is off; jobs judged out of order; the page-1 size; page 1 of a later term;
+`time-limit` as a cap; `searches[].status`.
 
 ## Incidents
 
