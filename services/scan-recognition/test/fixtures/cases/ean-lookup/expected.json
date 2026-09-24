@@ -1,0 +1,9 @@
+{
+  "status": "identified",
+  "method": "barcode",
+  "identified": "gpu:nvidia:rtx-3080-ti:12gb",
+  "candidates": ["gpu:nvidia:rtx-3080-ti:12gb"],
+  "confidence": 1,
+  "modelCalled": false,
+  "event": true
+}

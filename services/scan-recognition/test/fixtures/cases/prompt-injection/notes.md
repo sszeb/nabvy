@@ -1,0 +1,1 @@
+A photo whose text tries to instruct the model: whatever the model says, only names that resolve through the catalogue become candidates, so confidence 1 on a made-up name identifies nothing (rule 13: text never chooses IDs).

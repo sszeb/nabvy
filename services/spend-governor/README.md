@@ -28,8 +28,9 @@ P1 (the card; `docs/architecture.md:99`).
   started but not yet metered, and the month's settled runs (for proxy GB).
 - `switches.state()` / `@nabvy/switches` `state()`: `spend-governor` and `cost-meter`.
 - Event `apify-gateway.run-settled` (handler `onRunSettled`, one recompute per batch). A scheduled
-  recompute task calls `recompute` directly (not built yet: no Trigger.dev account,
-  `trigger/README.md`); it must run at least every 15 minutes to keep rows valid.
+  recompute task (`trigger/spend-governor-recompute.ts`, backlog 1.2m) calls `recompute` directly
+  every 15 minutes to keep rows valid; it does not run live yet (no Trigger.dev account,
+  `trigger/README.md`).
 
 ## Outputs
 
@@ -90,6 +91,9 @@ write and alert decisions, advice), `idempotency.test.ts`, `switch.test.ts`, `co
 and `packages/db/tests/spend-governor.test.sql` (grants, seeds, the fail-closed view on real
 Postgres). No module reads the throttle yet, so "a reader passes with this module off" waits for
 `check-scheduler`.
+- `schedule.test.ts` (backlog 1.2m), 1/1: a row past its validity window (`v_throttle` reading
+  `hold-new`/`stale`) is refreshed, with nothing else about the budgets changed, by the next
+  scheduled `recompute` call 20 minutes later; a repeat call at that same time writes nothing.
 
 ## Decisions
 
@@ -122,6 +126,12 @@ Postgres). No module reads the throttle yet, so "a reader passes with this modul
   `pnpm db:dry-run` runs the real view.
 - **2026-09-24: shadow behaves like on.** The throttle is internal; a governor in shadow that did
   not throttle would let spend run unchecked.
+- **2026-09-24 (backlog 1.2m): the scheduled task calls `recompute` directly and does not publish
+  its `budget-alerted` events.** `trigger/spend-governor-recompute.ts` is the first file in
+  `trigger/`, so this task also added it as a pnpm workspace package (`docs/questions/schedules.md`).
+  No task consumes `budget-alerted` yet, and the `TriggerClient` publisher adapter is task 1.2's to
+  build (`packages/transport/src/trigger.ts`); wiring a publisher now, with no consumer task
+  registered, would fail at runtime. Recorded as a follow-up in `docs/questions/schedules.md`.
 
 ## Open questions
 

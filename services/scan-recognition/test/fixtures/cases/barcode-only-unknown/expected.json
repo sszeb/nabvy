@@ -1,0 +1,9 @@
+{
+  "status": "unidentified",
+  "method": "none",
+  "identified": null,
+  "candidates": [],
+  "confidence": null,
+  "modelCalled": false,
+  "event": false
+}
