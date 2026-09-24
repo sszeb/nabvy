@@ -94,7 +94,7 @@ The predecessor's design workflows write raw drafts. As each finishes, it is com
 | `account-sharing.md` | Account-integrity: sharing protection, bans, ban evasion | Landed |
 | `listing-location.md` | Where an item really is: the location field, "collection from X", autofill mistakes | Landed |
 | `search-map-routes.md` | eBay-style filters, the map with approximate markers, distance with "worth the trip" hints, pickup route planner | Landed |
-| `too-good-to-be-true.md` | Marking scam-like listings from listing signals plus one-tap user reports | Being designed |
+| `too-good-to-be-true.md` | Marking scam-like listings from listing signals plus one-tap user reports | Landed |
 | `listing-reuse.md` | Reusing listings other than the one searched for (by-catch): shared pool, price learning, cross-hunt matching, gems, similar picks | Landed |
 
 Treat the drafts as design notes, not decisions. A product choice in them goes to the owner or to `docs/questions.md`; a legal point goes to `docs/legal-review.md`, one line each.
