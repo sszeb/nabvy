@@ -1,0 +1,5 @@
+{
+  "text": "Call [phone redacted]",
+  "original": "Call 07700 900123",
+  "masked": { "email": 0, "link": 0, "handle": 0, "phone": 1, "postcode": 0 }
+}
