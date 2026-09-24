@@ -29,6 +29,94 @@ This file lists points a lawyer may want to look at. It gives no analysis, and n
 | 21 | Enforcement | Payment-card fingerprints and emails kept to catch ban evasion | `docs/decisions.md`, "Fair use, suspension and bans" |
 | 22 | Data | Users' one-tap reports about sellers and listings ("too good to be true"), shared as a mark with other users | `docs/decisions.md`, "Too good to be true" |
 
+Rows 23–83 below come from the five 2026-09-24 design-draft integrations (`docs/design/drafts/{search-map-routes,listing-reuse,too-good-to-be-true,account-sharing,listing-location}.md`), continuing this table's own numbering from row 22. The account-sharing note's placeholder `LR-AS1`–`LR-AS10` IDs are replaced with rows 62–71 below; they are not the same sequence as the `LR-01`–`LR-34` policy-draft markers further down this file.
+
+### search-map-routes
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 23 | Licences | OpenStreetMap data (ODbL) in map tiles and road routing: attribution and share-alike | search-map-routes.md §3.8, §6.6 |
+| 24 | Licences | OS Open Names and ONS/OS postcode data under the Open Government Licence and OS OpenData terms: attribution | search-map-routes.md §7.1 |
+| 25 | Data | Northern Ireland (BT) postcode data and Land & Property Services licensing | search-map-routes.md §10 row 14 |
+| 26 | Licences | PostGIS (GPL-2.0-or-later) in the database platform, against the dependency licence rule | search-map-routes.md §1 |
+| 27 | Licences | OpenFreeMap's terms, when used as the fallback | search-map-routes.md §3.8 |
+| 28 | Licences | Noto fonts under the SIL Open Font License served as map glyphs | search-map-routes.md §3.8 |
+| 29 | Privacy | Where user origins and pickup points are processed: a router VM in Germany, Finland or London, or a hosted routing provider | search-map-routes.md §6.6, §10 rows 1–2 |
+| 30 | Data | Storing sellers' addresses and agreed times that users enter, and their retention period | search-map-routes.md §5.3, §5.6, §10 row 15 |
+| 31 | Privacy | Handing pickup coordinates to Google Maps, Apple Maps or Waze through links the user taps | search-map-routes.md §6.5 |
+| 32 | Privacy | Calendar files containing sellers' addresses, and any subscribable calendar feed | search-map-routes.md §6.5, §10 row 18 |
+| 33 | Privacy | Using the browser's current location for distance and for re-planning a route | search-map-routes.md §2.3, §2.7, §6.4 |
+| 34 | Data | Showing town-level places and rounded distances for listings, and the trilateration point | search-map-routes.md §2.4, §3.5 |
+| 35 | Wording | The wording of "Slightly further away" hints, the "low ask" marker badge and "below the median of N similar asks" | search-map-routes.md §4.4, §10 rows 9–10 |
+| 36 | Wording | Showing HMRC rates and the National Living Wage as a basis for a user's trip cost | search-map-routes.md §4.2, §10 rows 7–8 |
+| 37 | Licences | Google Maps Platform's restriction on use with non-Google maps, if Google routing is ever chosen | search-map-routes.md §6.2, §10 row 1 |
+| 38 | Privacy | Per-user records of visited listings and of hint impressions logged for calibration | search-map-routes.md §7.3, §7.7, §10 row 15 |
+
+### listing-reuse
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 39 | Enforcement | Showing a listing found by one user's hunt to other users, the same data use as any alert (`gem-finder`/`spec-match`, 2026-09-24). | listing-reuse.md |
+| 40 | Wording | Wording of "Top pick" and the position line must not imply a valuation, a guarantee or that the item is safe (`gem-finder`, 2026-09-24). | listing-reuse.md |
+| 41 | Wording | GPU model and brand names in curated relation labels, nominative trade mark use (`similar-picks`, 2026-09-24). | listing-reuse.md |
+| 42 | Data | Description text used for gem checks: only the town or area may reach output, under the existing location-precision rule (`gem-finder`, 2026-09-24). | listing-reuse.md |
+
+### too-good-to-be-true
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 43 | Enforcement | Showing "Suspected too good to be true" with evidence on identifiable listings, and option A against option B wording | Too-good-to-be-true design §4.2, §11 item 1; extends item 13 and LR-02 |
+| 44 | Data | Counting users' reports towards a mark other users see, shown as attributed claims ("a buyer who messaged the seller says …") | Too-good-to-be-true design §4.3, §11 item 2; extends item 22 |
+| 45 | Data | Storing reports that allege a seller asked for money first or misled buyers, including free-text notes if owner decision 14 allows them; the brief's point on criminal-offence data | Too-good-to-be-true design §3.1, §11 item 3 |
+| 46 | Enforcement | Showing a mark automatically, with no human review, once a path is `on` | Too-good-to-be-true design §5.5, §11 item 4 |
+| 47 | Enforcement | Silently giving weight 0 to, voiding or holding users' reports, and not telling reporters why | Too-good-to-be-true design §3.2–3.3, §11 item 5 |
+| 48 | Data | Answering a seller's or a reporter's request for a copy of personal data where it covers reports | Too-good-to-be-true design §11 item 6; compare LR-32 |
+| 49 | Data | The public report-a-mistake form for non-users, including storing and keeping a contact email | Too-good-to-be-true design §4.4, §11 item 7 |
+| 50 | Data | Retention of report rows, reporter links, notes and correction requests | Too-good-to-be-true design §6.2, §11 item 8 |
+| 51 | Enforcement | Treating linked accounts (email hash, card fingerprint, shared device cookie or network) as one reporter | Too-good-to-be-true design §3.2, §11 item 9; compare LR-33 and item 21 |
+| 52 | Enforcement | Account actions for false or abusive reports under the acceptable use policy 9.1–9.2 | Too-good-to-be-true design §7, §11 item 10 |
+| 53 | Data | Signposting users to Report Fraud, their bank and Facebook's reporting tools | Too-good-to-be-true design §3.1, §11 item 11 |
+| 54 | Enforcement | Stating what a listing's description offers ("postage or courier only", "Facebook delivery") as evidence in a mark | Too-good-to-be-true design §2.2, §11 item 12 |
+| 55 | Product | Leaving listings that meet path A, even in shadow, and approved report-path candidates, out of top picks and by-catch suggestions | Too-good-to-be-true design §4.5, §11 item 13 |
+| 56 | Data | Handling of reports and correction requests if Irish users are added | Too-good-to-be-true design §11 item 14 |
+| 57 | Data | Any future sharing of mark or report data with banks, Meta or the police | Too-good-to-be-true design §7, §11 item 15 |
+| 58 | Product | Including or leaving out the mark in Business exports, feeds and the public API | Too-good-to-be-true design §4.5, §11 item 16 |
+| 59 | Enforcement | The team's reports about real sellers during the rtx3090 test hunt | Too-good-to-be-true design §5.3, §11 item 17 |
+| 60 | Data | A DPIA for any internal seller-level rollup of marks and reports | Too-good-to-be-true design §7, §11 item 18 |
+| 61 | Data | Carrying reports across a relist group to the current listing | Too-good-to-be-true design §3.2, §11 item 19 |
+
+### account-sharing
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 62 | Privacy | Recording per-session network hashes, town-level location, user agent and device labels, plus a long-lived recognised-device cookie, to detect sharing. | `docs/design/drafts/account-sharing.md` §6.1, 3d |
+| 63 | Privacy | Browser fingerprinting (not in v1) and its default vendor telemetry, if D16 is ever taken up. | `docs/design/drafts/account-sharing.md` §6.3, 4 |
+| 64 | Privacy | Per-user signed alert links that log opens, including opens by people who are not Nabvy users. | `docs/design/drafts/account-sharing.md` §6.4, 3c |
+| 65 | Enforcement | Internal risk scores and signals kept about users, and automatic, autonomous re-verification, limits, suspensions and bans based on them. | `docs/design/drafts/account-sharing.md` §6.6–6.8, 3d–3e |
+| 66 | Enforcement | Ban-evasion keys: hashes of email, card fingerprint, device key and Telegram chat/user ID of banned accounts. | `docs/design/drafts/account-sharing.md` §6.17, 3d |
+| 67 | Privacy | Sending Telegram alerts with `protect_content` and reading Telegram/Discord member counts for channel feeds. | `docs/design/drafts/account-sharing.md` §6.19, 3c |
+| 68 | Data | Retention periods for session events, link opens, signals, scores, actions and evasion keys. | `docs/design/drafts/account-sharing.md` §6.24, 5.1 |
+| 69 | Product | A paid extra seat as the sanctioned route for account sharing. | `docs/design/drafts/account-sharing.md` §6.25, 3f |
+| 70 | Data | One free trial per card fingerprint, normalised email and device, ending a repeat trial at once and charging the first month. | `docs/design/drafts/account-sharing.md` §6.41, D22 |
+| 71 | Data | Processors newly handling this data: Vercel (geolocation headers), Cloudflare, Telegram. | `docs/design/drafts/account-sharing.md` §6.22 |
+
+### listing-location
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 72 | Data | Storing, internally, full postcodes, street names and business premises found in listing text, including sole traders' premises | `docs/design/listing-location.md` (from `drafts/listing-location.md` §7.1, §12 item 1) |
+| 73 | Data | Showing users a town, area or postcode district taken from a listing's description (for example "E1") | `docs/design/listing-location.md` (§12 item 2) |
+| 74 | Wording | Showing a "Location differs" fact about an identifiable listing, and using it as evidence for "too good to be true" | `docs/design/listing-location.md` (§12 item 3) |
+| 75 | Data | Keeping Facebook's grid-snapped coordinates internally, and reverse-geocoding them to an area shown to users | `docs/design/listing-location.md` (§12 item 4) |
+| 76 | Data | Distances and radius filters as a possible way to infer a seller's location, mitigated by measuring from the displayed area | `docs/design/listing-location.md` (§12 item 5) |
+| 77 | Licensing | Commercial use of Northern Ireland (BT) postcode data, which needs a Land & Property Services licence | `docs/design/listing-location.md` (§12 item 6) |
+| 78 | Licensing | Open Government Licence attribution for OS, Royal Mail, ONS, NRS and OSNI data, and CC BY 4.0 attribution for GeoNames if it is ever used | `docs/design/listing-location.md` (§12 item 7) |
+| 79 | Data | Sending redacted listing text to the AI provider to resolve pickup locations, and the processor agreement and transfer cover this needs | `docs/design/listing-location.md` (§12 item 8) |
+| 80 | Data | A seller-level location analysis in a restricted view, if one is ever built | `docs/design/listing-location.md` (§12 item 9) |
+| 81 | Data | Showing the seller's area as a read-only hint beside a user's private pickup entries in the route planner | `docs/design/listing-location.md` (§12 item 10) |
+| 82 | Data | Masking postcodes and addresses in description text shown to users, and the gaps found in the gateway's fixture redaction | `docs/design/listing-location.md` (§12 item 11) |
+| 83 | Licensing | PostGIS (GPL-2.0-or-later) used as a managed database extension, outside the permissive licence list in `CLAUDE.md` | `docs/design/listing-location.md` (§12 item 12) |
+
 ## Points in the policy drafts
 
 The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable use, fair use) carry `TODO-LEGAL (LR-nn)` markers. They are modelled on big tech's UK-facing terms and on Apify's and Supabase's, in Nabvy's own words (`docs/policies/SOURCES.md`). These lines extend item 7 above; no review has been run.

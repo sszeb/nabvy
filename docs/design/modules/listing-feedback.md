@@ -8,7 +8,7 @@
 - **Inputs:** web forms through oRPC procedures inside `withUser`; `account.deleted`; `v_suppressed`.
 - **Outputs:** `listing-feedback.recorded` (verdict IDs).
 - **Owns:** `verdicts` (user_id, listing, alert_id, verdict `real_deal | not_a_deal | bought`, at), `listing_state` (user_id, listing, state `saved | dismissed`, at). Row-level security on `user_id`.
-- **Views:** internal `v_verdict_counts` (verdicts per alert day and verdict; no user IDs); user-facing `app.v_listing_feedback_mine` (the user's own verdicts and states).
+- **Views:** internal `v_verdict_counts` (verdicts per alert day and verdict; no user IDs), `v_bought_for_reports` (new: user, listing, at — granted only to `seller-reply-reports`, for the report-then-buy abuse exemption, too-good-to-be-true design §3.3, §6.1, task 1.7s); user-facing `app.v_listing_feedback_mine` (the user's own verdicts and states).
 - **Contracts:** `ListingFeedbackVerdict`, `ListingFeedbackState`, `ListingFeedbackRecordedEvent`.
 - **Depends on:** `switches`, `auth`, `account`, `listing-suppression`.
 - **When off:** feedback controls are hidden and alert precision gets no new data; nothing else changes.

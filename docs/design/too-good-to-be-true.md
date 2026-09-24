@@ -4,7 +4,7 @@
 
 ## One-screen summary
 
-Mark a listing **"Suspected too good to be true"** when a documented rule finds **two independent pieces of evidence** that the item isn't really where the advert says, collection is refused, or money is wanted before the buyer sees it — the owner's Isle of Wight / Chichester examples. Evidence comes from the listing itself, read from modules that already own it (`listing-location`, `copy-advert`, `asking-price-index`/`asking-price-position`, `warning-signs` — no new detector), and from a new one-tap buyer report filed after messaging the seller (`seller-reply-reports`, filling in its existing placeholder card). The mark:
+Mark a listing **"Suspected too good to be true"** when a documented rule finds **two independent pieces of evidence** that the item isn't really where the advert says, collection is refused, or money is wanted before the buyer sees it — the owner's Isle of Wight / Chichester examples. Evidence comes from the listing itself, read from modules that already own it (`pickup-location`, `copy-advert`, `asking-price-index`/`asking-price-position`, `warning-signs` — no new detector), and from a new one-tap buyer report filed after messaging the seller (`seller-reply-reports`, filling in its existing placeholder card). The mark:
 
 - attaches to the **listing**, never the seller; shows no score and no seller identity;
 - never hides a listing or holds an alert by itself (the only wait is a gem-candidate evaluation, up to 2 minutes, which sends the alert regardless of the result);
@@ -28,7 +28,7 @@ Listing-only recall is expected to be very low: 0 of 20 recorded listings carry 
 
 ## Modules this design defines or changes
 
-Every module below already has a `docs/design/modules/index.json` entry; this design adds **no new module**. (`listing-location` is a dependency designed in a separate document not covered by this design's reading list, and is out of scope here.)
+Every module below already has a `docs/design/modules/index.json` entry; this design adds **no new module**. (`pickup-location` is a dependency designed in a separate document not covered by this design's reading list, and is out of scope here.)
 
 - **`seller-reply-reports`** (fills in the existing placeholder card) — one-tap report intake, eligibility and weighting, cross-copy spreading, evidence publishing; 6 owned tables, 5 views, no free text.
 - **`suspected-labels`** (changed) — adds the `too_good_to_be_true` label type: 3 live paths plus 1 review-only path, per-path mode, new tables and views; its `reports` table is superseded by `seller-reply-reports`'s.

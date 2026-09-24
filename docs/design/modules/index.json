@@ -6,7 +6,9 @@
     "priority": "P0; kill switch from day one (`nabvy/docs/decisions.md:202`)",
     "round": 1,
     "scope": "MVP",
-    "dependsOn": ["audit-log"],
+    "dependsOn": [
+      "audit-log"
+    ],
     "softDependsOn": []
   },
   {
@@ -56,7 +58,10 @@
     "priority": "First, needed by the parts record (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:136-137`)",
     "round": 2,
     "scope": "MVP",
-    "dependsOn": ["switches", "audit-log"],
+    "dependsOn": [
+      "switches",
+      "audit-log"
+    ],
     "softDependsOn": []
   },
   {
@@ -66,7 +71,10 @@
     "priority": "P1; exists (`nabvy/supabase/README.md:5-13`)",
     "round": 2,
     "scope": "MVP",
-    "dependsOn": ["switches", "cost-meter"],
+    "dependsOn": [
+      "switches",
+      "cost-meter"
+    ],
     "softDependsOn": []
   },
   {
@@ -76,8 +84,14 @@
     "priority": "P1, step 2 (`fb-scrap-engine/docs/HANDOFF.md:146-147`)",
     "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "apify-gateway"],
-    "softDependsOn": ["ebay-adapter", "gumtree-adapter"]
+    "dependsOn": [
+      "switches",
+      "apify-gateway"
+    ],
+    "softDependsOn": [
+      "ebay-adapter",
+      "gumtree-adapter"
+    ]
   },
   {
     "name": "run-coverage",
@@ -86,7 +100,11 @@
     "priority": "P1 (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:189-193`)",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "apify-gateway", "listing-ingest"],
+    "dependsOn": [
+      "switches",
+      "apify-gateway",
+      "listing-ingest"
+    ],
     "softDependsOn": []
   },
   {
@@ -96,7 +114,12 @@
     "priority": "P1 (`fb-scrap-engine/docs/HANDOFF.md:243-244`)",
     "round": 5,
     "scope": "MVP",
-    "dependsOn": ["switches", "listing-ingest", "run-coverage", "audit-log"],
+    "dependsOn": [
+      "switches",
+      "listing-ingest",
+      "run-coverage",
+      "audit-log"
+    ],
     "softDependsOn": []
   },
   {
@@ -106,7 +129,10 @@
     "priority": "P1 (`fb-scrap-engine/docs/HANDOFF.md:84-86`)",
     "round": 6,
     "scope": "MVP",
-    "dependsOn": ["switches", "city-pages"],
+    "dependsOn": [
+      "switches",
+      "city-pages"
+    ],
     "softDependsOn": []
   },
   {
@@ -116,8 +142,15 @@
     "priority": "P1, step 1 (`fb-scrap-engine/docs/HANDOFF.md:140-145`; `nabvy/docs/decisions.md:131-137`)",
     "round": 6,
     "scope": "MVP",
-    "dependsOn": ["switches", "city-pages", "want-manager", "audit-log"],
-    "softDependsOn": ["side-discovery"]
+    "dependsOn": [
+      "switches",
+      "city-pages",
+      "want-manager",
+      "audit-log"
+    ],
+    "softDependsOn": [
+      "side-discovery"
+    ]
   },
   {
     "name": "check-scheduler",
@@ -144,7 +177,10 @@
     "priority": "P1 (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:197-201`)",
     "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "apify-gateway"],
+    "dependsOn": [
+      "switches",
+      "apify-gateway"
+    ],
     "softDependsOn": []
   },
   {
@@ -154,7 +190,12 @@
     "priority": "P1 (`fb-scrap-engine/docs/design/SCALE_PLAN.md:111-115`)",
     "round": 5,
     "scope": "MVP",
-    "dependsOn": ["switches", "apify-gateway", "route-health", "run-coverage"],
+    "dependsOn": [
+      "switches",
+      "apify-gateway",
+      "route-health",
+      "run-coverage"
+    ],
     "softDependsOn": []
   },
   {
@@ -164,7 +205,11 @@
     "priority": "P1 (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:202-203`)",
     "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "cost-meter", "apify-gateway"],
+    "dependsOn": [
+      "switches",
+      "cost-meter",
+      "apify-gateway"
+    ],
     "softDependsOn": []
   },
   {
@@ -174,7 +219,12 @@
     "priority": "P1, step 3 (`fb-scrap-engine/docs/HANDOFF.md:148-150`)",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "apify-gateway", "route-health", "spend-governor"],
+    "dependsOn": [
+      "switches",
+      "apify-gateway",
+      "route-health",
+      "spend-governor"
+    ],
     "softDependsOn": []
   },
   {
@@ -184,8 +234,15 @@
     "priority": "P1 (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:67,164-166`)",
     "round": 6,
     "scope": "MVP",
-    "dependsOn": ["switches", "listing-ingest", "city-pages", "details-queue"],
-    "softDependsOn": ["want-manager"]
+    "dependsOn": [
+      "switches",
+      "listing-ingest",
+      "city-pages",
+      "details-queue"
+    ],
+    "softDependsOn": [
+      "want-manager"
+    ]
   },
   {
     "name": "detail-evidence",
@@ -194,7 +251,11 @@
     "priority": "P1 (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:122-131`)",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "apify-gateway", "listing-ingest"],
+    "dependsOn": [
+      "switches",
+      "apify-gateway",
+      "listing-ingest"
+    ],
     "softDependsOn": []
   },
   {
@@ -204,7 +265,12 @@
     "priority": "P1 (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:278-280`)",
     "round": 5,
     "scope": "MVP",
-    "dependsOn": ["switches", "listing-ingest", "detail-evidence", "details-queue"],
+    "dependsOn": [
+      "switches",
+      "listing-ingest",
+      "detail-evidence",
+      "details-queue"
+    ],
     "softDependsOn": []
   },
   {
@@ -214,7 +280,11 @@
     "priority": "Gated: DPIA first (`fb-scrap-engine/docs/design/SELLER_DATA.md:109`)",
     "round": 4,
     "scope": "Parked",
-    "dependsOn": ["switches", "apify-gateway", "listing-ingest"],
+    "dependsOn": [
+      "switches",
+      "apify-gateway",
+      "listing-ingest"
+    ],
     "softDependsOn": []
   },
   {
@@ -224,7 +294,10 @@
     "priority": "Later: next actor build (`fb-scrap-engine/docs/HANDOFF.md:153-154`)",
     "round": 3,
     "scope": "Later",
-    "dependsOn": ["switches", "apify-gateway"],
+    "dependsOn": [
+      "switches",
+      "apify-gateway"
+    ],
     "softDependsOn": []
   },
   {
@@ -234,7 +307,12 @@
     "priority": "First (`fb-scrap-engine/docs/HANDOFF.md:166-167`)",
     "round": 5,
     "scope": "MVP",
-    "dependsOn": ["switches", "detail-evidence", "listing-ingest", "product-catalogue"],
+    "dependsOn": [
+      "switches",
+      "detail-evidence",
+      "listing-ingest",
+      "product-catalogue"
+    ],
     "softDependsOn": []
   },
   {
@@ -283,7 +361,13 @@
     "priority": "First (`fb-scrap-engine/docs/HANDOFF.md:159-167`)",
     "round": 6,
     "scope": "MVP",
-    "dependsOn": ["switches", "parts-rules", "parts-ai", "photo-review", "product-catalogue"],
+    "dependsOn": [
+      "switches",
+      "parts-rules",
+      "parts-ai",
+      "photo-review",
+      "product-catalogue"
+    ],
     "softDependsOn": []
   },
   {
@@ -293,7 +377,12 @@
     "priority": "First (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:143-144,150-185`)",
     "round": 7,
     "scope": "MVP",
-    "dependsOn": ["switches", "parts-record", "detail-evidence", "listing-ingest"],
+    "dependsOn": [
+      "switches",
+      "parts-record",
+      "detail-evidence",
+      "listing-ingest"
+    ],
     "softDependsOn": []
   },
   {
@@ -331,7 +420,10 @@
       "listing-suppression",
       "account"
     ],
-    "softDependsOn": ["seller-key", "photo-review"]
+    "softDependsOn": [
+      "seller-key",
+      "photo-review"
+    ]
   },
   {
     "name": "relist-merge",
@@ -340,8 +432,15 @@
     "priority": "Build, internal (`fb-scrap-engine/docs/design/SELLER_DATA.md:144-160`)",
     "round": 5,
     "scope": "MVP",
-    "dependsOn": ["switches", "listing-ingest", "detail-evidence", "photo-review"],
-    "softDependsOn": ["seller-key"]
+    "dependsOn": [
+      "switches",
+      "listing-ingest",
+      "detail-evidence",
+      "photo-review"
+    ],
+    "softDependsOn": [
+      "seller-key"
+    ]
   },
   {
     "name": "asking-price-index",
@@ -360,9 +459,13 @@
       "copy-advert",
       "noise-filter",
       "city-pages",
+      "product-catalogue",
       "listing-suppression"
     ],
-    "softDependsOn": ["seller-key", "seller-boosts"]
+    "softDependsOn": [
+      "seller-key",
+      "seller-boosts"
+    ]
   },
   {
     "name": "asking-price-position",
@@ -414,9 +517,16 @@
       "noise-filter",
       "detail-evidence",
       "listing-suppression",
-      "audit-log"
+      "audit-log",
+      "pickup-location",
+      "listing-location",
+      "seller-reply-reports",
+      "asking-price-index",
+      "asking-price-position",
+      "listing-assessment",
+      "parts-record"
     ],
-    "softDependsOn": ["pickup-location", "seller-reply-reports"]
+    "softDependsOn": []
   },
   {
     "name": "demand-signals",
@@ -425,8 +535,15 @@
     "priority": "Also or Later (`fb-scrap-engine/docs/HANDOFF.md:199-200`)",
     "round": 8,
     "scope": "MVP",
-    "dependsOn": ["switches", "want-manager", "listing-assessment", "city-pages"],
-    "softDependsOn": ["copy-advert"]
+    "dependsOn": [
+      "switches",
+      "want-manager",
+      "listing-assessment",
+      "city-pages"
+    ],
+    "softDependsOn": [
+      "copy-advert"
+    ]
   },
   {
     "name": "multi-quantity-filter",
@@ -435,7 +552,11 @@
     "priority": "Gated: owner decision (`fb-scrap-engine/docs/design/SELLER_DATA.md:232-237`)",
     "round": 6,
     "scope": "Parked",
-    "dependsOn": ["switches", "detail-evidence", "listing-suppression"],
+    "dependsOn": [
+      "switches",
+      "detail-evidence",
+      "listing-suppression"
+    ],
     "softDependsOn": []
   },
   {
@@ -447,6 +568,7 @@
     "scope": "MVP",
     "dependsOn": [
       "switches",
+      "audit-log",
       "listing-ingest",
       "detail-evidence",
       "city-pages",
@@ -454,6 +576,29 @@
       "quote-redaction",
       "spend-governor",
       "cost-meter",
+      "listing-suppression",
+      "parts-rules",
+      "product-catalogue"
+    ],
+    "softDependsOn": []
+  },
+  {
+    "name": "gem-finder",
+    "group": "Listing intelligence",
+    "job": "Decide which positioned listings from the pool are gems, badged \"Top pick\"",
+    "priority": "MVP; ships and stays in shadow with \"Too good to be true\"",
+    "round": 12,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "asking-price-index",
+      "asking-price-position",
+      "noise-filter",
+      "warning-signs",
+      "suspected-labels",
+      "listing-lifecycle",
+      "details-queue",
+      "spend-governor",
       "listing-suppression"
     ],
     "softDependsOn": []
@@ -465,7 +610,15 @@
     "priority": "First, with spec search (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:145`)",
     "round": 7,
     "scope": "MVP",
-    "dependsOn": ["switches", "location", "product-catalogue", "auth", "subscriptions", "account"],
+    "dependsOn": [
+      "listing-search",
+      "switches",
+      "location",
+      "product-catalogue",
+      "auth",
+      "subscriptions",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -488,7 +641,11 @@
       "quote-redaction",
       "account"
     ],
-    "softDependsOn": ["multi-quantity-filter", "pickup-location", "asking-price-position"]
+    "softDependsOn": [
+      "multi-quantity-filter",
+      "pickup-location",
+      "asking-price-position"
+    ]
   },
   {
     "name": "listing-card",
@@ -545,7 +702,9 @@
       "run-coverage",
       "account"
     ],
-    "softDependsOn": ["subscriptions"]
+    "softDependsOn": [
+      "subscriptions"
+    ]
   },
   {
     "name": "prepared-message",
@@ -554,7 +713,11 @@
     "priority": "First (`fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:75,186-188`)",
     "round": 8,
     "scope": "MVP",
-    "dependsOn": ["switches", "listing-assessment", "quote-redaction"],
+    "dependsOn": [
+      "switches",
+      "listing-assessment",
+      "quote-redaction"
+    ],
     "softDependsOn": []
   },
   {
@@ -578,9 +741,12 @@
       "prepared-message",
       "quote-redaction",
       "listing-suppression",
-      "location"
+      "location",
+      "account-integrity"
     ],
-    "softDependsOn": ["pickup-location"]
+    "softDependsOn": [
+      "pickup-location"
+    ]
   },
   {
     "name": "pasted-link-lookup",
@@ -606,18 +772,137 @@
     "priority": "MVP; BP4 (`nabvy/docs/backlog.md:58`)",
     "round": 6,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account", "listing-suppression"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "account",
+      "listing-suppression"
+    ],
     "softDependsOn": []
   },
   {
     "name": "pickup-routes",
     "group": "User features and delivery",
-    "job": "Plan a one-day route through the pickups a user has arranged",
-    "priority": "MVP (`nabvy/docs/decisions.md:174`)",
+    "job": "Hold a user's arranged pickups and plan a one-day route through them",
+    "priority": "MVP; task 4.1e (`nabvy/docs/decisions.md:174`)",
     "round": 7,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account", "location"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "account",
+      "location"
+    ],
+    "softDependsOn": [
+      "router-gateway",
+      "travel-cost"
+    ]
+  },
+  {
+    "name": "listing-search",
+    "group": "User features and delivery",
+    "job": "Keep a searchable row per live listing version; answer feed, map and hint-candidate queries",
+    "priority": "MVP; task 4.1e",
+    "round": 9,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "location",
+      "listing-card",
+      "listing-suppression",
+      "pickup-location",
+      "parts-record",
+      "noise-filter",
+      "copy-advert",
+      "want-manager"
+    ],
+    "softDependsOn": [
+      "asking-price-position",
+      "price-drop-watch",
+      "suspected-labels"
+    ]
+  },
+  {
+    "name": "travel-cost",
+    "group": "User features and delivery",
+    "job": "What a trip costs a user: dated rate tables and travel settings",
+    "priority": "MVP; task 4.1g",
+    "round": 3,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "auth",
+      "account"
+    ],
     "softDependsOn": []
+  },
+  {
+    "name": "router-gateway",
+    "group": "User features and delivery",
+    "job": "The only HTTP client for the self-hosted router VM (OSRM)",
+    "priority": "After MVP; router host not approved (owner question); task 4.1h",
+    "round": 2,
+    "scope": "After MVP",
+    "dependsOn": [
+      "switches"
+    ],
+    "softDependsOn": []
+  },
+  {
+    "name": "travel-time",
+    "group": "User features and delivery",
+    "job": "Road distance and time from an origin cell to places",
+    "priority": "After MVP; task 4.1i",
+    "round": 7,
+    "scope": "After MVP",
+    "dependsOn": [
+      "switches",
+      "router-gateway",
+      "location"
+    ],
+    "softDependsOn": []
+  },
+  {
+    "name": "deal-hints",
+    "group": "User features and delivery",
+    "job": "Choose at most 3 listings just beyond a user's radius where the gap outweighs the trip",
+    "priority": "MVP, shadow-first (decisions question 54: no hint shown); task 4.1j",
+    "round": 12,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "listing-search",
+      "asking-price-position",
+      "suspected-labels",
+      "travel-cost",
+      "location",
+      "product-events"
+    ],
+    "softDependsOn": [
+      "travel-time"
+    ]
+  },
+  {
+    "name": "similar-picks",
+    "group": "User features and delivery",
+    "job": "Curate cross-hunt alternatives from the shared pool: variants, tiers and PCs",
+    "priority": "MVP",
+    "round": 15,
+    "scope": "MVP",
+    "dependsOn": [
+      "switches",
+      "product-catalogue",
+      "want-manager",
+      "spec-match",
+      "alert-router",
+      "review-console",
+      "listing-suppression",
+      "output-guard"
+    ],
+    "softDependsOn": [
+      "gem-finder",
+      "asking-price-position"
+    ]
   },
   {
     "name": "seller-reply-reports",
@@ -626,7 +911,25 @@
     "priority": "MVP (`nabvy/docs/decisions.md:154-158`)",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account", "listing-ingest"],
+    "dependsOn": [
+      "switches",
+      "audit-log",
+      "auth",
+      "account",
+      "listing-ingest",
+      "detail-evidence",
+      "pickup-location",
+      "location",
+      "noise-filter",
+      "listing-suppression",
+      "notifier",
+      "copy-advert",
+      "relist-merge",
+      "warning-signs",
+      "parts-record",
+      "listing-feedback",
+      "account-integrity"
+    ],
     "softDependsOn": []
   },
   {
@@ -636,8 +939,14 @@
     "priority": "Launch (`fb-scrap-engine/docs/design/SELLER_DATA.md:131-139`)",
     "round": 5,
     "scope": "MVP",
-    "dependsOn": ["switches", "listing-ingest", "detail-evidence"],
-    "softDependsOn": ["seller-key"]
+    "dependsOn": [
+      "switches",
+      "listing-ingest",
+      "detail-evidence"
+    ],
+    "softDependsOn": [
+      "seller-key"
+    ]
   },
   {
     "name": "seller-rights",
@@ -731,7 +1040,10 @@
     "priority": "BP1 (`nabvy/docs/backlog.md:31`)",
     "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "account"],
+    "dependsOn": [
+      "switches",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -792,13 +1104,16 @@
       "parts-record",
       "listing-assessment",
       "suspected-labels",
+      "seller-reply-reports",
       "copy-advert",
       "notifier",
       "audit-log",
       "account-integrity",
       "listing-feedback"
     ],
-    "softDependsOn": ["sold-price-book"]
+    "softDependsOn": [
+      "sold-price-book"
+    ]
   },
   {
     "name": "ebay-adapter",
@@ -807,7 +1122,12 @@
     "priority": "After MVP; BP2 (`nabvy/docs/backlog.md:37`)",
     "round": 4,
     "scope": "After MVP",
-    "dependsOn": ["switches", "spend-governor", "cost-meter", "product-catalogue"],
+    "dependsOn": [
+      "switches",
+      "spend-governor",
+      "cost-meter",
+      "product-catalogue"
+    ],
     "softDependsOn": []
   },
   {
@@ -817,7 +1137,12 @@
     "priority": "After MVP; BP2 (`nabvy/docs/backlog.md:39`)",
     "round": 4,
     "scope": "After MVP",
-    "dependsOn": ["switches", "spend-governor", "cost-meter", "product-catalogue"],
+    "dependsOn": [
+      "switches",
+      "spend-governor",
+      "cost-meter",
+      "product-catalogue"
+    ],
     "softDependsOn": []
   },
   {
@@ -827,7 +1152,11 @@
     "priority": "After MVP; BP1 (`nabvy/docs/backlog.md:28`)",
     "round": 3,
     "scope": "After MVP",
-    "dependsOn": ["switches", "product-catalogue", "cost-meter"],
+    "dependsOn": [
+      "switches",
+      "product-catalogue",
+      "cost-meter"
+    ],
     "softDependsOn": []
   },
   {
@@ -837,7 +1166,11 @@
     "priority": "After MVP; BP5; blocked (`nabvy/supabase/README.md:54`; `nabvy/docs/progress.md:53`)",
     "round": 4,
     "scope": "After MVP",
-    "dependsOn": ["switches", "spend-governor", "cost-meter"],
+    "dependsOn": [
+      "switches",
+      "spend-governor",
+      "cost-meter"
+    ],
     "softDependsOn": []
   },
   {
@@ -847,7 +1180,11 @@
     "priority": "After MVP; BP2 (`nabvy/docs/modules.md:31`)",
     "round": 5,
     "scope": "After MVP",
-    "dependsOn": ["switches", "listing-ingest", "detail-evidence"],
+    "dependsOn": [
+      "switches",
+      "listing-ingest",
+      "detail-evidence"
+    ],
     "softDependsOn": []
   },
   {
@@ -857,7 +1194,11 @@
     "priority": "Later (`fb-scrap-engine/docs/HANDOFF.md:205`)",
     "round": 8,
     "scope": "Later",
-    "dependsOn": ["switches", "inventory", "account"],
+    "dependsOn": [
+      "switches",
+      "inventory",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -901,8 +1242,15 @@
     "priority": "MVP; one vision call per scan allowed (`nabvy/docs/decisions.md:95`); BP3 (`nabvy/docs/backlog.md:48`)",
     "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "product-catalogue", "cost-meter", "account"],
-    "softDependsOn": ["cex-adapter"]
+    "dependsOn": [
+      "switches",
+      "product-catalogue",
+      "cost-meter",
+      "account"
+    ],
+    "softDependsOn": [
+      "cex-adapter"
+    ]
   },
   {
     "name": "scan-lookup",
@@ -911,8 +1259,19 @@
     "priority": "MVP, from Facebook asks only (`nabvy/docs/decisions.md:85`); BP3 (`nabvy/docs/backlog.md:49`)",
     "round": 10,
     "scope": "MVP",
-    "dependsOn": ["switches", "scan-recognition", "asking-price-index", "usage-ledger", "account"],
-    "softDependsOn": ["ebay-adapter", "ebay-sold", "cex-adapter", "sold-price-book"]
+    "dependsOn": [
+      "switches",
+      "scan-recognition",
+      "asking-price-index",
+      "usage-ledger",
+      "account"
+    ],
+    "softDependsOn": [
+      "ebay-adapter",
+      "ebay-sold",
+      "cex-adapter",
+      "sold-price-book"
+    ]
   },
   {
     "name": "similar-items",
@@ -938,7 +1297,13 @@
     "priority": "BP3 (`nabvy/docs/backlog.md:51`)",
     "round": 7,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "scan-recognition", "listing-card", "account"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "scan-recognition",
+      "listing-card",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -948,7 +1313,12 @@
     "priority": "After MVP; BP3 (`nabvy/docs/backlog.md:51`)",
     "round": 8,
     "scope": "After MVP",
-    "dependsOn": ["switches", "inventory", "auth", "account"],
+    "dependsOn": [
+      "switches",
+      "inventory",
+      "auth",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -958,8 +1328,12 @@
     "priority": "BP4 (`nabvy/docs/backlog.md:57`)",
     "round": 0,
     "scope": "MVP",
-    "dependsOn": [],
-    "softDependsOn": []
+    "dependsOn": [
+      "allow"
+    ],
+    "softDependsOn": [
+      "account-integrity"
+    ]
   },
   {
     "name": "account",
@@ -968,7 +1342,12 @@
     "priority": "MVP; BP4 (`nabvy/docs/backlog.md:62`); standing (`nabvy/docs/decisions.md:110-129`)",
     "round": 2,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "audit-log"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "audit-log",
+      "account-integrity"
+    ],
     "softDependsOn": []
   },
   {
@@ -978,7 +1357,14 @@
     "priority": "MVP: live at launch, the owner's override (`nabvy/docs/decisions.md:93,96-109`); BP4",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account", "audit-log", "usage-ledger"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "account",
+      "audit-log",
+      "usage-ledger",
+      "account-integrity"
+    ],
     "softDependsOn": []
   },
   {
@@ -988,7 +1374,11 @@
     "priority": "MVP: live at launch (`nabvy/docs/decisions.md:93`); BP4 (`nabvy/docs/backlog.md:61`)",
     "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -998,7 +1388,13 @@
     "priority": "BP4 (`nabvy/docs/backlog.md:72`)",
     "round": 5,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account", "subscriptions", "usage-ledger"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "account",
+      "subscriptions",
+      "usage-ledger"
+    ],
     "softDependsOn": []
   },
   {
@@ -1019,7 +1415,8 @@
       "want-manager",
       "alert-router",
       "pasted-link-lookup",
-      "notifier"
+      "notifier",
+      "seller-reply-reports"
     ],
     "softDependsOn": []
   },
@@ -1030,7 +1427,13 @@
     "priority": "MVP",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "audit-log", "cost-meter", "account", "usage-ledger"],
+    "dependsOn": [
+      "switches",
+      "audit-log",
+      "cost-meter",
+      "account",
+      "usage-ledger"
+    ],
     "softDependsOn": []
   },
   {
@@ -1040,7 +1443,11 @@
     "priority": "Parked (question 29)",
     "round": 4,
     "scope": "Parked",
-    "dependsOn": ["switches", "usage-ledger", "account"],
+    "dependsOn": [
+      "switches",
+      "usage-ledger",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -1050,7 +1457,11 @@
     "priority": "BP4 (`nabvy/docs/backlog.md:70`)",
     "round": 3,
     "scope": "MVP",
-    "dependsOn": ["switches", "auth", "account"],
+    "dependsOn": [
+      "switches",
+      "auth",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -1060,7 +1471,9 @@
     "priority": "BP0 (`nabvy/docs/backlog.md:14`)",
     "round": 2,
     "scope": "MVP",
-    "dependsOn": ["switches"],
+    "dependsOn": [
+      "switches"
+    ],
     "softDependsOn": []
   },
   {
@@ -1070,7 +1483,12 @@
     "priority": "BP4 (`nabvy/docs/backlog.md:70`)",
     "round": 4,
     "scope": "MVP",
-    "dependsOn": ["switches", "product-events", "marketing-consent", "account"],
+    "dependsOn": [
+      "switches",
+      "product-events",
+      "marketing-consent",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -1088,7 +1506,10 @@
       "listing-card",
       "asking-price-position"
     ],
-    "softDependsOn": ["sold-price-book", "cex-adapter"]
+    "softDependsOn": [
+      "sold-price-book",
+      "cex-adapter"
+    ]
   },
   {
     "name": "seo-price-pages",
@@ -1097,7 +1518,11 @@
     "priority": "After MVP; BP4 (`nabvy/docs/backlog.md:68`)",
     "round": 10,
     "scope": "After MVP",
-    "dependsOn": ["switches", "sold-price-book", "cex-adapter"],
+    "dependsOn": [
+      "switches",
+      "sold-price-book",
+      "cex-adapter"
+    ],
     "softDependsOn": []
   },
   {
@@ -1107,7 +1532,12 @@
     "priority": "Later, held back (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:179-183`)",
     "round": 10,
     "scope": "Later",
-    "dependsOn": ["switches", "asking-price-index", "listing-assessment", "listing-suppression"],
+    "dependsOn": [
+      "switches",
+      "asking-price-index",
+      "listing-assessment",
+      "listing-suppression"
+    ],
     "softDependsOn": []
   },
   {
@@ -1117,7 +1547,12 @@
     "priority": "Later (`fb-scrap-engine/docs/HANDOFF.md:203-204`)",
     "round": 10,
     "scope": "Later",
-    "dependsOn": ["switches", "asking-price-index", "parts-record", "listing-assessment"],
+    "dependsOn": [
+      "switches",
+      "asking-price-index",
+      "parts-record",
+      "listing-assessment"
+    ],
     "softDependsOn": []
   },
   {
@@ -1127,7 +1562,11 @@
     "priority": "Later (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:217`)",
     "round": 11,
     "scope": "Later",
-    "dependsOn": ["switches", "part-out-calculator", "city-pages"],
+    "dependsOn": [
+      "switches",
+      "part-out-calculator",
+      "city-pages"
+    ],
     "softDependsOn": []
   },
   {
@@ -1137,7 +1576,11 @@
     "priority": "Later (`fb-scrap-engine/docs/HANDOFF.md:206`)",
     "round": 10,
     "scope": "Later",
-    "dependsOn": ["switches", "asking-price-index", "product-catalogue"],
+    "dependsOn": [
+      "switches",
+      "asking-price-index",
+      "product-catalogue"
+    ],
     "softDependsOn": []
   },
   {
@@ -1147,7 +1590,10 @@
     "priority": "Later (`fb-scrap-engine/docs/HANDOFF.md:207`)",
     "round": 3,
     "scope": "Later",
-    "dependsOn": ["switches", "product-catalogue"],
+    "dependsOn": [
+      "switches",
+      "product-catalogue"
+    ],
     "softDependsOn": []
   },
   {
@@ -1157,7 +1603,13 @@
     "priority": "Later; Gated (`fb-scrap-engine/docs/HANDOFF.md:208`)",
     "round": 5,
     "scope": "Later",
-    "dependsOn": ["switches", "detail-evidence", "details-queue", "auth", "account"],
+    "dependsOn": [
+      "switches",
+      "detail-evidence",
+      "details-queue",
+      "auth",
+      "account"
+    ],
     "softDependsOn": []
   },
   {
@@ -1167,7 +1619,11 @@
     "priority": "Later (`fb-scrap-engine/docs/design/SELLER_DATA.md:223-225`)",
     "round": 6,
     "scope": "Later",
-    "dependsOn": ["switches", "seller-accounts", "subscriptions"],
+    "dependsOn": [
+      "switches",
+      "seller-accounts",
+      "subscriptions"
+    ],
     "softDependsOn": []
   },
   {
@@ -1177,7 +1633,11 @@
     "priority": "Later (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:221`)",
     "round": 4,
     "scope": "Later",
-    "dependsOn": ["switches", "account", "marketing-consent"],
+    "dependsOn": [
+      "switches",
+      "account",
+      "marketing-consent"
+    ],
     "softDependsOn": []
   },
   {
@@ -1187,7 +1647,10 @@
     "priority": "Gated: after legal advice (`fb-scrap-engine/docs/design/PARTS_INTELLIGENCE.md:329-331,394-395`)",
     "round": 4,
     "scope": "Parked",
-    "dependsOn": ["switches", "product-events"],
+    "dependsOn": [
+      "switches",
+      "product-events"
+    ],
     "softDependsOn": []
   }
 ]

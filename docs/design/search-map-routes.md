@@ -35,8 +35,7 @@ The draft proposes **7 new modules** and one extension to an existing module (`l
 | `router-gateway` | The only HTTP client for the private router VM (OSRM table/route/health) |
 | `travel-time` | Cached road distance and time per origin cell and place, ferry-aware |
 | `deal-hints` | Chooses at most 3 "slightly further away" listings per search |
-| `pickups` | The user's private pickup records and their reminders |
-| `route-planner` | Plans one day's collection route over a user's pickups |
+| `pickup-routes` | The user's private pickup records, reminders and one-day route planning (folds this draft's `pickups` and `route-planner`) |
 
 **Existing, extended:** `location` gains `searchPlaces()`, per-place `uncertainty_km` and the shared `withinKm()` predicate (task 1.2g) — but the draft's assumptions (OS Open Names, PostGIS, per-place display points) go well beyond what the current `location` card describes (postcodes.io, 5 km rounding). `want-manager` gains a saved-filter field that "Save as hunt" writes.
 
@@ -48,7 +47,7 @@ All product-facing calls in the draft are recorded as owner questions, never dec
 
 Two conflicts the draft does not resolve:
 
-- **`pickup-routes` already exists** in the module catalogue, marked "the route method is open until the search-map-routes draft lands." This draft answers that by splitting the job into two new modules, `pickups` and `route-planner`, rather than filling in `pickup-routes` itself. Whether `pickup-routes` is retired or the two new modules fold back into it is a coordinator call.
-- The draft treats a `listing-location` module as an "existing design, read only," but no module of that name exists; the closest card is `pickup-location`, whose published view and columns (no `uncertainty_km`, no `area_landmass`) differ from what the draft reads. Needs reconciling before task 1.2g/4.1e can be scoped exactly.
+- **`pickup-routes` already exists** in the module catalogue, marked "the route method is open until the search-map-routes draft lands." This draft answered that by splitting the job into two new modules, `pickups` and `route-planner`; coordinator decision (2026-09-24): both fold back into `pickup-routes`, which keeps its name.
+- The draft treats a `pickup-location` module (its own working name for it: `listing-location`) as an "existing design, read only." Coordinator decision (2026-09-24): the catalogue module is `pickup-location`; this draft's `uncertainty_km`/`area_landmass` columns are folded into its view, named `app.v_pickup_location`.
 
 No conflict was found against `docs/decisions.md`'s Precedence table: the draft's rules (asking-price position only at n≥10, no unexplained score, town-level location precision, no per-user Facebook access) all follow the brief's positions rather than the older build pack.

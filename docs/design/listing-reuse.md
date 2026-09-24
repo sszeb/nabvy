@@ -42,7 +42,7 @@ Changed (full cards/amendments in the integration scratchpad):
 ## What stays open
 
 - **Wording and default scope are owner questions, not decisions** (two new entries in `docs/questions.md`): the "Top pick" badge, the position line, the by-catch bias note, the hunt-page "While hunting your … we also found …" line and relation labels; and the default scope of alternatives (instant alerts, PC containment, who sees top picks).
-- **`listing-location` vs `location`.** The draft's §2 and §4 cite a module `listing-location`; no such module exists in `docs/design/modules/index.json`. The closest match is `location`. Needs confirming before any card touching it is merged.
+- **`listing-location`.** The draft's §2 and §4 cite a module `listing-location`; coordinator decision (2026-09-24): this is the catalogue's `pickup-location` module under the draft's own working name.
 - **`want-manager`'s per-hunt controls don't fit its current per-user `preferences` table.** A shape decision (extend `wants`/`criteria`, or add a per-want preferences table) is needed before task 1.8d starts; flagged, not resolved, in the integration scratchpad's amendment.
 - **Who curates the first similarity list.** Default: the pack author drafts, the owner approves the first gpu-pc list — that approval has not happened yet.
 - **All statistical thresholds** in "Gem definition" above are starting values, pending shadow calibration on the rtx3090 hunt.
