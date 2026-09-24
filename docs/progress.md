@@ -99,11 +99,13 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | product-events | 3 | done: PR #42 merged 17:39 (`61203aa`); both migrations applied 17:42 (ledger 37 rows, checksums checked, no view violations); PostHog keys still missing, forwarder injected; partition rotation needs `pg_cron` (backlog 0.12, `docs/questions.md`); non-blocking review notes: `forwarded` doc comment, unused `@nabvy/switches` dependency | `session_01Mb9c2K2KfFYvqLcNQ8ysMD` | Sonnet |
 | scan-recognition | 3 | done: PR #41 merged 17:43 (`c76c4df`); both migrations applied 17:49 (ledger 41 rows); server time now drives the spend cap and photo expiry; model client on recorded fixtures until the Anthropic key exists; questions folded | `session_01XqmaYu7JxPG5Ps2vpYGBcx` | top |
 | details-queue | 4 | PR #46 open 17:35 (two migrations after merge: tables, access); started 17:10; card `docs/design/modules/details-queue.md`; dedupes first-seen on listing ID; uses the actor's `excludeListingIds` | `session_012piuTFFBNE7nuuToeJMbpN` | top |
-| usage-ledger | 3 | PR #47 open 17:36 (two migrations after merge: tables, access); briefed with the paid ladder 17:48; started 17:19; card `docs/design/modules/usage-ledger.md` and backlog 4.9 | `session_011LkRPvWVCRKMZ9Zs7DBwSt` | top |
+| usage-ledger | 3 | done: PR #47 merged 18:14 (`d463e94`); four migrations applied 18:16 (tables, access, policy_version, allocation_guards; ledger 45 rows, checksums checked, no view violations); grants of allowance and top-up wait on pricing-console's policy (`usage-ledger.no_policy`); review follow-ups in backlog 4.9e; questions folded | `session_011LkRPvWVCRKMZ9Zs7DBwSt` | top |
 | marketing-consent | 3 | started 17:19; card `docs/design/modules/marketing-consent.md`; suppression sync stubbed | `session_01X62QWS4QYSezdddLCJAvVw` | Sonnet |
 | travel-cost | 3 | started 17:19; card `docs/design/modules/travel-cost.md`; rates from config with sources | `session_01UMS77L76YWgX1RrcfbsayV` | Sonnet |
 | listing-suppression | 5 | started 17:50; card `docs/design/modules/listing-suppression.md`; depends on detail-evidence (merged) | `session_018ji68bXcGtLAMEqYBdVp1v` | top |
 | parts-rules | 5 | started 17:50; card `docs/design/modules/parts-rules.md`; depends on detail-evidence (merged); pipeline core | `session_01DNsNA5egQBU1HGTkfhMNx3` | top |
+| pricing-console | 4 | started 18:17; card `docs/design/modules/pricing-console.md`; the paid ladder and 4.10a/4.10b as policy rows; implements `UsageLedgerPolicy` | `session_01NamNkeC55pewRzgfB6v6YS` | top |
+| subscriptions | 4 | started 18:17; card `docs/design/modules/subscriptions.md`; Stripe test keys still missing, recorded webhook fixtures; account-integrity soft | `session_01P4ij9pAr9EjzDnS1bqS21i` | top |
 
 ## Work outside the backlog
 
