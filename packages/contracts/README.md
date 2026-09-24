@@ -34,6 +34,7 @@ There is **no shared index of modules**. Each module file is reached through the
 | `Source`, `DeliveryMethod`, `ListedAtPrecision` | Shared enumerations |
 | `ListingStub`, `PriceKind` | What an adapter returns per listing before the registry assigns an ID (`docs/providers.md`). `raw` is the provider's whole row, kept in full; `sellerId` and `raw` are internal only (see "Seller identity") |
 | `EventEnvelope`, `defineEvents`, `createEvent`, `parseEvent`, `safeParseEvent`, `latestVersion`, `taskIdFor` | Thin events (below) |
+| `DeliveryAttempt`, `DeadLetter`, `HandledEvent`, `TransportErrorCode` | Delivery shapes between the runtime, the handler wrapper in `@nabvy/transport` and the dead-letter store in `incidents` (task 0.9) |
 | `listingKey()`, `batchKey()` | Idempotency keys: `source:sourceListingId:contentHash`, and a SHA-256 over a batch's sorted item keys |
 | `Result`, `ok`, `err`, `AppError`, `ErrorCode` | Expected failures as values. Codes are `<module>.<code>`, owned by the module that raises them |
 
