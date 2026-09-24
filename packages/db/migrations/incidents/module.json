@@ -1,0 +1,5 @@
+{
+  "module": "incidents",
+  "schema": "incidents",
+  "dependsOn": ["core"]
+}
