@@ -1,0 +1,27 @@
+{
+  "synthetic": true,
+  "source": "docs/billing.md 'Entitlements' and 'Flows'; docs/decisions.md 'No refunds' (cancellation at period end); recorded-shape events in test/fixtures/stripe/",
+  "steps": [
+    {
+      "event": "customer-created"
+    },
+    {
+      "event": "checkout-subscription"
+    },
+    {
+      "event": "sub-created-trialing"
+    },
+    {
+      "event": "sub-updated-active"
+    },
+    {
+      "event": "sub-updated-past-due"
+    },
+    {
+      "event": "sub-updated-cancel-at-end"
+    },
+    {
+      "event": "sub-deleted"
+    }
+  ]
+}

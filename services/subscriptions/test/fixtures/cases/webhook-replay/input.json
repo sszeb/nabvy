@@ -1,0 +1,24 @@
+{
+  "synthetic": true,
+  "source": "docs/billing.md 'Tests': webhook idempotency (same event twice \u2192 one change); docs/security.md 'Stripe webhook replay test'",
+  "steps": [
+    {
+      "event": "sub-updated-active"
+    },
+    {
+      "event": "invoice-paid-cycle"
+    },
+    {
+      "event": "invoice-paid-cycle"
+    },
+    {
+      "event": "sub-updated-active"
+    },
+    {
+      "event": "checkout-topup"
+    },
+    {
+      "event": "checkout-topup"
+    }
+  ]
+}
