@@ -1,0 +1,21 @@
+{
+  "report": {
+    "openVersions": 1,
+    "cached": 1,
+    "called": 0,
+    "extracted": 0,
+    "quarantined": 0,
+    "refreshRequested": 0,
+    "deferred": 0,
+    "failed": 0,
+    "paused": null,
+    "modelCalls": 1,
+    "events": [1]
+  },
+  "listings": {
+    "1775698700306989": {
+      "status": "extracted",
+      "parts": ["description:gpu:GPU: NVIDIA GeForce GTX 970 [offered]"]
+    }
+  }
+}

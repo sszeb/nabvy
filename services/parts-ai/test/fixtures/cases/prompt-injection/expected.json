@@ -1,0 +1,21 @@
+{
+  "report": {
+    "openVersions": 1,
+    "cached": 0,
+    "called": 1,
+    "extracted": 1,
+    "quarantined": 0,
+    "refreshRequested": 0,
+    "deferred": 0,
+    "failed": 0,
+    "paused": null,
+    "modelCalls": 1,
+    "events": [1]
+  },
+  "listings": {
+    "2537899006714740": {
+      "status": "extracted",
+      "parts": []
+    }
+  }
+}
