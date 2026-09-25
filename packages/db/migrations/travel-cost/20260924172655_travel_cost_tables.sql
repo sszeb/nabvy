@@ -14,6 +14,7 @@ CREATE TABLE "travel_cost"."travel_rates" (
 	CONSTRAINT "travel_rates_kind" CHECK ("travel_cost"."travel_rates"."kind" in ('advisory-fuel-rate', 'approved-mileage-rate', 'value-of-time')),
 	CONSTRAINT "travel_rates_unit" CHECK ("travel_cost"."travel_rates"."unit" in ('mile', 'hour')),
 	CONSTRAINT "travel_rates_fuel" CHECK ("travel_cost"."travel_rates"."fuel" in ('', 'petrol', 'diesel', 'lpg', 'electric')),
+	CONSTRAINT "travel_rates_engine_band" CHECK ("travel_cost"."travel_rates"."engine_band" in ('', '1400-or-less', '1401-2000', '1600-or-less', '1601-2000', 'over-2000')),
 	CONSTRAINT "travel_rates_tier" CHECK ("travel_cost"."travel_rates"."tier" in ('', 'standard', 'reduced')),
 	CONSTRAINT "travel_rates_pence_amount_positive" CHECK ("travel_cost"."travel_rates"."pence_amount" > 0)
 );
@@ -31,6 +32,7 @@ CREATE TABLE "travel_cost"."user_travel_settings" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "user_travel_settings_preset" CHECK ("travel_cost"."user_travel_settings"."preset" in ('fuel-only', 'hmrc-business', 'custom')),
 	CONSTRAINT "user_travel_settings_fuel" CHECK ("travel_cost"."user_travel_settings"."fuel" is null or "travel_cost"."user_travel_settings"."fuel" in ('petrol', 'diesel', 'lpg', 'electric')),
+	CONSTRAINT "user_travel_settings_engine_band" CHECK ("travel_cost"."user_travel_settings"."engine_band" is null or "travel_cost"."user_travel_settings"."engine_band" in ('1400-or-less', '1401-2000', '1600-or-less', '1601-2000', 'over-2000')),
 	CONSTRAINT "user_travel_settings_value_of_time_non_negative" CHECK ("travel_cost"."user_travel_settings"."value_of_time_pence_hour" is null or "travel_cost"."user_travel_settings"."value_of_time_pence_hour" >= 0),
 	CONSTRAINT "user_travel_settings_road_factor_positive" CHECK ("travel_cost"."user_travel_settings"."road_factor" is null or "travel_cost"."user_travel_settings"."road_factor" > 0),
 	CONSTRAINT "user_travel_settings_speed_positive" CHECK ("travel_cost"."user_travel_settings"."speed_mph" is null or "travel_cost"."user_travel_settings"."speed_mph" > 0)

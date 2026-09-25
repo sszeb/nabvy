@@ -52,7 +52,10 @@ Postgres schema `travel_cost`.
   is a new row, so a trip already priced still explains itself from the row that held on its own
   date. `fuel`/`engine_band`/`tier` are empty string, not null, where `kind` carries none, so the
   uniqueness index (`kind`, `fuel`, `engine_band`, `tier`, `effective_from`) holds without
-  Postgres's null-is-distinct rule silently admitting a duplicate.
+  Postgres's null-is-distinct rule silently admitting a duplicate. `engine_band` is a closed set,
+  `TravelEngineBand` in contracts and a CHECK on both tables: GOV.UK's own bands, `1400-or-less`,
+  `1401-2000` and `over-2000` (petrol, LPG) and `1600-or-less`, `1601-2000` and `over-2000`
+  (diesel), so a typo can never silently match no rate row.
 - `user_travel_settings` (RLS): one row per user — `preset`, `fuel`, `engine_band`, `custom`
   (jsonb, only while `preset = 'custom'`), `value_of_time_pence_hour` (null = the default rate row,
   `0` = "don't count my time"), `road_factor`, `speed_mph` (both null = the config defaults).
@@ -75,6 +78,20 @@ Postgres schema `travel_cost`.
 the coordinator) to check GOV.UK's advisory-fuel-rates page each quarter and add a new
 `travel_rates` migration if the rate changed, matching the card: "Reminds the coordinator to
 review rates each quarter."
+
+**GOV.UK check log.** Task 4.1h's definition of done: "rate rows with source URLs, checked
+against gov.uk before merge". Every check, successful or not, is recorded here.
+
+| Checked on | By | Page "last updated" | Result |
+| --- | --- | --- | --- |
+| 2026-09-25 | Fix session for PR #50, from the build sandbox | Not seen | **Not checked.** `https://www.gov.uk/guidance/advisory-fuel-rates` and the National Archives mirror `webarchive.nationalarchives.gov.uk` are both refused by the sandbox's egress proxy (HTTP 403 on CONNECT, `EGRESS_BLOCKED`), and a web search returns the page title but no figures. No rate was guessed: the seed still carries only the 1 Mar 2026 petrol 1,401–2,000cc row, and the coordinator or owner confirms the current quarter's rates before merge (`docs/questions/travel-cost.md`, "GOV.UK unreachable"). The draft itself notes the page changed on 2026-08-21 (`docs/design/drafts/search-map-routes.md`), so a 1 Jun 2026 and a 1 Sep 2026 table are expected and, until seeded, `tripCost` prices today's trips at the March rate. |
+
+When the page can be read, add one row per quarter it publishes after 1 Mar 2026, for every
+fuel and engine band in its table (the same table carries diesel and LPG, so the second
+finding of the first review closes with it), as a new seed migration with the rates exactly as
+published, and a row to this log naming the date checked and the page's own "last updated"
+date. Electric (the advisory electric rate) needs its own design first: it is a flat rate with
+no engine band.
 
 **Rounding.** `tripCost` sums the fuel and time pence for every leg *unrounded*, and rounds the
 total once. Rounding each leg or each part separately drifts a penny off the card's own worked
@@ -127,6 +144,30 @@ table's constraints, RLS isolation and the switch-gated view on real Postgres (`
 
 - `docs/questions/travel-cost.md`, "w1 travel-cost: default rate and value-of-time choice"
   (`docs/design/drafts/search-map-routes.md` §10, rows 7–8).
+- `docs/questions/travel-cost.md`, "w1 travel-cost: GOV.UK unreachable from the sandbox" (the
+  check log above).
+
+## Review round 1 (2026-09-25, reviewed head f430d21)
+
+- Finding 1 (blocking, the GOV.UK check): not closable from the sandbox; see "GOV.UK check log"
+  and the open question. No rate was invented.
+- Finding 2 (diesel, LPG and the other petrol bands): waits on the same page; the band enum and
+  the CHECK are in place so the rows drop straight in.
+- Finding 3: `engine_band` is now `TravelEngineBand` in contracts and a CHECK on both tables
+  (`packages/db/migrations/travel-cost/20260924172655_travel_cost_tables.sql`, amended, as the
+  migrations are not merged).
+- Finding 4: `updateSettings` validates the *merged* row (`assertUsableSettings`, domain) before
+  writing, so `{ preset: 'custom' }` with no custom rate, or `{ fuel: null }` on `fuel-only`, is
+  refused with `travel-cost.invalid_input` and nothing is written.
+- Finding 5: `packages/db/tests/travel-cost.test.sql` now probes deny-by-default (`app.user_id`
+  unset reads no rows), WITH CHECK (an insert for another user is refused) and the engine-band
+  CHECK.
+- Finding 6: the defaults are typed once, `DEFAULT_SETTINGS` in the domain; the repo's first
+  insert and the "no row yet" read both derive from it.
+- Finding 7: `IsoDate` is `TravelIsoDate`.
+- Finding 8: a custom rate that rounds to 0p a mile is refused at save time
+  (`assertUsableSettings`) and again in `resolveParams`, with `travel-cost.invalid_input`, rather
+  than handing `TravelParams` a 0 or flooring it to an invented 1p.
 
 ## Incidents
 

@@ -3,13 +3,14 @@
 // returns is either read straight off a `TravelRate` row or computed from one; a rate this module
 // cannot find is a refusal (`TravelCostRefused`), never a fallback guess.
 import { LITRES_PER_UK_GALLON } from '@nabvy/config/modules/travel-cost'
-import type {
-  TravelCostErrorCode,
-  TravelCostLeg,
-  TravelCostPreset,
-  TravelCustomRate,
-  TravelRate,
-  TravelRateKind,
+import {
+  type TravelCostErrorCode,
+  type TravelCostLeg,
+  type TravelCostPreset,
+  type TravelCustomRate,
+  type TravelRate,
+  type TravelRateKind,
+  TravelSettings,
 } from '@nabvy/contracts/modules/travel-cost'
 
 /** Thrown by an exported function for bad input or a rate that cannot be found; never a database
@@ -20,6 +21,55 @@ export class TravelCostRefused extends Error {
     super(message)
     this.code = code
     this.name = 'TravelCostRefused'
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// A user's settings: the defaults, and what a saved row must satisfy
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * What a user who has never changed anything gets: the `fuel-only` preset at the advisory fuel
+ * rate for a 1,401–2,000cc petrol car (docs/questions/travel-cost.md, rows 7–8 of the draft's
+ * §10), time counted at the default rate row, and the config calibration. Typed once, here; the
+ * repo's first insert and the "no row yet" read both derive from it.
+ */
+export const DEFAULT_SETTINGS = {
+  preset: 'fuel-only',
+  fuel: 'petrol',
+  engineBand: '1401-2000',
+  custom: null,
+  valueOfTimePenceHour: null,
+  roadFactor: null,
+  speedMph: null,
+} as const satisfies Omit<TravelSettings, 'userId' | 'updatedAt'>
+
+/**
+ * Refuses a settings row that would make every later `tripCost`/`params` call fail: the
+ * contract's own refinements (`fuel-only` needs a fuel, `custom` needs a custom rate), and a
+ * custom rate so small it rounds to 0p a mile, which `TravelParams` cannot carry. Run on the
+ * *merged* row before it is written, so a partial update cannot leave a user stuck.
+ */
+export function assertUsableSettings(settings: TravelSettings): void {
+  const parsed = TravelSettings.safeParse(settings)
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0]
+    throw new TravelCostRefused(
+      'travel-cost.invalid_input',
+      issue ? `${issue.path.join('.')}: ${issue.message}` : 'invalid travel settings',
+    )
+  }
+  if (settings.preset === 'custom' && settings.custom) {
+    assertRoundsToAPenny(pencePerMileFromCustom(settings.custom))
+  }
+}
+
+function assertRoundsToAPenny(pencePerMile: number): void {
+  if (Math.round(pencePerMile) < 1) {
+    throw new TravelCostRefused(
+      'travel-cost.invalid_input',
+      `a custom rate of ${pencePerMile.toFixed(4)}p a mile rounds to 0p; it must be at least 1p a mile`,
+    )
   }
 }
 
@@ -244,6 +294,10 @@ export function resolveParams(
 ): ResolvedParams {
   const mile = resolveMileRate(settings, rates, asOf)
   const time = resolveValueOfTime(settings, rates, asOf)
+  // A seeded rate is an integer already; only a custom mpg rate can round to 0, and
+  // `assertUsableSettings` refuses that at save time. Checked again here so `TravelParams`
+  // (`pencePerMile` positive) can never be handed a 0 from a row written some other way.
+  assertRoundsToAPenny(mile.pence)
   return {
     pencePerMile: Math.round(mile.pence),
     penceHour: time ? Math.round(time.pence) : null,

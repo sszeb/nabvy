@@ -56,6 +56,10 @@ export const travelRates = schema.table(
     ),
     check('travel_rates_unit', sql`${t.unit} in ('mile', 'hour')`),
     check('travel_rates_fuel', sql`${t.fuel} in ('', 'petrol', 'diesel', 'lpg', 'electric')`),
+    check(
+      'travel_rates_engine_band',
+      sql`${t.engineBand} in ('', '1400-or-less', '1401-2000', '1600-or-less', '1601-2000', 'over-2000')`,
+    ),
     check('travel_rates_tier', sql`${t.tier} in ('', 'standard', 'reduced')`),
     check('travel_rates_pence_amount_positive', sql`${t.penceAmount} > 0`),
   ],
@@ -88,6 +92,10 @@ export const userTravelSettings = schema.table(
     check(
       'user_travel_settings_fuel',
       sql`${t.fuel} is null or ${t.fuel} in ('petrol', 'diesel', 'lpg', 'electric')`,
+    ),
+    check(
+      'user_travel_settings_engine_band',
+      sql`${t.engineBand} is null or ${t.engineBand} in ('1400-or-less', '1401-2000', '1600-or-less', '1601-2000', 'over-2000')`,
     ),
     check(
       'user_travel_settings_value_of_time_non_negative',

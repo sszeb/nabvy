@@ -78,6 +78,29 @@ begin
   if found then
     raise exception 'nabvy_app updated another user''s settings';
   end if;
+  -- WITH CHECK: a row for another user is refused (docs/security.md, the insert probe).
+  begin
+    insert into travel_cost.user_travel_settings (user_id, preset)
+      values ('00000000-0000-4000-8000-0000000000b3', 'hmrc-business');
+    raise exception 'nabvy_app inserted settings for another user';
+  exception when insufficient_privilege then null;
+  end;
+  -- A typo'd engine band is refused by the CHECK, not silently saved to match no rate row.
+  begin
+    update travel_cost.user_travel_settings set engine_band = '1401–2000'
+      where user_id = '00000000-0000-4000-8000-0000000000b1';
+    raise exception 'an unknown engine band was saved';
+  exception when check_violation then null;
+  end;
+end;
+$$;
+-- Deny by default: with app.user_id unset, nabvy_app sees nothing at all (docs/security.md).
+select set_config('app.user_id', '', true);
+do $$
+begin
+  if (select count(*) from travel_cost.user_travel_settings) <> 0 then
+    raise exception 'nabvy_app sees settings rows with no app.user_id set';
+  end if;
 end;
 $$;
 reset role;

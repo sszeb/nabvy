@@ -16,6 +16,19 @@ beforeAll(async () => {
 
 afterAll(() => db.close())
 
+describe('updateSettings validates the merged row', () => {
+  it('refuses { preset: custom } when no custom rate is saved, and writes nothing', async () => {
+    await expect(
+      db.as('nabvy_app', (tx) => updateSettings(tx, { userId: U1, preset: 'custom' }), U1),
+    ).rejects.toMatchObject({ code: 'travel-cost.invalid_input' })
+    const rows = await db.sql(
+      `select count(*)::int as n from travel_cost.user_travel_settings where user_id = $1`,
+      [U1],
+    )
+    expect(rows[0]?.n).toBe(0)
+  })
+})
+
 describe('updateSettings twice', () => {
   it('leaves one settings row in the same state, however many times it runs', async () => {
     const input = { userId: U1, preset: 'hmrc-business' as const, valueOfTimePenceHour: 0 }

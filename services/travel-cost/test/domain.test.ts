@@ -1,7 +1,9 @@
 import type { TravelRate } from '@nabvy/contracts/modules/travel-cost'
 import { describe, expect, it } from 'vitest'
 import {
+  assertUsableSettings,
   calculateTripCost,
+  DEFAULT_SETTINGS as DOMAIN_DEFAULTS,
   formatPence,
   pencePerMileFromCustom,
   resolveMileRate,
@@ -239,6 +241,49 @@ describe('resolveParams', () => {
     )
     expect(result.roadFactor).toBe(1.5)
     expect(result.speedMph).toBe(30)
+  })
+
+  it('refuses a custom rate that rounds to 0p a mile rather than hand TravelParams a 0', () => {
+    // 1p a litre at 1,000 mpg: 1 × 4.54609 ÷ 1000 = 0.0045p a mile.
+    const settings = {
+      ...DEFAULT_SETTINGS,
+      preset: 'custom' as const,
+      custom: { mode: 'mpg' as const, mpg: 1000, fuelPricePencePerLitre: 1 },
+    }
+    expect(() => resolveParams(settings, RATES, ASOF, { roadFactor: 1.3, speedMph: 35 })).toThrow(
+      expect.objectContaining({ code: 'travel-cost.invalid_input' }),
+    )
+  })
+})
+
+describe('assertUsableSettings', () => {
+  const U1 = '00000000-0000-4000-8000-0000000000c1'
+  const base = { userId: U1, ...DOMAIN_DEFAULTS, updatedAt: '2026-09-24T00:00:00.000Z' }
+
+  it('the defaults are a usable row (the shape the repo and the "no row yet" read share)', () => {
+    expect(() => assertUsableSettings(base)).not.toThrow()
+  })
+
+  it('refuses the custom preset with no custom rate saved', () => {
+    expect(() => assertUsableSettings({ ...base, preset: 'custom' })).toThrow(
+      expect.objectContaining({ code: 'travel-cost.invalid_input' }),
+    )
+  })
+
+  it('refuses the fuel-only preset with its fuel cleared', () => {
+    expect(() => assertUsableSettings({ ...base, fuel: null })).toThrow(
+      expect.objectContaining({ code: 'travel-cost.invalid_input' }),
+    )
+  })
+
+  it('refuses a custom mpg rate that rounds to 0p a mile', () => {
+    expect(() =>
+      assertUsableSettings({
+        ...base,
+        preset: 'custom',
+        custom: { mode: 'mpg', mpg: 1000, fuelPricePencePerLitre: 1 },
+      }),
+    ).toThrow(expect.objectContaining({ code: 'travel-cost.invalid_input' }))
   })
 })
 

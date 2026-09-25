@@ -5,6 +5,7 @@
 import type { Queryable } from '@nabvy/db'
 import { travelRates, userTravelSettings } from '@nabvy/db/schema/travel-cost'
 import { eq } from 'drizzle-orm'
+import { DEFAULT_SETTINGS } from '../domain'
 
 export type RateRow = typeof travelRates.$inferSelect
 export type SettingsRow = typeof userTravelSettings.$inferSelect
@@ -37,14 +38,6 @@ export interface SettingsPatch {
   speedMph?: number | null
 }
 
-/** The defaults a first-time user gets: `resolveMileRate`/`resolveValueOfTime` in
- * services/travel-cost/src/domain/index.ts read the rest as "use the current rate row". */
-const DEFAULT_SETTINGS: SettingsPatch = {
-  preset: 'fuel-only',
-  fuel: 'petrol',
-  engineBand: '1401-2000',
-}
-
 export async function upsertSettings(
   q: Queryable,
   userId: string,
@@ -52,6 +45,8 @@ export async function upsertSettings(
 ): Promise<SettingsRow> {
   const [row] = await q
     .insert(userTravelSettings)
+    // The first write starts from the same defaults a never-written row reads as
+    // (services/travel-cost/src/domain/index.ts, `DEFAULT_SETTINGS`), typed once there.
     .values({ userId, ...DEFAULT_SETTINGS, ...patch })
     .onConflictDoUpdate({
       target: userTravelSettings.userId,

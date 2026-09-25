@@ -18,7 +18,9 @@ import {
 import type { Queryable } from '@nabvy/db'
 import { isOn } from '@nabvy/switches'
 import {
+  assertUsableSettings,
   calculateTripCost,
+  DEFAULT_SETTINGS,
   resolveMileRate,
   resolveParams,
   resolveValueOfTime,
@@ -40,7 +42,7 @@ function toTravelRate(row: RateRow): TravelRate {
   return {
     kind: row.kind as TravelRate['kind'],
     fuel: row.fuel as TravelRate['fuel'],
-    engineBand: row.engineBand,
+    engineBand: row.engineBand as TravelRate['engineBand'],
     tier: row.tier as TravelRate['tier'],
     penceAmount: row.penceAmount,
     unit: row.unit as TravelRate['unit'],
@@ -50,28 +52,18 @@ function toTravelRate(row: RateRow): TravelRate {
 }
 
 /** Never written to the database until a user changes something: a settings row this module has
- * never seen reads as these defaults (repo.ts, `DEFAULT_SETTINGS`). */
+ * never seen reads as the domain's `DEFAULT_SETTINGS`. */
 const UNSET_UPDATED_AT = new Date(0).toISOString()
 
 function toTravelSettings(userId: string, row: SettingsRow | undefined): TravelSettings {
   if (!row) {
-    return {
-      userId,
-      preset: 'fuel-only',
-      fuel: 'petrol',
-      engineBand: '1401-2000',
-      custom: null,
-      valueOfTimePenceHour: null,
-      roadFactor: null,
-      speedMph: null,
-      updatedAt: UNSET_UPDATED_AT,
-    }
+    return { userId, ...DEFAULT_SETTINGS, updatedAt: UNSET_UPDATED_AT }
   }
   return {
     userId: row.userId,
     preset: row.preset as TravelSettings['preset'],
     fuel: (row.fuel as TravelSettings['fuel']) ?? null,
-    engineBand: row.engineBand ?? null,
+    engineBand: (row.engineBand as TravelSettings['engineBand']) ?? null,
     custom: row.custom ? TravelCustomRate.parse(row.custom) : null,
     valueOfTimePenceHour: row.valueOfTimePenceHour ?? null,
     roadFactor: row.roadFactor ?? null,
@@ -104,12 +96,25 @@ function settingsChangedEvent(userId: string, at: Date): EventEnvelope {
   ) as EventEnvelope
 }
 
+/** The keys of `patch` the caller actually sent (`undefined` means "leave as is"). */
+function definedOnly<T extends object>(patch: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(patch).filter(([, value]) => value !== undefined),
+  ) as Partial<T>
+}
+
 export async function updateSettings(
   q: Queryable,
   input: TravelUpdateSettingsInput,
 ): Promise<{ settings: TravelSettings; event: EventEnvelope }> {
   await assertModuleOn(q)
   const now = new Date()
+  const { userId, ...patch } = input
+  // Validate the row as it will be after the merge, not the patch alone: `{ preset: 'custom' }`
+  // with no custom rate saved, or `{ fuel: null }` on the fuel-only preset, would otherwise make
+  // every later tripCost()/params() call fail (assertUsableSettings, domain).
+  const current = toTravelSettings(userId, await repo.selectSettings(q, userId))
+  assertUsableSettings({ ...current, ...definedOnly(patch) })
   const row = await repo.upsertSettings(q, input.userId, {
     ...(input.preset !== undefined ? { preset: input.preset } : {}),
     ...(input.fuel !== undefined ? { fuel: input.fuel } : {}),

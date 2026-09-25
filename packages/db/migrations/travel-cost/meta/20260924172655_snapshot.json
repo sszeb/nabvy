@@ -132,6 +132,10 @@
           "name": "travel_rates_fuel",
           "value": "\"travel_cost\".\"travel_rates\".\"fuel\" in ('', 'petrol', 'diesel', 'lpg', 'electric')"
         },
+        "travel_rates_engine_band": {
+          "name": "travel_rates_engine_band",
+          "value": "\"travel_cost\".\"travel_rates\".\"engine_band\" in ('', '1400-or-less', '1401-2000', '1600-or-less', '1601-2000', 'over-2000')"
+        },
         "travel_rates_tier": {
           "name": "travel_rates_tier",
           "value": "\"travel_cost\".\"travel_rates\".\"tier\" in ('', 'standard', 'reduced')"
@@ -224,6 +228,10 @@
         "user_travel_settings_fuel": {
           "name": "user_travel_settings_fuel",
           "value": "\"travel_cost\".\"user_travel_settings\".\"fuel\" is null or \"travel_cost\".\"user_travel_settings\".\"fuel\" in ('petrol', 'diesel', 'lpg', 'electric')"
+        },
+        "user_travel_settings_engine_band": {
+          "name": "user_travel_settings_engine_band",
+          "value": "\"travel_cost\".\"user_travel_settings\".\"engine_band\" is null or \"travel_cost\".\"user_travel_settings\".\"engine_band\" in ('1400-or-less', '1401-2000', '1600-or-less', '1601-2000', 'over-2000')"
         },
         "user_travel_settings_value_of_time_non_negative": {
           "name": "user_travel_settings_value_of_time_non_negative",

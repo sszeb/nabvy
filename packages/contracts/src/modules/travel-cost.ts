@@ -31,6 +31,20 @@ export type TravelRateKind = z.infer<typeof TravelRateKind>
 export const TravelFuelType = z.enum(['petrol', 'diesel', 'lpg', 'electric'])
 export type TravelFuelType = z.infer<typeof TravelFuelType>
 
+/**
+ * The engine-size bands GOV.UK's advisory-fuel-rates table publishes: `1400-or-less`, `1401-2000`
+ * and `over-2000` for petrol and LPG; `1600-or-less`, `1601-2000` and `over-2000` for diesel. A
+ * closed set (mirrored by a DB CHECK) so a typo can never silently match no rate row.
+ */
+export const TravelEngineBand = z.enum([
+  '1400-or-less',
+  '1401-2000',
+  '1600-or-less',
+  '1601-2000',
+  'over-2000',
+])
+export type TravelEngineBand = z.infer<typeof TravelEngineBand>
+
 /** Only `approved-mileage-rate` is tiered: `standard` for the first 10,000 business miles in the
  * tax year, `reduced` after. Empty string for a rate kind the tier does not apply to. */
 export const TravelRateTier = z.enum(['', 'standard', 'reduced'])
@@ -40,8 +54,8 @@ export const TravelRateUnit = z.enum(['mile', 'hour'])
 export type TravelRateUnit = z.infer<typeof TravelRateUnit>
 
 /** A calendar date, `YYYY-MM-DD`, matching the Postgres `date` column (packages/db/README.md). */
-export const IsoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
-export type IsoDate = z.infer<typeof IsoDate>
+export const TravelIsoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+export type TravelIsoDate = z.infer<typeof TravelIsoDate>
 
 /**
  * One dated, sourced rate row: `travel_cost.travel_rates` (services/travel-cost/README.md).
@@ -50,11 +64,11 @@ export type IsoDate = z.infer<typeof IsoDate>
 export const TravelRate = z.strictObject({
   kind: TravelRateKind,
   fuel: TravelFuelType.or(z.literal('')),
-  engineBand: z.string().max(40),
+  engineBand: TravelEngineBand.or(z.literal('')),
   tier: TravelRateTier,
   penceAmount: z.number().int().positive(),
   unit: TravelRateUnit,
-  effectiveFrom: IsoDate,
+  effectiveFrom: TravelIsoDate,
   sourceUrl: z.url().max(500),
 })
 export type TravelRate = z.infer<typeof TravelRate>
@@ -88,7 +102,7 @@ export const TravelSettings = z
     userId: Uuid,
     preset: TravelCostPreset,
     fuel: TravelFuelType.nullable(),
-    engineBand: z.string().max(40).nullable(),
+    engineBand: TravelEngineBand.nullable(),
     custom: TravelCustomRate.nullable(),
     valueOfTimePenceHour: z.number().int().nonnegative().nullable(),
     roadFactor: z.number().positive().nullable(),
@@ -111,7 +125,7 @@ export const TravelUpdateSettingsInput = z
     userId: Uuid,
     preset: TravelCostPreset.optional(),
     fuel: TravelFuelType.nullable().optional(),
-    engineBand: z.string().max(40).nullable().optional(),
+    engineBand: TravelEngineBand.nullable().optional(),
     custom: TravelCustomRate.nullable().optional(),
     valueOfTimePenceHour: z.number().int().nonnegative().nullable().optional(),
     roadFactor: z.number().positive().nullable().optional(),

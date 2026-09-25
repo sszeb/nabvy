@@ -36,6 +36,23 @@ describe('travel-cost contracts', () => {
     const columns = Object.keys(getViewConfig(vRates).selectedFields)
     expect(Object.keys(TravelRate.shape).sort()).toEqual(columns.sort())
   })
+
+  it("engineBand is a closed set: a typo can't silently match no rate row", () => {
+    const rate = {
+      kind: 'advisory-fuel-rate',
+      fuel: 'petrol',
+      tier: '',
+      penceAmount: 14,
+      unit: 'mile',
+      effectiveFrom: '2026-03-01',
+      sourceUrl: 'https://www.gov.uk/guidance/advisory-fuel-rates',
+    }
+    expect(TravelRate.safeParse({ ...rate, engineBand: '1401-2000' }).success).toBe(true)
+    expect(TravelRate.safeParse({ ...rate, engineBand: '1401–2000' }).success).toBe(false)
+    expect(
+      TravelUpdateSettingsInput.safeParse({ userId: U1, engineBand: '1401 to 2000' }).success,
+    ).toBe(false)
+  })
 })
 
 describe('TravelSettings', () => {
