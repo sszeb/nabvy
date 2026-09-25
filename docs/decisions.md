@@ -370,6 +370,16 @@ The owner, with a screenshot of a Facebook card ("Coleford, Gloucestershire · L
 - **No map on or under a card.** The feed has two layouts behind a toggle (owner, 20:35): the plain list, as in the earlier web designs, and the Airbnb-style split view already decided ("Search, map and pickup features", 2026-09-24; `search-map-routes.md` §3) with the list on the left and approximate dots at town centroids on the right, clustered where dense. The toggle sits in the feed header; the choice is remembered per user; the list is the default and the full alternative for accessibility.
 - Applies to listing-card's user-facing view (numbers), pickup-location (town and area), travel-time and router-gateway (the time), and the web app (the wording, task L1). "data approximate" replaces the draft's "town approximate".
 
+## Stateless coordinator (owner, 2026-09-25, 21:40)
+
+The owner asked how to cut coordinator token use and said "you do it all now". Measured: coordinator 16 reached 167k tokens five minutes after starting, 140k of it the 17 PR-subscription notices (about 8 KB each). Coordinator 17 reached 155k within 15 minutes. Each hand-off also meant repointing the relay, the watchdog and a chain of forwarding inboxes.
+
+- The coordinator is one Routine, `trig_01SpUT9nZPtAH1FBGiQaCiwu`, that starts a fresh session per fire. A fire with appended text is one inbox message; its cron (every two hours) is the sweep. No hand-offs and no successor sessions, and its ID never changes.
+- State lives in `state.md` on the orphan branch `claude/coordinator-state` (operational, never merged, not reviewed). Run rules live in `docs/routines/coordinator.md`. History moved to `docs/handoff-archive.md`.
+- The coordinator never subscribes to pull requests. Merges and new PRs arrive as messages, and the sweep lists open PRs.
+- Docs changes are batched: only the sweep pushes to the one rolling docs PR (#101, `claude/coordinator-16` into `main`). The stacked docs PRs #84, #86, #91, #95 and #103 are folded into it and closed.
+- The owner sets this Routine's model (Opus, per "Model by job, revised") and attaches the Supabase connector in the app. A session cannot do either.
+
 ## Model by job, revised: Opus for coordinators, Sonnet for medium tasks, Haiku for code and code reviews (owner, 2026-09-25, 19:58)
 
 The owner, to coordinator 15: "From now on for each new session use opus for coordinating sessions and use sonnet for medium tasks and haiku for code and code reviews." Applied to every session created from 19:58 on; running sessions finish on the model they started with.
