@@ -1,0 +1,47 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": [
+    "1072745435569624",
+    "2264485254402498",
+    "1397200465308431",
+    "1403975981250476",
+    "1783301919382894"
+  ],
+  "edits": [
+    {
+      "listingId": "1072745435569624",
+      "fields": {
+        "foundBySearchTerms": ["rtx 5080"],
+        "description": "Gaming PC with an RTX 2070 Super, Ryzen 7 2700X and 16GB RAM. Upgrading to a 5080 so this one has to go."
+      }
+    },
+    {
+      "listingId": "2264485254402498",
+      "fields": {
+        "foundBySearchTerms": ["rtx 5080"],
+        "title": "Gaming PC RTX 5080 | Ryzen 7 9800X3D | 32GB RAM | 2TB SSD",
+        "description": "Brand new build with an RTX 5080 16GB, Ryzen 7 9800X3D, 32GB DDR5 and a 2TB NVMe SSD."
+      }
+    },
+    {
+      "listingId": "1397200465308431",
+      "fields": {
+        "foundBySearchTerms": ["5080", "gaming pc"],
+        "description": "RTX 5070, Ryzen 7700X, 32GB DDR5 RAM, 2TB M.2 SSD. Waiting for my 5080, so this build has to go."
+      }
+    },
+    {
+      "listingId": "1403975981250476",
+      "fields": {
+        "foundBySearchTerms": ["5080"],
+        "description": "Lenovo Legion desktop, RTX 3070, i7-10700K, 16GB RAM, 1TB SSD.\n\n#rtx5080 #rtx4090 #gamingpc #nvidia #ryzen"
+      }
+    },
+    {
+      "listingId": "1783301919382894",
+      "fields": {
+        "foundBySearchTerms": ["5080"]
+      }
+    }
+  ]
+}
