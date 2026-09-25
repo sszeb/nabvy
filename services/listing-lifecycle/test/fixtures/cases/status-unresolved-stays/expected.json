@@ -1,0 +1,15 @@
+{
+  "counts": {
+    "live": 19,
+    "unresolved": 1
+  },
+  "listings": {
+    "1816901372840238": {
+      "status": "unresolved",
+      "basis": "unresolved-fetch",
+      "missedSweeps": 0
+    }
+  },
+  "announced": 20,
+  "queued": {}
+}

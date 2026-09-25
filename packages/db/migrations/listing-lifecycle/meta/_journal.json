@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790276327219,
+      "tag": "20260924185847_listing_lifecycle_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790276330942,
+      "tag": "20260924185850_listing_lifecycle_access",
+      "breakpoints": true
+    }
+  ]
+}

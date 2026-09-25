@@ -1,0 +1,16 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "add": {
+    "requestId": "01920000-0000-7000-8000-00000000a001",
+    "listings": [{ "source": "facebook", "sourceListingId": "1816901372840238" }]
+  },
+  "relists": [
+    {
+      "from": "1816901372840238",
+      "newId": "9000000000000001",
+      "fields": {
+        "description": "Reworded: PCSpecialist tower, i7-4790, GTX 970, collection only."
+      }
+    }
+  ]
+}

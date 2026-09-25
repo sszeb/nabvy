@@ -1,0 +1,9 @@
+{
+  "chosenCadenceSeconds": 60,
+  "planCeilingSeconds": 60,
+  "creditsPerMonth": -5,
+  "deliveredCadenceSeconds": null,
+  "unlockWatchersNeeded": null,
+  "unlockCadenceSeconds": null,
+  "creditsRunOutDate": null
+}

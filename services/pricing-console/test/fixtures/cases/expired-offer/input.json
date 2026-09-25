@@ -1,0 +1,35 @@
+{
+  "synthetic": true,
+  "source": "Card pricing-console: an expired offer no longer applies",
+  "steps": [
+    {
+      "set": {
+        "kind": "offer",
+        "key": "export-half",
+        "value": {
+          "userId": null,
+          "segment": "all",
+          "item": "price:export",
+          "discountBps": 5000,
+          "startsAt": "$now-60s",
+          "endsAt": "$now+2s"
+        }
+      }
+    },
+    {
+      "price": {
+        "user": "A",
+        "item": "price:export"
+      }
+    },
+    {
+      "wait": 2500
+    },
+    {
+      "price": {
+        "user": "A",
+        "item": "price:export"
+      }
+    }
+  ]
+}

@@ -390,12 +390,18 @@ async function invoicePaid(
   if (!line) throw new WebhookFailure('processing')
   const periodStart = new Date(line.period.start * 1000)
   const periodEnd = new Date(line.period.end * 1000)
-  // A late invoice never grants to an ended subscription, nor moves the period backwards
-  // (review of PR #54).
-  if (
-    entitlement.status === 'free' ||
-    (entitlement.cashPeriodStart && periodStart < entitlement.cashPeriodStart)
-  ) {
+  // A Free row with this subscription is either ended (a late invoice after `.deleted`: record
+  // it, grant nothing) or not started yet (a Checkout subscription is created `incomplete`, and
+  // its first invoice can beat the `.updated` that makes it `active`): fail as `out_of_order`
+  // so Stripe retries once the row is active (review of PR #54, rounds 1 and 2).
+  if (entitlement.status === 'free') {
+    if (await repo.subscriptionDeleted(q, subId)) {
+      return { outcome: 'recorded', userId, events: [], row }
+    }
+    throw new WebhookFailure('out_of_order')
+  }
+  // A late invoice never moves the period backwards.
+  if (entitlement.cashPeriodStart && periodStart < entitlement.cashPeriodStart) {
     return { outcome: 'recorded', userId, events: [], row }
   }
   const intervalMonths = intervalMonthsOf(periodStart, periodEnd)
@@ -452,16 +458,23 @@ async function checkoutCompleted(
   const tickAt = session.metadata?.[SUBSCRIPTIONS_START_NOW_KEY]
   const tickDate = tickAt && !Number.isNaN(Date.parse(tickAt)) ? new Date(tickAt) : null
   const consentStartNow = session.consent?.terms_of_service === 'accepted' && tickDate !== null
-  const eventsOut: EventEnvelope[] = consentStartNow
-    ? []
-    : [failedEvent(event.id, 'consent_missing')]
   const amount = session.amount_total ?? null
+  // One session sends two events under a delayed method (`completed`, then
+  // `async_payment_succeeded`): the first to arrive stores the consent and reports it missing;
+  // the second only records its amount (review of PR #54, round 2).
+  const consentRecorded = await repo.checkoutRecorded(q, session.id)
+  const eventsOut: EventEnvelope[] =
+    consentStartNow || consentRecorded ? [] : [failedEvent(event.id, 'consent_missing')]
   const row = {
-    checkoutSessionId: session.id,
-    consentStartNow,
-    consentAt: tickDate ?? new Date(event.created * 1000),
     amountMinor: amount,
     currency: session.currency ?? null,
+    ...(consentRecorded
+      ? {}
+      : {
+          checkoutSessionId: session.id,
+          consentStartNow,
+          consentAt: tickDate ?? new Date(event.created * 1000),
+        }),
   }
 
   // Credit only for a paid top-up: a delayed method (Bacs, bank transfer) completes the session

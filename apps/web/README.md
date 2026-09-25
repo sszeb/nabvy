@@ -63,16 +63,59 @@ this is the start of the CI check on user-facing output that `docs/decisions.md`
 - **Locations** are a town plus a whole-kilometre distance. No map with pins.
 - **Pricing and scan** are skeletons: no prices, no tier text, no scan flow until the owner
   decides (`docs/questions.md`).
+- **Cadence slider (task 4.1q).** `components/cadence-slider.tsx`, a vertical seven-step dot-density
+  control on radix `Slider` (`components/ui/slider.tsx`), wired into `HuntForm` in place of a plain
+  interval control (`docs/design/cadence-slider.md`). It never invents a number: the credit
+  estimate, delivered cadence, unlock count and plan ceiling all come through a
+  `WantManagerCadenceEstimate`/`WantManagerCadenceBurstStatus` prop (`@nabvy/contracts/modules/want-manager`,
+  a minimal stub until `want-manager`, task 1.8e, ships the real procedure). Until then `HuntForm`
+  passes `estimate={null}` and the slider shows no cost or cadence line and locks no step, rather
+  than a client-side placeholder figure (review of PR #49; the earlier
+  `estimateCadencePlaceholderUntilWantManagerShips` is gone). The seven step names, settled by the
+  coordinator on the owner's delegation (Ultracheck 1 min, Rapid 5 min, Brisk 15 min, Steady
+  30 min, Regular 1 h, Relaxed 2 h, Slow Watch 4 h), are centralised in `lib/cadence.ts`
+  (`CADENCE_STEPS`), the one file to edit if the owner changes them. Fixture render states live in
+  `test/cadence-slider.test.tsx`, using `renderToStaticMarkup` rather than a DOM testing library
+  (no jsdom in this project).
 - **`sharp` is removed** from the tree (`pnpm-workspace.yaml` override): it is Next's optional
   image optimiser and brings LGPL binaries; the app serves no optimised images.
 
 ## Not deployable yet
 
 This is design scaffolding. The waitlist, sign-in, "Report a mistake", "Mark as bought", hunt and
-preference forms report success without doing anything; `/app` and `/admin` have no auth guard;
+preference forms report success without doing anything; `/app` has no auth guard (`/admin` has one
+since task 4.3af, below);
 there are no CSP or HSTS headers. Do not deploy the app before tasks 0.5a (waitlist storage), 4.0
 (auth and the admin role) and 4.3b (security headers and rate limits) land. Fixture listing links
 point at `.invalid` hosts so none can resolve to a real listing.
+
+## Admin gate (task 4.3af)
+
+`docs/design/admin-hardening.md`, audit items A1, A2, A11 and A12, before anything is deployed.
+
+- **`requireAdmin()` in `lib/admin-gate.ts`** wraps the auth module's `requireAdmin(headers)`: the
+  session is read from the database on every request, past the cookie cache, and the role checked
+  there. Nobody signed in gets `unauthorized()` (401); a signed-in account without the admin role,
+  or a restricted one, gets `forbidden()` (403). The admin layout calls it, and so does every admin
+  page before its first read: Next renders a layout and its page independently, so a layout alone
+  guards nothing. An admin procedure or server action, when one exists, calls the same function
+  first. Nothing in the app reads the client-side session, so nothing can show a stale role.
+- **Admin pages are `noindex, nofollow`** from the layout's metadata.
+- **The Facebook kill switch is read-only** (`components/provider-switch.tsx`): it shows the
+  server's state and is disabled. It becomes a control when it calls an audited `switches.set`
+  procedure (task 4.3ag), and the label then shows the state after the commit.
+- **Admin fixtures are server-only and refused in production.** `data/index.ts` imports
+  `server-only`, and the two admin reads throw when `NODE_ENV` (the `runtime` group in
+  `@nabvy/config`) is `production`, which `next build` and `next start` set, until task 4.1 puts the
+  procedures behind them. A deployed admin page therefore fails rather than show fixture spend and
+  runs as if they were real. Vitest aliases `server-only` to `test/support/server-only.ts`.
+- **End to end: `e2e/admin-gate.spec.ts`**, the Playwright `gate` project, plain HTTP with no
+  browser. It signs users in through the auth module on the same database and secret as the
+  server under test (`e2e/admin-gate.env.ts`, placeholders only) and checks 401 for nobody, 403 for
+  a plain user, no admin text in either, and that an admin passes the gate and the production
+  build refuses the fixtures (500). The signed-in cases need `DATABASE_URL` pointing at a migrated
+  Postgres; CI runs them in the migration dry-run job. `/admin` and `/admin/review` left the screen
+  tests, which have no admin session.
 
 ## Error pages (task 4.1c)
 
@@ -121,6 +164,7 @@ pnpm --filter @nabvy/web dev            # http://localhost:3000
 pnpm --filter @nabvy/web build
 pnpm --filter @nabvy/web test           # Vitest
 pnpm --filter @nabvy/web test:screens   # Playwright; needs a build first; writes docs/design/screens/
+pnpm --filter @nabvy/web exec playwright test --project gate   # the admin gate; DATABASE_URL for the signed-in cases
 pnpm --filter @nabvy/web icons          # re-render the PNG icons from public/icons/*.svg
 ```
 

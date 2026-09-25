@@ -1,0 +1,17 @@
+{
+  "outcomes": [
+    {
+      "changed": true
+    },
+    {
+      "amount": 25,
+      "offer": "export-half",
+      "floored": false
+    },
+    {
+      "amount": 50,
+      "offer": null,
+      "floored": false
+    }
+  ]
+}

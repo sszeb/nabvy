@@ -44,7 +44,7 @@ create temporary table good as select
 grant select on good to nabvy_pipeline;
 
 -- 1. Settings: the build pin and the monthly cap. ------------------------------------------------
-select pg_temp.check(actor_build = '1.0.82', 'the build is pinned at 1.0.82')
+select pg_temp.check(actor_build = '1.0.83', 'the build is pinned at 1.0.83')
 from apify_gateway.settings;
 select pg_temp.check(cap_usd = 150, 'the cap is $150') from apify_gateway.settings;
 select pg_temp.refuses($$update apify_gateway.settings set actor_build = 'latest'$$,

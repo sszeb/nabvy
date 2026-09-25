@@ -1,0 +1,13 @@
+{
+  "outcomes": [
+    {
+      "refused": "pricing-console.below_floor"
+    },
+    {
+      "changed": true
+    },
+    {
+      "refused": "pricing-console.invalid"
+    }
+  ]
+}

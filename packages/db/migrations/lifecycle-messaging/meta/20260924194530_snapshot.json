@@ -1,0 +1,119 @@
+{
+  "id": "64637c77-eca9-4acf-8a39-f151738c9237",
+  "prevId": "bf781516-bee6-4b52-9ab0-8d78767f8f58",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "lifecycle_messaging.programme_runs": {
+      "name": "programme_runs",
+      "schema": "lifecycle_messaging",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "programme": {
+          "name": "programme",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "step": {
+          "name": "step",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "triggered_at": {
+          "name": "triggered_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "programme_runs_user_id_programme_step_triggered_at_pk": {
+          "name": "programme_runs_user_id_programme_step_triggered_at_pk",
+          "columns": [
+            "user_id",
+            "programme",
+            "step",
+            "triggered_at"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "programme_runs_programme": {
+          "name": "programme_runs_programme",
+          "value": "\"lifecycle_messaging\".\"programme_runs\".\"programme\" in ('abandoned-onboarding', 'channel-not-linked', 'activation', 'cap-reached', 'trial', 'win-back', 're-engagement')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "lifecycle_messaging": "lifecycle_messaging"
+  },
+  "views": {
+    "lifecycle_messaging.v_runs": {
+      "name": "v_runs",
+      "schema": "lifecycle_messaging",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "programme": {
+          "name": "programme",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "step": {
+          "name": "step",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "triggered_at": {
+          "name": "triggered_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

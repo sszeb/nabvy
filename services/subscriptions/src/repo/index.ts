@@ -96,6 +96,16 @@ export async function subscriptionDeleted(
   return row !== undefined
 }
 
+/** Whether a billing event already stored this Checkout session's consent. */
+export async function checkoutRecorded(q: Queryable, checkoutSessionId: string): Promise<boolean> {
+  const [row] = await q
+    .select({ id: billingEvents.id })
+    .from(billingEvents)
+    .where(eq(billingEvents.checkoutSessionId, checkoutSessionId))
+    .limit(1)
+  return row !== undefined
+}
+
 export async function selectEntitlement(
   q: Queryable,
   userId: string,

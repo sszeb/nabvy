@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790287422272,
+      "tag": "20260924220342_copy_advert_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790287449966,
+      "tag": "20260924220409_copy_advert_access",
+      "breakpoints": true
+    }
+  ]
+}

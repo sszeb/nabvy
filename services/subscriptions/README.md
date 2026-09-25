@@ -20,7 +20,11 @@ MVP, live at the public beta launch (`docs/decisions.md:93`), BP4.
   the Better Auth Stripe plugin, whose `onEvent` hook calls `processStripeEvent`. Types used:
   `customer.created|updated`, `customer.subscription.created|updated|deleted`, `invoice.paid`,
   `invoice.payment_failed`, `charge.succeeded|failed`, `charge.dispute.created`,
-  `checkout.session.completed`; the rest are recorded as `ignored`.
+  `checkout.session.completed`, `checkout.session.async_payment_succeeded`; the rest (among
+  them `checkout.session.async_payment_failed`) are recorded as `ignored`. The Stripe webhook
+  endpoint must be subscribed to every type in this list (owner's dashboard step,
+  `docs/questions/subscriptions.md`); without `async_payment_succeeded`, a top-up paid by a
+  delayed method is never credited.
 - Event `account.deleted` (from `account`): `accountDeletedHandler` purges the entitlement.
 - Injected policies: `SubscriptionsLadderPolicy` (pricing-console's ladder rows: areas, wants,
   channels, base cadence, floor, trial, Stripe price IDs; stub `pendingPricingConsoleLadder`
@@ -118,8 +122,10 @@ synthetic cases on the real migrations in PGlite, built from `docs/billing.md`,
 
 `test/domain.test.ts` covers the status matrix, plan matching, extra areas, allowance windows
 and their boundaries, net cash and tick freshness. `test/webhook.test.ts` covers the lifecycle,
-stale events, unknown plans, the trial check, allowances (renewal, out of order, no policy then
-the sweep, annual), top-ups, signals, and the route (bad and stale signatures, forwarding).
+stale events, unknown plans, the trial check, allowances (renewal, out of order, a first invoice
+before the subscription is active, a late invoice after deletion or for an earlier period, no
+policy then the sweep, annual), top-ups (paid, unpaid then async paid, async failed, paid then
+async paid under two event IDs), signals, and the route (bad and stale signatures, forwarding).
 `test/checkout.test.ts` covers the gate, plans only from the ladder, standing, top-up Checkout
 and the plugin options. `test/idempotency.test.ts` runs each event and `account.deleted` twice.
 `test/switch.test.ts` covers off, shadow and on. `test/contracts.test.ts` checks the events,
@@ -175,6 +181,15 @@ RLS, append-only billing events, the views' switch rules and that no user-facing
   intent). A deleted subscription is terminal (no later or same-second event revives it); a late
   renewal invoice never grants to a Free row or moves the period backwards; ending a trial
   calls Stripe with an idempotency key per event, so a retried event never repeats it.
+- 2026-09-24 (review of PR #54, round 2): a Free row that names the invoice's subscription means
+  one of two things. If a `customer.subscription.deleted` for it was processed, the invoice is
+  late: it is recorded and grants nothing. Otherwise the subscription has not started (Checkout
+  creates it `incomplete`, and its first invoice can beat the `.updated` that makes it `active`):
+  the invoice fails as `out_of_order`, so Stripe retries it until the row is active and the
+  first period's allowance is granted exactly once. Under a delayed payment method one Checkout
+  session sends `completed` and later `async_payment_succeeded`; whichever arrives first stores
+  the consent (and reports `consent_missing` if it is absent), the other records only its
+  amount, so a session never has two consent rows or two `consent_missing` events.
 - 2026-09-24 (review of PR #54): the server-side tick check proves only that the procedure (or
   the plugin endpoint) was called with the tick; the tick time is set when the procedure runs.
   The consent that counts as evidence is Stripe Checkout's own required tick

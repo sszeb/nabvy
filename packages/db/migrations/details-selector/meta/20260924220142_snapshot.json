@@ -1,0 +1,147 @@
+{
+  "id": "b3c43e0b-8571-4c68-9356-b9d379fd2d98",
+  "prevId": "a3bb44c5-b0d3-48a8-85af-49ff1cc24dbb",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "details_selector.selections": {
+      "name": "selections",
+      "schema": "details_selector",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "selected_at": {
+          "name": "selected_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "selections_source_listing_hash_key": {
+          "name": "selections_source_listing_hash_key",
+          "columns": [
+            "source",
+            "source_listing_id",
+            "card_hash"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "selections_source_check": {
+          "name": "selections_source_check",
+          "value": "\"details_selector\".\"selections\".\"source\" in ('ebay', 'facebook', 'gumtree', 'vinted', 'cex')"
+        },
+        "selections_reason_check": {
+          "name": "selections_reason_check",
+          "value": "\"details_selector\".\"selections\".\"reason\" in ('in_area', 'shipped')"
+        },
+        "selections_card_hash_check": {
+          "name": "selections_card_hash_check",
+          "value": "\"details_selector\".\"selections\".\"card_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "details_selector": "details_selector"
+  },
+  "views": {
+    "details_selector.v_selections": {
+      "name": "v_selections",
+      "schema": "details_selector",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "selected_at": {
+          "name": "selected_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

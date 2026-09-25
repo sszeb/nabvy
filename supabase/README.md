@@ -19,7 +19,7 @@ README says how the function and the package divide the work. What the module ch
 works only while `apify_gateway.enabled()` (module switch `apify-gateway` on or shadow, provider
 `apify` and global `pipeline` on), otherwise an invocation does nothing and no job is claimed; the
 cap is **$150 per calendar month** (Europe/London, by job creation); runs start on the pinned build
-`settings.actor_build` (1.0.82); a short download resumes after the last stored row; the pipeline
+`settings.actor_build` (1.0.83 since task 1.1i); a short download resumes after the last stored row; the pipeline
 queues runs with `enqueue_run(input, memory, timeout, note, tags)` and reads the published views.
 The steps below still describe the mechanism.
 
