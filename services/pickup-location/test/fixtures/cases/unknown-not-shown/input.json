@@ -1,0 +1,23 @@
+{
+  "synthetic": true,
+  "builtFrom": "fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k, listing 1816901372840238 (title, description, location, page, coordinates and delivery types replaced)",
+  "pages": [
+    {
+      "cityPageId": "115935195086622",
+      "name": "Chichester, West Sussex",
+      "towns": ["Chichester"],
+      "lat": 50.8365,
+      "lng": -0.7792
+    }
+  ],
+  "listings": [
+    {
+      "listingId": "7000000000000007",
+      "title": "RTX 3090",
+      "description": "Great card, barely used.",
+      "location": null,
+      "cityPageId": null,
+      "coordinates": null
+    }
+  ]
+}
