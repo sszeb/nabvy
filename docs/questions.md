@@ -615,3 +615,48 @@ file per module so parallel build sessions never conflict. The coordinator folds
 - **2026-09-24, subscriptions: Stripe customer at sign-up (review of PR #54, finding 8).** `createCustomerOnSignUp: true` (from `docs/billing.md`) sends every Free user's email to Stripe. Option taken: kept, as `docs/billing.md` specifies it; creating the customer at the first Checkout would send less. Owner's call (data minimisation).
 - **2026-09-24, subscriptions: `customers` table not on the card (review of PR #54, finding 9).** The module owns a third table (Stripe customer → user). The card's "Owns" line should list it at the next catalogue edit (coordinator).
 - **2026-09-24, subscriptions: webhook endpoint events and delayed payment methods (review of PR #54, round 2).** The Stripe webhook endpoint must be subscribed, in the Stripe dashboard, to every event type the README's "Inputs" lists, including `checkout.session.async_payment_succeeded`; without it a top-up paid by a delayed method (Bacs Direct Debit, bank transfer) completes `unpaid` and is never credited. Option taken: the list is in the README and this is recorded as an owner's dashboard step (with the terms of service URL). `startTopup` does not pin `payment_method_types: ['card']`, because which methods are offered is a product decision; the code credits a delayed payment only when `async_payment_succeeded` arrives. Conservative because no credit is granted before payment either way.
+
+## Open with the owner (coordinator 14, 2026-09-25)
+
+- **2026-09-25, coordinator 14: photo-review is READY on the graph but gated.** `scripts/sweep.mjs` shows `photo-review` [cp 2] ready once want-manager #88 is open, but its card says the phase is gated on actor photo capture, a photo model provider and an AI processor agreement (`docs/design/modules/photo-review.md`, "Priority and phase"), none of which exist yet; parts-record already carries the injected seam. Option taken: not started; the next coordinator starts it when the owner names the photo model provider, or says to build it against injected seams now. Conservative because a session for a module that cannot run spends tokens the owner asked to save.
+
+## Folded from the per-module question files (coordinator 14, 2026-09-25, 16:10 UTC)
+
+### parts-record (PR #87, merged)
+
+- **2026-09-25, w2 parts-record: the photo-review seam (soft edge).** The card's inputs include
+  `photo-review.reviewed` and `v_verdicts`; photo-review does not exist yet
+  (`docs/design/modules/soft-edges.json`). Option taken: `record()` takes an injected
+  `photoVerdicts` function over the batch's listing versions, typed by `PartsRecordPhotoVerdict`
+  (part type, catalogue ID or brand-only, the photo ID as the quote, a photo-review version); the
+  default returns none, so `photo_version` stays null and no photo part exists. When photo-review
+  ships it supplies the function over its `v_verdicts` and its `reviewed` event calls `record()`.
+  Conservative because a photo never read is "not stated", never "no", and nothing is invented.
+- **2026-09-25, w2 parts-record: the kind's values.** The card names the kinds as a standalone
+  part, a desktop PC, a laptop, or a wanted or swap advert; parts-rules and parts-ai settle
+  `wanted_or_swap`, `laptop`, `pc` or `not_a_pc`, and the brief says derive, never retype. Option
+  taken: `PartsRecordKind` is `PartsRulesKind`; a standalone part (a card sold alone) is not
+  told apart from `not_a_pc` until an input states it. Conservative because inventing a fifth
+  value with no extractor behind it would leave it always empty.
+- **2026-09-25, w2 parts-record: parts the inputs do not extract.** The card lists cooler, case
+  and extras among the parts; no input names them (parts-rules' eight part types are GPU, CPU,
+  RAM size and generation, storage size and type, PSU wattage and chipset). Option taken: the
+  record's part types are the rules' (`PartsRecordPartType` is `PartsRulesPartType`); extras
+  that "come with" the PC and accessories "not included" leave no row (the `inclusion-cases`
+  fixture shows it). Conservative because a row for a part nobody extracted would be a guess.
+- **2026-09-25, w2 parts-record: `v_items` is read for families only.** The card lists `v_items`
+  as an input without saying what for. Option taken: the family of each resolved catalogue ID,
+  used to tell "RTX 3080" (unresolved, family only) from "RTX 3080 10GB" (resolved) as one card
+  and "RTX 3080 Ti" as another; nothing else is read from it, and with product-catalogue off no
+  conflict is flagged. Conservative because the record never drops or alters a catalogue ID on
+  the catalogue's account.
+- **2026-09-25, w2 parts-record: what conflicts.** The card records a conflict "when rules and AI
+  disagree". Option taken: among offered parts of one type, different catalogue families or IDs,
+  or different RAM, PSU or chipset values, from any pair of extractors (the rules against
+  themselves too); storage never conflicts, since a PC holds several drives; mentions,
+  not-included and brand-only rows never conflict. The recorded run has 0 conflicts. Conservative
+  because a flag is a fact for readers, never a decision.
+- **2026-09-25, w2 parts-record: no deduplication.** A part named twice (by the rules in title
+  and description, or by the rules and the model) is two rows. Option taken: keep every row with
+  its own quote and position; readers group by part type and catalogue ID. Conservative because
+  the record is the evidence; merging rows would hide which extractor said what.
