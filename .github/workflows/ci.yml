@@ -128,6 +128,14 @@ jobs:
         run: pnpm --filter @nabvy/auth test
         env:
           DATABASE_URL: postgres://postgres:ci-only@localhost:5432/postgres
+      # The admin gate end to end (task 4.3af): 401 for nobody, 403 for a plain user, and the
+      # production build refusing admin fixtures, over plain HTTP against the migrated database.
+      - name: Admin gate end to end against the migrated database
+        run: |
+          pnpm --filter @nabvy/web build
+          pnpm --filter @nabvy/web exec playwright test --project gate
+        env:
+          DATABASE_URL: postgres://postgres:ci-only@localhost:5432/postgres
       # Proves `pnpm new:module` end to end on a throwaway module that is never committed.
       - name: Scaffold a throwaway module end to end
         run: |
