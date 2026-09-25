@@ -66,8 +66,8 @@ describe('who may reach the gateway', () => {
     const pattern =
       /apify_gateway\s*\.\s*(enqueue_run|jobs|items|settings|claim_next_job)\b|from\s+['"]@nabvy\/db\/schema\/apify-gateway['"]/
     // Readers' test support (listing-ingest, detail-evidence, run-coverage, relist-merge,
-    // listing-suppression, parts-rules, copy-advert, details-selector) seeds collected jobs into the
-    // gateway's tables in PGlite (never a live database), so their fixtures read the real views.
+    // listing-suppression, parts-rules, copy-advert, listing-lifecycle, details-selector) seeds collected jobs into
+    // the gateway's tables in PGlite (never a live database), so their fixtures read the real views.
     const seeders = [
       'services/listing-ingest/test/support/',
       'services/detail-evidence/test/support/',
@@ -76,6 +76,7 @@ describe('who may reach the gateway', () => {
       'services/relist-merge/test/support/',
       'services/parts-rules/test/support/',
       'services/copy-advert/test/support/',
+      'services/listing-lifecycle/test/support/',
       'services/details-selector/test/support/',
     ]
     const found = offenders(

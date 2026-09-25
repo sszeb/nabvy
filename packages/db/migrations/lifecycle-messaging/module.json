@@ -1,0 +1,5 @@
+{
+  "module": "lifecycle-messaging",
+  "schema": "lifecycle_messaging",
+  "dependsOn": ["core", "switches"]
+}

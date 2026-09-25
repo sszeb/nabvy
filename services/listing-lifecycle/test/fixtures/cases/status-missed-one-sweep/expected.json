@@ -1,0 +1,14 @@
+{
+  "counts": {
+    "live": 20
+  },
+  "listings": {
+    "1816901372840238": {
+      "status": "live",
+      "basis": "search-card",
+      "missedSweeps": 1
+    }
+  },
+  "announced": 20,
+  "queued": {}
+}

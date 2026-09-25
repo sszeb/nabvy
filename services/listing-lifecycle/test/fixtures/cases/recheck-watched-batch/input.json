@@ -1,0 +1,32 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "the recorded run's 20 listings, watched",
+  "steps": [
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T01:40:43.415Z"
+      }
+    },
+    {
+      "request": {
+        "reason": "watched",
+        "first": 19
+      }
+    },
+    {
+      "tickAfterHours": 1
+    },
+    {
+      "request": {
+        "reason": "watched",
+        "skip": 19,
+        "first": 1
+      }
+    },
+    {
+      "tickAfterHours": 2
+    }
+  ]
+}

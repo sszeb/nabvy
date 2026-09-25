@@ -1,0 +1,9 @@
+{
+  "chosenCadenceSeconds": 3600,
+  "planCeilingSeconds": 900,
+  "creditsPerMonth": 18,
+  "deliveredCadenceSeconds": 7200,
+  "unlockWatchersNeeded": 6,
+  "unlockCadenceSeconds": 3600,
+  "creditsRunOutDate": "2026-10-18T00:00:00.000Z"
+}
