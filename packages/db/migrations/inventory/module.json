@@ -1,0 +1,5 @@
+{
+  "module": "inventory",
+  "schema": "inventory",
+  "dependsOn": ["core", "switches", "listing-card", "scan-recognition", "listing-suppression"]
+}
