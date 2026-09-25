@@ -1,0 +1,57 @@
+{
+  "listings": {
+    "1783301919382894": {
+      "parts": [
+        "rules:description:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb [offered]",
+        "rules:description:cpu:9800X3D [offered]",
+        "rules:description:ram_size:32GB DDR5 [offered]",
+        "rules:description:ram_generation:DDR5 [offered]",
+        "rules:description:cpu:Ryzen 7 9800X3D → cpu:amd:ryzen-7-9000 [offered]",
+        "rules:description:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb [offered]",
+        "rules:description:ram_size:RAM: 32GB [offered]",
+        "rules:description:ram_generation:DDR5 [offered]",
+        "rules:description:storage_size:Storage: 2TB [offered]",
+        "rules:description:storage_type:970 EVO [offered]",
+        "rules:description:storage_type:NVMe [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:chipset:B850 [offered]",
+        "rules:description:psu_wattage:1000W [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 14
+    },
+    "1380502417485603": {
+      "parts": [],
+      "kind": "rules:pc:title:Gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 0
+    },
+    "1083674317719227": {
+      "parts": [
+        "rules:description:ram_size:16GB RAM [offered]",
+        "ai:description:cpu:~3900Mhz AMD64 processor [offered]",
+        "ai:description:gpu:Geforce RTX graphics card [offered]",
+        "ai:description:storage_size:I can include 300GB extended storage for an extra £20 [not_included]"
+      ],
+      "kind": "rules:pc:title:gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 4
+    }
+  }
+}

@@ -1,0 +1,400 @@
+{
+  "listings": {
+    "1756692548940192": {
+      "parts": [
+        "rules:title:gpu:GTX+1660 → gpu:nvidia:gtx-1660:6gb [offered]",
+        "rules:title:cpu:Ryzen+7+2700X → cpu:amd:ryzen-7-2000 [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming+PC",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 2
+    },
+    "1816901372840238": {
+      "parts": [
+        "rules:title:gpu:GTX 970 [offered]",
+        "rules:title:cpu:i7-4790 [offered]",
+        "rules:title:ram_size:8GB RAM [offered]",
+        "rules:description:cpu:i7-4790 [offered]",
+        "rules:description:gpu:GTX 970 [offered]",
+        "rules:description:ram_size:RAM: 8GB [offered]",
+        "rules:description:ram_size:1x8GB [offered]",
+        "rules:description:ram_generation:DDR3 [offered]",
+        "rules:description:storage_size:Storage: 250GB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:chipset:Z97 [offered]",
+        "rules:description:psu_wattage:550W [offered]",
+        "ai:description:cpu:CPU: Intel Core i7-4790 (Quad Core, 3.6GHz / 4.0GHz Turbo) [offered]",
+        "ai:description:gpu:Graphics Card: NVIDIA GeForce GTX 970 4GB [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 14
+    },
+    "1639721697586478": {
+      "parts": [],
+      "kind": "rules:pc:title:gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 0
+    },
+    "1123980543398026": {
+      "parts": [
+        "rules:description:gpu:GTX 1080 → gpu:nvidia:gtx-1080:8gb [offered]",
+        "rules:description:psu_wattage:750 watt [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 2
+    },
+    "1154042653756525": {
+      "parts": [],
+      "kind": "ai:not_a_pc:title:Gaming Headset",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 0
+    },
+    "2264485254402498": {
+      "parts": [
+        "rules:title:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb [offered]",
+        "rules:title:cpu:Ryzen 5 5500 → cpu:amd:ryzen-5-5000 [offered]",
+        "rules:title:ram_size:16GB RAM [offered]",
+        "rules:title:storage_size:1TB [offered]",
+        "rules:title:storage_type:SSD [offered]",
+        "rules:description:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb [offered]",
+        "rules:description:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb [offered]",
+        "rules:description:cpu:Ryzen 5 5500 → cpu:amd:ryzen-5-5000 [offered]",
+        "rules:description:ram_size:16GB DDR4 [offered]",
+        "rules:description:ram_generation:DDR4 [offered]",
+        "rules:description:storage_size:1TB [offered]",
+        "rules:description:storage_type:NVMe [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:psu_wattage:500W [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 14
+    },
+    "1072745435569624": {
+      "parts": [
+        "rules:title:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb [offered]",
+        "rules:title:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000 [offered]",
+        "rules:title:ram_size:16GB RAM [offered]",
+        "rules:description:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb [offered]",
+        "rules:description:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000 [offered]",
+        "rules:description:ram_size:16GB RAM [offered]",
+        "rules:description:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb [offered]",
+        "rules:description:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000 [offered]",
+        "rules:description:ram_size:RAM: 16GB [offered]",
+        "rules:description:ram_generation:DDR4 [offered]",
+        "rules:description:storage_size:SSD: 500GB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:storage_type:M.2 [offered]",
+        "rules:description:storage_type:NVMe [offered]",
+        "rules:description:ram_size:16GB of RAM [offered]",
+        "rules:description:storage_type:NVMe [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 16
+    },
+    "1352645884594841": {
+      "parts": [
+        "rules:attribute:cpu:Ryzen 5 3600 → cpu:amd:ryzen-5-3000 [offered]",
+        "rules:description:storage_type:hard drive [offered]",
+        "rules:description:cpu:Ryzen 5 3600 → cpu:amd:ryzen-5-3000 [offered]",
+        "rules:description:chipset:B450 [offered]",
+        "rules:description:ram_size:Memory: Corsair Vengeance LPK 16 GB [offered]",
+        "rules:description:ram_size:2 x 8 GB [offered]",
+        "rules:description:ram_generation:DDR4 [offered]",
+        "rules:description:storage_size:120 GB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:gpu:GTX 1660 SUPER → gpu:nvidia:gtx-1660-super:6gb [offered]",
+        "rules:description:psu_wattage:500 W [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 11
+    },
+    "1775698700306989": {
+      "parts": [
+        "rules:description:cpu:i5-12400F → cpu:intel:core-i5-gen12 [offered]",
+        "rules:description:gpu:GTX 970 [offered]",
+        "rules:description:ram_size:RAM: 16GB [offered]",
+        "rules:description:ram_generation:DDR5 [offered]",
+        "rules:description:chipset:B760 [offered]",
+        "rules:description:storage_size:Storage: 1TB [offered]",
+        "ai:description:gpu:GPU: NVIDIA GeForce GTX 970 [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 7
+    },
+    "1716871313386322": {
+      "parts": [
+        "rules:title:gpu:RTX 3090 Ti → gpu:nvidia:rtx-3090-ti:24gb [offered]",
+        "rules:title:cpu:i9-12900KF → cpu:intel:core-i9-gen12 [offered]",
+        "rules:title:ram_size:32GB DDR5 [offered]",
+        "rules:title:ram_generation:DDR5 [offered]",
+        "rules:title:storage_size:2TB [offered]",
+        "rules:title:storage_type:SSD [offered]",
+        "rules:description:gpu:RTX 3090 Ti → gpu:nvidia:rtx-3090-ti:24gb [offered]",
+        "rules:description:cpu:i9-12900KF → cpu:intel:core-i9-gen12 [offered]",
+        "rules:description:chipset:Z790 [offered]",
+        "rules:description:ram_size:RAM: 32GB [offered]",
+        "rules:description:ram_generation:DDR5 [offered]",
+        "rules:description:storage_size:Storage: 1TB [offered]",
+        "rules:description:storage_size:1TB [offered]",
+        "rules:description:storage_size:2TB [offered]",
+        "rules:description:storage_type:970 EVO [offered]",
+        "rules:description:storage_type:NVMe [offered]",
+        "rules:description:storage_type:860 EVO [offered]",
+        "rules:description:storage_type:SATA [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:psu_wattage:850W [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 20
+    },
+    "1783301919382894": {
+      "parts": [
+        "rules:description:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb [offered]",
+        "rules:description:cpu:9800X3D [offered]",
+        "rules:description:ram_size:32GB DDR5 [offered]",
+        "rules:description:ram_generation:DDR5 [offered]",
+        "rules:description:cpu:Ryzen 7 9800X3D → cpu:amd:ryzen-7-9000 [offered]",
+        "rules:description:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb [offered]",
+        "rules:description:ram_size:RAM: 32GB [offered]",
+        "rules:description:ram_generation:DDR5 [offered]",
+        "rules:description:storage_size:Storage: 2TB [offered]",
+        "rules:description:storage_type:970 EVO [offered]",
+        "rules:description:storage_type:NVMe [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:chipset:B850 [offered]",
+        "rules:description:psu_wattage:1000W [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 14
+    },
+    "28242423458759790": {
+      "parts": [
+        "rules:description:gpu:rtx 3060ti → gpu:nvidia:rtx-3060-ti:8gb [offered]",
+        "rules:description:cpu:i5-12400f → cpu:intel:core-i5-gen12 [offered]",
+        "rules:description:storage_size:Storage 928GB [offered]",
+        "rules:description:ram_size:Ram- ddr4 16gb [offered]",
+        "rules:description:ram_generation:ddr4 [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 5
+    },
+    "2126837844711748": {
+      "parts": [],
+      "kind": "ai:not_a_pc:title:Wireless Gaming Headset",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 0
+    },
+    "1380502417485603": {
+      "parts": [],
+      "kind": "rules:pc:title:Gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 0
+    },
+    "1083674317719227": {
+      "parts": [
+        "rules:description:ram_size:16GB RAM [offered]",
+        "ai:description:cpu:~3900Mhz AMD64 processor [offered]",
+        "ai:description:gpu:Geforce RTX graphics card [offered]",
+        "ai:description:storage_size:I can include 300GB extended storage for an extra £20 [not_included]"
+      ],
+      "kind": "rules:pc:title:gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 4
+    },
+    "1073353648648306": {
+      "parts": [
+        "rules:description:cpu:i5 10600KF → cpu:intel:core-i5-gen10 [offered]",
+        "rules:description:chipset:Z490 [offered]",
+        "rules:description:gpu:3070 → gpu:nvidia:rtx-3070:8gb [offered]",
+        "rules:description:storage_size:1.5TB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:storage_type:HDD [offered]",
+        "rules:description:storage_size:1.5TB [offered]",
+        "rules:description:storage_type:HDD [offered]",
+        "rules:description:psu_wattage:750W [offered]",
+        "ai:description:ram_size:RAM: Corsair Vengeance CMW32GX4M2E3200C16 [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 10
+    },
+    "1403975981250476": {
+      "parts": [
+        "rules:title:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb [offered]",
+        "rules:title:cpu:i7-10700K → cpu:intel:core-i7-gen10 [offered]",
+        "rules:title:ram_size:16GB RAM [offered]",
+        "rules:description:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb [offered]",
+        "rules:description:cpu:i7-10700K → cpu:intel:core-i7-gen10 [offered]",
+        "rules:description:ram_size:16GB RAM [offered]",
+        "rules:description:storage_size:1.5TB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb [offered]",
+        "rules:description:cpu:i7-10700K → cpu:intel:core-i7-gen10 [offered]",
+        "rules:description:ram_size:16GB RAM [offered]",
+        "rules:description:storage_size:512GB [offered]",
+        "rules:description:storage_size:1TB [offered]",
+        "rules:description:storage_size:1.5TB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:storage_type:SSD [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 17
+    },
+    "1397200465308431": {
+      "parts": [
+        "rules:title:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb [offered]",
+        "rules:title:cpu:7700x [offered]",
+        "rules:title:ram_size:32GB DDR5 [offered]",
+        "rules:title:ram_generation:DDR5 [offered]",
+        "rules:title:storage_size:2TB [offered]",
+        "rules:title:storage_type:M.2 [offered]",
+        "rules:title:storage_type:SSD [offered]",
+        "rules:description:gpu:5070 → gpu:nvidia:rtx-5070:12gb [offered]",
+        "rules:description:cpu:7700x [offered]",
+        "rules:description:ram_size:32gb corsair vengeance ddr5 [offered]",
+        "rules:description:ram_size:2x16gb [offered]",
+        "rules:description:ram_generation:ddr5 [offered]",
+        "rules:description:storage_size:2TB [offered]",
+        "rules:description:storage_type:GEN 4 M.2 [offered]",
+        "rules:description:storage_type:NVMe [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:chipset:b650 [offered]",
+        "rules:description:psu_wattage:750W [offered]",
+        "rules:description:psu_wattage:CX-750 [offered]",
+        "ai:description:cpu:Amd Ryzen 7700x → cpu:amd:ryzen-7-7000 [offered]"
+      ],
+      "kind": "rules:pc:title:PC",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 20
+    },
+    "2537899006714740": {
+      "parts": [],
+      "kind": "rules:pc:title:Gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 0
+    },
+    "2005582460147017": {
+      "parts": [
+        "rules:description:cpu:Ryzen 7 3800x → cpu:amd:ryzen-7-3000 [offered]",
+        "rules:description:ram_size:16gb Corsair rgb ram [offered]",
+        "rules:description:gpu:Gtx 1650 → gpu:nvidia:gtx-1650:4gb [offered]",
+        "rules:description:storage_size:2tb [offered]",
+        "rules:description:storage_type:hard drive [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 5
+    }
+  }
+}

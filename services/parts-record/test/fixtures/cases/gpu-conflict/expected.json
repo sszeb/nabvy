@@ -1,0 +1,24 @@
+{
+  "listings": {
+    "1380502417485603": {
+      "parts": [
+        "rules:title:gpu:RTX 3080 Ti → gpu:nvidia:rtx-3080-ti:12gb [offered] !conflict",
+        "rules:description:gpu:RTX 3080 [offered] !conflict",
+        "rules:description:cpu:Ryzen 7 5800X → cpu:amd:ryzen-7-5000 [offered]",
+        "rules:description:ram_size:32GB DDR4 [offered]",
+        "rules:description:ram_generation:DDR4 [offered]",
+        "rules:description:storage_size:1TB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "ai:title:gpu:RTX 3080 Ti → gpu:nvidia:rtx-3080-ti:12gb [offered] !conflict"
+      ],
+      "kind": "rules:pc:title:Gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": true,
+      "count": 8
+    }
+  }
+}
