@@ -357,9 +357,9 @@ The owner, to coordinator 15: "From now on for each new session use opus for coo
 
 - **Coordinating sessions run on `claude-opus-5-5`**: the coordinator and its successors.
 - **Medium tasks run on `claude-sonnet-5`**: docs, CRUD, UI, design readers and critics, and any session that is neither coordination nor a code build or review.
-- **Code and code reviews run on `claude-haiku-4-5-20251001`**: build sessions, fix sessions and the reviewer (reviewer 15 onwards; reviewer 14 finishes its queue on Fable). The "Fable after two failed reviews" escalation from 14:55 is withdrawn unless the owner restores it.
+- **Code runs on `claude-haiku-4-5-20251001`**: build sessions and fix sessions. The "Fable after two failed reviews" escalation from 14:55 is withdrawn unless the owner restores it.
+- **Code reviews run on `claude-sonnet-5`** (owner, 20:02, on coordinator 15's note that the reviewer checks RLS, grants and migrations bound for production: "in that case use sonnet"): the reviewer from reviewer 15 on; reviewer 14 finishes its queue on Fable.
 - Effort stays `medium`, set in the app; briefs keep stating it. The relay and watchdog Routines stay on Haiku 4.5 (set by the owner in the app).
-- Coordinator 15's note to the owner (19:58): the reviewer checks RLS, grants and migrations that go straight to production, so Haiku there carries the most quality risk of the three; the owner's decision stands.
 
 ## Model by job: Opus 5.5 for build sessions, Fable for reviewer and coordinator, Haiku for Routines (owner, 2026-09-25, 14:55)
 
