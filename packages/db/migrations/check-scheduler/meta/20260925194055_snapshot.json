@@ -1,0 +1,441 @@
+{
+  "id": "66875b99-28de-4192-82a9-7b9cb2dd8f03",
+  "prevId": "234f67d2-4750-47af-8541-32580c2509c8",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "check_scheduler.check_runs": {
+      "name": "check_runs",
+      "schema": "check_scheduler",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "job_id": {
+          "name": "job_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shape": {
+          "name": "shape",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tick_at": {
+          "name": "tick_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rerun_of": {
+          "name": "rerun_of",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "one_off_id": {
+          "name": "one_off_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "error_code": {
+          "name": "error_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "check_runs_tick_centre_idx": {
+          "name": "check_runs_tick_centre_idx",
+          "columns": [
+            {
+              "expression": "tick_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "centre_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "check_runs_rerun_of_idx": {
+          "name": "check_runs_rerun_of_idx",
+          "columns": [
+            {
+              "expression": "rerun_of",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "check_runs_live_one_off_idx": {
+          "name": "check_runs_live_one_off_idx",
+          "columns": [
+            {
+              "expression": "one_off_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"check_scheduler\".\"check_runs\".\"status\" <> 'refused'",
+          "concurrently": false
+        },
+        "check_runs_job_idx": {
+          "name": "check_runs_job_idx",
+          "columns": [
+            {
+              "expression": "job_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "check_runs_centre_idx": {
+          "name": "check_runs_centre_idx",
+          "columns": [
+            {
+              "expression": "centre_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tick_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "check_runs_kind": {
+          "name": "check_runs_kind",
+          "value": "\"check_scheduler\".\"check_runs\".\"kind\" in ('newest', 'catch-up', 'sweep')"
+        },
+        "check_runs_shape": {
+          "name": "check_runs_shape",
+          "value": "\"check_scheduler\".\"check_runs\".\"shape\" in ('verification', 'newest-check', 'sweep-narrow', 'sweep-broad')"
+        },
+        "check_runs_reason": {
+          "name": "check_runs_reason",
+          "value": "\"check_scheduler\".\"check_runs\".\"reason\" in ('scheduled', 'rerun', 'one-off', 'verification')"
+        },
+        "check_runs_status": {
+          "name": "check_runs_status",
+          "value": "\"check_scheduler\".\"check_runs\".\"status\" in ('pending', 'submitted', 'refused', 'shadow')"
+        },
+        "check_runs_terms": {
+          "name": "check_runs_terms",
+          "value": "cardinality(\"check_scheduler\".\"check_runs\".\"terms\") between 1 and 20 and array_position(\"check_scheduler\".\"check_runs\".\"terms\", null) is null"
+        },
+        "check_runs_job": {
+          "name": "check_runs_job",
+          "value": "(\"check_scheduler\".\"check_runs\".\"status\" = 'submitted') = (\"check_scheduler\".\"check_runs\".\"job_id\" is not null)"
+        },
+        "check_runs_tick": {
+          "name": "check_runs_tick",
+          "value": "(\"check_scheduler\".\"check_runs\".\"status\" = 'pending') = (\"check_scheduler\".\"check_runs\".\"tick_at\" is null)"
+        },
+        "check_runs_rerun": {
+          "name": "check_runs_rerun",
+          "value": "(\"check_scheduler\".\"check_runs\".\"reason\" = 'rerun') = (\"check_scheduler\".\"check_runs\".\"rerun_of\" is not null)"
+        },
+        "check_runs_one_off": {
+          "name": "check_runs_one_off",
+          "value": "(\"check_scheduler\".\"check_runs\".\"reason\" in ('one-off', 'verification')) = (\"check_scheduler\".\"check_runs\".\"one_off_id\" is not null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "check_scheduler.schedule": {
+      "name": "schedule",
+      "schema": "check_scheduler",
+      "columns": {
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "term_class": {
+          "name": "term_class",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cadence_s": {
+          "name": "cadence_s",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "next_due_at": {
+          "name": "next_due_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_run_at": {
+          "name": "last_run_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "schedule_due_idx": {
+          "name": "schedule_due_idx",
+          "columns": [
+            {
+              "expression": "next_due_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "schedule_centre_id_term_class_kind_pk": {
+          "name": "schedule_centre_id_term_class_kind_pk",
+          "columns": [
+            "centre_id",
+            "term_class",
+            "kind"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "schedule_kind": {
+          "name": "schedule_kind",
+          "value": "\"check_scheduler\".\"schedule\".\"kind\" in ('newest', 'catch-up', 'sweep')"
+        },
+        "schedule_term_class": {
+          "name": "schedule_term_class",
+          "value": "\"check_scheduler\".\"schedule\".\"term_class\" in ('narrow', 'broad')"
+        },
+        "schedule_cadence": {
+          "name": "schedule_cadence",
+          "value": "\"check_scheduler\".\"schedule\".\"cadence_s\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "check_scheduler": "check_scheduler"
+  },
+  "views": {
+    "check_scheduler.v_check_runs": {
+      "name": "v_check_runs",
+      "schema": "check_scheduler",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "job_id": {
+          "name": "job_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shape": {
+          "name": "shape",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tick_at": {
+          "name": "tick_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rerun_of": {
+          "name": "rerun_of",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "one_off_id": {
+          "name": "one_off_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "error_code": {
+          "name": "error_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

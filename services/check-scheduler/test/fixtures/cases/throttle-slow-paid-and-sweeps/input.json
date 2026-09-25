@@ -1,0 +1,52 @@
+{
+  "synthetic": true,
+  "source": "search-planner v_plan rows (services/search-planner README, 'Rules and thresholds'); centre IDs from city-pages' seed",
+  "now": "2026-09-25T12:00:00Z",
+  "level": "slow-sweeps",
+  "remainingChecks": 50,
+  "plan": [
+    {
+      "centreId": "115935195086622",
+      "term": "rtx 3090",
+      "class": "narrow",
+      "paidWantCount": 1,
+      "rank": 1
+    },
+    {
+      "centreId": "109312942421526",
+      "term": "rtx 4070",
+      "class": "narrow",
+      "paidWantCount": 0,
+      "rank": 2
+    }
+  ],
+  "schedule": [
+    {
+      "centreId": "115935195086622",
+      "termClass": "narrow",
+      "kind": "newest",
+      "lastRunAt": "2026-09-25T10:00:00Z"
+    },
+    {
+      "centreId": "109312942421526",
+      "termClass": "narrow",
+      "kind": "newest",
+      "lastRunAt": "2026-09-25T09:00:00Z"
+    },
+    {
+      "centreId": "115935195086622",
+      "termClass": "narrow",
+      "kind": "sweep",
+      "lastRunAt": "2026-09-24T11:00:00Z"
+    },
+    {
+      "centreId": "109312942421526",
+      "termClass": "narrow",
+      "kind": "sweep",
+      "lastRunAt": "2026-09-23T11:00:00Z"
+    }
+  ],
+  "reruns": [],
+  "oneOffs": [],
+  "yields": {}
+}
