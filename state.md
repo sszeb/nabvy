@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 21:55 UTC 2026-09-25 by coordinator 16. Last sweep: none yet. **The sweep cron is parked** (`37 4 1 1 *`): the 21:41 setup-check run (`session_018ioeVvJGGdY2Jo5ZBKABnD`, Sonnet by default, 167k tokens) never wrote state. Restore `37 */2 * * *` once a fired run writes state successfully.
+Setup check 2 at 21:59 UTC: repo ok, state write ok, GitHub ok, session tools failed, Supabase ok (ledger 91). Session tools (add_repo, get_trigger, fire_trigger, create_session, get_session) returned nothing from ToolSearch in the fired run; the sweep cron stays parked.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
