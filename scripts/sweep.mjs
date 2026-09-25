@@ -7,7 +7,7 @@
 // the sessions of every module not yet done. Nothing here calls GitHub or Supabase.
 // Usage: node scripts/sweep.mjs [--no-fetch] [--open=a,b] [--building=c,d]
 import { execSync } from 'node:child_process'
-import { readdirSync, readFileSync, existsSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 
 const args = Object.fromEntries(
   process.argv
@@ -57,9 +57,16 @@ console.log(
     .join('\n'),
 )
 console.log('--- sessions of modules not done (progress.md)')
-for (const r of notDone) console.log(`${r.name}: ${r.session.replace(/`/g, '')}; ${r.status.slice(-90)}`)
-console.log('--- migration plan (compare with: select module || \'/\' || name from nabvy_core.schema_migrations)')
-const plan = sh('node packages/db/scripts/migrate.mjs plan').split('\n').map((l) => l.split(/\s+/)[0])
+for (const r of notDone)
+  console.log(`${r.name}: ${r.session.replace(/`/g, '')}; ${r.status.slice(-90)}`)
+console.log(
+  "--- migration plan (compare with: select module || '/' || name from nabvy_core.schema_migrations)",
+)
+const plan = sh('node packages/db/scripts/migrate.mjs plan')
+  .split('\n')
+  .map((l) => l.split(/\s+/)[0])
 console.log(`${plan.length} files; last: ${plan.slice(-4).join(' ')}`)
-const q = existsSync('docs/questions') ? readdirSync('docs/questions').filter((f) => f.endsWith('.md')) : []
+const q = existsSync('docs/questions')
+  ? readdirSync('docs/questions').filter((f) => f.endsWith('.md'))
+  : []
 console.log(`--- question files to fold: ${q.length ? q.join(' ') : 'none'}`)
