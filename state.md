@@ -44,6 +44,7 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 - Optional: detach unused connectors from the Nabvy environment (smaller context for every session).
 
 ## Merged, migrations pending
+- PR #99 merged 22:41 UTC (7fd5357f88baad680c39d2140a768eff4c273e54): packages/db/migrations/noise-filter/20260925194153_noise_filter_tables.sql, packages/db/migrations/noise-filter/20260925194155_noise_filter_access.sql
 
 ## Sessions to start
 
