@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790275980127,
+      "tag": "20260924185300_city_pages_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790276869663,
+      "tag": "20260924190749_city_pages_access",
+      "breakpoints": true
+    }
+  ]
+}
