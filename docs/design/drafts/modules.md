@@ -176,6 +176,7 @@ A module is done when its task's definition of done is met (`nabvy/CLAUDE.md:22`
 | Later (the brief) | `side-discovery`, `sold-reports`, `opening-offer`, `part-out-calculator`, `flip-radar`, `seller-price-report`, `retail-comparison`, `seller-accounts`, `seller-boosts`, `trade-in-leads` |
 | Parked or gated on an owner decision | `boosts` (question 29), `seller-key` (question 9), `multi-quantity-filter` (question 22), `fake-door` (question 36) |
 | After MVP: self-hosted router host not approved (owner question, search-map-routes draft) | `router-gateway`, `travel-time` |
+| Parked: dropped by the owner (2026-09-25, `nabvy/docs/decisions.md` "Trip cost dropped"); users see only the map, the distance in miles and a rough time | `travel-cost` |
 
 An MVP module still ships in the switch state its card gives (off, shadow or on), and still waits for its own gates: an AI processor agreement (question 12) and legal review of label wording before it is shown (`nabvy/docs/decisions.md:13`; question 35). The LIA and DPIA gate on collection is lifted (`nabvy/docs/decisions.md:176`): collection runs only for users' active hunts and the team's test hunt (`nabvy/docs/decisions.md:131-136`; question 8).
 
@@ -1011,12 +1012,12 @@ Each card uses the same fields. "Depends on" lists every module whose views, eve
 ### `pickup-routes`
 - **Purpose:** hold the user's own record of arranged pickups, and plan a one-day route through them.
 - **Does / does not:** the user records each pickup they have arranged with a seller: a label, a geocoded point (postcode via `location.pointForPostcode()`, refined by a user-dragged pin), stop type, a hard time window or "not agreed yet", time at the stop, agreed price, size, a must-get flag and status. The addresses, notes and refined point come from the user only, stay private to that user, are encrypted at rest, and are never taken from listing data or shown to anyone else. They sit under row-level security in this module's schema and appear in no `v_` view (`nabvy/docs/decisions.md:174`). Schedules idempotent reminder runs (label and time only, never the address). Route planning is an in-house exact solver (at most 12 stops) over an OSRM matrix from `router-gateway`, honouring hard time windows, service time, must-get priority, pinned first/last stop, latest finish and a maximum drive time; offers "My order" (evaluates a hand order and reports lateness), "running late" re-planning, slot proposals for unagreed times, per-app navigation deep links, and an `.ics` download; stores no coordinates or address text in `route_plans` (the route line is recomputed on open); falls back to straight line × 1.3, labelled "estimate", when `router-gateway` is off or the VM is down. Nothing here contacts a seller. Rows are purged on `account.deleted`; retention otherwise follows the retention question (question 23; search-map-routes.md §10 rows 15–16). Condensed from the search-map-routes draft's separate `pickups` and `route-planner` proposals (§5, §6).
-- **Inputs:** web forms through oRPC procedures inside `withUser`; `pointForPostcode()`; `router-gateway.table()`/`route()` (soft); `travel-cost.tripCost()` (soft); `isActive()`; `account.deleted`.
+- **Inputs:** web forms through oRPC procedures inside `withUser`; `pointForPostcode()`; `router-gateway.table()`/`route()` (soft); `isActive()`; `account.deleted`.
 - **Outputs:** `listForDay(userId, date)`, `reminderText(userId, pickupId)`, `setStatus()`, `planDay()`, `replan()`, `icsFor()`, `homePoint(userId)`; events out `pickup.changed`, `pickup.reminder-due`, `route.planned` (planId, userId, dayId, at, departures[]).
 - **Owns:** `pickups` (label, encrypted address/point, stop type, window, service time, price, size, must-get, status, linked listing), `pickup_reminders`, `pickup_days` (date, start/end kind and encrypted point, day window, max drive time), `route_plans` (version, mode, ordered stops with ETA/wait/lateness, unassigned reasons, totals, osm_build), `planner_defaults` (encrypted home point, day defaults). Row-level security on `user_id`; no views.
 - **Views:** none, by the owner's decision.
 - **Contracts:** `PickupRoutesPickupInput`, `PickupRoutesStatus`, `PickupRoutesChangedEvent`, `PickupRoutesReminderDueEvent`, `PickupRoutesPlanInput`, `PickupRoutesPlan`, `PickupRoutesPlannedEvent`.
-- **Depends on:** `switches`, `auth`, `account`, `location`, `router-gateway` (soft), `travel-cost` (soft).
+- **Depends on:** `switches`, `auth`, `account`, `location`, `router-gateway` (soft). The trip-cost input was dropped by the owner on 2026-09-25; the stub in PR #89 is a no-op to remove later.
 - **When off:** the "arrange a pickup" action, the pickups pages and "Plan my day" are hidden; records are kept and reminders paused.
 - **Tests and fixtures:** a user cannot read another user's pickups; the db test finds no view over `pickups` or `route_plans`; the deal-card prefill carries no location/day/time/price; pasted seller text never reaches a request, log or row; encrypted fields round-trip; reminder text carries no address; solver order matches a brute-force optimum up to 8 stops; 12 stops solve inside the test's time budget; hard windows honoured; a wait shows as a later departure, never a wait at the seller's; pin first/last; deleting a pickup deletes its plans and days.
 - **Priority and phase:** MVP; task 4.1e (`nabvy/docs/decisions.md:140,174`); needs secret `PICKUPS_DATA_KEY` before it ships.
@@ -1049,7 +1050,7 @@ Each card uses the same fields. "Depends on" lists every module whose views, eve
 - **Depends on:** `switches`, `auth`, `account`.
 - **When off:** no hints and no "Lowest price + trip" sort; the route planner shows miles and time without £.
 - **Tests and fixtures:** reproduces the worked numbers (£1.31 per extra mile, £6.54 at 5 miles) at the defaults; picks the dated rate by date; value of time £0 handled.
-- **Priority and phase:** MVP (search-map-routes draft, task 4.1g).
+- **Priority and phase:** Dropped by the owner on 2026-09-25 (`nabvy/docs/decisions.md` "Trip cost dropped"): users see only the map, the distance in miles and a rough time. PR #50 closed unmerged; the branch `task/w1-travel-cost` stays for reference.
 - **Sources:** `search-map-routes.md` §4.2, §7.4, §11 task 4.1g.
 - **Open questions:** default rate and value-of-time choice (search-map-routes.md §10 rows 7–8).
 
@@ -1086,12 +1087,12 @@ Each card uses the same fields. "Depends on" lists every module whose views, eve
 ### `deal-hints`
 - **Purpose:** choose at most 3 listings just beyond a user's radius where the ask gap outweighs the extra trip.
 - **Does / does not:** gates a candidate on band (beyond r, within r + clamp(r/2, 5, 15) mi), comparables at n≥10, not suspected (or a confirmed gem), collectable, clean, located and not across a ferry crossing, and already held (never starts a collection run). A candidate becomes a hint when the ask gap minus the extra trip cost is at least max(£10, 5% of the comparable median). Runs once per filter; later pages add none. Starts in shadow mode, logging candidates through `product-events`, until the owner approves it live (decisions question 54: no hint shown). Never says "worth" or "fair", and shows only asks, never a sale price.
-- **Inputs:** computed on read from `listing-search.candidatesInBand()`, `asking-price-position`, `suspected-labels`, `travel-cost.tripCost()`, `travel-time.roadTimes()` (soft).
+- **Inputs:** computed on read from `listing-search.candidatesInBand()`, `asking-price-position`, `suspected-labels`, `location.distanceKm()`, `travel-time.roadTimes()` (soft). `travel-cost.tripCost()` was dropped by the owner on 2026-09-25: the gap is weighed against distance in miles and rough time, never a trip cost.
 - **Outputs:** `hintsFor(userId, filter)`; candidates and impressions logged via `product-events.track()`.
 - **Owns:** `hint_rules` (versioned parameter sets: band, margin, traffic factor).
 - **Views:** none.
 - **Contracts:** `HintCandidate`, `HintResult`, `HintRules`.
-- **Depends on:** `switches`, `listing-search`, `asking-price-position`, `suspected-labels`, `travel-cost`, `location`, `product-events`, `travel-time` (soft).
+- **Depends on:** `switches`, `listing-search`, `asking-price-position`, `suspected-labels`, `location`, `product-events`, `travel-time` (soft).
 - **When off:** the hint strip and dashed map pills disappear; the feed is unaffected.
 - **Tests and fixtures:** each gate individually (n<10, suspected, the 60% floor, not collectable, noise, approximate, ferry, outside band); a confirmed gem below 60% of median is hinted, an unconfirmed one is not; at most 3 per search; shadow mode shows nothing.
 - **Priority and phase:** MVP, shadow-first (search-map-routes draft, task 4.1j); ships and stays in shadow (decisions question 54: no hint shown).

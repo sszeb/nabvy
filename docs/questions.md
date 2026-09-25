@@ -620,6 +620,8 @@ file per module so parallel build sessions never conflict. The coordinator folds
 
 - **2026-09-25, coordinator 14: photo-review is READY on the graph but gated.** `scripts/sweep.mjs` shows `photo-review` [cp 2] ready once want-manager #88 is open, but its card says the phase is gated on actor photo capture, a photo model provider and an AI processor agreement (`docs/design/modules/photo-review.md`, "Priority and phase"), none of which exist yet; parts-record already carries the injected seam. Option taken: not started; the next coordinator starts it when the owner names the photo model provider, or says to build it against injected seams now. Conservative because a session for a module that cannot run spends tokens the owner asked to save.
 
+- **2026-09-25, coordinator 14: labels for distance and rough time.** With trip cost dropped, a listing shows the map, the distance in miles and a rough time. Option taken: the wording of those two labels (for example "12 mi" and "about 25 min") and whether the time is straight-line-derived until the router host is approved are for the owner; until then modules record the numbers and no label text. Conservative because wording shown to users is the owner's.
+
 ## Folded from the per-module question files (coordinator 14, 2026-09-25, 16:10 UTC)
 
 ### parts-record (PR #87, merged)

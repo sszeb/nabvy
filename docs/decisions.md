@@ -362,6 +362,15 @@ The owner sent the "Choosing the right model" and "Optimizing for cost and intel
 
 This narrows "Fable everywhere" above to the reviewer and the coordinator; the 150k line, slices, batches and events from "Context economy" stay.
 
+## Trip cost dropped: map, distance in miles and rough time only (owner, 2026-09-25, 16:25)
+
+The owner dropped the trip-cost feature: "user only need to see the map with calculated distance in miles and rough time". So:
+
+- `travel-cost` (PR #50, dated HMRC rates, per-user travel settings, `tripCost()`) is closed unmerged and parked in the catalogue; backlog 4.1h is dropped; no migration was applied. The branch stays for reference.
+- What users see near a listing is the map (4.1g), the distance in miles from `location`, and a rough travel time (`travel-time` over `router-gateway` when the owner approves the router host; until then a rough estimate from the distance, stated as rough).
+- `deal-hints` weighs the price gap against distance and rough time, never a trip cost; `pickup-routes` keeps no trip-cost input (the injected stub in PR #89 is a no-op to remove in a later clean-up).
+- The "Lowest price + trip" sort (search-map-routes draft §4.2) has no trip cost to sort on; the coordinator has listed the wording of the distance and time labels as an owner question rather than choosing it.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
