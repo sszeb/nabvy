@@ -1,0 +1,20 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1775698700306989"],
+  "second": [
+    {
+      "listingId": "1775698700306989",
+      "fields": {
+        "money": {
+          "kind": "fixed",
+          "display": "£150",
+          "currency": "GBP",
+          "exponent": 2,
+          "rawAmount": "150.00",
+          "amountMinor": 15000
+        },
+        "price": 150
+      }
+    }
+  ]
+}

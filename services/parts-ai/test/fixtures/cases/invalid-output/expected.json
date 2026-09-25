@@ -1,0 +1,21 @@
+{
+  "report": {
+    "openVersions": 1,
+    "cached": 1,
+    "called": 0,
+    "extracted": 0,
+    "quarantined": 0,
+    "refreshRequested": 0,
+    "deferred": 0,
+    "failed": 0,
+    "paused": null,
+    "modelCalls": 1,
+    "events": []
+  },
+  "listings": {
+    "1380502417485603": {
+      "status": "quarantined:invalid_output",
+      "parts": []
+    }
+  }
+}

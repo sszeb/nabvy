@@ -1,0 +1,21 @@
+{
+  "report": {
+    "openVersions": 1,
+    "cached": 0,
+    "called": 1,
+    "extracted": 0,
+    "quarantined": 1,
+    "refreshRequested": 0,
+    "deferred": 0,
+    "failed": 0,
+    "paused": null,
+    "modelCalls": 1,
+    "events": []
+  },
+  "listings": {
+    "1775698700306989": {
+      "status": "quarantined:quote_not_found",
+      "parts": []
+    }
+  }
+}

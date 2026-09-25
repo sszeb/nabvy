@@ -1,0 +1,21 @@
+{
+  "report": {
+    "openVersions": 1,
+    "cached": 0,
+    "called": 1,
+    "extracted": 1,
+    "quarantined": 0,
+    "refreshRequested": 0,
+    "deferred": 0,
+    "failed": 0,
+    "paused": null,
+    "modelCalls": 1,
+    "events": [1]
+  },
+  "listings": {
+    "1639721697586478": {
+      "status": "extracted",
+      "parts": ["description:gpu:Upgraded to an RTX 4070 → gpu:nvidia:rtx-4070:12gb [mention]"]
+    }
+  }
+}
