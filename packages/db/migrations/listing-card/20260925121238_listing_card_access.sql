@@ -20,7 +20,13 @@
 -- its whole body (the same reason listing_suppression.is_suppressed() already reads through these
 -- same three modules' security_invoker views without nabvy_app holding any grant on them). The view
 -- is kept as the public name (`app.v_listing_card`, matching rule 5 and the module card) but is a
--- thin wrapper over the function.
+-- thin wrapper over the function, and is itself security_invoker = true (packages/db README rule 1;
+-- also enforced repo-wide by scripts/check-conventions.mjs's view-invoker check on every `create
+-- view` in packages/db/migrations, with no schema exception). That is safe here even though it was
+-- not for the two earlier drafts: the view's only reference is the function call itself, and
+-- app.listing_card() being SECURITY DEFINER already fixes its execution to the function owner for
+-- its whole body regardless of how it was invoked, so nabvy_app still needs no grant beyond EXECUTE
+-- on the function (already granted below) and SELECT on this view.
 
 create schema if not exists app;
 create schema if not exists listing_card;
@@ -77,6 +83,6 @@ revoke all on function app.listing_card() from public;
 grant usage on schema app to nabvy_app, nabvy_pipeline;
 grant execute on function app.listing_card() to nabvy_app, nabvy_pipeline;
 
-create view app.v_listing_card as select * from app.listing_card();
+create view app.v_listing_card with (security_invoker = true) as select * from app.listing_card();
 revoke all on app.v_listing_card from public, anon, authenticated;
 grant select on app.v_listing_card to nabvy_app, nabvy_pipeline;

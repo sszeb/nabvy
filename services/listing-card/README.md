@@ -33,8 +33,8 @@ No events consumed; this module has no handlers. Views and functions read, all t
 
 No events (this module has nothing to announce; the module card lists only its view).
 
-- **User-facing view** `app.v_listing_card` (`nabvy_app`, `nabvy_pipeline`; a plain view over the
-  `security definer` function `app.listing_card()` — see "Decisions"): `listing_id`, `link`,
+- **User-facing view** `app.v_listing_card` (`nabvy_app`, `nabvy_pipeline`; `security_invoker`, over
+  the `security definer` function `app.listing_card()` — see "Decisions"): `listing_id`, `link`,
   `title`, `price_minor`, `currency`, `listed_at`,
   `town_label`, `condition`, `availability`, `description_status`, `possibly_outdated`. No seller
   field, no coordinate, no copy-cluster or relist-group ID, no photo column (the `listing-photos`
@@ -82,32 +82,40 @@ column list and the grant checks) run at the SQL level in `packages/db/tests/lis
   card's primary field (unlike an optional customer quote elsewhere), following the card literally
   keeps titles showing — still masked — even if `quote-redaction` is off, rather than blanking out
   every card's title. `quote-redaction`'s own regex masking still runs unconditionally either way.
-- **2026-09-25, `app.v_listing_card` is a thin view over a `SECURITY DEFINER` function, not a plain
-  join and not `security_invoker`.** This is the first user-facing view in the repo
-  (`packages/db/README.md`, "Views", found no `app.*` precedent). Two drafts came before it, each
-  caught by `pnpm db:dry-run`:
-  1. `security_invoker = true` with a matching grant of `listing_ingest.v_listings`,
-     `detail_evidence.v_current`, `listing_lifecycle.v_status` and the tables underneath them (since
-     those three are themselves `security_invoker`) to `nabvy_app`. This broke three other modules'
-     own tests: `packages/db/tests/listing-ingest.test.sql`, `detail-evidence.test.sql` and
-     `listing-lifecycle.test.sql` each assert `nabvy_app` has *no* schema usage on them at all, a
-     hard invariant those modules ship with today.
-  2. A plain (owner-executed) view joining straight to those same three views, reasoning that rule
-     5's closing line asks for `security_invoker` only on "user-scoped views" and this view has no
-     user row or RLS policy at all. `pnpm db:dry-run` still failed with `permission denied for table
-     listings` for `nabvy_app`: Postgres checks a `security_invoker` view's own body against the
-     true session role wherever it is nested, even underneath a plain outer view whose owner can
-     read everything, so wrapping them in a plain view does not shield the caller from needing a
-     grant on what those views themselves read from.
-  The row-building query now lives in `app.listing_card()`, `security definer`, `set search_path =
-  ''`, revoked from `public`, granted `execute` to `nabvy_app` and `nabvy_pipeline` (the reviewer's
-  recurring check on functions). A `SECURITY DEFINER` function changes the effective user for its
-  whole body, so its nested `security_invoker` views run as the function's owner — the same reason
-  `listing_suppression.is_suppressed()` already reads through these same three modules' internal
-  views without `nabvy_app` holding any grant on them. `app.v_listing_card` is kept as the public
-  name (rule 5, the module card) but is `select * from app.listing_card()`, a plain view needing no
-  grant of its own beyond `select` on itself. `packages/db/tests/listing-card.test.sql` asserts the
-  function's privileges and that `nabvy_app` still has no usage on the three schemas it reads.
+- **2026-09-25, `app.v_listing_card` is `security_invoker`, over a `SECURITY DEFINER` function that
+  does the actual join.** This is the first user-facing view in the repo (`packages/db/README.md`,
+  "Views", found no `app.*` precedent). Three drafts came before the one that shipped, the first two
+  caught by `pnpm db:dry-run` and the third by CI's `pnpm check:conventions`:
+  1. `security_invoker = true` on a view that joined straight to `listing_ingest.v_listings`,
+     `detail_evidence.v_current` and `listing_lifecycle.v_status`, with a matching grant of those
+     views and the tables underneath them (since those three are themselves `security_invoker`) to
+     `nabvy_app`. This broke three other modules' own tests: `packages/db/tests/listing-ingest.test.sql`,
+     `detail-evidence.test.sql` and `listing-lifecycle.test.sql` each assert `nabvy_app` has *no*
+     schema usage on them at all, a hard invariant those modules ship with today.
+  2. A plain (owner-executed, non-`security_invoker`) view joining straight to those same three
+     views, reasoning that rule 5's closing line asks for `security_invoker` only on "user-scoped
+     views" and this view has no user row or RLS policy at all. `pnpm db:dry-run` still failed with
+     `permission denied for table listings` for `nabvy_app`: Postgres checks a `security_invoker`
+     view's own body against the true session role wherever it is nested, even underneath a plain
+     outer view whose owner can read everything, so wrapping them in a plain view does not shield the
+     caller from needing a grant on what those views themselves read from.
+  3. The row-building query moved into `app.listing_card()`, `security definer`, with
+     `app.v_listing_card` as a *plain* wrapper (`select * from app.listing_card()`), reasoning that
+     the view no longer touches the three schemas directly. This passed `pnpm db:dry-run` but failed
+     CI: `scripts/check-conventions.mjs`'s `view-invoker` rule requires `security_invoker = true` on
+     every `create view` in `packages/db/migrations`, with no schema exception (`.github/workflows/ci.yml`,
+     `pnpm check:conventions`).
+  The shipped shape adds `security_invoker = true` back onto `app.v_listing_card`, which is safe
+  here in a way it was not for drafts 1–2: the view's only reference is the function call
+  `app.listing_card()` itself (never the three schemas directly), and a `SECURITY DEFINER` function
+  fixes its own execution to the function's owner for its whole body regardless of how it was
+  invoked — the same reason `listing_suppression.is_suppressed()` already reads through these same
+  three modules' internal views without `nabvy_app` holding any grant on them. `nabvy_app` needs
+  nothing beyond `execute` on `app.listing_card()` and `select` on `app.v_listing_card`, both
+  granted. `app.listing_card()` is `set search_path = ''` and revoked from `public` (the reviewer's
+  recurring check on functions). `packages/db/tests/listing-card.test.sql` asserts the view is
+  `security_invoker`, the function's privileges, and that `nabvy_app` still has no usage on the three
+  schemas it reads.
 - **2026-09-25, `listing_lifecycle.v_status` is read but not shown.** The module card lists
   `v_status` as an input but does not name a status column among what the card shows. Exposing the
   raw lifecycle status (`live`, `pending`, `marked-sold`, `not-seen-recently`, `unknown`) would add

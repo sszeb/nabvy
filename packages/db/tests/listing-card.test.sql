@@ -20,10 +20,13 @@ insert into switches.switches (name, kind, state) values
   ('listing-lifecycle', 'module', 'on'), ('quote-redaction', 'module', 'on')
 on conflict (name) do update set state = excluded.state;
 
--- app.v_listing_card is a plain view (README, "Decisions"); the row-building query lives in
--- app.listing_card(), security definer, search_path pinned, revoked from public.
-select pg_temp.check(not coalesce(c.reloptions @> array['security_invoker=true'], false),
-  'app.v_listing_card is a plain view, not security_invoker')
+-- app.v_listing_card is security_invoker (rule 1; scripts/check-conventions.mjs enforces this on
+-- every create view, no schema exception); the row-building query lives in app.listing_card(),
+-- security definer, search_path pinned, revoked from public, which is what actually lets nabvy_app
+-- read through listing-ingest's, detail-evidence's and listing-lifecycle's own security_invoker
+-- views without a grant on them (README, "Decisions").
+select pg_temp.check(coalesce(c.reloptions @> array['security_invoker=true'], false),
+  'app.v_listing_card is security_invoker')
 from pg_class c join pg_namespace n on n.oid = c.relnamespace
 where n.nspname = 'app' and c.relname = 'v_listing_card';
 select pg_temp.check(
