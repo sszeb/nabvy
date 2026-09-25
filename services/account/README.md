@@ -164,6 +164,12 @@ SQL functions against the real migrations, and the write side is `auth`'s own to
   (`nabvy_pipeline` delete on `telegram_link_codes`, `deletion_requests`, `api_keys`, `standing`)
   are their own migration, `20260924163054_account_purge_grants.sql`, for the coordinator to apply
   alongside the rest of this module's migrations.
+- 2026-09-24 (backlog 4.3r): the sweep task is `trigger/account-purge-schedule.ts`, a thin
+  Trigger.dev scheduled task (every 15 minutes) that calls `purgeDueDeletions` directly. It does
+  not publish the `account.deleted` events the function returns: no task consumes them yet, and the
+  `TriggerClient` publisher adapter (`packages/transport/src/trigger.ts`) is task 1.2's to build
+  (`docs/questions/schedules.md`, which also covers this and `pg_cron`'s task 0.12 as the
+  alternative the backlog named).
 - 2026-09-24: `isActive()`/`setStanding()` delegate to `@nabvy/auth` rather than re-deriving the
   suspended-until-date logic (see "Standing" above). This resolves the ownership overlap
   `docs/questions/account.md` records between this module's card and PR #9.

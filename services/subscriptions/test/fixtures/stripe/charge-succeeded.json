@@ -1,0 +1,30 @@
+{
+  "id": "evt_TestChargeSucceeded",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1917648050,
+  "data": {
+    "object": {
+      "id": "ch_TestC1",
+      "object": "charge",
+      "customer": "cus_TestC1",
+      "amount": 2900,
+      "currency": "gbp",
+      "payment_method_details": {
+        "type": "card",
+        "card": {
+          "brand": "visa",
+          "last4": "4242",
+          "fingerprint": "fpTestCard0001"
+        }
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "charge.succeeded"
+}

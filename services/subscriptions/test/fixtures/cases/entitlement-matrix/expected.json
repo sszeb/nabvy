@@ -1,0 +1,49 @@
+{
+  "outcomes": [
+    {
+      "outcome": "recorded",
+      "tier": "free",
+      "status": "free",
+      "areas": 1
+    },
+    {
+      "outcome": "recorded",
+      "tier": "free",
+      "status": "free",
+      "areas": 1
+    },
+    {
+      "outcome": "applied",
+      "tier": "pro",
+      "status": "trialing",
+      "areas": 3
+    },
+    {
+      "outcome": "applied",
+      "tier": "pro",
+      "status": "active",
+      "areas": 5
+    },
+    {
+      "outcome": "applied",
+      "tier": "pro",
+      "status": "past_due",
+      "areas": 3
+    },
+    {
+      "outcome": "applied",
+      "tier": "pro",
+      "status": "active",
+      "areas": 3
+    },
+    {
+      "outcome": "applied",
+      "tier": "free",
+      "status": "free",
+      "areas": 1
+    }
+  ],
+  "published": {
+    "subscriptions.entitlement-changed": 5
+  }
+}

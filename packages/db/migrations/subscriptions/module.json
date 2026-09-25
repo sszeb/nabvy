@@ -1,0 +1,5 @@
+{
+  "module": "subscriptions",
+  "schema": "subscriptions",
+  "dependsOn": ["core", "switches"]
+}

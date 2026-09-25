@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs'
 import { defineConfig, devices } from '@playwright/test'
+import { gateServerEnv } from './e2e/admin-gate.env'
 
 /**
  * Screen tests: every key screen in light and dark, at desktop and mobile widths, plus keyboard
@@ -8,9 +9,15 @@ import { defineConfig, devices } from '@playwright/test'
  * differ between machines.
  *
  * Uses the machine's preinstalled Chromium when there is one (cloud sessions); never downloads.
+ *
+ * The `gate` project is the admin gate over plain HTTP (e2e/admin-gate.spec.ts): no browser, and
+ * the server gets the auth configuration from e2e/admin-gate.env.ts. CI runs it in the migration
+ * dry-run job, against the migrated database.
  */
 const preinstalled = '/opt/pw-browsers/chromium'
 const launchOptions = existsSync(preinstalled) ? { executablePath: preinstalled } : {}
+
+const gateSpec = /admin-gate\.spec\.ts$/
 
 const desktop = { viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 }
 const mobile = {
@@ -34,14 +41,16 @@ export default defineConfig({
     launchOptions,
   },
   projects: [
-    { name: 'desktop-light', use: { ...desktop, colorScheme: 'light' } },
-    { name: 'desktop-dark', use: { ...desktop, colorScheme: 'dark' } },
-    { name: 'mobile-light', use: { ...mobile, colorScheme: 'light' } },
-    { name: 'mobile-dark', use: { ...mobile, colorScheme: 'dark' } },
+    { name: 'desktop-light', testIgnore: gateSpec, use: { ...desktop, colorScheme: 'light' } },
+    { name: 'desktop-dark', testIgnore: gateSpec, use: { ...desktop, colorScheme: 'dark' } },
+    { name: 'mobile-light', testIgnore: gateSpec, use: { ...mobile, colorScheme: 'light' } },
+    { name: 'mobile-dark', testIgnore: gateSpec, use: { ...mobile, colorScheme: 'dark' } },
+    { name: 'gate', testMatch: gateSpec },
   ],
   webServer: {
     command: 'pnpm exec next start --hostname 127.0.0.1 --port 3100',
     url: 'http://127.0.0.1:3100',
+    env: gateServerEnv,
     reuseExistingServer: true,
     timeout: 60_000,
   },

@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790287427004,
+      "tag": "20260924220347_location_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790287435083,
+      "tag": "20260924220355_location_access",
+      "breakpoints": true
+    }
+  ]
+}
