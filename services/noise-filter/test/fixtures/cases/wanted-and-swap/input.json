@@ -1,0 +1,73 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": [
+    "1816901372840238",
+    "1756692548940192",
+    "1123980543398026",
+    "1352645884594841",
+    "1775698700306989",
+    "28242423458759790",
+    "2005582460147017",
+    "1083674317719227",
+    "2126837844711748",
+    "1154042653756525"
+  ],
+  "edits": [
+    {
+      "listingId": "1816901372840238",
+      "fields": {
+        "title": "WANTED: Gaming PC with RTX 3080 or better",
+        "description": "Looking for a gaming PC, budget around \u00a3600. Collection within 20 miles."
+      }
+    },
+    {
+      "listingId": "1756692548940192",
+      "fields": {
+        "title": "We buy gaming PCs - cash paid",
+        "description": "Any condition, working or faulty. Message me with what you have."
+      }
+    },
+    {
+      "listingId": "1123980543398026",
+      "fields": {
+        "title": "Gaming PC",
+        "description": "I buy all gaming PCs and laptops, working or not. Cash on collection."
+      }
+    },
+    {
+      "listingId": "1352645884594841",
+      "fields": {
+        "title": "Swap my PS5 for a gaming PC",
+        "description": "PS5 disc edition with two controllers, would like a gaming PC in exchange."
+      }
+    },
+    {
+      "listingId": "1775698700306989",
+      "fields": {
+        "title": "Gaming PC - no swaps",
+        "description": "RTX 3060, Ryzen 5 3600, 16GB RAM. No swaps, no time wasters."
+      }
+    },
+    {
+      "listingId": "28242423458759790",
+      "fields": {
+        "title": "Gaming PC, swaps considered",
+        "description": "RTX 3060 Ti, i5-12400F, 16GB RAM, 1TB SSD. Open to swaps for a laptop."
+      }
+    },
+    {
+      "listingId": "2005582460147017",
+      "fields": {
+        "title": "Gaming PC for sale or swap",
+        "description": "RTX 2060, i5-9400F, 16GB RAM."
+      }
+    },
+    {
+      "listingId": "1083674317719227",
+      "fields": {
+        "title": "Gaming PC spares or repairs",
+        "description": "Powers on but no display. RTX 2060, i5-9400F. Spares or repairs."
+      }
+    }
+  ]
+}

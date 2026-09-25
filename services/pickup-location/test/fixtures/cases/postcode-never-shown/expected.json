@@ -1,0 +1,11 @@
+{
+  "listings": {
+    "7000000000000002": {
+      "status": "from_description",
+      "townOrArea": "Bognor Regis",
+      "areaDistrict": "PO21",
+      "appRows": 1,
+      "postage": "text"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "listings": {
+    "7000000000000006": {
+      "status": "field_only",
+      "collection": "yes",
+      "postage": "text",
+      "postageOnlyText": true,
+      "courierOnlyText": true,
+      "appRows": 1
+    }
+  }
+}

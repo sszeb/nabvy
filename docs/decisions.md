@@ -347,6 +347,10 @@ The owner asked to get started on Stripe for Billing, Invoicing, Tax, Connect an
 
 The owner, to coordinator 9: "For next session run everything on fable, the ultracode for coordinator everything else effort on low." From coordinator 10 on: every new session (coordinator, reviewer, build and fix sessions, workflow agents) runs on Fable, the top model; the coordinator session runs with ultracode (multi-agent workflows opted in for the session); every other session runs at low effort, stated in its brief. This replaces "Sonnet by default" under "Faster build" and the model tiers in the module cards; `CLAUDE.md` "Model and effort by job" reads through this decision until the owner changes it. Model tiers in docs stay "top" or "Sonnet" by name, never model IDs.
 
+## Context economy (owner, 2026-09-25, 14:05)
+
+The owner, to coordinator 11, from the usage report: 79% of usage came from calls at over 150k context and 22% from workflow subagents; "Longer sessions are more expensive even when cached. /compact mid-task, /clear when switching to new tasks. If this runs frequently, consider configuring its subagents with a cheaper model or tightening their prompts." Applied at once, and the rules are in `docs/session-conventions.md`, "Context economy": every session hands off at 150k tokens (was 300k in `CLAUDE.md`, "Short sessions"); a session far past the line is not woken for new work, a fresh session is briefed instead; the coordinator runs its own work in-line and uses a workflow only where fan-out pays, with Sonnet or Haiku and low effort for readers and mechanical steps; briefs name slices to read; the owner may `/compact` an idle long-lived session between wakes. The unused connectors attached to the Nabvy environment add their tool listings to every call of every session; detaching them is the owner's setting.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.

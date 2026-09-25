@@ -1,0 +1,13 @@
+{
+  "outcomes": [
+    "ok:created:chichester",
+    "want-manager.limit_reached",
+    "ok:changed",
+    "ok:created:redhill"
+  ],
+  "wants": ["chichester:paused", "redhill:active"],
+  "terms": ["redhill/RTX 40=1/1"],
+  "areas": ["redhill@51.25,-0.15:25"],
+  "parts": 2,
+  "pipelineWants": 2
+}

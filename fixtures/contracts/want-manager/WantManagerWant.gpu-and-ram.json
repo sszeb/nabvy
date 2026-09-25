@@ -1,0 +1,37 @@
+{
+  "id": "0190f1d2-0000-7000-8000-0000000000a1",
+  "userId": "0190f1d2-0000-7000-8000-000000000001",
+  "radiusKm": 25,
+  "centreId": "chichester",
+  "centreVerified": false,
+  "priceCapMinor": 250000,
+  "currency": "GBP",
+  "active": true,
+  "cadenceSeconds": 300,
+  "deliverySpeed": "instant",
+  "deliveryMethods": ["collection"],
+  "alternatives": "variants_plus_tier",
+  "pcContainment": false,
+  "alternativesMaxPriceMinor": null,
+  "instantAlternatives": false,
+  "instantTopPicks": true,
+  "filter": { "query": "rtx 4080", "priceMaxMinor": 200000 },
+  "criteria": [
+    {
+      "partType": "gpu",
+      "catalogueId": "gpu:rtx-4080",
+      "family": null,
+      "minAttr": null,
+      "orBetter": true
+    },
+    {
+      "partType": "ram",
+      "catalogueId": null,
+      "family": null,
+      "minAttr": { "sizeGb": 32, "generation": "ddr5" },
+      "orBetter": false
+    }
+  ],
+  "createdAt": "2026-09-25T14:00:00.000Z",
+  "updatedAt": "2026-09-25T14:00:00.000Z"
+}
