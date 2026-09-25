@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790274267673,
+      "tag": "20260924182427_subscriptions_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790274269004,
+      "tag": "20260924182429_subscriptions_access",
+      "breakpoints": true
+    }
+  ]
+}
