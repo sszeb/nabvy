@@ -1,0 +1,24 @@
+{
+  "id": "evt_TestDisputeCreated",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1918720800,
+  "data": {
+    "object": {
+      "id": "dp_TestC1",
+      "object": "dispute",
+      "charge": "ch_TestC1",
+      "amount": 2900,
+      "currency": "gbp",
+      "reason": "fraudulent",
+      "status": "needs_response"
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "charge.dispute.created"
+}

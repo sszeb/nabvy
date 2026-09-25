@@ -1,0 +1,24 @@
+{
+  "id": "evt_TestCustomerCreated",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1917000000,
+  "data": {
+    "object": {
+      "id": "cus_TestC1",
+      "object": "customer",
+      "email": "c1@example.com",
+      "metadata": {
+        "userId": "00000000-0000-4000-8000-0000000000c1",
+        "customerType": "user"
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "customer.created"
+}

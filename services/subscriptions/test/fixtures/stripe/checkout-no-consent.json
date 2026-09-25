@@ -1,0 +1,37 @@
+{
+  "id": "evt_TestCheckoutNoConsent",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1917043204,
+  "data": {
+    "object": {
+      "id": "cs_TestC1NoTick",
+      "object": "checkout.session",
+      "mode": "subscription",
+      "customer": "cus_TestC1",
+      "client_reference_id": "00000000-0000-4000-8000-0000000000c1",
+      "subscription": "sub_TestC1",
+      "payment_intent": null,
+      "amount_total": 2900,
+      "currency": "gbp",
+      "total_details": {
+        "amount_tax": 483
+      },
+      "consent": null,
+      "consent_collection": null,
+      "metadata": {
+        "userId": "00000000-0000-4000-8000-0000000000c1",
+        "subscriptionId": "b6f0c2a0-0000-4000-8000-00000000a001",
+        "referenceId": "00000000-0000-4000-8000-0000000000c1"
+      },
+      "payment_status": "paid"
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "checkout.session.completed"
+}

@@ -1,0 +1,6 @@
+{
+  "totalSearches": 10,
+  "degradedSearches": 5,
+  "pctDegraded": 0.5,
+  "alerted": ["degraded-spike"]
+}

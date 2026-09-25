@@ -1,0 +1,25 @@
+{
+  "synthetic": true,
+  "source": "docs/design/modules/source-health.md: \"volume rises in steps of 24-48 hours, and only while 302s and fallbacks do not rise\"",
+  "current": {
+    "stage": 0,
+    "startedAt": "2026-09-20T00:00:00.000Z"
+  },
+  "now": "2026-09-23T00:00:00.000Z",
+  "yesterday": {
+    "pctDegraded": 0.05,
+    "alerted": []
+  },
+  "dayBefore": null,
+  "stages": [
+    {
+      "maxChecksPerDay": 50,
+      "minHoursAtStage": 48
+    },
+    {
+      "maxChecksPerDay": 100,
+      "minHoursAtStage": 48
+    }
+  ],
+  "alertPctDegraded": 0.1
+}
