@@ -1,0 +1,5 @@
+{
+  "module": "details-selector",
+  "schema": "details_selector",
+  "dependsOn": ["core", "switches", "listing-ingest", "city-pages", "details-queue"]
+}
