@@ -98,5 +98,5 @@ The order matters: no step may point at a file or secret that does not exist yet
 - PR #72's runner decision.
 - CI `cancel-in-progress`: 83 of 200 runs were correctly superseded.
 - Any cron shorter than hourly: each fire costs about 40k tokens just to boot; use events instead.
-- No session tools in fired runs; no new relay sessions.
+- No session tools in fired runs; no Routine bound to a long-lived session only to forward messages (splitting work into short fresh runs is a separate question: see daisy-chain.md).
 - Model by job as set by the owner (19:58 and 20:02).
