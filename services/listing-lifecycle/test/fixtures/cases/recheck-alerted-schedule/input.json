@@ -1,0 +1,41 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "one recorded listing, alerted twice, plus an unknown UUID",
+  "steps": [
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T01:40:43.415Z"
+      }
+    },
+    {
+      "request": {
+        "reason": "alerted",
+        "ids": ["1816901372840238"],
+        "unknown": ["01920000-0000-7000-8000-00000000abcd"]
+      }
+    },
+    {
+      "request": {
+        "reason": "alerted",
+        "ids": ["1816901372840238"]
+      }
+    },
+    {
+      "tickAfterHours": 5
+    },
+    {
+      "tickAfterHours": 6
+    },
+    {
+      "tickAfterHours": 24
+    },
+    {
+      "tickAfterHours": 72
+    },
+    {
+      "tickAfterHours": 100
+    }
+  ]
+}

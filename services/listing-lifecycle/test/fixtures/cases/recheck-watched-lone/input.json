@@ -1,0 +1,25 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "one recorded listing, watched",
+  "steps": [
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T01:40:43.415Z"
+      }
+    },
+    {
+      "request": {
+        "reason": "watched",
+        "ids": ["1816901372840238"]
+      }
+    },
+    {
+      "tickAfterHours": 1
+    },
+    {
+      "tickAfterHours": 25
+    }
+  ]
+}

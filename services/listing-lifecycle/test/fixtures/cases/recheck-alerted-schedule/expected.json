@@ -1,0 +1,44 @@
+{
+  "requests": [
+    {
+      "scheduled": 1,
+      "alreadyScheduled": 0,
+      "unknown": 1
+    },
+    {
+      "scheduled": 0,
+      "alreadyScheduled": 1,
+      "unknown": 0
+    }
+  ],
+  "ticks": [
+    {
+      "queued": 0,
+      "skipped": 0,
+      "waiting": 0
+    },
+    {
+      "queued": 1,
+      "skipped": 0,
+      "waiting": 0
+    },
+    {
+      "queued": 1,
+      "skipped": 0,
+      "waiting": 0
+    },
+    {
+      "queued": 1,
+      "skipped": 0,
+      "waiting": 0
+    },
+    {
+      "queued": 0,
+      "skipped": 0,
+      "waiting": 0
+    }
+  ],
+  "queuedByPriority": {
+    "shortlisted": 1
+  }
+}
