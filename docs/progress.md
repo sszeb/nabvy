@@ -142,6 +142,8 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | prepared-message | 8 | started 19:35 on 2026-09-25 [cp 5] by coordinator 15, branch `task/w2-prepared-message` from main (listing-assessment `v_unknowns`, quote-redaction merged); no tables; template wording to its question file | `session_011twSaUcxY8Ga8dmJHH3nHx` | Opus |
 | check-scheduler | 7 | started 19:35 on 2026-09-25 [cp 1] by coordinator 15, branch `task/w2-check-scheduler` stacked on search-planner #92 (itself on want-manager #88); runs only through `apify-gateway.submitRun()`, tests never submit a live run | `session_018dmgrMJShzu2Mt83YDpxMx` | Opus |
 | demand-signals | 8 | started 19:35 on 2026-09-25 [cp 1] by coordinator 15, branch `task/w2-demand-signals` stacked on want-manager #88 with main merged in (listing-assessment, city-pages merged; copy-advert soft); no user-facing view | `session_01Lq2CgBrjy6kZ6b7qTLWCM3` | Opus |
+| L1 web local run | L | started 20:16 on 2026-09-25 [cp 4] by coordinator 15 (`docs/decisions.md` "Local single-user run first"), branch `task/L1-web-local-run` from main; oRPC layer, magic link to the terminal, wants, feed, listing page, account, admin switches | `session_01ULyWCky4X9u2Dn35prXFPr` | Sonnet |
+| L2 pipeline wiring | L | started 20:16 on 2026-09-25 [cp 5] by coordinator 15, branch `task/L2-pipeline-wiring` from main; event registry in `packages/transport`, one Trigger.dev event task per event, schedules, `pnpm trigger:dev` as the local runner | `session_01EdCvNpwGNoqFD77bC9LGJa` | Haiku |
 
 ## Work outside the backlog
 
