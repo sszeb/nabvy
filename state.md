@@ -5,9 +5,8 @@ Updated 22:05 UTC 2026-09-25 by coordinator 16. Setup check 2 (21:59): repo, sta
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
 - Reviewer runs: on request `trig_01FPLnjfTATPb7YQivWvA7FX` (the old relay ID), hourly `trig_011fjd2grZBEWR3FqfDzTWJR` (the old watchdog ID).
-- Dispatcher: `session_01LDvAXYfdUJv4TS7aT1ph7r` (Haiku, depth 7), woken by `trig_01FfBryD1G7vjpEVYpRxdSML` (`52 */2 * * *`).
-- Reviewer 14 `session_01S1zLkd1F9tHKsNc1MiwKF5` stopped at 19:37 (322k); its inbox `trig_01HBnPvViK2spaRpcTnCv8du` is obsolete.
-- Old coordinator inboxes forward: 11 `trig_01W4s8vjL92nj6mW89oiLs34` → 12 `trig_01NQq5pF6QXYV6omzE8LafYm` → 13 `trig_01RWmeGsimSKC8sX8N8oao8w` → 14 `trig_01PQbRJk6Rb78r4oYm2XuzHg` → 15 `trig_01Xrhk1z2Bb1iNN3DWbbPxSB` → 16 `trig_012hwP8EisfTTijBVBCAWhU5` → this Routine; 17 `trig_01EPFT3WRpVqsmDa2y8WMyHo` → this Routine.
+- Dispatcher: `session_01LDvAXYfdUJv4TS7aT1ph7r` (Haiku, depth 7), woken by `trig_01FfBryD1G7vjpEVYpRxdSML` (`52 * * * *`).
+- Old coordinator inboxes (1, 11 to 17) and reviewer 14's inbox deleted 22:30; build sessions firing them get a harmless error.
 - Poke Routines: L1 web `trig_01KmJ4pPZXoRKmXRTUhtMgMF`, L2 wiring `trig_01VD8NBTFhNtAp2SnxZTVuqw`.
 - Supabase project `rlgufxmsrkhyeiabdeic`. Trigger.dev project `proj_aazrktvhdfmimvxwxsnq` (secret key on the owner's PC only).
 
