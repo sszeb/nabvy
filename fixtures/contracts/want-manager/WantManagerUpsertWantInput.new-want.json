@@ -1,0 +1,26 @@
+{
+  "userId": "0190f1d2-0000-7000-8000-000000000001",
+  "postcode": "PO19 1AA",
+  "radiusKm": 25,
+  "priceCapMinor": null,
+  "currency": "GBP",
+  "active": true,
+  "cadenceSeconds": 900,
+  "deliverySpeed": "daily",
+  "deliveryMethods": ["collection", "posted"],
+  "alternatives": "off",
+  "pcContainment": true,
+  "alternativesMaxPriceMinor": 150000,
+  "instantAlternatives": false,
+  "instantTopPicks": true,
+  "filter": null,
+  "criteria": [
+    {
+      "partType": "cpu",
+      "catalogueId": null,
+      "family": "Ryzen 7",
+      "minAttr": null,
+      "orBetter": true
+    }
+  ]
+}
