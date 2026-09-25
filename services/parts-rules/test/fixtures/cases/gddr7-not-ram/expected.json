@@ -1,0 +1,27 @@
+{
+  "listings": {
+    "2264485254402498": {
+      "parts": [
+        "title:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb",
+        "title:cpu:Ryzen 5 5500 → cpu:amd:ryzen-5-5000",
+        "title:ram_size:16GB RAM",
+        "title:storage_size:1TB",
+        "title:storage_type:SSD",
+        "description:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb",
+        "description:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb",
+        "description:cpu:Ryzen 5 5500 → cpu:amd:ryzen-5-5000",
+        "description:ram_size:16GB DDR4",
+        "description:ram_generation:DDR4",
+        "description:storage_size:1TB",
+        "description:storage_type:NVMe",
+        "description:storage_type:SSD",
+        "description:psu_wattage:500W"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    }
+  }
+}

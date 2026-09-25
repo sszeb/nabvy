@@ -1,0 +1,42 @@
+{
+  "synthetic": true,
+  "source": "Card: estimate(want) for want-manager and the cadence slider; plan base and floor as the ceiling (docs/decisions.md, \"Paid ladder\")",
+  "steps": [
+    {
+      "estimate": {
+        "plan": "pro",
+        "cadenceMinutes": 60,
+        "areaCount": 2
+      }
+    },
+    {
+      "estimate": {
+        "plan": "pro",
+        "cadenceMinutes": 15,
+        "areaCount": 2
+      }
+    },
+    {
+      "estimate": {
+        "plan": "pro",
+        "cadenceMinutes": 10,
+        "areaCount": 1
+      }
+    },
+    {
+      "estimate": {
+        "plan": "pro",
+        "cadenceMinutes": 1,
+        "areaCount": 1
+      }
+    },
+    {
+      "estimate": {
+        "plan": "pro",
+        "cadenceMinutes": 15,
+        "areaCount": 1,
+        "roundTheClock": true
+      }
+    }
+  ]
+}

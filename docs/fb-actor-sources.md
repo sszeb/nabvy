@@ -57,3 +57,7 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
 - The Apify token is a Supabase Edge Function secret; never put it in code or chat.
 - Seller identity (names, IDs, pictures) is internal only. Labels read "Suspected ...:" followed
   by the facts behind them.
+
+## Checks
+
+- **2026-09-24 23:50 UTC (coordinator 9, GitHub API only).** Latest commit `edf7ba2` (20:58). Six commits since `d7be0a4`: `a84bc50`, `ab61374`, `802a3a1`, `fc5176f` (location lookup diagnostics, since removed), `72351f0` ("A city name is a search location: slugs bind like numeric IDs; drop the lookup fetch": `src/gateway-input.js` accepts `cityId` as `^\d{5,30}$` or a lowercase slug `^[a-z0-9]{2,60}$` that is not a reserved segment; `src/source-binding.js` binds the slug from Facebook's own request; the fetch-based resolver is deleted) and `edf7ba2` (`docs/EVIDENCE_LEDGER.md`, build 1.0.12: "A slug is now a search location bound exactly like a numeric ID"; the validation ran on the public Store edition, which Nabvy never calls). **`docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` now exist** (backlog 0.18). Numeric IDs as text are unchanged, so `city-pages` needs nothing; `location` gets backlog 1.1b.
