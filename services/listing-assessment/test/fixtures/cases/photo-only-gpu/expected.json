@@ -1,0 +1,21 @@
+{
+  "listings": {
+    "28242423458759790": {
+      "kind": "pc",
+      "container": "true:parts",
+      "form": "system",
+      "gpu": "in_photos",
+      "cautions": ["photo_only"],
+      "coverage": ["title", "photos", "fullDescription"],
+      "confirmed": [
+        "cpu:description:i5-12400f",
+        "storage_size:description:Storage 928GB",
+        "ram_size:description:Ram- ddr4 16gb",
+        "ram_generation:description:ddr4"
+      ],
+      "exclusions": [],
+      "extras": [],
+      "unknowns": []
+    }
+  }
+}
