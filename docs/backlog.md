@@ -143,6 +143,17 @@ Check-in points are marked **[CHECK-IN]**: stop and wait for a human before cont
 
 **[CHECK-IN]** Paid beta.
 
+## Milestone L — the owner's local run (owner, 2026-09-25, 20:15; `docs/decisions.md` "Local single-user run first")
+
+The whole product on the owner's PC for one user, before anything is public. Depends on the module chain in the section below finishing; L1 and L2 start now in parallel with it.
+
+- **L1 Web app for the local run.** In `apps/web`, on what exists (app shell, hunt form, listing and deal cards, sign-in form, admin pages): sign-in by magic link printed to the terminal when no email provider is configured, plus the existing admin gate; wants (create, edit, pause, delete) through want-manager's functions; the results feed from listing-card's user-facing view with pickup-location's area, distance and rough time (numbers only, label wording pending the owner); a listing page with the prepared message and the price-drop watch; account and preferences; admin: switches, spend caps and incidents. Every read and write through oRPC procedures in `apps/web/src/rpc/` that call module functions inside `withUser`; never business logic in the app. Done: `pnpm dev:web` runs against the production Supabase project with the owner's `.env.local`; Playwright covers sign-in, create a want, see the feed, open a listing, flip a switch as admin; lint, typecheck and tests clean; a question file for every wording choice.
+- **L2 Pipeline wiring and local runner.** In `trigger/` and `packages/transport`: one event task per event in `docs/contracts.md` that calls every consuming module's handler wrapped in `defineHandler` (the 1.2 wiring), scheduled tasks for check-scheduler's tick and the other modules' schedules, and `pnpm trigger:dev` documented as the local runner. Idempotent by the event key; retries and dead-lettering from `@nabvy/config`. No business logic in task files. Done: a fixture-driven test that publishes each event through the memory publisher and asserts each consumer's handler runs once and a replay runs it zero times; `pnpm trigger:dev` starts with the owner's Trigger.dev project; lint, typecheck and tests clean.
+- **L3 Local run runbook.** `docs/local-run.md`: prerequisites, `.env.local` from `docs/secrets.md`, the commands, the switches to turn on for the rtx3090 Chichester hunt, the spend caps to set, and how to stop everything. Written after L1 and L2 merge.
+- **L4 Local acceptance.** The rtx3090 Chichester hunt end to end on the owner's PC (the Stage B of 4.1m, on the owner's machine instead of staging): a want created in the app, checks scheduled and submitted through the gateway, listings ingested, assessed and shown, one alert delivered. Done: the owner signs off.
+
+Public availability (milestone P) starts after L4: Vercel, Resend, Turnstile, Google sign-in, live Stripe and the marketing surface (phases 4 and 5 above).
+
 ## Atomic module tasks (catalogue order, 2026-09-24)
 
 Converted from the ordered table in `docs/design/drafts/catalogue-audit-changes.md` (lines 47–122), which sequences the atomic-module catalogue (`docs/design/drafts/modules.md`) into waves by dependency round. An ID that already existed in this file before this push (for example 0.7, 0.8, 4.0, 0.5a, 4.3a, 3.2, 3.3, 3.5, 4.5, 4.6b, 4.6c, 4.7a, 4.1d) is not duplicated here; its catalogue wave and dependencies are appended to its existing Phase 0–5 bullet above instead. The rows below are the ordered table's remaining tasks.
