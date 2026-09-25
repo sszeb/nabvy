@@ -63,15 +63,18 @@ this is the start of the CI check on user-facing output that `docs/decisions.md`
 - **Locations** are a town plus a whole-kilometre distance. No map with pins.
 - **Pricing and scan** are skeletons: no prices, no tier text, no scan flow until the owner
   decides (`docs/questions.md`).
-- **Cadence slider (task 4.1q).** `components/cadence-slider.tsx`, a vertical six-step dot-density
+- **Cadence slider (task 4.1q).** `components/cadence-slider.tsx`, a vertical seven-step dot-density
   control on radix `Slider` (`components/ui/slider.tsx`), wired into `HuntForm` in place of a plain
   interval control (`docs/design/cadence-slider.md`). It never invents a number: the credit
   estimate, delivered cadence, unlock count and plan ceiling all come through a
   `WantManagerCadenceEstimate`/`WantManagerCadenceBurstStatus` prop (`@nabvy/contracts/modules/want-manager`,
-  a minimal stub until `want-manager`, task 1.8e, ships the real procedure — see
-  `lib/cadence.ts`'s `estimateCadencePlaceholderUntilWantManagerShips`). The six step names are
-  centralised in `lib/cadence.ts` (`CADENCE_STEPS`) since they are provisional wording
-  (`docs/questions/cadence-slider.md`). Fixture render states live in
+  a minimal stub until `want-manager`, task 1.8e, ships the real procedure). Until then `HuntForm`
+  passes `estimate={null}` and the slider shows no cost or cadence line and locks no step, rather
+  than a client-side placeholder figure (review of PR #49; the earlier
+  `estimateCadencePlaceholderUntilWantManagerShips` is gone). The seven step names, settled by the
+  coordinator on the owner's delegation (Ultracheck 1 min, Rapid 5 min, Brisk 15 min, Steady
+  30 min, Regular 1 h, Relaxed 2 h, Slow Watch 4 h), are centralised in `lib/cadence.ts`
+  (`CADENCE_STEPS`), the one file to edit if the owner changes them. Fixture render states live in
   `test/cadence-slider.test.tsx`, using `renderToStaticMarkup` rather than a DOM testing library
   (no jsdom in this project).
 - **`sharp` is removed** from the tree (`pnpm-workspace.yaml` override): it is Next's optional

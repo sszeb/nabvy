@@ -1,9 +1,9 @@
 'use client'
 
 import type {
-  CadenceSeconds,
   WantManagerCadenceBurstStatus,
   WantManagerCadenceEstimate,
+  WantManagerCadenceSeconds,
 } from '@nabvy/contracts/modules/want-manager'
 import { CircleHelpIcon, LockIcon } from 'lucide-react'
 import { type CSSProperties, useId } from 'react'
@@ -53,13 +53,17 @@ function CadenceDots({
 export type CadenceSliderInteractiveProps = {
   mode?: 'interactive'
   /** The step shown: the saved value while idle, the live drag or keyboard position otherwise. */
-  value: CadenceSeconds
+  value: WantManagerCadenceSeconds
   /** Fires on every change, including a live drag or keyboard step, so the caller can re-estimate. */
-  onValueChange: (seconds: CadenceSeconds) => void
+  onValueChange: (seconds: WantManagerCadenceSeconds) => void
   /** Fires only when the user commits an unlocked step; a locked commit never reaches this. */
-  onValueCommit?: (seconds: CadenceSeconds) => void
-  /** The estimate procedure's answer for `value` (want-manager, stubbed until 1.8e ships). */
-  estimate: WantManagerCadenceEstimate
+  onValueCommit?: (seconds: WantManagerCadenceSeconds) => void
+  /**
+   * The estimate procedure's answer for `value`, or `null` while there is none (want-manager,
+   * task 1.8e, has not shipped it yet): then no cost or cadence line is shown and no step is
+   * locked, since the plan ceiling comes from the same procedure. Never a client-side guess.
+   */
+  estimate: WantManagerCadenceEstimate | null
   className?: string
 }
 
@@ -73,7 +77,7 @@ export type CadenceSliderBurstProps = {
 export type CadenceSliderProps = CadenceSliderInteractiveProps | CadenceSliderBurstProps
 
 /**
- * The want form's check-interval control (docs/design/cadence-slider.md): a vertical six-step
+ * The want form's check-interval control (docs/design/cadence-slider.md): a vertical seven-step
  * dot-density slider, fastest at the top. Every number it shows — the credit estimate, the
  * delivered cadence, the unlock count, the plan ceiling — comes from `estimate`/`burst`; nothing
  * is computed here.
@@ -91,15 +95,17 @@ function CadenceSliderInteractive({
   className,
 }: CadenceSliderInteractiveProps) {
   const index = cadenceIndexOf(value)
-  const locked = isCadenceLocked(index, estimate.planCeilingSeconds)
+  const planCeilingSeconds = estimate?.planCeilingSeconds ?? null
+  const locked = isCadenceLocked(index, planCeilingSeconds)
   const lockedHintId = useId()
-  const lines = describeCadenceEstimate(estimate)
+  const lines = estimate ? describeCadenceEstimate(estimate) : []
 
   return (
     <div
       className={cn('grid gap-2', className)}
       data-testid="cadence-slider"
       data-state="interactive"
+      data-estimate={estimate ? 'live' : 'none'}
     >
       <div className="flex items-center justify-between gap-2">
         <p className="flex items-baseline gap-1.5">
@@ -133,13 +139,13 @@ function CadenceSliderInteractive({
             if (next !== undefined) onValueChange(cadenceStepAt(next).seconds)
           }}
           onValueCommit={([next]) => {
-            if (next === undefined || isCadenceLocked(next, estimate.planCeilingSeconds)) return
+            if (next === undefined || isCadenceLocked(next, planCeilingSeconds)) return
             onValueCommit?.(cadenceStepAt(next).seconds)
           }}
         >
-          <SliderTrack className="grid w-11 grid-rows-6 gap-1 rounded-none bg-transparent p-0">
+          <SliderTrack className="grid w-11 grid-rows-7 gap-1 rounded-none bg-transparent p-0">
             {ROWS.map((rowIndex) => {
-              const rowLocked = isCadenceLocked(rowIndex, estimate.planCeilingSeconds)
+              const rowLocked = isCadenceLocked(rowIndex, planCeilingSeconds)
               const filled = !rowLocked && rowIndex >= index
               return (
                 <div key={rowIndex} className="flex min-h-11 items-center justify-center">
@@ -164,9 +170,9 @@ function CadenceSliderInteractive({
             aria-describedby={locked ? lockedHintId : undefined}
           />
         </Slider>
-        <div className="grid flex-1 grid-rows-6 gap-1 text-sm">
+        <div className="grid flex-1 grid-rows-7 gap-1 text-sm">
           {ROWS.map((rowIndex) => {
-            const rowLocked = isCadenceLocked(rowIndex, estimate.planCeilingSeconds)
+            const rowLocked = isCadenceLocked(rowIndex, planCeilingSeconds)
             return (
               <div
                 key={rowIndex}

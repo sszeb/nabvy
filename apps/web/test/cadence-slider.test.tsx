@@ -31,10 +31,11 @@ describe('CadenceSlider, interactive', () => {
       />,
     )
     expect(html).toContain('data-state="interactive"')
+    expect(html).toContain('data-estimate="live"')
     expect(html).toContain(name)
     expect(html).toContain('role="slider"')
     expect(html).toContain('aria-valuemin="0"')
-    expect(html).toContain('aria-valuemax="5"')
+    expect(html).toContain('aria-valuemax="6"')
     expect(html).not.toContain('Requires Pro')
   })
 
@@ -83,6 +84,19 @@ describe('CadenceSlider, interactive', () => {
     expect(html).not.toContain('delivered every')
     expect(html).not.toContain('unlock')
     expect(html).not.toContain('credits run out')
+  })
+})
+
+describe('CadenceSlider, no estimate yet', () => {
+  it('shows no number and locks no step when the estimate is null', () => {
+    const html = renderToStaticMarkup(
+      <CadenceSlider value={1800} estimate={null} onValueChange={() => {}} />,
+    )
+    expect(html).toContain('data-estimate="none"')
+    expect(html).toContain('Steady')
+    expect(html).toContain('role="slider"')
+    expect(html).not.toContain('credits')
+    expect(html).not.toContain('Requires Pro')
   })
 })
 

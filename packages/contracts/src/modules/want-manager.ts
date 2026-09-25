@@ -12,21 +12,22 @@ export const module = 'want-manager'
 
 /**
  * The check-interval ladder a want's cadence can be set to (docs/design/cadence-slider.md),
- * fastest last so a higher array index always means a faster check: 4 h, 2 h, 1 h, 15 min,
- * 5 min, 1 min.
+ * fastest last so a higher array index always means a faster check: 4 h, 2 h, 1 h, 30 min,
+ * 15 min, 5 min, 1 min (seven steps; the names are settled in docs/design/cadence-slider.md).
  */
-export const CADENCE_STEP_SECONDS = [14400, 7200, 3600, 900, 300, 60] as const
-export const CadenceSeconds = z.union(
-  CADENCE_STEP_SECONDS.map((seconds) => z.literal(seconds)) as [
-    z.ZodLiteral<(typeof CADENCE_STEP_SECONDS)[number]>,
-    z.ZodLiteral<(typeof CADENCE_STEP_SECONDS)[number]>,
-    ...z.ZodLiteral<(typeof CADENCE_STEP_SECONDS)[number]>[],
+export const WANT_MANAGER_CADENCE_STEP_SECONDS = [14400, 7200, 3600, 1800, 900, 300, 60] as const
+export const WantManagerCadenceSeconds = z.union(
+  WANT_MANAGER_CADENCE_STEP_SECONDS.map((seconds) => z.literal(seconds)) as [
+    z.ZodLiteral<(typeof WANT_MANAGER_CADENCE_STEP_SECONDS)[number]>,
+    z.ZodLiteral<(typeof WANT_MANAGER_CADENCE_STEP_SECONDS)[number]>,
+    ...z.ZodLiteral<(typeof WANT_MANAGER_CADENCE_STEP_SECONDS)[number]>[],
   ],
 )
-export type CadenceSeconds = z.infer<typeof CadenceSeconds>
+export type WantManagerCadenceSeconds = z.infer<typeof WantManagerCadenceSeconds>
 
 /**
- * What the want-manager estimate procedure (stubbed client-side until 1.8e ships) returns for a
+ * What the want-manager estimate procedure (not built yet, 1.8e; the web app passes `null` until
+ * it ships) returns for a
  * chosen cadence: never computed in the browser (CLAUDE.md, "No invented numbers"). Optional
  * fields carry no meaning when absent, so they are `null`, never omitted:
  * `deliveredCadenceSeconds` is set only when the want's area currently delivers slower than
@@ -36,13 +37,13 @@ export type CadenceSeconds = z.infer<typeof CadenceSeconds>
  */
 export const WantManagerCadenceEstimate = z
   .strictObject({
-    chosenCadenceSeconds: CadenceSeconds,
+    chosenCadenceSeconds: WantManagerCadenceSeconds,
     /** The fastest cadence the want's plan allows without an upgrade. */
-    planCeilingSeconds: CadenceSeconds,
+    planCeilingSeconds: WantManagerCadenceSeconds,
     creditsPerMonth: z.number().nonnegative(),
-    deliveredCadenceSeconds: CadenceSeconds.nullable(),
+    deliveredCadenceSeconds: WantManagerCadenceSeconds.nullable(),
     unlockWatchersNeeded: z.int().positive().nullable(),
-    unlockCadenceSeconds: CadenceSeconds.nullable(),
+    unlockCadenceSeconds: WantManagerCadenceSeconds.nullable(),
     creditsRunOutDate: IsoTimestamp.nullable(),
   })
   .refine(
