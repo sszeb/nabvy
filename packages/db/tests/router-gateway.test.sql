@@ -19,17 +19,18 @@ begin
 end;
 $$;
 
--- No coordinate column: nothing named like a point, and no numeric column other than the counts.
+-- No coordinate column: the table has exactly these columns, and adding any other fails here.
 do $$
+declare
+  found text;
 begin
-  if exists (
-    select 1 from information_schema.columns
-    where table_schema = 'router_gateway'
-      and (column_name ~ '(lat|lon|lng|coord|point|geom|location)'
-             and column_name <> 'location_count'
-           or data_type in ('double precision', 'real', 'numeric', 'point', 'USER-DEFINED', 'jsonb', 'json', 'ARRAY'))
-  ) then
-    raise exception 'router_gateway has a column that could hold a coordinate';
+  select string_agg(column_name || ':' || data_type, ',' order by column_name) into found
+  from information_schema.columns
+  where table_schema = 'router_gateway';
+  if found is distinct from
+     'at:timestamp with time zone,build:text,id:uuid,kind:text,latency_ms:integer,'
+     || 'location_count:integer,provider:text,status:text' then
+    raise exception 'router_gateway columns changed (no coordinate may be stored): %', found;
   end if;
 end;
 $$;
