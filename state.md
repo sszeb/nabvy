@@ -50,6 +50,7 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 22:52 UTC dispatcher run: nothing queued
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
