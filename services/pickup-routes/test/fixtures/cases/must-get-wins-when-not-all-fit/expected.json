@@ -1,0 +1,9 @@
+{
+  "order": ["pulborough"],
+  "unassigned": [
+    {
+      "id": "bognor",
+      "reason": "latest_finish"
+    }
+  ]
+}

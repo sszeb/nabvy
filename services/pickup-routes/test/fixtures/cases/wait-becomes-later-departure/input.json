@@ -1,0 +1,28 @@
+{
+  "synthetic": true,
+  "day": "2026-09-26",
+  "start": {
+    "lat": 50.8365,
+    "lng": -0.7792
+  },
+  "end": {
+    "lat": 50.8365,
+    "lng": -0.7792
+  },
+  "startTime": "09:00",
+  "latestFinish": "18:00",
+  "stops": [
+    {
+      "id": "bognor",
+      "point": {
+        "lat": 50.7825,
+        "lng": -0.6746
+      },
+      "window": {
+        "kind": "between",
+        "start": "12:00",
+        "end": "13:00"
+      }
+    }
+  ]
+}

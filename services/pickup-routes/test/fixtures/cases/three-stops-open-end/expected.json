@@ -1,0 +1,5 @@
+{
+  "order": ["portsmouth", "bognor", "littlehampton"],
+  "unassigned": [],
+  "arrivesAtWindowStart": ["portsmouth", "littlehampton"]
+}

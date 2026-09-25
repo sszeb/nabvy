@@ -44,6 +44,7 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `SENTRY_DSN` | all | Sentry project |
 | `POSTHOG_KEY`, `POSTHOG_HOST` | web app and server (`eu.i.posthog.com`) | PostHog project, EU cloud |
 | `TOKEN_ENCRYPTION_KEY` | inventory-resale | Generated once; encrypts eBay refresh tokens at rest |
+| `PICKUPS_DATA_KEY` | pickup-routes | Generated once per environment (32 random bytes, hex or base64); encrypts pickup addresses, notes and points at rest (AES-256-GCM). The module does not ship until it exists |
 | `FB_DAILY_CAP_MINOR`, `GUMTREE_DAILY_CAP_MINOR`, `SCAN_SPEND_CAP_MINOR` | crawl-planner, recognition | Config: defaults 1000, 500, 5 |
 
 Accounts a human must create before Phase 1: Apify (with the Nabvy actor deployed), Anthropic, Trigger.dev, Telegram bot. Before Phase 2: eBay developer keyset. Before Phase 3: eBay Sell API consent flow (RuName) and Sandbox seller. Before Phase 4: Stripe (products created per `docs/billing.md`, Stripe Tax enabled, legal entity set), Resend with `mail.nabvy.com` and `news.nabvy.com` verified, PostHog Workflows enabled with an email sender on `news.nabvy.com`, VAPID keys, Sentry, PostHog, Cloudflare Turnstile, Google OAuth client. Before launch: ICO registration, legal documents, external security scan, Dub workspace with the Partners programme configured per `docs/affiliates.md` and `nabvy.link` connected.
