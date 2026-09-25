@@ -74,7 +74,7 @@ Neither table carries a foreign key into another module's schema (rule 4): `list
 | --- | --- | --- | --- |
 | Verdict values | `real_deal`, `not_a_deal`, `bought` | `docs/backlog.md:58`; `docs/web-app.md:30`; the build pack's `Alert.userVerdict` (`docs/contracts.md:112`) | Fixed |
 | State values | `saved`, `dismissed` | `fb-scrap-engine/docs/design/CONTAINER_LISTINGS.md:145` | Fixed |
-| Identity | `(user_id, listing_id, alert_id)` for a verdict, `(user_id, listing_id)` for a state; a null `alert_id` is its own identity, not merged with a real one | Card: "verdicts (user_id, listing, alert_id, verdict, at)" | This module's reading (question below) |
+| Identity | `(user_id, listing_id, alert_id)` for a verdict, `(user_id, listing_id)` for a state; a null `alert_id` is its own identity, not merged with a real one | Card: "verdicts (user_id, listing, alert_id, verdict, at)" | This module's reading (see Decisions: null `alert_id` folded into the nil UUID) |
 | A verdict is never a sale price | Enforced by the schema: no price column anywhere in this module | `docs/decisions.md:16` | Fixed |
 
 ## Fixtures and pass rate
