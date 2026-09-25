@@ -22,6 +22,7 @@ import {
   lockWeek,
   selectAdverts,
   selectCells,
+  selectNow,
   selectWantTerms,
   weekPublished,
 } from './repo'
@@ -58,7 +59,9 @@ export async function publishWeek(
     return err({ code: 'demand-signals.invalid_input', message: parsed.error.message })
   }
   const { weekStart } = parsed.data
-  if (!isClosed(weekStart, now)) {
+  // Closed by the caller's clock and by the database's: a caller's clock running ahead never
+  // publishes a week that is still open.
+  if (!isClosed(weekStart, now) || !isClosed(weekStart, await selectNow(q))) {
     return err({
       code: 'demand-signals.week_not_closed',
       message: `week ${weekStart} has not ended`,

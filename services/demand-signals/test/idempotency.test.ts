@@ -57,17 +57,23 @@ describe('demand-signals idempotency', () => {
   })
 
   it('the weekly job publishes the latest closed week, once', async () => {
-    const monday = new Date('2026-09-28T03:00:00Z') // the week of 2026-09-21 has closed
+    const monday = new Date('2026-09-14T03:00:00Z') // the week of 2026-09-07 has closed
     const events = await runWeekly({ transaction: t.transaction }, monday)
-    expect(events.map((e) => e.key)).toEqual(['demand-signals.published:2026-09-21@ds-1'])
+    expect(events.map((e) => e.key)).toEqual(['demand-signals.published:2026-09-07@ds-1'])
     const again = await runWeekly({ transaction: t.transaction }, monday)
-    expect(again.map((e) => e.key)).toEqual(['demand-signals.published:2026-09-21@ds-1'])
+    expect(again.map((e) => e.key)).toEqual(['demand-signals.published:2026-09-07@ds-1'])
     const rows = await t.sql(
-      `select count(*)::int as n from demand_signals.cells where week_start = '2026-09-21'`,
+      `select count(*)::int as n from demand_signals.cells where week_start = '2026-09-07'`,
     )
     // Wants are counted as they stand when the week is published (3090: 12, 4090: 15); the 10
-    // adverts were listed the week before, so this week has none.
+    // adverts were listed the week after, so this week has none.
     expect(rows[0]?.n).toBe(2)
+  })
+
+  it('a week still open by the database clock is refused, whatever the caller says', async () => {
+    const far = new Date('2100-01-11T00:00:00Z')
+    const result = await t.transaction((q) => publishWeek(q, { weekStart: '2100-01-04' }, far))
+    expect(result).toMatchObject({ ok: false, error: { code: 'demand-signals.week_not_closed' } })
   })
 
   it('the database refuses a second copy of a cell and any stored count under 10', async () => {

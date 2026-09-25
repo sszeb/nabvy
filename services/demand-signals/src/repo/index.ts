@@ -22,6 +22,14 @@ export async function lockWeek(
   )
 }
 
+/** Now, as the database sees it: the server clock that decides whether a week has closed. */
+export async function selectNow(q: Queryable): Promise<Date> {
+  const result = (await q.execute(sql`select now() as now`)) as unknown as Rows<{
+    now: Date | string
+  }>
+  return new Date(result.rows[0]?.now ?? Number.NaN)
+}
+
 /** Whether any cell of the week and rule version is already stored. */
 export async function weekPublished(
   q: Queryable,
