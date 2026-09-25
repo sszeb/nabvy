@@ -39,7 +39,6 @@ Updated 22:05 UTC 2026-09-25 by coordinator 16. Setup check 2 (21:59): repo, sta
 
 ## Waiting on the owner
 - In claude.ai/code/routines, for "Nabvy reviewer (on request)" and "Nabvy reviewer (hourly)": attach the repository sszeb/nabvy and set the model to Sonnet 5 (as done for the coordinator at 21:57). Until then reviewer runs may fail.
-- Attach the Supabase connector to the coordinator Routine, and set its model to Opus 5.5, in claude.ai/code/routines (sessions cannot).
 - Approve L2's pending permission prompt (session "Nabvy L2: pipeline wiring and local runner").
 - `ROUTER_API_KEY` secret for router-gateway (owed since 16:45).
 - Optional: detach unused connectors from the Nabvy environment (smaller context for every session).
