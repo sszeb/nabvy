@@ -154,6 +154,8 @@ The whole product on the owner's PC for one user, before anything is public. Dep
 
 Public availability (milestone P) starts after L4: Vercel, Resend, Turnstile, Google sign-in, live Stripe and the marketing surface (phases 4 and 5 above).
 
+- **P1 Sign-up journey.** Choose and polish the production sign-up from the references in `docs/design/onboarding-journeys.md` (the single Welcome screen; the optional confirm-details step). Depends on L1. Done: the owner picks the journey and the wording; Playwright covers it.
+
 ## Atomic module tasks (catalogue order, 2026-09-24)
 
 Converted from the ordered table in `docs/design/drafts/catalogue-audit-changes.md` (lines 47–122), which sequences the atomic-module catalogue (`docs/design/drafts/modules.md`) into waves by dependency round. An ID that already existed in this file before this push (for example 0.7, 0.8, 4.0, 0.5a, 4.3a, 3.2, 3.3, 3.5, 4.5, 4.6b, 4.6c, 4.7a, 4.1d) is not duplicated here; its catalogue wave and dependencies are appended to its existing Phase 0–5 bullet above instead. The rows below are the ordered table's remaining tasks.
