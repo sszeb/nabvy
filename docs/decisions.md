@@ -351,6 +351,16 @@ The owner, to coordinator 9: "For next session run everything on fable, the ultr
 
 The owner, to coordinator 11, from the usage report: 79% of usage came from calls at over 150k context and 22% from workflow subagents; "Longer sessions are more expensive even when cached. /compact mid-task, /clear when switching to new tasks. If this runs frequently, consider configuring its subagents with a cheaper model or tightening their prompts." Applied at once, and the rules are in `docs/session-conventions.md`, "Context economy": every session hands off at 150k tokens (was 300k in `CLAUDE.md`, "Short sessions"); a session far past the line is not woken for new work, a fresh session is briefed instead; the coordinator runs its own work in-line and uses a workflow only where fan-out pays, with Sonnet or Haiku and low effort for readers and mechanical steps; briefs name slices to read; the owner may `/compact` an idle long-lived session between wakes. The unused connectors attached to the Nabvy environment add their tool listings to every call of every session; detaching them is the owner's setting.
 
+## Model by job, revised: Opus for coordinators, Sonnet for medium tasks, Haiku for code and code reviews (owner, 2026-09-25, 19:58)
+
+The owner, to coordinator 15: "From now on for each new session use opus for coordinating sessions and use sonnet for medium tasks and haiku for code and code reviews." Applied to every session created from 19:58 on; running sessions finish on the model they started with.
+
+- **Coordinating sessions run on `claude-opus-5-5`**: the coordinator and its successors.
+- **Medium tasks run on `claude-sonnet-5`**: docs, CRUD, UI, design readers and critics, and any session that is neither coordination nor a code build or review.
+- **Code and code reviews run on `claude-haiku-4-5-20251001`**: build sessions, fix sessions and the reviewer (reviewer 15 onwards; reviewer 14 finishes its queue on Fable). The "Fable after two failed reviews" escalation from 14:55 is withdrawn unless the owner restores it.
+- Effort stays `medium`, set in the app; briefs keep stating it. The relay and watchdog Routines stay on Haiku 4.5 (set by the owner in the app).
+- Coordinator 15's note to the owner (19:58): the reviewer checks RLS, grants and migrations that go straight to production, so Haiku there carries the most quality risk of the three; the owner's decision stands.
+
 ## Model by job: Opus 5.5 for build sessions, Fable for reviewer and coordinator, Haiku for Routines (owner, 2026-09-25, 14:55)
 
 The owner sent the "Choosing the right model" and "Optimizing for cost and intelligence" pages and said "implement all recommendations". Measured on the attribution build session (Fable 5.1, $4.83): cache writes at the 1-hour price were 55% of the bill, cache reads 24%, output 21%; the same token profile on Opus 5.5 costs about $2.40, and the page's SWE-bench Pro measurement has Opus 5.5 at its default effort matching Fable 5.1 at default for about a fifth of the cost per solved task. From 14:55 on:
