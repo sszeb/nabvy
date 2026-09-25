@@ -1,0 +1,15 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": false,
+  "steps": [
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T01:40:43.415Z"
+      }
+    },
+    {
+      "tick": "2026-09-24T02:40:43.415Z"
+    }
+  ]
+}

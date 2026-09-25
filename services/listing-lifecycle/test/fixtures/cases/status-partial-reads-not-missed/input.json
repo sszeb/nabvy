@@ -1,0 +1,51 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "the recorded run's rows re-collected without row 0 by a capped sweep at +12 h, a degraded (browser-fallback) sweep at +14 h, a newest-first page-1 check at +16 h and a search judged as recorded (newest, capped) at +18 h; none is a complete full-read sweep, so none counts as a miss",
+  "steps": [
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T01:40:43.415Z"
+      }
+    },
+    {
+      "tick": "2026-09-24T02:40:43.415Z"
+    },
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T13:40:43.415Z",
+        "drop": ["1816901372840238"],
+        "coverage": "capped"
+      }
+    },
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T15:40:43.415Z",
+        "drop": ["1816901372840238"],
+        "coverage": "degraded"
+      }
+    },
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T17:40:43.415Z",
+        "drop": ["1816901372840238"],
+        "coverage": "page-1"
+      }
+    },
+    {
+      "job": {
+        "kind": "search",
+        "collectedAt": "2026-09-24T19:40:43.415Z",
+        "drop": ["1816901372840238"],
+        "coverage": "recorded"
+      }
+    },
+    {
+      "tick": "2026-09-25T02:00:00.000Z"
+    }
+  ]
+}
