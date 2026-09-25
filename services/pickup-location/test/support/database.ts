@@ -1,19 +1,20 @@
+import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { PGlite } from '@electric-sql/pglite'
 import type { Queryable } from '@nabvy/db'
-import { record } from '@nabvy/detail-evidence'
-import { ingest } from '@nabvy/listing-ingest'
 import { drizzle } from 'drizzle-orm/pglite'
 
 // An in-process Postgres (PGlite) in the order the live project gets its migrations: Supabase
 // stand-ins, supabase/migrations (the gateway bootstrap), then core, audit-log, switches,
 // cost-meter, apify-gateway, listing-ingest, detail-evidence, run-coverage, city-pages,
-// location, listing-suppression and this module. Built like parts-rules' test support. Used as
-// nabvy_pipeline, the role the module runs as. PGlite has no pg_net, PostGIS, pgvector or
-// pg_trgm, so `create extension` lines are skipped (the full set runs on real Postgres in
-// `pnpm db:dry-run`).
+// location, listing-suppression and this module. Used as nabvy_pipeline, the role the module
+// runs as. Synthetic listings are written straight into listing-ingest's and detail-evidence's
+// tables as the migration superuser (the shape packages/db/tests/listing-suppression.test.sql
+// uses), never through the gateway: this module reads those modules' views only. PGlite has no
+// pg_net, PostGIS, pgvector or pg_trgm, so `create extension` lines are skipped (the full set
+// runs on real Postgres in `pnpm db:dry-run`).
 
 const root = fileURLToPath(new URL('../../../../', import.meta.url))
 const sqlIn = (dir: string) =>
@@ -41,8 +42,6 @@ const FILES = [
   ].flatMap((m) => sqlIn(`packages/db/migrations/${m}`)),
 ]
 
-type Json = Record<string, unknown>
-
 export interface TestDatabase {
   /** Drizzle on the one PGlite connection, running as nabvy_pipeline. */
   db: Queryable
@@ -56,19 +55,7 @@ export interface TestDatabase {
   switches(states: Record<string, 'off' | 'shadow' | 'on'>): Promise<void>
   /** Stores city pages the way city-pages leaves them (the gazetteer this module reads). */
   cityPages(pages: SyntheticPage[]): Promise<void>
-  /**
-   * Stores a collected job the way the gateway leaves one: a succeeded `collect` job with its run
-   * object, item count and RUN_SUMMARY, and every row. Returns the job ID.
-   */
-  collected(run: RecordedRun, rows?: Json[]): Promise<number>
   close(): Promise<void>
-}
-
-export interface RecordedRun {
-  apifyRunId: string
-  run: Json
-  dataset: Json[]
-  runSummary: Json
 }
 
 export interface SyntheticPage {
@@ -78,22 +65,6 @@ export interface SyntheticPage {
   lat?: number
   lng?: number
 }
-
-const FIXTURES = new URL('../../../../fixtures/listings/', import.meta.url)
-const read = (path: string) => JSON.parse(readFileSync(new URL(path, FIXTURES), 'utf8'))
-
-/** A recorded run, e.g. `facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k`. */
-export function loadRun(run: string): RecordedRun {
-  const meta = read(`${run}/run.json`)
-  return {
-    apifyRunId: meta.apifyRunId,
-    run: meta.run,
-    dataset: read(`${run}/dataset.json`),
-    runSummary: read(`${run}/run-summary.json`),
-  }
-}
-
-export const RECORDED = 'facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k'
 
 export async function createTestDatabase(): Promise<TestDatabase> {
   const pg = new PGlite()
@@ -147,30 +118,6 @@ export async function createTestDatabase(): Promise<TestDatabase> {
         )
       }
     },
-    async collected(recorded, rows = recorded.dataset) {
-      const [job] = await asOwner(
-        `insert into apify_gateway.jobs (kind, input, status, apify_run_id, result)
-         values ('collect', $1::jsonb, 'succeeded', $2, $3::jsonb) returning id`,
-        [
-          JSON.stringify({ apifyRunId: recorded.apifyRunId }),
-          recorded.apifyRunId,
-          JSON.stringify({
-            ...recorded.run,
-            id: recorded.apifyRunId,
-            itemCount: rows.length,
-            runSummary: recorded.runSummary,
-          }),
-        ],
-      )
-      const jobId = Number(job?.id)
-      await asOwner(
-        `insert into apify_gateway.items (job_id, seq, item)
-         select $1, (ord - 1)::integer, value
-         from jsonb_array_elements($2::jsonb) with ordinality as t (value, ord)`,
-        [jobId, JSON.stringify(rows)],
-      )
-      return jobId
-    },
     close: () => pg.close(),
   }
 }
@@ -188,74 +135,82 @@ export const ALL_ON = {
   'pickup-location': 'on',
 } as const
 
-/**
- * Stores rows as a collected job, lets listing-ingest ingest it and detail-evidence record it, as
- * the live pipeline does before `detail-evidence.changed` reaches this module. Returns the listing
- * IDs the `changed` event carries.
- */
-export async function detailed(
-  t: TestDatabase,
-  recorded: RecordedRun,
-  rows: Json[] = recorded.dataset,
-): Promise<string[]> {
-  const jobId = await t.collected(recorded, rows)
-  const ingested = await ingest(t.db, { jobId, kind: 'search' })
-  if (!ingested.ok) throw new Error(ingested.error.message)
-  const recordedJob = await record(t.db, { jobId })
-  if (!recordedJob.ok) throw new Error(recordedJob.error.message)
-  return recordedJob.value.changed
+/** A synthetic listing: what listing-ingest and detail-evidence would hold for it. */
+export interface SyntheticListing {
+  listingId: string
+  title: string
+  description: string | null
+  location: string | null
+  cityPageId: string | null
+  coordinates?: { latitude: number; longitude: number } | null
+  deliveryTypes?: string[]
+  /** The collection time of this version; a later one is a newer version of the same listing. */
+  collectedAt?: string
 }
 
-/** The listing ID of each source listing ID, from listing-ingest's view. */
-export async function listingIdsBySource(t: TestDatabase): Promise<Map<string, string>> {
-  const rows = await t.asPipeline('select id, source_listing_id from listing_ingest.v_listings')
-  return new Map(rows.map((r) => [r.source_listing_id as string, r.id as string]))
-}
-
-/** A deep copy of rows with one listing's fields replaced (synthetic edits). */
-export function withFields(rows: Json[], listingId: string, fields: Json): Json[] {
-  return rows.map((row) => (row.listingId === listingId ? { ...row, ...fields } : row))
-}
+const sha256 = (text: string) => createHash('sha256').update(text).digest('hex')
+let nextJobId = 1000
 
 /**
- * A synthetic listing row built from the recorded run's first listing (`"synthetic": true` in
- * the case's input): its title, description, location text, city page and coordinates replaced.
- * The city page is set where listing-ingest reads it (sourceFields.search.location.reverse_geocode
- * .city_page.id) and the coordinates where detail-evidence reads them (locationCoordinates).
+ * Stores synthetic listings the way the live pipeline leaves them before
+ * `detail-evidence.changed` reaches this module: one listing-ingest row per listing (kept on a
+ * second call), and one evidence row and one fetch per version (the evidence hash is the title
+ * and description hashed, as detail-evidence's own key is; a later `collectedAt` is a newer
+ * version). Returns the listing IDs the `changed` event carries, in the order given.
  */
-export function syntheticListing(
-  base: Json,
-  fields: {
-    listingId: string
-    title: string
-    description: string | null
-    location: string | null
-    cityPageId: string | null
-    coordinates?: { latitude: number; longitude: number } | null
-    deliveryTypes?: string[]
-  },
-): Json {
-  const search = ((base.sourceFields as Json | undefined)?.search as Json | undefined) ?? {}
-  const reverse = fields.cityPageId
-    ? {
-        reverse_geocode: { city: fields.location, state: '', city_page: { id: fields.cityPageId } },
-      }
-    : null
-  return {
-    ...base,
-    listingId: fields.listingId,
-    title: fields.title,
-    description: fields.description,
-    descriptionStatus: fields.description ? 'full_verified' : 'none',
-    descriptionComplete: fields.description !== null,
-    location: fields.location,
-    deliveryTypes: fields.deliveryTypes ?? ['IN_PERSON'],
-    conflicts: [],
-    locationCoordinates: fields.coordinates ? { ...fields.coordinates, precision: 'coarse' } : null,
-    locationDetails: reverse ?? null,
-    sourceFields: {
-      ...(base.sourceFields as Json),
-      search: { ...search, location: reverse ?? { reverse_geocode: { city: fields.location } } },
-    },
+export async function detailed(t: TestDatabase, listings: SyntheticListing[]): Promise<string[]> {
+  const ids: string[] = []
+  for (const [i, l] of listings.entries()) {
+    const at = l.collectedAt ?? '2026-09-24T01:40:00.000Z'
+    const jobId = nextJobId++
+    const cardHash = sha256(`card:${l.listingId}:${l.title}`)
+    const evidenceHash = sha256(`${l.title}\n${l.description ?? ''}`)
+    const [row] = await t.sql(
+      `insert into listing_ingest.listings (source, source_listing_id, card_hash, price_minor,
+         currency, title, first_fetched_at, last_seen_at, city_page_id, town_label,
+         delivery_types, availability, item_job_id, item_seq)
+       values ('facebook', $1, $2, 20000, 'GBP', $3, $4, $4, $5, $6, $7::text[], 'live', 1, $8)
+       on conflict (source, source_listing_id) do update set last_seen_at = excluded.last_seen_at
+       returning id`,
+      [
+        l.listingId,
+        cardHash,
+        l.title,
+        at,
+        l.cityPageId,
+        l.location,
+        l.deliveryTypes ?? ['IN_PERSON'],
+        i,
+      ],
+    )
+    const id = String(row?.id)
+    ids.push(id)
+    await t.sql(
+      `insert into detail_evidence.evidence (source, source_listing_id, listing_id, evidence_hash,
+         first_seen_at, last_seen_at, item_job_id, item_seq, title, description,
+         description_status, lat, lng)
+       values ('facebook', $1, $2, $3, $4, $4, $5, $6, $7, $8, $9, $10, $11)
+       on conflict do nothing`,
+      [
+        l.listingId,
+        id,
+        evidenceHash,
+        at,
+        jobId,
+        0,
+        l.title,
+        l.description,
+        l.description ? 'full_verified' : 'missing',
+        l.coordinates?.latitude ?? null,
+        l.coordinates?.longitude ?? null,
+      ],
+    )
+    await t.sql(
+      `insert into detail_evidence.fetches (source, source_listing_id, listing_id, job_id, seq,
+         fetched_at, detail_outcome, description_status, evidence_hash)
+       values ('facebook', $1, $2, $3, $4, $5, 'collected', $6, $7)`,
+      [l.listingId, id, jobId, 0, at, l.description ? 'full_verified' : 'missing', evidenceHash],
+    )
   }
+  return ids
 }

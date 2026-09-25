@@ -7,9 +7,7 @@ import {
   ALL_ON,
   createTestDatabase,
   detailed,
-  loadRun,
-  RECORDED,
-  syntheticListing,
+  type SyntheticListing,
   type TestDatabase,
 } from './support/database'
 
@@ -17,10 +15,6 @@ import {
 // and returns the same event keys; a new version of one listing resolves that listing only; an
 // older input never replaces a newer one; the card pass never replaces the detail pass.
 
-type Json = Record<string, unknown>
-const recorded = loadRun(RECORDED)
-const base = recorded.dataset.find((r) => r.recordType === 'listing') as Json
-const others = recorded.dataset.filter((r) => r.recordType !== 'listing')
 const CHI = {
   cityPageId: '115935195086622',
   name: 'Chichester, West Sussex',
@@ -28,15 +22,14 @@ const CHI = {
   lat: 50.8365,
   lng: -0.7792,
 }
-const listing = (id: string, description: string) =>
-  syntheticListing(base, {
-    listingId: id,
-    title: 'RTX 3090 gaming PC',
-    description,
-    location: 'Chichester',
-    cityPageId: CHI.cityPageId,
-    coordinates: { latitude: 50.84, longitude: -0.78 },
-  })
+const listing = (id: string, description: string): SyntheticListing => ({
+  listingId: id,
+  title: 'RTX 3090 gaming PC',
+  description,
+  location: 'Chichester',
+  cityPageId: CHI.cityPageId,
+  coordinates: { latitude: 50.84, longitude: -0.78 },
+})
 
 let t: TestDatabase
 beforeEach(async () => {
@@ -62,12 +55,10 @@ const counts = async () => {
 
 describe('idempotency', () => {
   it('a second run of the same batch writes nothing and returns the same event keys', async () => {
-    const rows = [
-      ...others,
+    const listingIds = await detailed(t, [
       listing('7100000000000001', 'Collection from Bognor.'),
       listing('7100000000000002', 'Cash on collection.'),
-    ]
-    const listingIds = await detailed(t, recorded, rows)
+    ])
     const first = await run(t.db, { pass: 'detail', listingIds })
     const after = await counts()
     const second = await run(t.db, { pass: 'detail', listingIds: [...listingIds].reverse() })
@@ -84,23 +75,17 @@ describe('idempotency', () => {
   })
 
   it('a new version of one listing resolves that listing only, and an older input never wins', async () => {
-    const rows = [
-      ...others,
+    const listingIds = await detailed(t, [
       listing('7100000000000001', 'Collection from Chichester.'),
       listing('7100000000000002', 'Cash on collection.'),
-    ]
-    const listingIds = await detailed(t, recorded, rows)
+    ])
     await run(t.db, { pass: 'detail', listingIds })
-    const edited = rows.map((r) =>
-      r.listingId === '7100000000000001'
-        ? {
-            ...r,
-            collectedAt: '2026-09-25T00:00:00.000Z',
-            description: 'Collection only from Leeds.',
-          }
-        : r,
-    )
-    const changed = await detailed(t, recorded, edited)
+    const changed = await detailed(t, [
+      {
+        ...listing('7100000000000001', 'Collection only from Leeds.'),
+        collectedAt: '2026-09-25T00:00:00.000Z',
+      },
+    ])
     expect(changed).toHaveLength(1)
     const second = await run(t.db, { pass: 'detail', listingIds: changed })
     if (!second.ok) throw new Error('run failed')
@@ -128,10 +113,7 @@ describe('idempotency', () => {
   })
 
   it('the handler publishes once; a redelivery publishes nothing new', async () => {
-    const listingIds = await detailed(t, recorded, [
-      ...others,
-      listing('7100000000000003', 'Collection from Bognor.'),
-    ])
+    const listingIds = await detailed(t, [listing('7100000000000003', 'Collection from Bognor.')])
     const publisher = createMemoryPublisher()
     const handler = detailEvidenceChangedHandler({ transaction: (fn) => t.db.transaction(fn) })
     const envelope = createEvent(

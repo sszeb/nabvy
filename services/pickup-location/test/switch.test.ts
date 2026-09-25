@@ -4,9 +4,7 @@ import {
   ALL_ON,
   createTestDatabase,
   detailed,
-  loadRun,
-  RECORDED,
-  syntheticListing,
+  type SyntheticListing,
   type TestDatabase,
 } from './support/database'
 
@@ -14,10 +12,6 @@ import {
 // every user-facing reader (app.v_pickup_location, pointsFor) gives exactly what off gives;
 // on shows rows. erase() and applyOverride() run whatever the switch says.
 
-type Json = Record<string, unknown>
-const recorded = loadRun(RECORDED)
-const base = recorded.dataset.find((r) => r.recordType === 'listing') as Json
-const others = recorded.dataset.filter((r) => r.recordType !== 'listing')
 const CHI = {
   cityPageId: '115935195086622',
   name: 'Chichester, West Sussex',
@@ -26,24 +20,23 @@ const CHI = {
   lng: -0.7792,
 }
 const VIEWS = ['v_areas', 'v_evidence', 'v_handover', 'v_ai_usage']
-const rows = [
-  ...others,
-  syntheticListing(base, {
+const rows: SyntheticListing[] = [
+  {
     listingId: '7200000000000001',
     title: 'RTX 3090',
     description: 'Collection only from Leeds.',
     location: 'Chichester',
     cityPageId: CHI.cityPageId,
     coordinates: { latitude: 50.84, longitude: -0.78 },
-  }),
-  syntheticListing(base, {
+  },
+  {
     listingId: '7200000000000002',
     title: 'RTX 3080',
     description: 'Selling my PC in Leeds, cheap.',
     location: 'Chichester',
     cityPageId: CHI.cityPageId,
     coordinates: { latitude: 50.84, longitude: -0.78 },
-  }),
+  },
 ]
 
 let t: TestDatabase
@@ -86,7 +79,7 @@ const points = async (ids: string[]) =>
 
 describe('switch', () => {
   it('off: acknowledges, writes nothing, and every view is empty', async () => {
-    const listingIds = await detailed(t, recorded, rows)
+    const listingIds = await detailed(t, rows)
     await t.switches({ 'pickup-location': 'off' })
     expect(await run(t.db, { pass: 'detail', listingIds })).toMatchObject({
       ok: true,
@@ -105,7 +98,7 @@ describe('switch', () => {
   })
 
   it('a paused pipeline writes nothing', async () => {
-    const listingIds = await detailed(t, recorded, rows)
+    const listingIds = await detailed(t, rows)
     await t.switches({ pipeline: 'off' })
     expect(await run(t.db, { pass: 'detail', listingIds })).toMatchObject({
       ok: true,
@@ -115,7 +108,7 @@ describe('switch', () => {
   })
 
   it('shadow: internal views fill, the user-facing view stays empty, pointsFor equals off', async () => {
-    const listingIds = await detailed(t, recorded, rows)
+    const listingIds = await detailed(t, rows)
     await t.switches({ 'pickup-location': 'off' })
     const off = await points(listingIds)
     expect(off).toHaveLength(2)
@@ -142,7 +135,7 @@ describe('switch', () => {
   })
 
   it('the user-facing view needs listing-suppression on and hides a suppressed listing', async () => {
-    const listingIds = await detailed(t, recorded, rows)
+    const listingIds = await detailed(t, rows)
     await run(t.db, { pass: 'detail', listingIds })
     expect((await viewRows()).app).toBe(2)
     await t.switches({ 'listing-suppression': 'off' })
@@ -159,7 +152,7 @@ describe('switch', () => {
   })
 
   it('erase removes everything whatever the switch; an override moves the current row', async () => {
-    const listingIds = await detailed(t, recorded, rows)
+    const listingIds = await detailed(t, rows)
     await run(t.db, { pass: 'detail', listingIds })
     const target = listingIds[0] as string
     const applied = await applyOverride(t.db, {

@@ -1,6 +1,6 @@
 {
   "synthetic": true,
-  "builtFrom": "fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k, listing 1816901372840238 (title, description, location, page, coordinates and delivery types replaced)",
+  "builtFrom": "synthetic rows in the shape of listing_ingest.listings and detail_evidence.evidence (test/support/database.ts, detailed()); the city pages are the seed's (city-pages.seed.json), with points added where the case needs one",
   "pages": [
     {
       "cityPageId": "115935195086622",

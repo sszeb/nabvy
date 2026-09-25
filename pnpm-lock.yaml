@@ -906,12 +906,6 @@ importers:
       '@electric-sql/pglite':
         specifier: 0.5.8
         version: 0.5.8
-      '@nabvy/detail-evidence':
-        specifier: workspace:*
-        version: link:../detail-evidence
-      '@nabvy/listing-ingest':
-        specifier: workspace:*
-        version: link:../listing-ingest
 
   services/pricing-console:
     dependencies:

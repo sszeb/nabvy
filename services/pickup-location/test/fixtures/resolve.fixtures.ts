@@ -5,18 +5,16 @@ import {
   ALL_ON,
   createTestDatabase,
   detailed,
-  loadRun,
-  RECORDED,
+  type SyntheticListing,
   type SyntheticPage,
-  syntheticListing,
   type TestDatabase,
 } from '../support/database'
 
-// Stage "resolve": synthetic listings built from the recorded run's first row (the card's cases;
-// `"synthetic": true` in each input.json), stored as a collected gateway job, ingested by
-// listing-ingest, recorded by detail-evidence and resolved by the detail pass on the real
-// migrations in PGlite. Each case checks, per listing, what the internal and user-facing views
-// show, and that no view carries a full postcode or the listing's own coordinates.
+// Stage "resolve": synthetic listings (the card's cases; `"synthetic": true` in each input.json)
+// written as listing-ingest and detail-evidence rows over the seeded city pages, then resolved
+// by the detail pass on the real migrations in PGlite. Each case checks, per listing, what the
+// internal and user-facing views show, and that no view carries a full postcode or the
+// listing's own coordinates.
 
 type Json = Record<string, unknown>
 
@@ -24,15 +22,13 @@ interface Input {
   synthetic: true
   builtFrom: string
   pages: SyntheticPage[]
-  listings: Parameters<typeof syntheticListing>[1][]
+  listings: SyntheticListing[]
   postcodes?: Record<string, { lat: number; lng: number }>
 }
 
 const CASES = new URL('./cases/', import.meta.url)
 const read = (url: URL) => JSON.parse(readFileSync(url, 'utf8'))
 const cases = readdirSync(CASES).sort()
-const recorded = loadRun(RECORDED)
-const base = recorded.dataset.find((r) => r.recordType === 'listing') as Json
 
 let t: TestDatabase
 beforeEach(async () => {
@@ -102,11 +98,7 @@ describe('resolve', () => {
       listings: Record<string, Json>
     }
     await t.cityPages(input.pages)
-    const rows = [
-      ...recorded.dataset.filter((r) => r.recordType !== 'listing'),
-      ...input.listings.map((l) => syntheticListing(base, l)),
-    ]
-    const listingIds = await detailed(t, recorded, rows)
+    const listingIds = await detailed(t, input.listings)
     const postcodes = new Map(Object.entries(input.postcodes ?? {}))
     const result = await run(
       t.db,
