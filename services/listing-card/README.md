@@ -42,7 +42,8 @@ No events (this module has nothing to announce; the module card lists only its v
   instead).
 - **Functions** (`@nabvy/listing-card`): `cardsFor(q, listingIds)` → `ListingCard[]`, the visible
   cards for these listing IDs (an off-switch, suppressed or missing listing is simply absent, never
-  an error).
+  an error). Takes any number of IDs, read 500 at a time (rule 9), as
+  `listing_suppression.suppressed` does.
 
 ## Tables
 
@@ -56,8 +57,12 @@ only for the folder convention (rule 2) and to give this module's own TypeScript
 
 ## Rules and thresholds
 
-None. This module has no numeric threshold: it projects columns other modules already compute and
-applies switch and suppression filters, none of which is tunable.
+| Rule | Value | Basis | Status |
+| --- | --- | --- | --- |
+| `cardsFor` batch size | 500 | Rule 9 of `_rules.md` (batches, never one query per listing); matches `listing_suppression.suppressed`'s own 500 | Fixed by rule, not calibrated |
+
+No other numeric threshold: this module otherwise projects columns other modules already compute
+and applies switch and suppression filters, none of which is tunable.
 
 ## Fixtures and pass rate
 
