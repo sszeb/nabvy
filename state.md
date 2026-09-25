@@ -37,6 +37,8 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 - photo-review stays parked (owner).
 
 ## Waiting on the owner
+- (coordinator 18, 23:30) Plan: docs/routines/improvement-plan.md on claude/coordinator-16 (#101). Owner in the app: (1) remove the "Pull request: Converted to draft" GitHub trigger from "Nabvy reviewer (on request)", keep it API-only; (2) on the coordinator Routine add GitHub trigger "Pull request: Closed" with filters Is merged = true and Base branch = main; (3) later, per the plan's rollout: API tokens for the reviewer and Fixer as repository secrets (never in chat).
+- PR #81 review fire was refused by the permission classifier at 23:30; the hourly reviewer backstop or the owner fires it.
 - In claude.ai/code/routines, for "Nabvy reviewer (on request)" and "Nabvy reviewer (hourly)": attach the repository sszeb/nabvy and set the model to Sonnet 5 (as done for the coordinator at 21:57). Until then reviewer runs may fail.
 - Approve L2's pending permission prompt (session "Nabvy L2: pipeline wiring and local runner").
 - `ROUTER_API_KEY` secret for router-gateway (owed since 16:45).
@@ -51,6 +53,7 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 23:30 UTC coordinator 18: both reviewer Routine prompts carry their rules inline (no read of docs/session-conventions.md; backstop order: base of a stack, then [cp N], then oldest); on-request reviews fired for #83, #85, #89; fleet and Routines plan in docs/routines/improvement-plan.md.
 - 22:52 UTC dispatcher run: nothing queued
 
 ## Retired
