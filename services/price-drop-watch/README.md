@@ -124,7 +124,9 @@ refused) and `packages/db/tests/price-drop-watch.test.sql` (grants; RLS isolatio
 `WITH CHECK`; the `drops` checks — strictly lower, non-negative, a real sha256; both `app.*`
 views' columns, `security_invoker` and switch/suppression gates, checked by hand because
 `nabvy_core.view_violations()` only scans schemas the migration ledger lists as modules, and `app`
-is not itself one; `listing_price_history()`'s `SECURITY DEFINER` privileges).
+is not itself one; `listing_price_history()`'s and `listing_known()`'s `SECURITY DEFINER`
+privileges, `nabvy_app` only, and the history helper's user scope called directly as `nabvy_app`:
+the watcher, another user, an unwatched listing and no `app.user_id` at all).
 
 ## Decisions
 
@@ -143,6 +145,17 @@ is not itself one; `listing_price_history()`'s `SECURITY DEFINER` privileges).
   `security_invoker` and touches only this module's own `watches`, so RLS still scopes every row
   to the caller. Recorded in `docs/questions/price-drop-watch.md` as a pattern other modules
   publishing their first `app.*` view will likely need too.
+- **2026-09-25: the helpers follow the coordinator's conditions** (`docs/security.md`,
+  "Cross-module reads behind a user-facing view"; `docs/questions.md`, "Coordinator answers").
+  `nabvy_pipeline` has no usage on schema `app` and no execute on either helper: the pipeline
+  reads `listing_ingest.v_listings`/`v_price_changes` directly with its own grants, and no
+  pipeline code calls `listing_known()`. `listing_price_history()` (row-returning) is scoped in
+  its own body, since its owner bypasses RLS: it returns rows only when
+  `nabvy_core.current_user_id()` has an active watch on that listing, so a call outside `withUser`
+  or for another user's listing returns nothing. `listing_known()` stays an unscoped boolean over
+  one opaque ID. Both are `language sql`, `stable`, `security definer`, `set search_path = ''`,
+  fully schema-qualified, revoked from `public` and granted to `nabvy_app` only; the SQL test
+  probes each of these as `nabvy_app`.
 - **2026-09-24: relist-merge's "stops the same item alerting twice" is implemented as an
   announcement dedupe, not a data merge (catalogue question 21).** A watch never moves to another
   listing ID (the card is explicit), so relist-merge cannot change what a watch points at. The

@@ -16,12 +16,17 @@ revoke all on schema app from public;
 comment on schema price_drop_watch is
   'Price-drop watch: a user''s watched listings and the price drops observed on them, within one listing ID each. Owner: the price-drop-watch module.';
 grant usage on schema price_drop_watch to nabvy_app, nabvy_pipeline;
-grant usage on schema app to nabvy_app, nabvy_pipeline;
+-- Schema app is the user-facing surface only (docs/security.md, "Cross-module reads behind a
+-- user-facing view"): nabvy_pipeline, and any cross-user or admin read, uses the internal views
+-- with their own grants and never gets usage on app.
+grant usage on schema app to nabvy_app;
 
 -- watch()'s own existence check ("is this a real listing-ingest listing?") reads
 -- listing_ingest.v_listings, an internal view (rule 5) granted only to nabvy_pipeline, but
 -- watch() itself runs as nabvy_app (withUser). Wrapped the same way as
--- listing_price_history() below: a SECURITY DEFINER function nabvy_app may call.
+-- listing_price_history() below: a SECURITY DEFINER function nabvy_app may call. A boolean
+-- predicate over one opaque ID needs no user scope (docs/security.md); nabvy_pipeline gets no
+-- execute because no pipeline code calls it (the pipeline reads listing_ingest.v_listings itself).
 create function price_drop_watch.listing_known(p_listing_id uuid)
 returns boolean
 language sql
@@ -32,7 +37,7 @@ as $$
   select exists (select 1 from listing_ingest.v_listings l where l.id = p_listing_id)
 $$;
 revoke all on function price_drop_watch.listing_known(uuid) from public;
-grant execute on function price_drop_watch.listing_known(uuid) to nabvy_app, nabvy_pipeline;
+grant execute on function price_drop_watch.listing_known(uuid) to nabvy_app;
 
 -- watches: the user's own row (create, unwatch). The pipeline reads every watch to schedule
 -- rechecks and to find watches on listings a batch of events touches; it never writes one.
@@ -77,6 +82,13 @@ grant select on app.v_price_drop_watch_watches to nabvy_app;
 -- migration role and callable by nabvy_app, exactly as listing_suppression.is_suppressed() wraps
 -- its own cross-module reads. The outer view stays security_invoker and touches only this
 -- module's own `watches`, so RLS still scopes every row to the caller.
+--
+-- The function's owner bypasses RLS, so its body is the guard (docs/security.md, "Cross-module
+-- reads behind a user-facing view"): it returns rows only when the caller has an active watch on
+-- that listing, checked as nabvy_core.current_user_id() against this module's own `watches`. A
+-- call outside withUser (no app.user_id) or for a listing the caller does not watch returns
+-- nothing. Row-returning, so nabvy_pipeline gets no execute: the pipeline reads
+-- listing_ingest.v_price_changes directly with its own grants.
 create function price_drop_watch.listing_price_history(p_listing_id uuid)
 returns table (observed_at timestamptz, price_minor bigint, currency text)
 language sql
@@ -84,7 +96,14 @@ stable
 security definer
 set search_path = ''
 as $$
-  with anchor as (
+  with watched as (
+    select 1
+    from price_drop_watch.watches w
+    where w.listing_id = p_listing_id
+      and w.active
+      and w.user_id = nabvy_core.current_user_id()
+  ),
+  anchor as (
     select l.first_fetched_at as observed_at, l.price_minor, l.currency
     from listing_ingest.v_listings l
     where l.id = p_listing_id and l.price_minor is not null
@@ -94,12 +113,16 @@ as $$
     from listing_ingest.v_price_changes pc
     where pc.listing_id = p_listing_id
   )
-  select observed_at, price_minor, currency from anchor
-  union all
-  select observed_at, price_minor, currency from changes
+  select h.observed_at, h.price_minor, h.currency
+  from (
+    select observed_at, price_minor, currency from anchor
+    union all
+    select observed_at, price_minor, currency from changes
+  ) h
+  where exists (select 1 from watched)
 $$;
 revoke all on function price_drop_watch.listing_price_history(uuid) from public;
-grant execute on function price_drop_watch.listing_price_history(uuid) to nabvy_app, nabvy_pipeline;
+grant execute on function price_drop_watch.listing_price_history(uuid) to nabvy_app;
 
 create view app.v_price_drop_watch_history with (security_invoker = true) as
   select w.listing_id, h.observed_at, h.price_minor, h.currency

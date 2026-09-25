@@ -69,28 +69,36 @@ select pg_temp.check((
   where table_schema = 'app' and table_name = 'v_price_drop_watch_history')
   = array['listing_id', 'observed_at', 'price_minor', 'currency'], 'v_price_drop_watch_history columns');
 
--- listing_price_history(): SECURITY DEFINER, callable only by the app and pipeline roles.
+-- Schema app is the user-facing surface only: nabvy_app has usage, the pipeline never does
+-- (docs/security.md, "Cross-module reads behind a user-facing view").
+select pg_temp.check(has_schema_privilege('nabvy_app', 'app', 'usage'), 'nabvy_app has usage on app');
+select pg_temp.check(not has_schema_privilege(r, 'app', 'usage'), r || ' has no usage on app')
+from unnest(array['nabvy_pipeline', 'anon', 'authenticated']) as r;
+
+-- listing_price_history(): SECURITY DEFINER, stable, pinned search_path, callable by nabvy_app
+-- only (row-returning, so the pipeline gets no execute; it reads listing-ingest's views itself).
 select pg_temp.check(
-  (select prosecdef from pg_proc where oid = 'price_drop_watch.listing_price_history(uuid)'::regprocedure),
-  'listing_price_history is SECURITY DEFINER');
-select pg_temp.check(has_function_privilege(r, 'price_drop_watch.listing_price_history(uuid)', 'execute'),
-  r || ' may call listing_price_history')
-from unnest(array['nabvy_app', 'nabvy_pipeline']) as r;
+  (select prosecdef and provolatile = 's' and proconfig @> array['search_path=""']
+   from pg_proc where oid = 'price_drop_watch.listing_price_history(uuid)'::regprocedure),
+  'listing_price_history is SECURITY DEFINER, stable, with a pinned search_path');
+select pg_temp.check(has_function_privilege('nabvy_app', 'price_drop_watch.listing_price_history(uuid)', 'execute'),
+  'nabvy_app may call listing_price_history');
 select pg_temp.check(not has_function_privilege(r, 'price_drop_watch.listing_price_history(uuid)', 'execute'),
   r || ' may not call listing_price_history')
-from unnest(array['anon', 'authenticated']) as r;
+from unnest(array['nabvy_pipeline', 'anon', 'authenticated']) as r;
 
 -- listing_known(): the same pattern, for watch()'s own existence check (nabvy_app has no grant on
--- listing_ingest.v_listings).
+-- listing_ingest.v_listings). An unscoped boolean over one opaque ID; nabvy_app only, since no
+-- pipeline code calls it.
 select pg_temp.check(
-  (select prosecdef from pg_proc where oid = 'price_drop_watch.listing_known(uuid)'::regprocedure),
-  'listing_known is SECURITY DEFINER');
-select pg_temp.check(has_function_privilege(r, 'price_drop_watch.listing_known(uuid)', 'execute'),
-  r || ' may call listing_known')
-from unnest(array['nabvy_app', 'nabvy_pipeline']) as r;
+  (select prosecdef and provolatile = 's' and proconfig @> array['search_path=""']
+   from pg_proc where oid = 'price_drop_watch.listing_known(uuid)'::regprocedure),
+  'listing_known is SECURITY DEFINER, stable, with a pinned search_path');
+select pg_temp.check(has_function_privilege('nabvy_app', 'price_drop_watch.listing_known(uuid)', 'execute'),
+  'nabvy_app may call listing_known');
 select pg_temp.check(not has_function_privilege(r, 'price_drop_watch.listing_known(uuid)', 'execute'),
   r || ' may not call listing_known')
-from unnest(array['anon', 'authenticated']) as r;
+from unnest(array['nabvy_pipeline', 'anon', 'authenticated']) as r;
 
 -- Two watched listings: A has two sightings (a drop, 20000 -> 15000 GBP) so v_price_changes shows
 -- one row; B has one sighting only, no change. C is a third, unwatched listing.
@@ -209,6 +217,28 @@ begin
   end if;
 end;
 $$;
+reset role;
+
+-- listing_price_history() is scoped in its own body, not by RLS (its owner bypasses RLS): rows
+-- only for the caller's own active watch. Called directly as nabvy_app: the watcher (b1) sees
+-- listing A's two rows; another user (b2) sees nothing for A; nobody sees unwatched B; a call
+-- with no app.user_id at all (outside withUser) returns nothing.
+set local role nabvy_app;
+select set_config('app.user_id', '00000000-0000-4000-8000-0000000000b1', true);
+select pg_temp.check((select count(*) from price_drop_watch.listing_price_history(
+  '01920000-0000-7000-8000-00000000000a')) = 2, 'listing_price_history: the watcher sees A');
+select pg_temp.check((select count(*) from price_drop_watch.listing_price_history(
+  '01920000-0000-7000-8000-00000000000b')) = 0, 'listing_price_history: an unwatched listing is empty');
+reset role;
+set local role nabvy_app;
+select set_config('app.user_id', '00000000-0000-4000-8000-0000000000b2', true);
+select pg_temp.check((select count(*) from price_drop_watch.listing_price_history(
+  '01920000-0000-7000-8000-00000000000a')) = 0, 'listing_price_history: another user sees nothing for A');
+reset role;
+set local role nabvy_app;
+select set_config('app.user_id', '', true);
+select pg_temp.check((select count(*) from price_drop_watch.listing_price_history(
+  '01920000-0000-7000-8000-00000000000a')) = 0, 'listing_price_history: no app.user_id returns nothing');
 reset role;
 
 -- Switch gates: off (this module, or listing-suppression) empties both views (rule 11); a
