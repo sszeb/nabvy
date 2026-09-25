@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "arithmetic: two points whose great-circle distance lands close to a 5 km boundary",
+  "basis": "coordinates",
+  "cases": [
+    { "from": { "lat": 0, "lng": 0 }, "to": { "lat": 0, "lng": 0 } },
+    { "from": { "lat": 51.5074, "lng": -0.1278 }, "to": { "lat": 51.5074, "lng": -0.0728 } }
+  ]
+}

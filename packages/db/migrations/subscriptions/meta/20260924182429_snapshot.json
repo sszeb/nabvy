@@ -1,0 +1,516 @@
+{
+  "id": "a6d7139d-642f-4ecc-954d-0685a1d44934",
+  "prevId": "ab749c87-489b-45b6-bf51-cdd6897e9e3f",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "subscriptions.billing_events": {
+      "name": "billing_events",
+      "schema": "subscriptions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "stripe_event_id": {
+          "name": "stripe_event_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stripe_object_id": {
+          "name": "stripe_object_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outcome": {
+          "name": "outcome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stripe_created_at": {
+          "name": "stripe_created_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkout_session_id": {
+          "name": "checkout_session_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "consent_start_now": {
+          "name": "consent_start_now",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "consent_at": {
+          "name": "consent_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signal": {
+          "name": "signal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "card_fingerprint": {
+          "name": "card_fingerprint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "amount_minor": {
+          "name": "amount_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "billing_events_stripe_event_id_key": {
+          "name": "billing_events_stripe_event_id_key",
+          "columns": [
+            {
+              "expression": "stripe_event_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "billing_events_user_id_idx": {
+          "name": "billing_events_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "billing_events_stripe_object_id_idx": {
+          "name": "billing_events_stripe_object_id_idx",
+          "columns": [
+            {
+              "expression": "stripe_object_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "billing_events_outcome": {
+          "name": "billing_events_outcome",
+          "value": "\"subscriptions\".\"billing_events\".\"outcome\" in ('applied', 'recorded', 'stale', 'ignored')"
+        },
+        "billing_events_signal": {
+          "name": "billing_events_signal",
+          "value": "\"subscriptions\".\"billing_events\".\"signal\" is null or \"subscriptions\".\"billing_events\".\"signal\" in ('payment_failed', 'dispute')"
+        },
+        "billing_events_consent": {
+          "name": "billing_events_consent",
+          "value": "(\"subscriptions\".\"billing_events\".\"checkout_session_id\" is null) = (\"subscriptions\".\"billing_events\".\"consent_start_now\" is null) and (\"subscriptions\".\"billing_events\".\"consent_start_now\" is null) = (\"subscriptions\".\"billing_events\".\"consent_at\" is null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "subscriptions.customers": {
+      "name": "customers",
+      "schema": "subscriptions",
+      "columns": {
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "subscriptions.entitlements": {
+      "name": "entitlements",
+      "schema": "subscriptions",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tier": {
+          "name": "tier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "areas": {
+          "name": "areas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wants": {
+          "name": "wants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channels": {
+          "name": "channels",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "base_cadence_seconds": {
+          "name": "base_cadence_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "floor_cadence_seconds": {
+          "name": "floor_cadence_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "period_start": {
+          "name": "period_start",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "period_end": {
+          "name": "period_end",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cancel_at_period_end": {
+          "name": "cancel_at_period_end",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "trial_end": {
+          "name": "trial_end",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stripe_subscription_id": {
+          "name": "stripe_subscription_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "interval_months": {
+          "name": "interval_months",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "period_cash_minor": {
+          "name": "period_cash_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cash_period_start": {
+          "name": "cash_period_start",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "policy_version": {
+          "name": "policy_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_event_id": {
+          "name": "last_event_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_event_at": {
+          "name": "last_event_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "entitlements_status_idx": {
+          "name": "entitlements_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "entitlements_status": {
+          "name": "entitlements_status",
+          "value": "\"subscriptions\".\"entitlements\".\"status\" in ('free', 'trialing', 'active', 'past_due')"
+        },
+        "entitlements_counts": {
+          "name": "entitlements_counts",
+          "value": "\"subscriptions\".\"entitlements\".\"areas\" >= 0 and \"subscriptions\".\"entitlements\".\"wants\" >= 0"
+        },
+        "entitlements_interval": {
+          "name": "entitlements_interval",
+          "value": "\"subscriptions\".\"entitlements\".\"interval_months\" is null or \"subscriptions\".\"entitlements\".\"interval_months\" in (1, 12)"
+        },
+        "entitlements_cash": {
+          "name": "entitlements_cash",
+          "value": "\"subscriptions\".\"entitlements\".\"period_cash_minor\" is null or \"subscriptions\".\"entitlements\".\"period_cash_minor\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "subscriptions": "subscriptions"
+  },
+  "views": {
+    "subscriptions.v_billing_signals": {
+      "name": "v_billing_signals",
+      "schema": "subscriptions",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "failed_payments": {
+          "name": "failed_payments",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "disputes": {
+          "name": "disputes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_failed_payment_at": {
+          "name": "last_failed_payment_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_dispute_at": {
+          "name": "last_dispute_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "card_fingerprints": {
+          "name": "card_fingerprints",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "subscriptions.v_entitlements": {
+      "name": "v_entitlements",
+      "schema": "subscriptions",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tier": {
+          "name": "tier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "areas": {
+          "name": "areas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wants": {
+          "name": "wants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channels": {
+          "name": "channels",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "base_cadence_seconds": {
+          "name": "base_cadence_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "floor_cadence_seconds": {
+          "name": "floor_cadence_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "period_end": {
+          "name": "period_end",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cancel_at_period_end": {
+          "name": "cancel_at_period_end",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "trial_end": {
+          "name": "trial_end",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "policy_version": {
+          "name": "policy_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

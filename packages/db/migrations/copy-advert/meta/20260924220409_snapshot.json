@@ -1,0 +1,1346 @@
+{
+  "id": "43e11c96-25c9-4acd-8778-eef65a05e48b",
+  "prevId": "3b0fc0f2-114f-4df8-8e2f-8cadb60f2596",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "copy_advert.account_checks": {
+      "name": "account_checks",
+      "schema": "copy_advert",
+      "columns": {
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "run_id": {
+          "name": "run_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "spans_accounts": {
+          "name": "spans_accounts",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checked_at": {
+          "name": "checked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "account_checks_cluster_key_run_id_pk": {
+          "name": "account_checks_cluster_key_run_id_pk",
+          "columns": [
+            "cluster_key",
+            "run_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "copy_advert.candidate_requests": {
+      "name": "candidate_requests",
+      "schema": "copy_advert",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "advert_fp": {
+          "name": "advert_fp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "requested_at": {
+          "name": "requested_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resolved_at": {
+          "name": "resolved_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outcome": {
+          "name": "outcome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "copy_advert.clusters": {
+      "name": "clusters",
+      "schema": "copy_advert",
+      "columns": {
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "member_set_hash": {
+          "name": "member_set_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listing_count": {
+          "name": "listing_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "town_count": {
+          "name": "town_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "span_days": {
+          "name": "span_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "spread_km": {
+          "name": "spread_km",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mass_posted": {
+          "name": "mass_posted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "as_of": {
+          "name": "as_of",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "clusters_currency_check": {
+          "name": "clusters_currency_check",
+          "value": "\"copy_advert\".\"clusters\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "clusters_status_check": {
+          "name": "clusters_status_check",
+          "value": "\"copy_advert\".\"clusters\".\"status\" in ('active', 'expired')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "copy_advert.flags": {
+      "name": "flags",
+      "schema": "copy_advert",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "towns": {
+          "name": "towns",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "span_days": {
+          "name": "span_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "would_show": {
+          "name": "would_show",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "corrected": {
+          "name": "corrected",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "member_set_hash": {
+          "name": "member_set_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "flags_corrected_check": {
+          "name": "flags_corrected_check",
+          "value": "\"copy_advert\".\"flags\".\"corrected\" in ('unflagged')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "copy_advert.links": {
+      "name": "links",
+      "schema": "copy_advert",
+      "columns": {
+        "listing_a": {
+          "name": "listing_a",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_b": {
+          "name": "listing_b",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "similarity": {
+          "name": "similarity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_id_match": {
+          "name": "photo_id_match",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decided_at": {
+          "name": "decided_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "links_b_idx": {
+          "name": "links_b_idx",
+          "columns": [
+            {
+              "expression": "listing_b",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "links_listing_a_listing_b_rule_version_pk": {
+          "name": "links_listing_a_listing_b_rule_version_pk",
+          "columns": [
+            "listing_a",
+            "listing_b",
+            "rule_version"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "links_order_check": {
+          "name": "links_order_check",
+          "value": "\"copy_advert\".\"links\".\"listing_a\" < \"copy_advert\".\"links\".\"listing_b\""
+        },
+        "links_basis_check": {
+          "name": "links_basis_check",
+          "value": "\"copy_advert\".\"links\".\"basis\" in ('exact_text', 'near_text', 'candidate', 'lookalike', 'text_copy')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "copy_advert.members": {
+      "name": "members",
+      "schema": "copy_advert",
+      "columns": {
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city_page_id": {
+          "name": "city_page_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "joined_at": {
+          "name": "joined_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "left_at": {
+          "name": "left_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "members_one_active_idx": {
+          "name": "members_one_active_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"copy_advert\".\"members\".\"left_at\" is null",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "members_cluster_key_listing_id_pk": {
+          "name": "members_cluster_key_listing_id_pk",
+          "columns": [
+            "cluster_key",
+            "listing_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "copy_advert.overrides": {
+      "name": "overrides",
+      "schema": "copy_advert",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_a": {
+          "name": "listing_a",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listing_b": {
+          "name": "listing_b",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "audit_id": {
+          "name": "audit_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "overrides_kind_check": {
+          "name": "overrides_kind_check",
+          "value": "\"copy_advert\".\"overrides\".\"kind\" in ('not_copy_pair', 'exclude_listing', 'confirm_pair')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "copy_advert.photo_matches": {
+      "name": "photo_matches",
+      "schema": "copy_advert",
+      "columns": {
+        "listing_a": {
+          "name": "listing_a",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_b": {
+          "name": "listing_b",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "photo_id": {
+          "name": "photo_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "found_at": {
+          "name": "found_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "photo_matches_listing_a_listing_b_rule_version_pk": {
+          "name": "photo_matches_listing_a_listing_b_rule_version_pk",
+          "columns": [
+            "listing_a",
+            "listing_b",
+            "rule_version"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "photo_matches_order_check": {
+          "name": "photo_matches_order_check",
+          "value": "\"copy_advert\".\"photo_matches\".\"listing_a\" < \"copy_advert\".\"photo_matches\".\"listing_b\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "copy_advert.prints": {
+      "name": "prints",
+      "schema": "copy_advert",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title_norm": {
+          "name": "title_norm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "advert_fp": {
+          "name": "advert_fp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "desc_status": {
+          "name": "desc_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "desc_norm": {
+          "name": "desc_norm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "desc_fp": {
+          "name": "desc_fp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_id": {
+          "name": "photo_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "city_page_id": {
+          "name": "city_page_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listed_at": {
+          "name": "listed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "input_t1": {
+          "name": "input_t1",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "done_at": {
+          "name": "done_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current": {
+          "name": "current",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "prints_advert_idx": {
+          "name": "prints_advert_idx",
+          "columns": [
+            {
+              "expression": "advert_fp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "last_seen_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "where": "\"copy_advert\".\"prints\".\"current\"",
+          "concurrently": false
+        },
+        "prints_desc_idx": {
+          "name": "prints_desc_idx",
+          "columns": [
+            {
+              "expression": "desc_fp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "where": "\"copy_advert\".\"prints\".\"current\"",
+          "concurrently": false
+        },
+        "prints_photo_idx": {
+          "name": "prints_photo_idx",
+          "columns": [
+            {
+              "expression": "photo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "where": "\"copy_advert\".\"prints\".\"current\"",
+          "concurrently": false
+        },
+        "prints_listing_idx": {
+          "name": "prints_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "prints_version_key": {
+          "name": "prints_version_key",
+          "columns": [
+            "source",
+            "source_listing_id",
+            "card_hash",
+            "evidence_hash",
+            "rule_version"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "prints_source_check": {
+          "name": "prints_source_check",
+          "value": "\"copy_advert\".\"prints\".\"source\" in ('ebay', 'facebook', 'gumtree', 'vinted', 'cex')"
+        },
+        "prints_currency_check": {
+          "name": "prints_currency_check",
+          "value": "\"copy_advert\".\"prints\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "prints_desc_status_check": {
+          "name": "prints_desc_status_check",
+          "value": "desc_status in ('full_verified', 'partial', 'missing')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "copy_advert.reports": {
+      "name": "reports",
+      "schema": "copy_advert",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'open'"
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "reports_user_listing_key": {
+          "name": "reports_user_listing_key",
+          "columns": [
+            "user_id",
+            "listing_id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "reports_reason_check": {
+          "name": "reports_reason_check",
+          "value": "\"copy_advert\".\"reports\".\"reason\" in ('not_a_copy', 'other')"
+        },
+        "reports_status_check": {
+          "name": "reports_status_check",
+          "value": "\"copy_advert\".\"reports\".\"status\" in ('open', 'accepted', 'rejected')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "copy_advert": "copy_advert"
+  },
+  "views": {
+    "copy_advert.v_cluster_facts": {
+      "name": "v_cluster_facts",
+      "schema": "copy_advert",
+      "columns": {
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_count": {
+          "name": "listing_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "town_count": {
+          "name": "town_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "span_days": {
+          "name": "span_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "spread_km": {
+          "name": "spread_km",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mass_posted": {
+          "name": "mass_posted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "as_of": {
+          "name": "as_of",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "copy_advert.v_links": {
+      "name": "v_links",
+      "schema": "copy_advert",
+      "columns": {
+        "listing_a": {
+          "name": "listing_a",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_b": {
+          "name": "listing_b",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "similarity": {
+          "name": "similarity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_id_match": {
+          "name": "photo_id_match",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decided_at": {
+          "name": "decided_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "copy_advert.v_listing_copy_facts": {
+      "name": "v_listing_copy_facts",
+      "schema": "copy_advert",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "other_listings": {
+          "name": "other_listings",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "towns": {
+          "name": "towns",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "span_days": {
+          "name": "span_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "spread_km": {
+          "name": "spread_km",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mass_posted": {
+          "name": "mass_posted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "would_show": {
+          "name": "would_show",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "text_copy_count": {
+          "name": "text_copy_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "copy_advert.v_members": {
+      "name": "v_members",
+      "schema": "copy_advert",
+      "columns": {
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city_page_id": {
+          "name": "city_page_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "joined_at": {
+          "name": "joined_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "member_set_hash": {
+          "name": "member_set_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "copy_advert.v_review_queue": {
+      "name": "v_review_queue",
+      "schema": "copy_advert",
+      "columns": {
+        "cluster_key": {
+          "name": "cluster_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_count": {
+          "name": "listing_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "town_count": {
+          "name": "town_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mass_posted": {
+          "name": "mass_posted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "as_of": {
+          "name": "as_of",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_checked_at": {
+          "name": "last_checked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "copy_advert.v_shadow_metrics": {
+      "name": "v_shadow_metrics",
+      "schema": "copy_advert",
+      "columns": {
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "clusters_formed": {
+          "name": "clusters_formed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active_clusters": {
+          "name": "active_clusters",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active_members": {
+          "name": "active_members",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "candidates_requested": {
+          "name": "candidates_requested",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "candidates_resolved": {
+          "name": "candidates_resolved",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "flags_would_show": {
+          "name": "flags_would_show",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lookalike_splits": {
+          "name": "lookalike_splits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "photo_id_matches": {
+          "name": "photo_id_matches",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reports": {
+          "name": "reports",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -39,6 +39,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
+      - run: pnpm check:conventions
+      - run: node --test scripts/check-conventions.test.mjs
       - run: pnpm test
       # Fails when a module's stage falls below its recorded pass rate (fixtures/README.md).
       - run: pnpm test:fixtures
@@ -126,6 +128,14 @@ jobs:
       # The magic-link quota under 20 simultaneous connections (PGlite in the checks job has one).
       - name: Auth rate-limit counter against the migrated database
         run: pnpm --filter @nabvy/auth test
+        env:
+          DATABASE_URL: postgres://postgres:ci-only@localhost:5432/postgres
+      # The admin gate end to end (task 4.3af): 401 for nobody, 403 for a plain user, and the
+      # production build refusing admin fixtures, over plain HTTP against the migrated database.
+      - name: Admin gate end to end against the migrated database
+        run: |
+          pnpm --filter @nabvy/web build
+          pnpm --filter @nabvy/web exec playwright test --project gate
         env:
           DATABASE_URL: postgres://postgres:ci-only@localhost:5432/postgres
       # Proves `pnpm new:module` end to end on a throwaway module that is never committed.

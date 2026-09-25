@@ -1,0 +1,50 @@
+{
+  "id": "evt_TestSubPastDue",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1920330000,
+  "data": {
+    "object": {
+      "id": "sub_TestC1",
+      "object": "subscription",
+      "customer": "cus_TestC1",
+      "status": "past_due",
+      "cancel_at_period_end": false,
+      "trial_end": null,
+      "currency": "gbp",
+      "metadata": {
+        "userId": "00000000-0000-4000-8000-0000000000c1",
+        "subscriptionId": "b6f0c2a0-0000-4000-8000-00000000a001",
+        "referenceId": "00000000-0000-4000-8000-0000000000c1"
+      },
+      "items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "si_TestC1a",
+            "object": "subscription_item",
+            "price": {
+              "id": "price_TestPro",
+              "object": "price",
+              "currency": "gbp",
+              "recurring": {
+                "interval": "month"
+              }
+            },
+            "quantity": 1,
+            "current_period_start": 1920326400,
+            "current_period_end": 1922918400
+          }
+        ],
+        "has_more": false
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "customer.subscription.updated"
+}
