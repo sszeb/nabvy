@@ -5,14 +5,15 @@ import { PGlite } from '@electric-sql/pglite'
 import type { Queryable } from '@nabvy/db'
 import { record } from '@nabvy/detail-evidence'
 import { ingest } from '@nabvy/listing-ingest'
+import { assess } from '@nabvy/run-coverage'
 import { drizzle } from 'drizzle-orm/pglite'
 import { applyEvent } from '../../src'
 
 // An in-process Postgres (PGlite) in the order the live project gets its migrations: Supabase
 // stand-ins, supabase/migrations (the gateway bootstrap), then core, switches, cost-meter,
-// apify-gateway, listing-ingest, detail-evidence, details-queue and this module. Built like
-// detail-evidence's test support: the other modules write their own tables through their exported
-// functions (ingest, record, enqueue), and this module reads their views. Used as nabvy_pipeline,
+// apify-gateway, listing-ingest, run-coverage, detail-evidence, details-queue and this module.
+// Built like detail-evidence's test support: the other modules write their own tables through
+// their exported functions (ingest, assess, record, enqueue), and this module reads their views. Used as nabvy_pipeline,
 // the role the module runs as. PGlite has
 // no pg_net, PostGIS, pgvector or pg_trgm, so `create extension` lines are skipped; the full set
 // runs in `pnpm db:dry-run`.
@@ -33,6 +34,7 @@ const FILES = [
     'cost-meter',
     'apify-gateway',
     'listing-ingest',
+    'run-coverage',
     'detail-evidence',
     'details-queue',
     'listing-lifecycle',
@@ -52,9 +54,10 @@ export interface TestDatabase {
   switches(states: Record<string, 'off' | 'shadow' | 'on'>): Promise<void>
   /**
    * Stores a collected job the way the gateway leaves one: a succeeded `collect` job with its run
-   * object, item count and RUN_SUMMARY, and every row. Returns the job ID.
+   * object, item count and RUN_SUMMARY (the recorded one, or `runSummary`), and every row.
+   * Returns the job ID.
    */
-  collected(run: RecordedRun, rows?: Json[]): Promise<number>
+  collected(run: RecordedRun, rows?: Json[], runSummary?: Json): Promise<number>
   close(): Promise<void>
 }
 
@@ -116,7 +119,7 @@ export async function createTestDatabase(): Promise<TestDatabase> {
         )
       }
     },
-    async collected(recorded, rows = recorded.dataset) {
+    async collected(recorded, rows = recorded.dataset, runSummary = recorded.runSummary) {
       const [job] = await asOwner(
         `insert into apify_gateway.jobs (kind, input, status, apify_run_id, result)
          values ('collect', $1::jsonb, 'succeeded', $2, $3::jsonb) returning id`,
@@ -127,7 +130,7 @@ export async function createTestDatabase(): Promise<TestDatabase> {
             ...recorded.run,
             id: recorded.apifyRunId,
             itemCount: rows.length,
-            runSummary: recorded.runSummary,
+            runSummary,
           }),
         ],
       )
@@ -150,24 +153,63 @@ export const ALL_ON = {
   apify: 'on',
   pipeline: 'on',
   'listing-ingest': 'on',
+  'run-coverage': 'on',
   'detail-evidence': 'on',
   'details-queue': 'on',
   'listing-lifecycle': 'on',
 } as const
 
 /**
- * Stores rows as a collected job, lets listing-ingest ingest it and detail-evidence record it, as
- * the live pipeline does on `run-collected`. Returns the job ID and both modules' events.
+ * How run-coverage judges a synthetic search job, set through its RUN_SUMMARY:
+ * - `recorded`: as the recorded run reports it, a newest-first check stopped by `results-limit`
+ *   (`capped`, kind `newest`);
+ * - `complete`: a default-order read stopped by `source-no-new-listings` (`complete`, `sweep`);
+ * - `capped`: a default-order read stopped by `results-limit` (`capped`, `sweep`);
+ * - `degraded`: a default-order read over the browser fallback (`degraded`, `sweep`);
+ * - `page-1`: a newest-first check that ended with no new listings (`complete`, `newest`).
+ */
+export type Coverage = 'recorded' | 'complete' | 'capped' | 'degraded' | 'page-1'
+
+/** The recorded RUN_SUMMARY with its one search edited to be judged as `coverage`. */
+export function summaryFor(recorded: RecordedRun, coverage: Coverage): Json {
+  const summary = recorded.runSummary
+  if (coverage === 'recorded') return summary
+  const [search] = summary.searches as Json[]
+  const { sort: _sort, ...controls } = (search?.searchControls ?? {}) as Json
+  const url = new URL(String(search?.url))
+  url.searchParams.delete('sortBy')
+  const edited: Json = {
+    ...search,
+    stopReason: coverage === 'capped' ? 'results-limit' : 'source-no-new-listings',
+    httpStopReason: null,
+    status: coverage === 'capped' ? 'truncated' : 'complete',
+    route: coverage === 'degraded' ? 'browser-fallback' : 'http',
+  }
+  if (coverage === 'page-1') return { ...summary, searches: [edited] }
+  return {
+    ...summary,
+    searchSort: 'default',
+    searches: [{ ...edited, url: url.toString(), searchControls: controls }],
+  }
+}
+
+/**
+ * Stores rows as a collected job, lets listing-ingest ingest it, run-coverage judge it and
+ * detail-evidence record it, as the live pipeline does on `run-collected`. Returns the job ID and
+ * the events of listing-ingest and detail-evidence.
  */
 export async function collectedJob(
   t: TestDatabase,
   recorded: RecordedRun,
   rows: Json[],
   kind: 'search' | 'details',
+  coverage: Coverage = 'recorded',
 ): Promise<{ jobId: number; cardChanged: string[][]; unresolved: string[][] }> {
-  const jobId = await t.collected(recorded, rows)
+  const jobId = await t.collected(recorded, rows, summaryFor(recorded, coverage))
   const ingested = await ingest(t.db, { jobId, kind })
   if (!ingested.ok) throw new Error(ingested.error.message)
+  const assessed = await assess(t.db, { jobId, kind })
+  if (!assessed.ok) throw new Error(assessed.error.message)
   const recordedDetails = await record(t.db, { jobId })
   if (!recordedDetails.ok) throw new Error(recordedDetails.error.message)
   const payloads = (events: { type: string; payload: unknown }[], type: string) =>
@@ -221,6 +263,8 @@ export interface JobStep {
   edits?: { listingId: string; fields: Json }[]
   /** Rows replaced by the removed-ID shape (synthetic). */
   unresolved?: string[]
+  /** How run-coverage judges a search job (`recorded` when absent). */
+  coverage?: Coverage
 }
 
 /** The rows of a job step, built from the recorded rows. */
@@ -248,7 +292,13 @@ export async function runJob(
   recorded: RecordedRun,
   step: JobStep,
 ): Promise<number> {
-  const job = await collectedJob(t, recorded, rowsFor(step, recorded.dataset), step.kind)
+  const job = await collectedJob(
+    t,
+    recorded,
+    rowsFor(step, recorded.dataset),
+    step.kind,
+    step.coverage,
+  )
   const batches = [
     ...job.cardChanged.map((ids, i) => ({
       ids,

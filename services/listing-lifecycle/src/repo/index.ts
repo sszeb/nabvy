@@ -1,6 +1,7 @@
 // Database access: this module's own schema, listing_lifecycle, and the published internal views
-// of listing-ingest (v_listings, v_sightings) and detail-evidence (v_outcomes), as nabvy_pipeline
-// inside withPipeline. Lists travel as one jsonb parameter, as in detail-evidence.
+// of listing-ingest (v_listings, v_sightings), detail-evidence (v_outcomes) and run-coverage
+// (v_search_coverage), as nabvy_pipeline inside withPipeline. Lists travel as one jsonb
+// parameter, as in detail-evidence.
 import type { ListingIngestAvailability } from '@nabvy/contracts/modules/listing-ingest'
 import type { ListingLifecycleRecheckReason } from '@nabvy/contracts/modules/listing-lifecycle'
 import { sql } from 'drizzle-orm'
@@ -46,9 +47,12 @@ export async function selectListings(q: Queryable, listingIds: string[]): Promis
 
 /**
  * The evidence of each listing: its latest observation (search or detail; on a tie the later job,
- * then the search card), its latest unresolved detail fetch, and how many later search runs of its
- * last search (a shared term and a shared centre) returned other listings but not this one, after
- * its latest observation.
+ * then the search card), its latest unresolved detail fetch, and how many later sweeps of its last
+ * search's scope (a shared term and a shared centre) returned other listings but not this one,
+ * after its latest observation. A sweep is a search job that run-coverage judged `complete` with
+ * kind `sweep` (a full-depth default-order read): a degraded or capped read, or a newest-first
+ * page-1 check, can leave out a listing that is still live, so it never counts. While run-coverage
+ * is off its view is empty and no miss is counted (fail conservative).
  */
 export async function selectEvidence(
   q: Queryable,
@@ -77,17 +81,24 @@ export async function selectEvidence(
         where s.listing_id in (select id from wanted) and s.kind = 'search'
         order by s.listing_id, s.seen_at desc, s.job_id desc
       ),
-      missed as (
-        select ls.listing_id, count(distinct o.job_id) as missed
+      sweeps as (
+        select distinct ls.listing_id, c.job_id
         from last_search ls
-        join last_obs lo on lo.listing_id = ls.listing_id
-        join listing_ingest.v_sightings o
-          on o.kind = 'search' and o.seen_at > lo.seen_at and o.job_id <> ls.job_id
-          and o.terms && ls.terms and o.centre_ids && ls.centre_ids
-        where not exists (
+        join run_coverage.v_search_coverage c
+          on c.status = 'complete' and c.kind = 'sweep' and c.job_id <> ls.job_id
+          and c.term = any (ls.terms) and c.centre_id = any (ls.centre_ids)
+      ),
+      missed as (
+        select sw.listing_id, count(*) as missed
+        from sweeps sw
+        join last_obs lo on lo.listing_id = sw.listing_id
+        where exists (
+          select 1 from listing_ingest.v_sightings o
+          where o.job_id = sw.job_id and o.kind = 'search' and o.seen_at > lo.seen_at)
+        and not exists (
           select 1 from listing_ingest.v_sightings x
-          where x.listing_id = ls.listing_id and x.job_id = o.job_id)
-        group by ls.listing_id
+          where x.listing_id = sw.listing_id and x.job_id = sw.job_id)
+        group by sw.listing_id
       ),
       unresolved as (
         select f.listing_id, max(f.fetched_at) as unresolved_at
@@ -126,11 +137,14 @@ export interface StatusWrite extends Located {
 }
 
 /**
- * Upserts statuses, writing a row only when its hash differs. `changed_by` and `changed_at` move
- * only when the status itself changes (or the row is new), so the listings this trigger changed
- * can be read back on a replay. With `evaluatedAt` (the tick only), every evaluated row also
- * gets `evaluated_at`, the tick's round-robin cursor, without touching anything else; event
- * handlers leave it alone, so their replays write nothing. Returns how many rows were written.
+ * Upserts statuses, writing a row only when its hash differs and its evidence is not older than
+ * the stored row's: two concurrent passes (a handler and the tick) can commit in either order, and
+ * the one built from older evidence (an earlier `observed_at`, or the same one with fewer missed
+ * sweeps) must not win. `changed_by` and `changed_at` move only when the status itself changes (or
+ * the row is new), so the listings this trigger changed can be read back on a replay. With
+ * `evaluatedAt` (the tick only), every evaluated row also gets `evaluated_at`, the tick's
+ * round-robin cursor, without touching anything else; event handlers leave it alone, so their
+ * replays write nothing. Returns how many rows were written.
  */
 export async function upsertStatuses(
   q: Queryable,
@@ -173,6 +187,10 @@ export async function upsertStatuses(
           then now() else s.changed_at end,
         evaluated_at = coalesce(greatest(s.evaluated_at, excluded.evaluated_at), s.evaluated_at)
       where s.input_hash is distinct from excluded.input_hash
+        and (s.observed_at is null
+             or excluded.observed_at > s.observed_at
+             or (excluded.observed_at = s.observed_at
+                 and excluded.missed_sweeps >= s.missed_sweeps))
       returning s.listing_id`),
   )
   if (evaluatedAt) {
@@ -290,7 +308,11 @@ export async function insertSchedules(
   return new Set(rows.map((r) => r.listing_id))
 }
 
-/** Pending rechecks due by `now`, oldest first, with each listing's current status. */
+/**
+ * Pending rechecks due by `now`, oldest first, with each listing's current status. Facebook only:
+ * details-queue takes no other source, so another source's steps would fill the oldest-first
+ * limit without ever being sent; they stay pending until a queue exists for them.
+ */
 export async function selectDue(
   q: Queryable,
   now: Date,
@@ -309,7 +331,8 @@ export async function selectDue(
       select r.id, r.listing_id, r.source, r.source_listing_id, r.reason, r.due_at, s.status
       from listing_lifecycle.rechecks r
       left join listing_lifecycle.status s on s.listing_id = r.listing_id
-      where r.sent_at is null and r.due_at <= ${now.toISOString()}::timestamptz
+      where r.sent_at is null and r.source = 'facebook'
+        and r.due_at <= ${now.toISOString()}::timestamptz
       order by r.due_at, r.id
       limit ${limit}`),
   )

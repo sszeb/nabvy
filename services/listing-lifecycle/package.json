@@ -23,6 +23,7 @@
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",
     "@nabvy/detail-evidence": "workspace:*",
-    "@nabvy/listing-ingest": "workspace:*"
+    "@nabvy/listing-ingest": "workspace:*",
+    "@nabvy/run-coverage": "workspace:*"
   }
 }

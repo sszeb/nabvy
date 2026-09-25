@@ -536,6 +536,9 @@ importers:
       '@nabvy/listing-ingest':
         specifier: workspace:*
         version: link:../listing-ingest
+      '@nabvy/run-coverage':
+        specifier: workspace:*
+        version: link:../run-coverage
 
   services/listing-suppression:
     dependencies:
