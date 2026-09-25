@@ -1,0 +1,26 @@
+{
+  "userId": "0190f1d2-0000-7000-8000-000000000001",
+  "postcode": "PO19 1AA",
+  "radiusKm": 25,
+  "priceCapMinor": null,
+  "currency": "GBP",
+  "active": true,
+  "cadenceSeconds": 120,
+  "deliverySpeed": "instant",
+  "deliveryMethods": ["collection"],
+  "alternatives": "off",
+  "pcContainment": false,
+  "alternativesMaxPriceMinor": null,
+  "instantAlternatives": false,
+  "instantTopPicks": true,
+  "filter": null,
+  "criteria": [
+    {
+      "partType": "gpu",
+      "catalogueId": "gpu:rtx-4080",
+      "family": null,
+      "minAttr": null,
+      "orBetter": false
+    }
+  ]
+}

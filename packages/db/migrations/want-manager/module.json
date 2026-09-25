@@ -1,0 +1,5 @@
+{
+  "module": "want-manager",
+  "schema": "want_manager",
+  "dependsOn": ["core", "switches", "city-pages", "subscriptions", "product-catalogue", "account"]
+}
