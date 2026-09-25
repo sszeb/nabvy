@@ -1,0 +1,5 @@
+{
+  "module": "location",
+  "schema": "location",
+  "dependsOn": ["core"]
+}

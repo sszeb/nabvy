@@ -1,0 +1,82 @@
+{
+  "id": "44eae108-1da7-46bd-b67c-7c1e543a35a9",
+  "prevId": "71112681-e819-4b6f-a6d5-fbd8757c8ad0",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "location.postcode_cache": {
+      "name": "postcode_cache",
+      "schema": "location",
+      "columns": {
+        "postcode": {
+          "name": "postcode",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fetched_at": {
+          "name": "fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "postcode_cache_lat_check": {
+          "name": "postcode_cache_lat_check",
+          "value": "\"location\".\"postcode_cache\".\"lat\" between -90 and 90"
+        },
+        "postcode_cache_lng_check": {
+          "name": "postcode_cache_lng_check",
+          "value": "\"location\".\"postcode_cache\".\"lng\" between -180 and 180"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "location": "location"
+  },
+  "views": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

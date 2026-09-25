@@ -39,6 +39,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
+      - run: pnpm check:conventions
+      - run: node --test scripts/check-conventions.test.mjs
       - run: pnpm test
       # Fails when a module's stage falls below its recorded pass rate (fixtures/README.md).
       - run: pnpm test:fixtures
