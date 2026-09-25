@@ -4,9 +4,9 @@
  * per unique event key, and replay runs zero times.
  */
 
-import { beforeAll, describe, expect, it } from 'vitest'
 import { batchKey, createEvent, defineEvents, listingKey, type Uuid } from '@nabvy/contracts'
 import { createMemoryPublisher } from '@nabvy/transport'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
 // Fixture: 10 sample listings for testing

@@ -53,10 +53,15 @@ export const ACCOUNT_DELETED: EventHandlers = {
   eventType: 'account.deleted',
   producers: ['account'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'copy-advert', factory: () => null as any }, // TODO: import and create handler
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'lifecycle-messaging', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'marketing-consent', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'pricing-console', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'usage-ledger', factory: () => null as any },
   ],
 }
@@ -65,9 +70,13 @@ export const APIFY_GATEWAY_RUN_COLLECTED: EventHandlers = {
   eventType: 'apify-gateway.run-collected',
   producers: ['apify-gateway'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'detail-evidence', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'details-queue', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'listing-ingest', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'run-coverage', factory: () => null as any },
   ],
 }
@@ -76,9 +85,13 @@ export const DETAIL_EVIDENCE_CHANGED: EventHandlers = {
   eventType: 'detail-evidence.changed',
   producers: ['detail-evidence'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'copy-advert', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'parts-rules', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'pickup-location', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'relist-merge', factory: () => null as any },
   ],
 }
@@ -87,6 +100,7 @@ export const DETAIL_EVIDENCE_UNRESOLVED: EventHandlers = {
   eventType: 'detail-evidence.unresolved',
   producers: ['detail-evidence'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'listing-lifecycle', factory: () => null as any },
   ],
 }
@@ -95,7 +109,9 @@ export const LISTING_INGEST_CARD_CHANGED: EventHandlers = {
   eventType: 'listing-ingest.card-changed',
   producers: ['listing-ingest'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'copy-advert', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'listing-lifecycle', factory: () => null as any },
   ],
 }
@@ -104,10 +120,15 @@ export const LISTING_INGEST_FIRST_SEEN: EventHandlers = {
   eventType: 'listing-ingest.first-seen',
   producers: ['listing-ingest'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'copy-advert', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'details-queue', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'details-selector', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'pickup-location', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'relist-merge', factory: () => null as any },
   ],
 }
@@ -116,6 +137,7 @@ export const LISTING_SUPPRESSION_CHANGED: EventHandlers = {
   eventType: 'listing-suppression.changed',
   producers: ['listing-suppression'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'copy-advert', factory: () => null as any },
   ],
 }
@@ -124,6 +146,7 @@ export const PARTS_AI_EXTRACTED: EventHandlers = {
   eventType: 'parts-ai.extracted',
   producers: ['parts-ai'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'parts-record', factory: () => null as any },
   ],
 }
@@ -132,6 +155,7 @@ export const PARTS_RECORD_RECORDED: EventHandlers = {
   eventType: 'parts-record.recorded',
   producers: ['parts-record'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'listing-assessment', factory: () => null as any },
   ],
 }
@@ -140,7 +164,9 @@ export const PARTS_RULES_RAN: EventHandlers = {
   eventType: 'parts-rules.ran',
   producers: ['parts-rules'],
   handlers: [
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'parts-ai', factory: () => null as any },
+    // biome-ignore-next-line lint/suspicious/noExplicitAny
     { module: 'parts-record', factory: () => null as any },
   ],
 }
