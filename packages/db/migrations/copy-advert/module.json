@@ -1,0 +1,15 @@
+{
+  "module": "copy-advert",
+  "schema": "copy_advert",
+  "dependsOn": [
+    "core",
+    "switches",
+    "audit-log",
+    "listing-ingest",
+    "detail-evidence",
+    "city-pages",
+    "details-queue",
+    "listing-suppression",
+    "account"
+  ]
+}

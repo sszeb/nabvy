@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "source": "docs/marketing.md, \"Consent and the law\": trial and billing notices need no marketing consent",
+  "programme": "trial",
+  "step": "day1",
+  "moduleState": "on",
+  "marketingConsentState": "on",
+  "granted": false,
+  "suppressed": false,
+  "triggerEvent": "trial_started",
+  "triggerProperties": { "plan": "pro", "trigger": "cap-reached" },
+  "triggerAgeMinutes": 1440,
+  "exitEvent": null,
+  "exitAgeMinutes": null,
+  "priorMarketingRunToday": false
+}

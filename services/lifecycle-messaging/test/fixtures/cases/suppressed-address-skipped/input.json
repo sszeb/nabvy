@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "source": "module card, \"Tests and fixtures\": suppressed addresses skipped (docs/backlog.md:70)",
+  "programme": "channel-not-linked",
+  "step": "2h",
+  "moduleState": "on",
+  "marketingConsentState": "on",
+  "granted": true,
+  "suppressed": true,
+  "triggerEvent": "hunt_created",
+  "triggerProperties": { "pack": "gpu-pc", "radius": 10, "minDealScore": 0.5 },
+  "triggerAgeMinutes": 180,
+  "exitEvent": null,
+  "exitAgeMinutes": null,
+  "priorMarketingRunToday": false
+}

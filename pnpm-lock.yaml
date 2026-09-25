@@ -369,6 +369,52 @@ importers:
         specifier: workspace:*
         version: link:../run-coverage
 
+  services/copy-advert:
+    dependencies:
+      '@nabvy/audit-log':
+        specifier: workspace:*
+        version: link:../audit-log
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/details-queue':
+        specifier: workspace:*
+        version: link:../details-queue
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+      '@nabvy/city-pages':
+        specifier: workspace:*
+        version: link:../city-pages
+      '@nabvy/detail-evidence':
+        specifier: workspace:*
+        version: link:../detail-evidence
+      '@nabvy/listing-ingest':
+        specifier: workspace:*
+        version: link:../listing-ingest
+      '@nabvy/listing-suppression':
+        specifier: workspace:*
+        version: link:../listing-suppression
+
   services/cost-meter:
     dependencies:
       '@nabvy/config':
@@ -462,6 +508,43 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
 
+  services/details-selector:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/details-queue':
+        specifier: workspace:*
+        version: link:../details-queue
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+      '@nabvy/city-pages':
+        specifier: workspace:*
+        version: link:../city-pages
+      '@nabvy/listing-ingest':
+        specifier: workspace:*
+        version: link:../listing-ingest
+
   services/incidents:
     dependencies:
       '@nabvy/contracts':
@@ -470,6 +553,37 @@ importers:
       '@nabvy/db':
         specifier: workspace:*
         version: link:../../packages/db
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+
+  services/lifecycle-messaging:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/marketing-consent':
+        specifier: workspace:*
+        version: link:../marketing-consent
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
       drizzle-orm:
         specifier: 0.45.3
         version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
@@ -502,6 +616,34 @@ importers:
       '@electric-sql/pglite':
         specifier: 0.5.8
         version: 0.5.8
+
+  services/listing-feedback:
+    dependencies:
+      '@nabvy/account':
+        specifier: workspace:*
+        version: link:../account
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+      '@nabvy/listing-suppression':
+        specifier: workspace:*
+        version: link:../listing-suppression
 
   services/listing-ingest:
     dependencies:
@@ -1134,9 +1276,15 @@ importers:
       '@nabvy/config':
         specifier: workspace:*
         version: link:../packages/config
+      '@nabvy/copy-advert':
+        specifier: workspace:*
+        version: link:../services/copy-advert
       '@nabvy/db':
         specifier: workspace:*
         version: link:../packages/db
+      '@nabvy/lifecycle-messaging':
+        specifier: workspace:*
+        version: link:../services/lifecycle-messaging
       '@nabvy/spend-governor':
         specifier: workspace:*
         version: link:../services/spend-governor
