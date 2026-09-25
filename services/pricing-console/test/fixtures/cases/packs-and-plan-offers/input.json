@@ -1,0 +1,66 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md, \"Watching is metered\": bundles with volume discounts and offers per user or segment, under the floor",
+  "steps": [
+    {
+      "patch": {
+        "kind": "bundle",
+        "key": "topup-50",
+        "fields": {
+          "discountBps": 5000
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "bundle",
+        "key": "topup-50",
+        "fields": {
+          "discountBps": 500
+        }
+      }
+    },
+    {
+      "set": {
+        "kind": "offer",
+        "key": "max-half",
+        "value": {
+          "userId": null,
+          "segment": "plan:max",
+          "item": "plan:max:yearly",
+          "discountBps": 5000,
+          "startsAt": "$now-60s",
+          "endsAt": "$now+3600s"
+        }
+      }
+    },
+    {
+      "set": {
+        "kind": "offer",
+        "key": "pro-tenth",
+        "value": {
+          "userId": null,
+          "segment": "plan:pro",
+          "item": "plan:pro:monthly",
+          "discountBps": 1000,
+          "startsAt": "$now-60s",
+          "endsAt": "$now+3600s"
+        }
+      }
+    },
+    {
+      "price": {
+        "user": "A",
+        "item": "plan:pro:monthly",
+        "plan": "pro"
+      }
+    },
+    {
+      "price": {
+        "user": "B",
+        "item": "plan:pro:monthly",
+        "plan": "starter"
+      }
+    }
+  ]
+}

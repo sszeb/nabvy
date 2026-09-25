@@ -1,0 +1,25 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "add": {
+    "requestId": "01920000-0000-7000-8000-00000000a001",
+    "listings": [{ "source": "facebook", "sourceListingId": "1816901372840238" }]
+  },
+  "relists": [
+    {
+      "from": "1816901372840238",
+      "newId": "9000000000000002",
+      "fields": {
+        "title": "Gaming PC i7 GTX 970",
+        "money": {
+          "kind": "fixed",
+          "display": "£180",
+          "currency": "GBP",
+          "exponent": 2,
+          "rawAmount": "180.00",
+          "amountMinor": 18000
+        },
+        "price": 180
+      }
+    }
+  ]
+}

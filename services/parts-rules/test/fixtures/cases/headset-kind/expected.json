@@ -1,0 +1,30 @@
+{
+  "listings": {
+    "1154042653756525": {
+      "parts": [],
+      "signals": ["title:pc:PC", "title:not_a_pc:Headset", "title:not_a_pc:Xbox"],
+      "tagBlocks": [],
+      "kind": "gap:conflict",
+      "gaps": [
+        "gpu:not_stated",
+        "cpu:not_stated",
+        "ram_size:not_stated",
+        "storage_size:not_stated"
+      ],
+      "fullVerified": true
+    },
+    "2126837844711748": {
+      "parts": [],
+      "signals": ["title:pc:PC", "title:not_a_pc:Headset"],
+      "tagBlocks": [],
+      "kind": "gap:conflict",
+      "gaps": [
+        "gpu:not_stated",
+        "cpu:not_stated",
+        "ram_size:not_stated",
+        "storage_size:not_stated"
+      ],
+      "fullVerified": true
+    }
+  }
+}

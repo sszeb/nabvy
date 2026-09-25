@@ -1,0 +1,53 @@
+{
+  "synthetic": true,
+  "source": "Brief: the floor rests on measured cost (cost_meter.v_costs) plus the minimum margin, itself a policy row",
+  "steps": [
+    {
+      "patch": {
+        "kind": "setting",
+        "key": "min-margin-bps",
+        "fields": {
+          "value": 30000
+        }
+      }
+    },
+    {
+      "costs": {
+        "provider": "apify",
+        "module": "apify-gateway",
+        "gbpMicros": 30000,
+        "count": 25
+      }
+    },
+    {
+      "price": {
+        "user": "A",
+        "item": "price:live-lookup"
+      }
+    },
+    {
+      "patch": {
+        "kind": "price",
+        "key": "live-lookup",
+        "fields": {
+          "credits": 16
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "price",
+        "key": "live-lookup",
+        "fields": {
+          "credits": 22
+        }
+      }
+    },
+    {
+      "price": {
+        "user": "A",
+        "item": "price:live-lookup"
+      }
+    }
+  ]
+}

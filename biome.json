@@ -61,6 +61,12 @@
           }
         }
       }
+    },
+    {
+      "includes": ["scripts/fixtures/conventions/**"],
+      "linter": {
+        "enabled": false
+      }
     }
   ]
 }

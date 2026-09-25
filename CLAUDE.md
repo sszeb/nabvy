@@ -41,7 +41,7 @@ The owner asked to cut token use without weakening the work. Measured that day: 
 - **Tight briefs.** Name the exact files a session or agent reads; never "read the whole build pack".
 - **Events, not polling.**
   - **Build sessions.** Subscribe to your pull request's activity and let its events wake you. Keep a fallback check-in no more often than hourly, and none while you wait only on the owner. When you open a pull request, wake the reviewer with a one-shot trigger. Stop re-arming once it is merged or closed.
-  - **Reviewer.** Never touches Supabase. Wakes the coordinator with a one-shot trigger when a merged pull request carries a migration.
+  - **Reviewer.** Never touches Supabase. Wakes the coordinator with a one-shot trigger when a merged pull request carries a migration. From 2026-09-24 18:55 the reviewer is a fresh session per fire (a Routine on the top model, `docs/session-conventions.md` "Reviewer Routine"); build sessions fire it with the PR number instead of waking a reviewer session.
   - **Coordinator.** Applies every merged migration, module or gateway, soon after the merge, reading `docs/security.md` first, and names any it could not apply in its message to the owner (owner, 2026-09-24). Sweeps every two hours.
 - **Batch pushes.** Collect small docs changes and push them together, at most about every 30–60 minutes, so each push costs one review.
 - **Incremental reviews.** The reviewer reviews only the commits since the head it last reviewed. For a docs-only delta, it relies on CI instead of re-running install, typecheck and tests.

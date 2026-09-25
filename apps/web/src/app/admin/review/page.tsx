@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { getAsOf, listReviewQueue } from '@/data'
+import { requireAdmin } from '@/lib/admin-gate'
 import { formatMoment } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Review console' }
@@ -28,6 +29,7 @@ const statusLabel = { open: 'Open', corrected: 'Corrected', dismissed: 'Dismisse
 
 /** The review console shell: quarantine, reported labels and spot checks (task 4.5). */
 export default async function ReviewPage() {
+  await requireAdmin() // before any read (docs/design/admin-hardening.md, H1)
   const [queue, asOf] = await Promise.all([listReviewQueue(), getAsOf()])
   const current = queue[0]
   return (

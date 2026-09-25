@@ -1,0 +1,5 @@
+{
+  "module": "source-health",
+  "schema": "source_health",
+  "dependsOn": ["core", "switches", "apify-gateway", "route-health", "run-coverage"]
+}

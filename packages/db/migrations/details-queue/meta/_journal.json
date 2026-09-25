@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790279452235,
+      "tag": "20260924195052_details_queue_function_revoke",
+      "breakpoints": true
+    }
+  ]
+}

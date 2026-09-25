@@ -1,0 +1,5 @@
+{
+  "module": "listing-suppression",
+  "schema": "listing_suppression",
+  "dependsOn": ["core", "switches", "listing-ingest", "detail-evidence"]
+}

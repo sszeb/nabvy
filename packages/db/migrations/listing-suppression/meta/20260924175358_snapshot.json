@@ -1,0 +1,161 @@
+{
+  "id": "b3c2534c-6011-4cb3-8534-d929283055f2",
+  "prevId": "53788b71-c2db-4b4b-a274-d81c8017e732",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "listing_suppression.entries": {
+      "name": "entries",
+      "schema": "listing_suppression",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "request_id": {
+          "name": "request_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "entries_kind_value_idx": {
+          "name": "entries_kind_value_idx",
+          "columns": [
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "value",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "entries_request_value_key": {
+          "name": "entries_request_value_key",
+          "columns": [
+            "request_id",
+            "kind",
+            "value"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "entries_kind_check": {
+          "name": "entries_kind_check",
+          "value": "\"listing_suppression\".\"entries\".\"kind\" in ('listing_hash', 'seller_key', 'lookalike')"
+        },
+        "entries_value_check": {
+          "name": "entries_value_check",
+          "value": "\"listing_suppression\".\"entries\".\"value\" ~ '^[0-9a-f]{64}$'"
+        },
+        "entries_lookalike_check": {
+          "name": "entries_lookalike_check",
+          "value": "(\"listing_suppression\".\"entries\".\"kind\" = 'lookalike') = (\"listing_suppression\".\"entries\".\"basis\" is not null and \"listing_suppression\".\"entries\".\"expires_at\" is not null)"
+        },
+        "entries_basis_check": {
+          "name": "entries_basis_check",
+          "value": "\"listing_suppression\".\"entries\".\"basis\" in ('description', 'card')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "listing_suppression": "listing_suppression"
+  },
+  "views": {
+    "listing_suppression.v_suppressed": {
+      "name": "v_suppressed",
+      "schema": "listing_suppression",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "until": {
+          "name": "until",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
