@@ -1,0 +1,3 @@
+# Questions: apify-gateway
+
+- **2026-09-25, 1.1i: the `catch-up` string in details-queue.** Removing the `catch-up` run shape from `ApifyGatewayRunShape` leaves `priorityOfSearchShape` in `services/details-queue/src/domain/index.ts:167` (and its test at `test/domain.test.ts:29`) comparing against a plain `'catch-up'` string that no gateway job can now carry. Option taken: leave details-queue untouched, because a gateway session edits only its own files (`services/apify-gateway/README.md`); the comparison is dead but harmless (an unknown shape maps to `sweep`). The details-queue session can drop the branch in its next change.

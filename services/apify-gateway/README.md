@@ -86,7 +86,7 @@ Schema `apify_gateway`, created by `supabase/migrations` (the bootstrap) and ext
 | --- | --- | --- | --- |
 | Spend cap | $150 per calendar month, Europe/London, by the month a run is claimed | Owner, `docs/decisions.md` ("Budget", 2026-09-24); actor-integration.md 3.5 | Owner's value |
 | Reservation bounds | $0.40/CU, $10/GB, 0.5 MB per request, + $0.01 | `supabase/README.md`, "Spend" | Unchanged |
-| Build pin | 1.0.82 | The recorded run's build; `docs/decisions.md` ("pin the actor build") | Starting value |
+| Build pin | 1.0.83 | The only build left on the platform (builds up to 1.0.82 deleted 2026-09-24); the actor's integration guide says "pin build=1.0.83"; `docs/questions.md:14` (pin the actor build, gateway passes it as `build`) | Moved 2026-09-25 (1.1i) |
 | Settlement read | ≥ 10 minutes after the run finished | `supabase/README.md`, "Spend"; cost-meter's `APIFY_SETTLE_DELAY_MS` | Matched to cost-meter |
 | Input rules | As `enqueue_run` (input version 3, `maxRequests` 1–1,000, timeout ≥ `maxRunSeconds` + 60 s, GB residential proxy, no `startUrls`, `browserFallback` and `useDetailCache` false, integers as JSON integers, searches or IDs) | `supabase/README.md`, "Input rules" | Unchanged |
 | Shape and kind | A search shape needs `searchTerms` and no `listingIds`; a details shape the reverse | actor-integration.md 2.3 | Fixed |
@@ -170,6 +170,18 @@ module off" waits for `listing-ingest` (task 1.3a).
 - **2026-09-24: resumable download.** The Edge Function stores each dataset page in one statement,
   so stored rows are always `0..n-1`; a download an earlier invocation left short now resumes after
   the last stored row instead of restarting from offset 0 under the 120 s `pg_net` timeout.
+- **2026-09-25: the build pin moves to 1.0.83 (task 1.1i).** The platform holds only build 1.0.83
+  of the private actor (builds up to 1.0.82 were deleted on 2026-09-24) and the actor's integration
+  guide says "pin build=1.0.83", so a run pinned at 1.0.82 would fail at start. A new forward-only
+  migration (`20260925090000_apify_gateway_build_1_0_83.sql`) sets the column default and the
+  existing settings row; the applied migration is untouched. The fixtures' recorded run
+  (`fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k`) is on 1.0.82 and stays the
+  fixture source: the guide says the v3 output contract is unchanged. The first gateway run on
+  1.0.83 becomes a new fixture run before any pipeline stage is switched on.
+- **2026-09-25: no `catch-up` run shape (task 1.1i).** Actor test T2 dropped the default-order
+  catch-up job ("Do not schedule it"), so `ApifyGatewayRunShape` and `APIFY_GATEWAY_KIND_OF_SHAPE`
+  keep `newest-check`, the two sweeps, `verification` and the two details shapes only. The `newest`
+  and `sweep` kinds are unchanged.
 - **2026-09-24: the watcher task is not in `trigger/` yet.** No Trigger.dev account exists
   (`trigger/README.md`); the task is a thin wrapper that calls `watch(tx, { publisher, usdGbpRate:
   loadEnv(['exchangeRate']).USD_GBP_RATE })` inside `withPipeline`, added with the first tasks.
