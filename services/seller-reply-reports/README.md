@@ -106,12 +106,20 @@ restrictive policy lets its only update be a withdrawal. No foreign key leaves t
 
 ## Fixtures and pass rate
 
-Stage `aggregate` (`test/fixtures/aggregate.fixtures.ts`), 9 synthetic cases (no recorded run can
-hold a buyer's report: Nabvy never sees conversations): `owner-isle-of-wight-manchester` and
-`owner-chichester-postage-only` (the owner's two examples, `docs/decisions.md:156`),
-`postage-when-shipping-offered`, `postage-protected-payment`, `collection-yes-honest-seller`,
-`household-counts-once`, `counter-report-holds`, `new-accounts-only`, `faulty-parts-stated`.
-Pass rate 9/9 (2026-09-25).
+Four stages (backlog 1.7j), every case synthetic and marked so: no recorded run can hold a buyer's
+report, because Nabvy never sees conversations. Cases are built from the owner's two examples
+(`docs/decisions.md:156`) and the design's §8.3 boundaries; each folder has its `notes.md`.
+
+- `gate` (`test/fixtures/gate.fixtures.ts`), 10 cases: open 30 minutes, 4 minutes and 15 days
+  ago, no open, messaging off and unknown, suppressed, shadow non-tester and tester, banned.
+- `aggregate`, 8 cases: the owner's Chichester postage-only example, postage when shipping was
+  offered, protected payment, "Yes" to collection elsewhere, a household counted once, a
+  counter-report hold, new and unverified accounts, a fault the listing already stated.
+- `spread`, 4 cases: the owner's Isle of Wight/Manchester example across three copies, the
+  possible original, no cluster, one person once per cluster.
+- `privacy`, 4 cases: exact count from 10, banding under 10, a reported place needing 3 people.
+
+Pass rate 26/26 (2026-09-25), recorded in `test/fixtures/pass-rates.json`.
 
 Other tests: `test/domain.test.ts` (the gate, the 29/30-day boundary, the accuracy factor, every
 second answer, bands, levels, linked groups, bursts, holds, statuses), `test/aggregate.test.ts`
