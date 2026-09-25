@@ -7,9 +7,9 @@ The fleet runs on stateless Routines (owner, 2026-09-25, 21:40 and 22:00; `docs/
 | Nabvy coordinator (inbox and sweep) | `trig_01SpUT9nZPtAH1FBGiQaCiwu` | cron `37 */2 * * *`; or a session fires it with a message | one message, or the sweep |
 | Nabvy reviewer (on request) | `trig_01FPLnjfTATPb7YQivWvA7FX` | a build session fires it with "PR #n: ...; [cp N]" (the old relay ID) | review that PR, merge on Approved |
 | Nabvy reviewer (hourly) | `trig_011fjd2grZBEWR3FqfDzTWJR` | cron `34 * * * *` (the old watchdog ID) | review the highest-[cp] PR whose head has no review |
-| Nabvy dispatcher wake | `trig_01FfBryD1G7vjpEVYpRxdSML` | cron `52 */2 * * *` | wakes the dispatcher session `session_01LDvAXYfdUJv4TS7aT1ph7r` |
+| Nabvy dispatcher wake | `trig_01FfBryD1G7vjpEVYpRxdSML` | cron `52 * * * *` (hourly) | wakes the dispatcher session `session_01LDvAXYfdUJv4TS7aT1ph7r` |
 
-**What a fired run can and cannot do** (measured 2026-09-25, 22:00). It can read and push the repository (when the Routine has the repository attached in the app), use GitHub tools and use the Supabase connector (when attached). Load all of them with ToolSearch first; they are deferred and look absent until searched. It has **no session tools**: no `create_session`, `fire_trigger`, `get_session` or `get_trigger`. So a run never starts a session or messages one itself. It queues the work in `state.md` and the **dispatcher** (a small long-lived session, which has session tools) carries it out at minute 52 of every even hour.
+**What a fired run can and cannot do** (measured 2026-09-25, 22:00). It can read and push the repository (when the Routine has the repository attached in the app), use GitHub tools and use the Supabase connector (when attached). Load all of them with ToolSearch first; they are deferred and look absent until searched. It has **no session tools**: no `create_session`, `fire_trigger`, `get_session` or `get_trigger`. So a run never starts a session or messages one itself. It queues the work in `state.md` and the **dispatcher** (a small long-lived session, which has session tools) carries it out at minute 52 of every hour.
 
 Target: under 60k tokens per coordinator run, 80k per reviewer run. The coordinator setup check at 22:00 used 74k tokens ($0.51) including tool loading.
 
@@ -45,12 +45,13 @@ On a rejected push (another run wrote first): `git -C /tmp/state fetch -q origin
 
 ## Sweep (cron fire, no appended text)
 
+0. **Quiet check first (cheap exit).** Compute a fingerprint: `git rev-parse --short origin/main`, the open-PR numbers with their head SHAs (from step 3's list), and the ledger count. If it equals the "Fingerprint" on state's "Last sweep" line and "Merged, migrations pending", "Sessions to start" and "Docs to record" are all empty, end with one line: no docs, no state push. Otherwise continue, and write the new fingerprint in step 6.
 1. `git fetch -q origin main && node scripts/sweep.mjs --no-fetch`.
 2. Migrations: apply every line under "Merged, migrations pending" (reviewer runs write them) and remove each once applied and checked. Then compare the ledger (`select count(*) from nabvy_core.schema_migrations`) with the plan size; apply any other missing file whose merge to `main` is over 30 minutes old.
 3. `list_pull_requests` (open, perPage 15, `minimal_output`), read as above: reconcile state's open PRs (new in, merged or closed out). A PR whose head has not moved in four hours and whose last review says "Changes needed" is stalled: queue a fresh fix session for it (from the PR and the review) and note it for the owner.
 4. Queue a session for every READY module that is not open, building or already queued.
 5. Docs batch on `claude/coordinator-16`: fold `docs/questions/*.md` into `docs/questions.md` and delete them; write "Docs to record" into `docs/progress.md` (and `docs/questions.md` or `docs/decisions.md` where a line says so); `git merge -q origin/main` first if the PR conflicts; commit `docs: coordinator sweep <HH:MM>`; push. Clear "Docs to record".
-6. State: the "Last sweep" line.
+6. State: the "Last sweep" line, with "Fingerprint: <main sha>; <#n@sha,...>; ledger <n>".
 
 ## Applying a merged migration
 
@@ -90,4 +91,4 @@ The dispatcher is `session_01LDvAXYfdUJv4TS7aT1ph7r` (Haiku, started 22:03 by co
 
 ## Old IDs
 
-Old coordinator inboxes (coordinators 11 to 17) forward, hop by hop, to the coordinator Routine; no brief needs them any more. Reviewer 14 (`session_01S1zLkd1F9tHKsNc1MiwKF5`) stopped at 19:37 at 322k tokens; its inbox `trig_01HBnPvViK2spaRpcTnCv8du` is obsolete (fired Routines could never reach it, which is why reviews stalled from 19:37 to 22:00).
+At 22:30 on 2026-09-25 coordinator 16 deleted the old coordinator inboxes (coordinators 1 and 11 to 17) and reviewer 14's inbox. Each was bound to an old long-lived session, so every forwarded message woke those sessions one after another (200k to 450k tokens of context each). A build session that fires an old ID now gets an error, which is harmless: the coordinator's GitHub event and sweep see new and merged PRs anyway. Never create a Routine bound to a long-lived session just to forward messages.
