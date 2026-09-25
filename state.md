@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 21:45 UTC 2026-09-25 by coordinator 16 (set-up of the stateless coordinator). Last sweep: none yet (first cron fire 22:37 UTC).
+Updated 21:55 UTC 2026-09-25 by coordinator 16. Last sweep: none yet. **The sweep cron is parked** (`37 4 1 1 *`): the 21:41 setup-check run (`session_018ioeVvJGGdY2Jo5ZBKABnD`, Sonnet by default, 167k tokens) never wrote state. Restore `37 */2 * * *` once a fired run writes state successfully.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -37,6 +37,7 @@ Updated 21:45 UTC 2026-09-25 by coordinator 16 (set-up of the stateless coordina
 - photo-review stays parked (owner).
 
 ## Waiting on the owner
+- In claude.ai/code/routines, edit "Nabvy coordinator (inbox and sweep)": attach the repository sszeb/nabvy and the Supabase connector, and set the model. A session cannot do any of these. Then fire it once to confirm a run can write state.
 - Attach the Supabase connector to the coordinator Routine, and set its model to Opus 5.5, in claude.ai/code/routines (sessions cannot).
 - Approve L2's pending permission prompt (session "Nabvy L2: pipeline wiring and local runner").
 - `ROUTER_API_KEY` secret for router-gateway (owed since 16:45).
