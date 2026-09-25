@@ -1,0 +1,25 @@
+{
+  "listings": {
+    "2756686961383848": {
+      "parts": [
+        "rules:description:gpu:RTX 5080 → gpu:nvidia:rtx-5080:16gb [offered]",
+        "rules:description:cpu:Ryzen 7 7800X3D → cpu:amd:ryzen-7-7000 [offered]",
+        "rules:description:ram_size:32GB DDR5 [offered]",
+        "rules:description:ram_generation:DDR5 [offered]",
+        "rules:description:storage_size:2TB [offered]",
+        "rules:description:storage_type:NVMe [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "rules:description:psu_wattage:850W [offered]",
+        "photo:photo:gpu:photo-synthetic-1 [offered]"
+      ],
+      "kind": "rules:pc:title:Gaming PC",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": "v1.00000000"
+      },
+      "conflict": false,
+      "count": 9
+    }
+  }
+}
