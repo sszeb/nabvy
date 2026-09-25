@@ -1,0 +1,49 @@
+{
+  "outcomes": [
+    {
+      "outcome": "recorded",
+      "tier": "free",
+      "status": "free",
+      "areas": 1
+    },
+    {
+      "outcome": "recorded",
+      "tier": "free",
+      "status": "free",
+      "areas": 1
+    },
+    {
+      "outcome": "recorded",
+      "tier": "free",
+      "status": "free",
+      "areas": 1
+    },
+    {
+      "rows": 1
+    },
+    {
+      "denied": true
+    },
+    {
+      "denied": true
+    },
+    {
+      "rows": 0
+    },
+    {
+      "keys": [
+        "areas",
+        "baseCadenceSeconds",
+        "cancelAtPeriodEnd",
+        "channels",
+        "floorCadenceSeconds",
+        "periodEnd",
+        "status",
+        "tier",
+        "trialEnd",
+        "wants"
+      ]
+    }
+  ],
+  "published": {}
+}

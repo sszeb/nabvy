@@ -1,0 +1,42 @@
+{
+  "synthetic": true,
+  "source": "card: v_billing_signals never reaches a user-facing view (docs/billing.md:70; docs/modules.md:114); docs/decisions.md 'Automatic, autonomous and internal'",
+  "steps": [
+    {
+      "event": "customer-created"
+    },
+    {
+      "event": "charge-succeeded"
+    },
+    {
+      "event": "dispute-created"
+    },
+    {
+      "read": {
+        "role": "nabvy_pipeline",
+        "view": "v_billing_signals"
+      }
+    },
+    {
+      "read": {
+        "role": "nabvy_app",
+        "view": "v_billing_signals"
+      }
+    },
+    {
+      "read": {
+        "role": "nabvy_app",
+        "view": "billing_events"
+      }
+    },
+    {
+      "read": {
+        "role": "nabvy_app",
+        "view": "entitlements"
+      }
+    },
+    {
+      "plan": true
+    }
+  ]
+}
