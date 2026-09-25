@@ -1,0 +1,5 @@
+{
+  "module": "listing-assessment",
+  "schema": "listing_assessment",
+  "dependsOn": ["core", "switches", "detail-evidence", "listing-ingest", "parts-record"]
+}

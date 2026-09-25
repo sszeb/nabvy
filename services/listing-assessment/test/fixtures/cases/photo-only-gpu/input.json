@@ -1,0 +1,24 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["28242423458759790"],
+  "edits": [
+    {
+      "listingId": "28242423458759790",
+      "fields": {
+        "description": "Gaming pc comes in great condition\nCPU-intel i5-12400f\nStorage 928GB\nRam- ddr4 16gb"
+      }
+    }
+  ],
+  "photo": {
+    "version": "v1.00000000",
+    "verdicts": [
+      {
+        "listingId": "28242423458759790",
+        "partType": "gpu",
+        "catalogueId": null,
+        "family": null,
+        "photoId": "photo-synthetic-1"
+      }
+    ]
+  }
+}
