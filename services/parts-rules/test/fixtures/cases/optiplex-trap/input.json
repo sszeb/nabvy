@@ -1,0 +1,13 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1816901372840238"],
+  "edits": [
+    {
+      "listingId": "1816901372840238",
+      "fields": {
+        "title": "Dell OptiPlex 3090 SFF - i5-10505, 16GB RAM, 256GB SSD",
+        "description": "Dell OptiPlex 3090 small form factor office PC.\nCPU: Intel Core i5-10505\nRAM: 16GB DDR4\nStorage: 256GB NVMe SSD\nNo graphics card (Intel UHD 630). Also have an OptiPlex 3080 Micro."
+      }
+    }
+  ]
+}

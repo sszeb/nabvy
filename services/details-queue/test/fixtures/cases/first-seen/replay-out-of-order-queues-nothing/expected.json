@@ -1,0 +1,31 @@
+{
+  "results": [
+    {
+      "queued": 3,
+      "alreadyQueued": 0,
+      "skipped": 0
+    },
+    {
+      "queued": 0,
+      "alreadyQueued": 2,
+      "skipped": 0
+    },
+    {
+      "queued": 1,
+      "alreadyQueued": 1,
+      "skipped": 0
+    },
+    {
+      "queued": 0,
+      "alreadyQueued": 1,
+      "skipped": 3
+    }
+  ],
+  "submitted": [["2000000000000001", "2000000000000002", "2000000000000003"], ["2000000000000004"]],
+  "items": {
+    "2000000000000001": "done",
+    "2000000000000002": "done",
+    "2000000000000003": "done",
+    "2000000000000004": "leased"
+  }
+}

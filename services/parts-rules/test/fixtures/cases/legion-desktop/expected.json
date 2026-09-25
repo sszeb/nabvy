@@ -1,0 +1,30 @@
+{
+  "listings": {
+    "1403975981250476": {
+      "parts": [
+        "title:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb",
+        "title:cpu:i7-10700K → cpu:intel:core-i7-gen10",
+        "title:ram_size:16GB RAM",
+        "description:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb",
+        "description:cpu:i7-10700K → cpu:intel:core-i7-gen10",
+        "description:ram_size:16GB RAM",
+        "description:storage_size:1.5TB",
+        "description:storage_type:SSD",
+        "description:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb",
+        "description:cpu:i7-10700K → cpu:intel:core-i7-gen10",
+        "description:ram_size:16GB RAM",
+        "description:storage_size:512GB",
+        "description:storage_size:1TB",
+        "description:storage_size:1.5TB",
+        "description:storage_type:SSD",
+        "description:storage_type:SSD",
+        "description:storage_type:SSD"
+      ],
+      "signals": ["title:laptop_family:Legion", "title:pc:Gaming PC", "title:cpu_or_pc:i7-10700"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    }
+  }
+}

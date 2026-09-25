@@ -1,0 +1,41 @@
+{
+  "synthetic": true,
+  "source": "actor-integration.md 2.10 (docs/design/drafts/actor-integration.md:235-250); actor guide item 5",
+  "items": [
+    {
+      "id": "1000000000000041",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1000000000000042",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1000000000000043",
+      "attempts": 0,
+      "requeues": 0
+    }
+  ],
+  "rows": [
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000041",
+      "detailOutcome": "extraction-error",
+      "descriptionStatus": "missing"
+    },
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000042",
+      "detailOutcome": "something-new",
+      "descriptionStatus": "full_verified"
+    },
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000043",
+      "detailOutcome": "collected",
+      "descriptionStatus": "stale-fallback"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "groups": [
+    [
+      {
+        "listing": "9100000000000002",
+        "basis": "description",
+        "matched": "9100000000000003"
+      },
+      {
+        "listing": "9100000000000003",
+        "basis": "origin",
+        "matched": null
+      }
+    ]
+  ],
+  "announced": [0, 0, 2]
+}

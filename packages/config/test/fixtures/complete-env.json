@@ -1,6 +1,7 @@
 {
   "about": "A complete environment with placeholder values, one per variable in docs/secrets.md. None of these is a real credential.",
   "env": {
+    "NODE_ENV": "development",
     "DATABASE_URL": "postgresql://nabvy_app:placeholder@localhost:5432/postgres",
     "DATABASE_URL_PIPELINE": "postgresql://nabvy_pipeline:placeholder@localhost:5432/postgres",
     "DATABASE_URL_AUTH": "postgresql://nabvy_auth:placeholder@localhost:5432/postgres",

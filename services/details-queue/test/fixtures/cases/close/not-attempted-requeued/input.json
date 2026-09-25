@@ -1,0 +1,38 @@
+{
+  "synthetic": true,
+  "source": "actor-integration.md 2.10 (docs/design/drafts/actor-integration.md:235-250); fb-scrap-engine/README.md:106-111; actor guide item 5",
+  "items": [
+    {
+      "id": "1000000000000001",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1000000000000002",
+      "attempts": 0,
+      "requeues": 0
+    },
+    {
+      "id": "1000000000000003",
+      "attempts": 1,
+      "requeues": 0
+    }
+  ],
+  "rows": [
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000001",
+      "detailOutcome": "not-requested-time-limit"
+    },
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000002",
+      "detailOutcome": "not-requested-cap"
+    },
+    {
+      "recordType": "listing",
+      "listingId": "1000000000000003",
+      "detailOutcome": "not-requested-request-cap"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "source": "Brief: every charge idempotent on a caller-supplied key",
+  "steps": [
+    { "grant": { "kind": "topup", "credits": 40, "refId": "pi_40", "cashMinor": 400 } },
+    { "charge": { "action": "watch_day", "credits": 15, "refId": "want:w1@2026-09-24" } },
+    { "charge": { "action": "watch_day", "credits": 15, "refId": "want:w1@2026-09-24" } },
+    { "charge": { "action": "watch_day", "credits": 16, "refId": "want:w1@2026-09-24" } }
+  ]
+}

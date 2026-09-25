@@ -1,0 +1,232 @@
+{
+  "id": "fde441d0-3be0-45a0-a34c-8fee51c28611",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "marketing_consent.email_suppressions": {
+      "name": "email_suppressions",
+      "schema": "marketing_consent",
+      "columns": {
+        "email_hash": {
+          "name": "email_hash",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "email_suppressions_email_hash_format": {
+          "name": "email_suppressions_email_hash_format",
+          "value": "\"marketing_consent\".\"email_suppressions\".\"email_hash\" ~ '^[0-9a-f]{64}$'"
+        },
+        "email_suppressions_reason": {
+          "name": "email_suppressions_reason",
+          "value": "\"marketing_consent\".\"email_suppressions\".\"reason\" in ('bounce', 'complaint', 'unsubscribe', 'manual')"
+        },
+        "email_suppressions_source": {
+          "name": "email_suppressions_source",
+          "value": "\"marketing_consent\".\"email_suppressions\".\"source\" in ('resend', 'posthog', 'user', 'admin')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "marketing_consent.marketing_consents": {
+      "name": "marketing_consents",
+      "schema": "marketing_consent",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "granted": {
+          "name": "granted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "until": {
+          "name": "until",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "marketing_consents_user_id_category_pk": {
+          "name": "marketing_consents_user_id_category_pk",
+          "columns": [
+            "user_id",
+            "category"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "marketing_consents_category": {
+          "name": "marketing_consents_category",
+          "value": "\"marketing_consent\".\"marketing_consents\".\"category\" in ('tips', 'offers', 'product_updates', 'weekly_digest', 'all')"
+        },
+        "marketing_consents_source": {
+          "name": "marketing_consents_source",
+          "value": "\"marketing_consent\".\"marketing_consents\".\"source\" in ('signup', 'preference-centre', 'admin')"
+        },
+        "marketing_consents_until_only_on_pause": {
+          "name": "marketing_consents_until_only_on_pause",
+          "value": "\"marketing_consent\".\"marketing_consents\".\"category\" = 'all' or \"marketing_consent\".\"marketing_consents\".\"until\" is null"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "marketing_consent.newsletter_subscribers": {
+      "name": "newsletter_subscribers",
+      "schema": "marketing_consent",
+      "columns": {
+        "email_hash": {
+          "name": "email_hash",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "consent_source": {
+          "name": "consent_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "unsubscribed_at": {
+          "name": "unsubscribed_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "newsletter_subscribers_email_hash_format": {
+          "name": "newsletter_subscribers_email_hash_format",
+          "value": "\"marketing_consent\".\"newsletter_subscribers\".\"email_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "marketing_consent": "marketing_consent"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "marketing_consent.v_consents": {
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "granted": {
+          "name": "granted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "until": {
+          "name": "until",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_consents",
+      "schema": "marketing_consent",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

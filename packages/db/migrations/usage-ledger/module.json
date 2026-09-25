@@ -1,0 +1,5 @@
+{
+  "module": "usage-ledger",
+  "schema": "usage_ledger",
+  "dependsOn": ["core", "switches"]
+}

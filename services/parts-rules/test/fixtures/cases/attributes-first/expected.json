@@ -1,0 +1,24 @@
+{
+  "listings": {
+    "1352645884594841": {
+      "parts": [
+        "attribute:cpu:Ryzen 5 3600 → cpu:amd:ryzen-5-3000",
+        "description:storage_type:hard drive",
+        "description:cpu:Ryzen 5 3600 → cpu:amd:ryzen-5-3000",
+        "description:chipset:B450",
+        "description:ram_size:Memory: Corsair Vengeance LPK 16 GB",
+        "description:ram_size:2 x 8 GB",
+        "description:ram_generation:DDR4",
+        "description:storage_size:120 GB",
+        "description:storage_type:SSD",
+        "description:gpu:GTX 1660 SUPER → gpu:nvidia:gtx-1660-super:6gb",
+        "description:psu_wattage:500 W"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:pc:bundle"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    }
+  }
+}
