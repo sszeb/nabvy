@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "source": "gpu-not-stated, with a long description quote (synthetic)",
+  "assessments": [
+    {
+      "key": "28242423458759795",
+      "form": "system",
+      "container": true,
+      "containerReason": "parts",
+      "gpuState": "not_stated",
+      "confirmed": [
+        "cpu:description:Intel Core i5-12400F six core processor, boxed with the stock cooler, bought new from a retailer in 2023 and never overclocked since then",
+        "ram_size:description:16GB"
+      ],
+      "unknowns": ["gpu"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    }
+  ]
+}
