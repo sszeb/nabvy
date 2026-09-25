@@ -662,3 +662,94 @@ file per module so parallel build sessions never conflict. The coordinator folds
   and description, or by the rules and the model) is two rows. Option taken: keep every row with
   its own quote and position; readers group by part type and catalogue ID. Conservative because
   the record is the evidence; merging rows would hide which extractor said what.
+
+- **2026-09-25, w2 listing-assessment: the form's values.** The card lists `form` among the
+  assessment's columns without values, and the listing kind (PC, laptop, wanted or swap, not a
+  PC) is parts-record's. Option taken: `ListingAssessmentForm` is `system`, `bundle` (a system
+  with extras, or a bundle title word), `part` (not a container, with an offered part),
+  `box_only` and `unknown`; nothing about laptops or wanted adverts is repeated here. Conservative
+  because it adds no second owner of the kind and every value rests on a stated rule.
+- **2026-09-25, w2 listing-assessment: a PC kind with fewer than two parts.** R1 makes a listing a
+  container when two of CPU, RAM and storage are named "or when the rules cannot place it". A
+  listing parts-record calls a `pc` with fewer named parts (5 in the recorded run, for example
+  "Gaming pc and curved Samsung monitor" with its specs "in video") is neither. Option taken:
+  such a listing is a container (`container_reason = 'kind'`), and one with an open kind is too
+  (`unplaced`). Conservative because treating a PC as a container keeps its GPU "not stated" and
+  its parts askable, where "not a container" would drop it from part searches.
+- **2026-09-25, w2 listing-assessment: bundle extras and the bundle-price caution.** R1c names
+  bundle extras and a "bundle price" caution without a list. Option taken: monitor, keyboard,
+  mouse, mouse pad, headset, speakers, desk, chair, webcam and microphone, read in the title and
+  the full description of containers only, and left out when optional, extra-cost or not
+  included (config `extras`, `extraDemoters`); any included extra sets `bundle_price` and form
+  `bundle`. The caution's wording shown to users is the owner's (question for `spec-match`).
+  Conservative because an optional extra never marks the ask as covering it.
+- **2026-09-25, w2 listing-assessment: stated integrated graphics only.** `gpu_state` has an
+  `integrated` value; a CPU with integrated graphics (a "G" Ryzen) could imply it. Option taken:
+  `integrated` only when the text says so ("integrated graphics", "onboard graphics", "Intel UHD
+  Graphics" and the like); a CPU model never implies it. Conservative because no fact is inferred
+  that the listing does not state.
+- **2026-09-25, w2 listing-assessment: when a photo-only GPU is `in_photos`.** parts-record's
+  photo seam may give a brand-only GPU verdict (no catalogue ID). Option taken: any offered photo
+  GPU with no text GPU gives `in_photos` and the `photo_only` caution; a photo part is never
+  confirmed (R5 needs a verbatim text quote). Conservative because photo evidence is shown as
+  such and never as a confirmed part.
+
+- **Task w2 pickup-location, gazetteer.** The card's "When off" and the listing-location draft rest on `location.nearestDisplayPlace()`, `pointForCityPage()`, `landmassFor()` and a UK gazetteer (postcode districts, OS Open Names), none of which `location` has. Option taken: the gazetteer is `city_pages.v_city_pages` (page names before the comma, and towns, all at the page's point), with a first-word alias for two-word names; `area_landmass` and `uncertainty_km` stay null; a page without a point (Chichester in the seed) gives an approximate `field_only` row that the user-facing view leaves out for want of a point. Conservative: nothing finer than a city page is ever shown, and no listing is placed without a gazetteer point. When `location` gains the gazetteer, this module swaps `buildGazetteer()`'s source and keeps its views.
+- **Task w2 pickup-location, "conflict" versus `conflicting`.** The card's Bognor case wants a conflict; the draft's row 4 gives a place 10–25 km away no flag. Option taken: `conflict` is true for any recorded disagreement (beyond `agreeKm`, or another page when no distance can be measured), while the `conflicting` status needs a strong place beyond `conflictKm`. Conservative for "too good to be true": the flag is available; the status that marks a listing approximate and moves it on the map needs the stronger evidence.
+- **Task w2 pickup-location, tables not built.** `page_stats` (for `search-planner`, soft), `ai_calls` and `quarantine` (the AI lane) are left out; `ai_queue` records what the lane would process. Option taken because the lane is off with `parts-ai` (question 12) and `search-planner` is later; adding them empty would fix columns nobody reads yet.
+- **Task w2 pickup-location, soft inputs not read.** `parts_rules.v_tag_blocks` and product-catalogue's alias view (for a generated stop-list) are not read: this module skips hashtag lines with its own rule and carries a fixed 23-word stop-list. Conservative: a keyword-stuffed line never yields a place; a common word never yields one without a cue. The seam: `STOP_LIST` and `tagBlockRanges()` in `src/domain/index.ts`.
+- **Task w2 pickup-location, distance rounding.** Every distance comes from `location.distanceKm()`, which rounds to 5 km, so `agreeKm` 10 means a raw distance under 12.5 km and `conflictKm` 25 means 27.5 km or more. Option taken rather than computing a distance here (the card: "computes no distance"). If the owner wants exact thresholds, `location` would export an unrounded distance.
+- **Task w2 pickup-location, owner wording.** Every `note_code` (`description_says_collection_from`, `listed_in`, `description_names_other_pickup`, `description_delivers_elsewhere`, `pickup_place_not_stated`), the "approximate" mark and the status names need the owner's wording before the switch goes `on` (draft §10). Only codes cross the boundary.
+- **Task w2 pickup-location, the town-label fallback while off.** Option taken: `pointsFor()` snaps listing-ingest's town label to its city page's point (the page name's place, or the page itself) and marks it approximate; a listing whose page has no point is missing from the result (distance unknown), never placed at the listing's own coordinates. The card's "snapped to its gazetteer centroid" is the same rule with the gazetteer above.
+- **Task w2 pickup-location, row 5a (outdated description).** Not built: it needs the earlier field point of the same listing across versions, and `detail-evidence.location-moved` (draft §7.8) does not exist. A moved field with unchanged text resolves like any other version.
+- **Legal points listed, not reviewed** (`docs/legal-review.md`): storing full postcodes from descriptions in `candidates.value` (internal only); showing a description-derived area to users; a location conflict as a "too good to be true" input.
+
+- **2026-09-25, want-manager (w2): `FeedFilter` is `listing-search`'s, not built.** The card
+  stores `filter: FeedFilter`, "the saved search-map-routes filter that 'Save as hunt' writes",
+  and `listing-search` owns that contract; the edge is soft (`docs/design/modules/soft-edges.json`).
+  Option taken: `WantManagerFeedFilter` in this module's contracts file is a bounded placeholder
+  (query, sort, price band, handover, condition; every field optional, every size capped), stored
+  as JSONB in `wants.filter`. When `listing-search` lands, its `FeedFilter` replaces the placeholder
+  without a column change. Conservative because nothing computes from the filter yet, and an
+  unbounded JSON column would fail the "every input is bounded" self-check.
+- **2026-09-25, want-manager (w2): the search preview is a stub.** The card wants the want
+  screen to say how many current deals a want would match; that is `listing-search`'s query. Option
+  taken: `previewWant()` takes an injected `searchPreview` port whose documented stub
+  (`noSearchPreview`) answers `null`, and `WantManagerPreview.matchingDeals` is nullable so the
+  screen shows no count rather than an invented one. The estimate procedure the cadence slider
+  expects (`WantManagerCadenceEstimate`, credits per month, run-out date) is not built either: its
+  numbers come from spend-governor's credit prices, which are the owner's, so the web app keeps
+  passing `null` as it does today. Conservative because it shows nothing rather than a guess
+  (CLAUDE.md, "No invented numbers").
+- **2026-09-25, want-manager (w2): the Free want limit is 3 in the card but 1 in
+  `subscriptions`' fallback.** The card and `docs/decisions.md` ("Free-tier limits: 3 active
+  hunts") say 3 while `subscriptions` is off; `subscriptions`' own Free fallback
+  (`SUBSCRIPTIONS_FREE_FALLBACK.wants`, used while pricing-console has no `free` row) is 1. Option
+  taken: with `subscriptions` off, the card's 3 (`WANT_MANAGER_FREE_ACTIVE_WANT_LIMIT`); with it on
+  or in shadow, whatever `getEntitlement()` returns, so today a free user gets 1 until the
+  pricing-console ladder carries a `free` row. Conservative because the live number always comes
+  from the module that owns entitlements, never retyped here, and the smaller limit applies while
+  billing runs.
+- **2026-09-25, want-manager (w2): per-want alternative controls live on `wants`.** The card
+  flags the conflict: the alternative controls are drafted per hunt, but `preferences` is keyed by
+  user. Option taken: `wants` carries `alternatives`, `pc_containment`,
+  `alternatives_max_price_minor`, `instant_alternatives` and `instant_top_picks` with the card's
+  defaults; `preferences` keeps only the per-user hide flags, channels and quiet hours. Conservative
+  because it is the shape the card's own text describes and adds no second per-want table.
+- **2026-09-25, want-manager (w2): defaults shown to users.** Product choices this module had to
+  pick a value for, all recorded as starting values: the want form's starting cadence is 15 minutes
+  (`WANT_MANAGER_DEFAULT_CADENCE_SECONDS`, the middle of the ladder and cheaper than the card's
+  5-minute example; the module never sets it, the form does); a user with no preferences row hides
+  noise and likely spam and shows multi-quantity listings, with no channels chosen; the radius input
+  is bounded at 1 000 km (the user "sets it freely", but every input is bounded) and shown in miles
+  by the web app; the error messages in `services/want-manager/src/index.ts` are placeholders for
+  the owner's wording. Conservative because each hides or costs less.
+- **2026-09-25, want-manager (w2): who reads a want's owner.** No internal view carries a user ID
+  (card, "Views"), yet `alert-router` and `notifier` must deliver a match to its owner. Option
+  taken: an exported pipeline function `wantOwners(q, wantIds)` (at most 500 IDs, inside
+  `withPipeline`) rather than a view. Conservative because the read is explicit, batched and
+  auditable in code, and the views stay free of user IDs.
+- **2026-09-25, want-manager (w2): the user-facing view lives in `want_manager`, not `app`.**
+  No `app` schema exists on `main` yet (the gap `services/listing-feedback/README.md` records).
+  Option taken: `want_manager.v_want_manager_wants`, moved to `app.v_want_manager_wants` once the
+  web app's oRPC layer creates `app`.
