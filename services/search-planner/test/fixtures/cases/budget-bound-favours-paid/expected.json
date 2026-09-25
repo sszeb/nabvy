@@ -1,0 +1,121 @@
+{
+  "running": [
+    "1:c17:rtx 3090:narrow:wants",
+    "2:c17:gaming pc:broad:wants",
+    "3:c17:pc:broad:wants",
+    "4:c16:rtx 3090:narrow:wants",
+    "5:c16:gaming pc:broad:wants",
+    "6:c16:pc:broad:wants",
+    "7:c01:rtx 3090:narrow:wants",
+    "8:c02:rtx 3090:narrow:wants",
+    "9:c03:rtx 3090:narrow:wants",
+    "10:c04:rtx 3090:narrow:wants",
+    "11:c05:rtx 3090:narrow:wants",
+    "12:c06:rtx 3090:narrow:wants",
+    "13:c07:rtx 3090:narrow:wants",
+    "14:c08:rtx 3090:narrow:wants",
+    "15:c09:rtx 3090:narrow:wants",
+    "16:c10:rtx 3090:narrow:wants",
+    "17:c11:rtx 3090:narrow:wants",
+    "18:c12:rtx 3090:narrow:wants",
+    "19:c13:rtx 3090:narrow:wants",
+    "20:c14:rtx 3090:narrow:wants",
+    "21:c15:rtx 3090:narrow:wants",
+    "22:c01:gaming pc:broad:wants",
+    "23:c01:pc:broad:wants",
+    "24:c02:gaming pc:broad:wants",
+    "25:c02:pc:broad:wants",
+    "26:c03:gaming pc:broad:wants",
+    "27:c03:pc:broad:wants",
+    "28:c04:gaming pc:broad:wants",
+    "29:c04:pc:broad:wants",
+    "30:c05:gaming pc:broad:wants",
+    "31:c05:pc:broad:wants",
+    "32:c06:gaming pc:broad:wants",
+    "33:c06:pc:broad:wants",
+    "34:c07:gaming pc:broad:wants",
+    "35:c07:pc:broad:wants",
+    "36:c08:gaming pc:broad:wants",
+    "37:c08:pc:broad:wants",
+    "38:c09:gaming pc:broad:wants",
+    "39:c09:pc:broad:wants",
+    "40:c10:gaming pc:broad:wants",
+    "41:c10:pc:broad:wants",
+    "42:c11:gaming pc:broad:wants",
+    "43:c11:pc:broad:wants",
+    "44:c12:gaming pc:broad:wants",
+    "45:c12:pc:broad:wants",
+    "46:c13:gaming pc:broad:wants"
+  ],
+  "plans": [
+    {
+      "centreId": "c01",
+      "active": true
+    },
+    {
+      "centreId": "c02",
+      "active": true
+    },
+    {
+      "centreId": "c03",
+      "active": true
+    },
+    {
+      "centreId": "c04",
+      "active": true
+    },
+    {
+      "centreId": "c05",
+      "active": true
+    },
+    {
+      "centreId": "c06",
+      "active": true
+    },
+    {
+      "centreId": "c07",
+      "active": true
+    },
+    {
+      "centreId": "c08",
+      "active": true
+    },
+    {
+      "centreId": "c09",
+      "active": true
+    },
+    {
+      "centreId": "c10",
+      "active": true
+    },
+    {
+      "centreId": "c11",
+      "active": true
+    },
+    {
+      "centreId": "c12",
+      "active": true
+    },
+    {
+      "centreId": "c13",
+      "active": true
+    },
+    {
+      "centreId": "c14",
+      "active": true
+    },
+    {
+      "centreId": "c15",
+      "active": true
+    },
+    {
+      "centreId": "c16",
+      "active": true
+    },
+    {
+      "centreId": "c17",
+      "active": true
+    }
+  ],
+  "verifications": []
+}
