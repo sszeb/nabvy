@@ -1,0 +1,28 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1775698700306989"],
+  "responses": {
+    "1775698700306989": {
+      "responseId": "msg_syn_quote",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "gpu",
+            "name": "GeForce GTX 1070",
+            "quote": "GPU: NVIDIA GeForce GTX 1070",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 700,
+        "outputTokens": 40,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 800
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@nabvy/parts-ai",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nabvy/config": "workspace:*",
+    "@nabvy/contracts": "workspace:*",
+    "@nabvy/cost-meter": "workspace:*",
+    "@nabvy/db": "workspace:*",
+    "@nabvy/details-queue": "workspace:*",
+    "@nabvy/parts-rules": "workspace:*",
+    "@nabvy/product-catalogue": "workspace:*",
+    "@nabvy/quote-redaction": "workspace:*",
+    "@nabvy/spend-governor": "workspace:*",
+    "@nabvy/switches": "workspace:*",
+    "@nabvy/transport": "workspace:*",
+    "drizzle-orm": "0.45.3",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@nabvy/detail-evidence": "workspace:*",
+    "@nabvy/listing-ingest": "workspace:*"
+  }
+}

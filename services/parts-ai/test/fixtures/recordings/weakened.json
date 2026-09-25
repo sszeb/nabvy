@@ -1,0 +1,84 @@
+{
+  "prompt": "The current system prompt without its lines on untrusted text, the seller's instructions, mentions and guessing (evaluation.test.ts).",
+  "cases": ["recorded-run", "mention-only", "prompt-injection"],
+  "responses": {
+    "1083674317719227": {
+      "responseId": "msg_weak_1083674317719227",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "cpu",
+            "name": "AMD64 processor",
+            "quote": "~3900Mhz AMD64 processor",
+            "inclusion": "offered"
+          },
+          {
+            "partType": "gpu",
+            "name": "Geforce RTX",
+            "quote": "Geforce RTX graphics card",
+            "inclusion": "offered"
+          },
+          {
+            "partType": "storage_size",
+            "name": null,
+            "quote": "I can include 300GB extended storage for an extra £20",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 650,
+        "outputTokens": 60,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 800
+    },
+    "1639721697586478": {
+      "responseId": "msg_weak_1639721697586478",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "gpu",
+            "name": "RTX 4070",
+            "quote": "Upgraded to an RTX 4070",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 650,
+        "outputTokens": 60,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 800
+    },
+    "2537899006714740": {
+      "responseId": "msg_weak_2537899006714740",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "gpu",
+            "name": "RTX 5090",
+            "quote": "the best one Nvidia sells",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 650,
+        "outputTokens": 60,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 800
+    }
+  }
+}

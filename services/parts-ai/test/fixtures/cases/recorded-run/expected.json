@@ -1,0 +1,107 @@
+{
+  "report": {
+    "openVersions": 12,
+    "cached": 0,
+    "called": 12,
+    "extracted": 12,
+    "quarantined": 0,
+    "refreshRequested": 0,
+    "deferred": 0,
+    "failed": 0,
+    "paused": null,
+    "modelCalls": 12,
+    "events": [12]
+  },
+  "queue": [],
+  "listings": {
+    "1072745435569624": {
+      "status": "none",
+      "parts": []
+    },
+    "1073353648648306": {
+      "status": "extracted",
+      "parts": ["description:ram_size:RAM: Corsair Vengeance CMW32GX4M2E3200C16 [offered]"]
+    },
+    "1083674317719227": {
+      "status": "extracted",
+      "parts": [
+        "description:cpu:~3900Mhz AMD64 processor [offered]",
+        "description:gpu:Geforce RTX graphics card [offered]",
+        "description:storage_size:I can include 300GB extended storage for an extra £20 [not_included]"
+      ]
+    },
+    "1123980543398026": {
+      "status": "extracted",
+      "parts": []
+    },
+    "1154042653756525": {
+      "status": "extracted",
+      "kind": "title:not_a_pc:Gaming Headset",
+      "parts": []
+    },
+    "1352645884594841": {
+      "status": "none",
+      "parts": []
+    },
+    "1380502417485603": {
+      "status": "extracted",
+      "parts": []
+    },
+    "1397200465308431": {
+      "status": "extracted",
+      "parts": ["description:cpu:Amd Ryzen 7700x → cpu:amd:ryzen-7-7000 [offered]"]
+    },
+    "1403975981250476": {
+      "status": "none",
+      "parts": []
+    },
+    "1639721697586478": {
+      "status": "extracted",
+      "parts": []
+    },
+    "1716871313386322": {
+      "status": "none",
+      "parts": []
+    },
+    "1756692548940192": {
+      "status": "extracted",
+      "parts": []
+    },
+    "1775698700306989": {
+      "status": "extracted",
+      "parts": ["description:gpu:GPU: NVIDIA GeForce GTX 970 [offered]"]
+    },
+    "1783301919382894": {
+      "status": "none",
+      "parts": []
+    },
+    "1816901372840238": {
+      "status": "extracted",
+      "parts": [
+        "description:cpu:CPU: Intel Core i7-4790 (Quad Core, 3.6GHz / 4.0GHz Turbo) [offered]",
+        "description:gpu:Graphics Card: NVIDIA GeForce GTX 970 4GB [offered]"
+      ]
+    },
+    "2005582460147017": {
+      "status": "none",
+      "parts": []
+    },
+    "2126837844711748": {
+      "status": "extracted",
+      "kind": "title:not_a_pc:Wireless Gaming Headset",
+      "parts": []
+    },
+    "2264485254402498": {
+      "status": "none",
+      "parts": []
+    },
+    "2537899006714740": {
+      "status": "extracted",
+      "parts": []
+    },
+    "28242423458759790": {
+      "status": "none",
+      "parts": []
+    }
+  }
+}

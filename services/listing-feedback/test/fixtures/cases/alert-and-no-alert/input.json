@@ -1,0 +1,8 @@
+{
+  "userId": "0190f1d2-0000-7000-8000-000000000001",
+  "listingId": "0190f1d2-0000-7000-8000-0000000000a1",
+  "actions": [
+    { "kind": "verdict", "verdict": "real_deal" },
+    { "kind": "verdict", "verdict": "bought", "alertId": "0190f1d2-0000-7000-8000-0000000000b1" }
+  ]
+}
