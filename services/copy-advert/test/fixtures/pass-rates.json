@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "clustering": {
+      "passed": 7,
+      "total": 7
+    }
+  }
+}
