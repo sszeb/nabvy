@@ -1,0 +1,30 @@
+{
+  "name": "@nabvy/subscriptions",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@better-auth/stripe": "1.7.5",
+    "@nabvy/account": "workspace:*",
+    "@nabvy/config": "workspace:*",
+    "@nabvy/contracts": "workspace:*",
+    "@nabvy/db": "workspace:*",
+    "@nabvy/switches": "workspace:*",
+    "@nabvy/transport": "workspace:*",
+    "@nabvy/usage-ledger": "workspace:*",
+    "better-auth": "1.7.5",
+    "drizzle-orm": "0.45.3",
+    "stripe": "22.6.2",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8"
+  }
+}

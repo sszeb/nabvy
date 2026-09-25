@@ -1,0 +1,39 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md 'No refunds' (one required tick, 'Start my plan now', stored with the payment); docs/billing.md 'Tests': Checkout refuses without the start-now tick, stored confirmation matches the session",
+  "steps": [
+    {
+      "checkout": {
+        "plan": "pro"
+      }
+    },
+    {
+      "checkout": {
+        "plan": "pro",
+        "startNow": false
+      }
+    },
+    {
+      "plugin": {
+        "tick": false
+      }
+    },
+    {
+      "checkout": {
+        "plan": "pro",
+        "startNow": true
+      }
+    },
+    {
+      "plugin": {
+        "tick": true
+      }
+    },
+    {
+      "event": "checkout-no-consent"
+    },
+    {
+      "event": "checkout-subscription"
+    }
+  ]
+}
