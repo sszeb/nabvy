@@ -130,16 +130,20 @@ export async function selectActiveWatches(
   }))
 }
 
-/** Every active watch's listing, for the tick's recheck request. At most `limit` listing IDs. */
+/**
+ * One page of active watches' listings, for the tick's recheck request: at most `limit` listing
+ * IDs after `after` (keyset on `listing_id`; null for the first page).
+ */
 export async function selectAllActiveWatchedListings(
   q: Queryable,
+  after: string | null,
   limit: number,
 ): Promise<string[]> {
   const rows = rowsOf<{ listing_id: string }>(
     await q.execute(sql`
       select distinct w.listing_id
       from price_drop_watch.watches w
-      where w.active
+      where w.active and (${after}::uuid is null or w.listing_id > ${after}::uuid)
       order by w.listing_id
       limit ${limit}`),
   )
@@ -208,13 +212,13 @@ export async function selectRelistGroupIds(
 }
 
 /**
- * Writes every decision's drop row, keyed on `(watch_id, card_hash)` so a replay writes nothing
- * new (rule 8). Whether a row was already there or is written now, the caller announces the same
- * `announce`d watch IDs either way: the decision is a deterministic function of stored data, so a
- * replay reproduces the same event (rule 8's upsert pattern).
+ * Writes every candidate's drop row, keyed on `(watch_id, card_hash)` so a replay writes nothing
+ * new (rule 8), and returns the watch IDs whose row this call actually wrote. Only those are
+ * announced: a drop already on record (a replay, or a later card change or merge that finds the
+ * same latest price change) is never announced again.
  */
-export async function insertDrops(q: Queryable, decisions: DropCandidate[]): Promise<void> {
-  if (decisions.length === 0) return
+export async function insertDrops(q: Queryable, decisions: DropCandidate[]): Promise<Set<string>> {
+  if (decisions.length === 0) return new Set()
   const payload = decisions.map((d) => ({
     watch_id: d.watchId,
     from_minor: d.fromMinor,
@@ -224,7 +228,8 @@ export async function insertDrops(q: Queryable, decisions: DropCandidate[]): Pro
     card_hash: d.cardHash,
     relist_group_id: d.relistGroupId,
   }))
-  await q.execute(sql`
+  const rows = rowsOf<{ watch_id: string }>(
+    await q.execute(sql`
     insert into price_drop_watch.drops (watch_id, from_minor, to_minor, currency, observed_at,
       card_hash, relist_group_id)
     select x.watch_id, x.from_minor, x.to_minor, x.currency, x.observed_at, x.card_hash,
@@ -232,7 +237,10 @@ export async function insertDrops(q: Queryable, decisions: DropCandidate[]): Pro
     from jsonb_to_recordset(${JSON.stringify(payload)}::jsonb) as x (
       watch_id uuid, from_minor bigint, to_minor bigint, currency text, observed_at timestamptz,
       card_hash text, relist_group_id uuid)
-    on conflict (watch_id, card_hash) do nothing`)
+    on conflict (watch_id, card_hash) do nothing
+    returning watch_id`),
+  )
+  return new Set(rows.map((r) => r.watch_id))
 }
 
 /** Removes these users' watches (and their drops, cascade). Rule 12: `account.deleted`. */

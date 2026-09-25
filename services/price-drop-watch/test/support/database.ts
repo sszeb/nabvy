@@ -236,6 +236,15 @@ export async function runJob(
   return announced
 }
 
+/**
+ * Pins a watch's `created_at` (as the migration role). `watch()` stamps the database's clock,
+ * while fixture sightings carry fixed recorded times, so a test sets when the watch started
+ * relative to them: only price changes observed at or after it are candidates.
+ */
+export async function watchedSince(t: TestDatabase, watchId: string, at: string): Promise<void> {
+  await t.sql('update price_drop_watch.watches set created_at = $1 where id = $2', [at, watchId])
+}
+
 /** listing-ingest's listing UUID of each source listing ID. */
 export async function listingIdsBySource(t: TestDatabase): Promise<Map<string, string>> {
   const rows = await t.asPipeline('select id, source_listing_id from listing_ingest.v_listings')

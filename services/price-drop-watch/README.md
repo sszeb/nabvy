@@ -86,6 +86,7 @@ Postgres schema `price_drop_watch`.
 | History source | `listing_ingest.v_price_changes` (plus the listing's first fetched price as the anchor); never `displayedPreviousMinor` | The card: "the seller's displayed previous price appears only as the seller's own figure, never as history" | Fixed |
 | Idempotency key | `(watch_id, card_hash)`; `card_hash` is listing-ingest's own sighting hash | Rule 8 (card-stage `cardHash`); this module has no `detail-evidence` dependency, so only `cardHash`, not `cardHash`+`evidenceHash` | Deviation from rule 8's generic "price stages" row, recorded in `docs/questions/price-drop-watch.md` |
 | Group announcement dedupe | One announcement per `(relistGroupId, toMinor)` per batch, earliest watch (`watchCreatedAt`, then `watchId`) wins; every candidate is still written | README "Decisions"; catalogue question 21 ("relist-merge only stops the same item alerting twice") | Starting value; the card leaves the exact mechanics to this module (question 21) |
+| Announced once | A drop is announced only by the pass whose insert wrote its `drops` row; only changes observed at or after the watch's `created_at` are candidates | README "Decisions"; review of PR #70 | Fixed |
 | Watched recheck cadence | `tick()` asks once per active watch, at least daily (the caller's schedule); listing-lifecycle itself batches (≥ 20, or a day's wait) | `PARTS_INTELLIGENCE.md:190-191`; `listing-lifecycle`'s own "watched" reason | Starting value |
 | Batch | 500 listing IDs and watch IDs per handler pass, recheck request and event | Rule 7; `CLAUDE.md`, "Batches, not items" | Fixed |
 
@@ -108,15 +109,24 @@ collected gateway job and ingested by listing-ingest:
   listing asking £450 with a displayed previous price of £499" (listing 1072745435569624,
   `dataset.json`, `conflicts[0]`): re-collected with a title-only edit; the seller's displayed
   figure is never read as history, so nothing is written or announced.
+- `watch-drop-then-reword-once` (synthetic): a real drop, then a title-only re-collection at the
+  same lower price; the second `card-changed` finds the same latest price change, its `drops` row
+  is already there, so the drop is announced once in total.
+- `watch-created-after-drop-no-alert` (synthetic): the drop is observed before the user watches;
+  a later reword fires `card-changed`, but a change observed before the watch's `created_at` is
+  never a candidate, so nothing is written or announced.
 
-Pass rate 4/4 (2026-09-24). Other tests: `domain.test.ts` (`isDrop`'s boundary, `dedupeAnnouncements`'s
+Cases may set `stepsBeforeWatch` and `watchedAt`; the harness pins the watch's `created_at`
+(default: the recorded run's start), since the fixtures' sightings carry fixed recorded times.
+
+Pass rate 6/6 (2026-09-25; 4/4 on 2026-09-24). Other tests: `domain.test.ts` (`isDrop`'s boundary, `dedupeAnnouncements`'s
 group tie-break and its ties-break-on-watchId case, `chunk`, `triggerId`, `eventKey`),
-`idempotency.test.ts` (a replayed `card-changed` writes nothing new and announces the same watch
-IDs; unknown listing IDs are simply ignored), `switch.test.ts` (off refuses `watch()`/`unwatch()`
+`idempotency.test.ts` (a replayed `card-changed` writes nothing new and announces nothing new;
+unknown listing IDs are simply ignored), `switch.test.ts` (off refuses `watch()`/`unwatch()`
 and empties `applyEvent`/`tick`, but `erase()` still runs; the pipeline pause does not gate
 `watch()`; shadow runs and writes with no user-facing output), `watch.test.ts` (idempotent
 watch/re-watch, two users on one listing, unwatch deactivates and re-watch reactivates the same
-row, `tick()`'s recheck request, `erase()` and `account.deleted`'s own-user-only purge),
+row, `tick()`'s recheck request and its paging past the first 500 watched listings, `erase()` and `account.deleted`'s own-user-only purge),
 `relist-dedupe.test.ts` (two watches on two listings relist-merge has grouped, dropping to the
 same price in one batch: both get their own `drops` row, only the earlier watch is announced),
 `contracts.test.ts` (events and every view row parse; a history row with an extra column is
@@ -183,7 +193,20 @@ the watcher, another user, an unwatched listing and no `app.user_id` at all).
   background-processing concern and does not gate a user's own write.
 - **2026-09-24: `tick()` asks for every active watch's listing every time it runs**, relying on
   listing-lifecycle's own `requestRecheck` to no-op a still-pending schedule and to decide the
-  actual batching (≥ 20, or a day's wait) — this module does not re-derive that policy.
+  actual batching (≥ 20, or a day's wait) — this module does not re-derive that policy. It pages
+  through the watched listings 500 at a time, keyed on `listing_id` (2026-09-25, review of PR #70).
+- **2026-09-25: a drop is announced once, and only if observed while the watch existed** (review
+  of PR #70). Each pass reads a watched listing's latest price change whatever event arrived, so
+  a later `card-changed` (a reword, a new photo) or `relist-merge.merged` finds the same drop
+  again. `insertDrops` returns the watch IDs whose `drops` row it actually wrote, and only those
+  are announced; a drop already on record is never announced again under a new key. A change
+  observed (`seen_at`, the sighting's collection time) before the watch's `created_at` is never a
+  candidate, so a user who starts watching after a drop is never told about it. Reactivating a
+  watch (`watch()` after `unwatch()`) keeps its original `created_at`, so a drop observed while it
+  was inactive and not yet written can still be announced on the next pass after reactivation;
+  accepted as the simpler rule. A replay now announces nothing (the transport would drop its
+  unchanged key anyway), so a pass whose writes committed but whose event was never published
+  loses that announcement; recorded in `docs/questions/price-drop-watch.md`.
 - **2026-09-24: no RLS on `drops`.** It carries no `user_id` and is never read by `nabvy_app`
   directly, only through the history view, which reads listing-ingest's own observations instead
   (see "Owned tables"); the pipeline role alone has grants.

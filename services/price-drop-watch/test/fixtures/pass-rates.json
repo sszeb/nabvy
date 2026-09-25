@@ -1,5 +1,8 @@
 {
   "stages": {
-    "watch": { "passed": 4, "total": 4 }
+    "watch": {
+      "passed": 6,
+      "total": 6
+    }
   }
 }

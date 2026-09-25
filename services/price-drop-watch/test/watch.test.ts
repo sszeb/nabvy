@@ -102,6 +102,28 @@ describe('tick', () => {
     expect(rows).toEqual([{ reason: 'watched', requested_by: 'price-drop-watch' }])
   })
 
+  it('pages past the first 500 watched listings', async () => {
+    const listingId = await seedListing()
+    const watched = await doWatch(USER_ID, listingId)
+    if (!watched.ok) throw new Error(watched.error.message)
+    // 500 watches on IDs that sort before the real listing's (a UUIDv7), so the real one is only
+    // on the second page; listing-lifecycle skips the unknown IDs.
+    await t.sql(
+      `insert into price_drop_watch.watches (user_id, listing_id)
+       select $1, ('00000000-0000-4000-8000-' || lpad(n::text, 12, '0'))::uuid
+       from generate_series(1, 500) n`,
+      [OTHER_USER],
+    )
+
+    const report = await tick(t.db)
+    expect(report.requested).toBe(1)
+    const rows = await t.asPipeline(
+      "select 1 from listing_lifecycle.rechecks where listing_id = $1 and reason = 'watched'",
+      [listingId],
+    )
+    expect(rows).toHaveLength(1)
+  })
+
   it('never asks for an inactive (unwatched) listing', async () => {
     const listingId = await seedListing()
     const watched = await doWatch(USER_ID, listingId)

@@ -40,3 +40,19 @@ Same format as `docs/questions.md`; the coordinator folds these entries into it.
   module's internal data, since `nabvy_core.view_violations()` does not check the `app` schema at
   all (it only scans schemas the migration ledger lists as modules), so each module doing this
   differently would be easy to miss in review.
+- **2026-09-25, w1 price-drop-watch (review of PR #70, round 1): a drop is announced only by the
+  pass that writes its `drops` row.** The reviewer's fix: `insertDrops` returns the watch IDs it
+  actually inserted and only those are announced, so a later `card-changed` or
+  `relist-merge.merged` never re-announces the same drop. Left open: a replayed event now
+  announces nothing, so if a pass's transaction commits and the `dropped` event is then never
+  published (the process dies between commit and publish), that drop is never announced. Option
+  taken: accept that gap (the reviewer's fix as asked; no outbox or `announced_at` column added,
+  no migration change). Conservative because it can only ever miss an alert, never send a
+  duplicate or a stale one; if the owner wants at-least-once alerts, a later change can record
+  the triggering key on `drops` and re-announce rows written under the same key.
+- **2026-09-25, w1 price-drop-watch (review of PR #70, round 1): "observed while watched" uses
+  `seen_at`, the sighting's collection time, against the watch's `created_at`.** A sighting
+  collected shortly before the user watched but ingested after is therefore not announced.
+  Option taken: compare collection time, as the reviewer asked (`observed_at` at or after
+  `created_at`); reactivation keeps `created_at`. Conservative because it never tells a user
+  about a change from before they watched.

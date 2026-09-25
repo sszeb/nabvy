@@ -20,7 +20,14 @@ import {
 import type { Queryable } from '@nabvy/db'
 import { requestRecheck } from '@nabvy/listing-lifecycle'
 import { isOn, state } from '@nabvy/switches'
-import { chunk, type DropCandidate, dedupeAnnouncements, eventKey, isDrop } from './domain'
+import {
+  chunk,
+  type DropCandidate,
+  dedupeAnnouncements,
+  eventKey,
+  isDrop,
+  observedDuringWatch,
+} from './domain'
 import {
   deactivateWatch,
   deleteWatchesForListings,
@@ -101,7 +108,8 @@ export interface CheckReport {
   open: boolean
   /** Active watches among the given listings. */
   evaluated: number
-  /** Drop candidates written (real drops only; replays write nothing new). */
+  /** Drop candidates found (real drops observed while the watch existed; a replay finds the same
+   * ones and writes nothing new). */
   candidates: number
   /** `dropped` envelopes for the caller to publish after commit. */
   events: EventEnvelope[]
@@ -113,7 +121,9 @@ const emptyReport = (): CheckReport => ({ open: false, evaluated: 0, candidates:
  * Checks a batch of listings (1–500 listing-ingest UUIDs) for a price drop on their active
  * watches, writes every candidate to `drops` (safe to run twice: the unique key on `(watch_id,
  * card_hash)` makes a replay a no-op) and returns `dropped` events keyed on `trigger` (the
- * incoming event's key). Shared by both input events: `listing-ingest.card-changed` fires for a
+ * incoming event's key) for the drops this pass actually wrote: a drop already written by an
+ * earlier pass is never announced again, and a drop observed before the watch was created is
+ * never a candidate. Shared by both input events: `listing-ingest.card-changed` fires for a
  * listing's own new sighting; `relist-merge.merged` re-checks a group's members, in case a
  * relist-merge group formed after their own price change was already read (README.md,
  * "Decisions"). A candidate is always the latest observed price change on the listing, checked
@@ -138,7 +148,7 @@ export async function applyEvent(
   )
   const candidates: DropCandidate[] = watches.flatMap((w) => {
     const change = drops.get(w.listingId)
-    if (!change) return []
+    if (!change || !observedDuringWatch(change.observedAt, w.watchCreatedAt)) return []
     return [
       {
         watchId: w.watchId,
@@ -156,9 +166,11 @@ export async function applyEvent(
   if (candidates.length === 0) {
     return { open: true, evaluated: watches.length, candidates: 0, events: [] }
   }
-  await insertDrops(q, candidates)
+  // The relist-merge dedupe runs over every candidate, so a group's earlier watch whose drop an
+  // earlier pass already announced still stops a later member alerting on the same price.
+  const inserted = await insertDrops(q, candidates)
   const announced = dedupeAnnouncements(candidates)
-    .filter((d) => d.announce)
+    .filter((d) => d.announce && inserted.has(d.watchId))
     .map((d) => d.watchId)
   return {
     open: true,
@@ -181,18 +193,22 @@ export async function applyEvent(
  * Asks listing-lifecycle to refresh every actively watched listing (reason `watched`; listing-
  * lifecycle itself decides when a batch is big enough to send, or waits at most a day). Called by
  * the module's own Trigger.dev task, at least daily (README.md). Nothing runs while the module or
- * the pipeline is off.
+ * the pipeline is off. Pages through the watched listings in batches of
+ * `PRICE_DROP_WATCH_BATCH_SIZE`, keyed on `listing_id`, so every one is asked for.
  */
 export async function tick(q: Queryable): Promise<{ requested: number }> {
   if (!(await open(q))) return { requested: 0 }
-  const listingIds = await selectAllActiveWatchedListings(q, PRICE_DROP_WATCH_BATCH_SIZE)
-  if (listingIds.length === 0) return { requested: 0 }
-  const result = await requestRecheck(q, {
-    listingIds,
-    reason: 'watched',
-    requestedBy: MODULE,
-  })
-  return { requested: result.scheduled }
+  let requested = 0
+  let after: string | null = null
+  for (;;) {
+    const listingIds = await selectAllActiveWatchedListings(q, after, PRICE_DROP_WATCH_BATCH_SIZE)
+    if (listingIds.length === 0) break
+    const result = await requestRecheck(q, { listingIds, reason: 'watched', requestedBy: MODULE })
+    requested += result.scheduled
+    if (listingIds.length < PRICE_DROP_WATCH_BATCH_SIZE) break
+    after = listingIds[listingIds.length - 1] as string
+  }
+  return { requested }
 }
 
 /** Removes the watches (and their drops) of a deleted account. Rule 12: `account.deleted`. */

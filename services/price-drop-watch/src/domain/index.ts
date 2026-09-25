@@ -60,6 +60,16 @@ export function dedupeAnnouncements(candidates: readonly DropCandidate[]): DropD
   return decided
 }
 
+/**
+ * Whether a price change was observed while the watch existed: at or after the watch's
+ * `created_at`. A drop observed before the user started watching is never announced to them, nor
+ * written to their watch's history (README.md, "Decisions"). Reactivating a watch keeps its
+ * original `created_at`.
+ */
+export function observedDuringWatch(observedAt: string, watchCreatedAt: string): boolean {
+  return Date.parse(observedAt) >= Date.parse(watchCreatedAt)
+}
+
 export function chunk<T>(items: readonly T[], size: number): T[][] {
   const out: T[][] = []
   for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size))

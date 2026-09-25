@@ -8,11 +8,13 @@ import {
   loadRun,
   runJob,
   type TestDatabase,
+  watchedSince,
 } from '../support/database'
 
 // Stage "watch": recorded rows (or synthetic rows built from them, re-collected at a later time)
 // stored as a collected gateway job and ingested by listing-ingest on the real migrations in
-// PGlite. Each case watches one listing, replays the case's job steps through
+// PGlite. Each case watches one listing (optionally after some of its steps, with the watch's
+// start pinned to a fixture time), replays the case's job steps through
 // listing-ingest.card-changed and price-drop-watch's own applyEvent, and checks what was
 // announced and what price_drop_watch.drops recorded. Prices come only from listing-ingest's own
 // observed sightings; the seller's displayed "previous price" is never read as history (README.md,
@@ -21,6 +23,10 @@ import {
 interface Input {
   run: string
   listingSourceId: string
+  /** How many of `steps` run before the user watches (default 0: all run after). */
+  stepsBeforeWatch?: number
+  /** The watch's `created_at` (default: the first job's collection time, the recorded run's). */
+  watchedAt?: string
   steps: JobStep[]
 }
 
@@ -66,11 +72,14 @@ describe('watch', () => {
       [input.listingSourceId],
     )
     const listingId = located?.id as string
+    const before = input.steps.slice(0, input.stepsBeforeWatch ?? 0)
+    for (const step of before) await runJob(t, recorded, step)
     const watched = await t.asApp(USER_ID, (tx) => watch(tx, { userId: USER_ID, listingId }))
     if (!watched.ok) throw new Error(watched.error.message)
+    await watchedSince(t, watched.value.id, input.watchedAt ?? (recorded.run.startedAt as string))
 
     let announced: string[] = []
-    for (const step of input.steps) {
+    for (const step of input.steps.slice(before.length)) {
       announced = [...announced, ...(await runJob(t, recorded, step))]
     }
 
