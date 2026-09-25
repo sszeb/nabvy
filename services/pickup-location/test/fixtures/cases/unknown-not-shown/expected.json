@@ -1,0 +1,10 @@
+{
+  "listings": {
+    "7000000000000007": {
+      "status": "unknown",
+      "townOrArea": null,
+      "basis": "fallback",
+      "appRows": 0
+    }
+  }
+}

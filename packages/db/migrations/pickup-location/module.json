@@ -1,0 +1,13 @@
+{
+  "module": "pickup-location",
+  "schema": "pickup_location",
+  "dependsOn": [
+    "core",
+    "switches",
+    "listing-ingest",
+    "detail-evidence",
+    "city-pages",
+    "location",
+    "listing-suppression"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "userId": "0190f1d2-0000-7000-8000-0000000000f1",
+  "entitlement": { "status": "active", "wants": 5 },
+  "steps": [
+    { "kind": "upsert" },
+    {
+      "kind": "upsert",
+      "input": {
+        "postcode": "RH1 1AA",
+        "deliveryMethods": ["collection", "posted"],
+        "radiusKm": 40
+      }
+    }
+  ]
+}

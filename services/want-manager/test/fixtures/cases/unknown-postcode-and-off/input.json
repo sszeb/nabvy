@@ -1,0 +1,21 @@
+{
+  "synthetic": true,
+  "userId": "0190f1d2-0000-7000-8000-0000000000f1",
+  "steps": [
+    { "kind": "upsert", "input": { "postcode": "ZZ9 9ZZ" } },
+    {
+      "kind": "upsert",
+      "input": {
+        "criteria": [
+          {
+            "partType": "storage",
+            "catalogueId": null,
+            "family": null,
+            "minAttr": { "sizeGb": 1000 },
+            "orBetter": false
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "listings": {
+    "7000000000000001": {
+      "status": "from_description",
+      "townOrArea": "Bognor Regis",
+      "conflict": true,
+      "approximate": true,
+      "appRows": 1,
+      "noteCode": "description_says_collection_from",
+      "notePlaceLabel": "Bognor Regis",
+      "listedInLabel": "Chichester",
+      "source": "description",
+      "collection": "yes"
+    }
+  }
+}

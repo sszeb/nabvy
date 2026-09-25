@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790353195865,
+      "tag": "20260925161955_listing_assessment_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790353198200,
+      "tag": "20260925161958_listing_assessment_access",
+      "breakpoints": true
+    }
+  ]
+}

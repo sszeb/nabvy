@@ -1,0 +1,8 @@
+{
+  "outcomes": ["want-manager.postcode_unknown", "ok:created:chichester"],
+  "wants": ["chichester:active"],
+  "terms": [],
+  "areas": ["chichester@50.85,-0.8:25"],
+  "parts": 1,
+  "pipelineWants": 1
+}

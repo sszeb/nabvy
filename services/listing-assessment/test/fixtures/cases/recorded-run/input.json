@@ -1,0 +1,244 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "responses": {
+    "1073353648648306": {
+      "responseId": "msg_rec_1073353648648306",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "ram_size",
+            "name": null,
+            "quote": "RAM: Corsair Vengeance CMW32GX4M2E3200C16",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 712,
+        "outputTokens": 48,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1083674317719227": {
+      "responseId": "msg_rec_1083674317719227",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "cpu",
+            "name": "AMD64 processor",
+            "quote": "~3900Mhz AMD64 processor",
+            "inclusion": "offered"
+          },
+          {
+            "partType": "gpu",
+            "name": "Geforce RTX",
+            "quote": "Geforce RTX graphics card",
+            "inclusion": "offered"
+          },
+          {
+            "partType": "storage_size",
+            "name": null,
+            "quote": "I can include 300GB extended storage for an extra \u00a320",
+            "inclusion": "not_included"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 745,
+        "outputTokens": 121,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1123980543398026": {
+      "responseId": "msg_rec_1123980543398026",
+      "output": {
+        "kind": null,
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 701,
+        "outputTokens": 12,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1154042653756525": {
+      "responseId": "msg_rec_1154042653756525",
+      "output": {
+        "kind": {
+          "kind": "not_a_pc",
+          "quote": "Gaming Headset"
+        },
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 655,
+        "outputTokens": 30,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1380502417485603": {
+      "responseId": "msg_rec_1380502417485603",
+      "output": {
+        "kind": null,
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 690,
+        "outputTokens": 12,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1397200465308431": {
+      "responseId": "msg_rec_1397200465308431",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "cpu",
+            "name": "Ryzen 7 7700X",
+            "quote": "Amd Ryzen 7700x",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 840,
+        "outputTokens": 44,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1639721697586478": {
+      "responseId": "msg_rec_1639721697586478",
+      "output": {
+        "kind": null,
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 684,
+        "outputTokens": 12,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1756692548940192": {
+      "responseId": "msg_rec_1756692548940192",
+      "output": {
+        "kind": null,
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 671,
+        "outputTokens": 12,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1775698700306989": {
+      "responseId": "msg_rec_1775698700306989",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "gpu",
+            "name": "GeForce GTX 970",
+            "quote": "GPU: NVIDIA GeForce GTX 970",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 760,
+        "outputTokens": 40,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1816901372840238": {
+      "responseId": "msg_rec_1816901372840238",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "cpu",
+            "name": "Intel Core i7-4790",
+            "quote": "CPU: Intel Core i7-4790 (Quad Core, 3.6GHz / 4.0GHz Turbo)",
+            "inclusion": "offered"
+          },
+          {
+            "partType": "gpu",
+            "name": "GeForce GTX 970 4GB",
+            "quote": "Graphics Card: NVIDIA GeForce GTX 970 4GB",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 905,
+        "outputTokens": 80,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "2126837844711748": {
+      "responseId": "msg_rec_2126837844711748",
+      "output": {
+        "kind": {
+          "kind": "not_a_pc",
+          "quote": "Wireless Gaming Headset"
+        },
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 780,
+        "outputTokens": 30,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "2537899006714740": {
+      "responseId": "msg_rec_2537899006714740",
+      "output": {
+        "kind": null,
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 672,
+        "outputTokens": 12,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    }
+  }
+}
