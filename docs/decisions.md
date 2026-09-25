@@ -351,6 +351,17 @@ The owner, to coordinator 9: "For next session run everything on fable, the ultr
 
 The owner, to coordinator 11, from the usage report: 79% of usage came from calls at over 150k context and 22% from workflow subagents; "Longer sessions are more expensive even when cached. /compact mid-task, /clear when switching to new tasks. If this runs frequently, consider configuring its subagents with a cheaper model or tightening their prompts." Applied at once, and the rules are in `docs/session-conventions.md`, "Context economy": every session hands off at 150k tokens (was 300k in `CLAUDE.md`, "Short sessions"); a session far past the line is not woken for new work, a fresh session is briefed instead; the coordinator runs its own work in-line and uses a workflow only where fan-out pays, with Sonnet or Haiku and low effort for readers and mechanical steps; briefs name slices to read; the owner may `/compact` an idle long-lived session between wakes. The unused connectors attached to the Nabvy environment add their tool listings to every call of every session; detaching them is the owner's setting.
 
+## Model by job: Opus 5.5 for build sessions, Fable for reviewer and coordinator, Haiku for Routines (owner, 2026-09-25, 14:55)
+
+The owner sent the "Choosing the right model" and "Optimizing for cost and intelligence" pages and said "implement all recommendations". Measured on the attribution build session (Fable 5.1, $4.83): cache writes at the 1-hour price were 55% of the bill, cache reads 24%, output 21%; the same token profile on Opus 5.5 costs about $2.40, and the page's SWE-bench Pro measurement has Opus 5.5 at its default effort matching Fable 5.1 at default for about a fifth of the cost per solved task. From 14:55 on:
+
+- **Build and fix sessions run on `claude-opus-5-5` at its default effort (`medium`).** CI and the reviewer are the failure signal, so this is the page's "run cheap, re-run failures higher" case. A PR that fails review twice gets its next fix session on Fable. The six wave-2 sessions started at 14:30 stay on Fable.
+- **Reviewer and coordinator stay on Fable at `medium`** (was `xhigh` on the coordinator): security, money and adversarial verification, per `CLAUDE.md` "Model and effort by job"; `medium` matched `high` on every knowledge-work benchmark the page lists.
+- **The relay and watchdog Routines move to `claude-haiku-4-5`**: hourly, no judgment, a fifth of Opus 5.5 per call. The platform refused the coordinator's `update_trigger` model change (permission classifier), so the owner sets it in the app on `trig_01FPLnjfTATPb7YQivWvA7FX` and `trig_011fjd2grZBEWR3FqfDzTWJR`.
+- **Effort is an app setting.** `create_session` has no effort field; "low effort" in a brief is an instruction to the model, not the API parameter. The owner sets effort per session in the app; briefs keep stating it.
+
+This narrows "Fable everywhere" above to the reviewer and the coordinator; the 150k line, slices, batches and events from "Context economy" stay.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
