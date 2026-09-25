@@ -2,7 +2,9 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import type { ChannelKind, Hunt } from '@/data/types'
+import type { ChannelKind, Hunt, WantManagerCadenceSeconds } from '@/data/types'
+import { CADENCE_DEFAULT_SECONDS } from '@/lib/cadence'
+import { CadenceSlider } from './cadence-slider'
 import { channelName } from './hunt-card'
 import { Button } from './ui/button'
 import { Checkbox } from './ui/checkbox'
@@ -19,6 +21,14 @@ const channelKinds: ChannelKind[] = ['telegram', 'push', 'email']
 export function HuntForm({ hunt }: { hunt?: Hunt }) {
   const router = useRouter()
   const [active, setActive] = useState(hunt ? hunt.status === 'active' : true)
+  const [savedCadence, setSavedCadence] = useState<WantManagerCadenceSeconds>(
+    hunt?.cadenceSeconds ?? CADENCE_DEFAULT_SECONDS,
+  )
+  const [previewCadence, setPreviewCadence] = useState<WantManagerCadenceSeconds>(savedCadence)
+  // No estimate until want-manager (task 1.8e) ships its estimate procedure: the slider then shows
+  // no credit or cadence line rather than a client-side number (CLAUDE.md, "No invented numbers").
+  // Swap `null` for that procedure's (debounced) answer for `previewCadence` when it exists.
+  const cadenceEstimate = null
   return (
     <form
       className="grid max-w-xl gap-6"
@@ -103,6 +113,18 @@ export function HuntForm({ hunt }: { hunt?: Hunt }) {
             <option value="posted">Delivery only</option>
           </NativeSelect>
         </div>
+      </div>
+      <div className="grid gap-2">
+        <input type="hidden" name="cadenceSeconds" value={savedCadence} />
+        <CadenceSlider
+          value={previewCadence}
+          onValueChange={setPreviewCadence}
+          onValueCommit={(seconds) => {
+            setPreviewCadence(seconds)
+            setSavedCadence(seconds)
+          }}
+          estimate={cadenceEstimate}
+        />
       </div>
       <fieldset className="grid gap-3">
         <legend className="mb-3 font-medium text-sm">Send alerts to</legend>

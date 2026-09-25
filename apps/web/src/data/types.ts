@@ -11,9 +11,10 @@
  */
 
 import type { Currency, DeliveryMethod, Money, Source } from '@nabvy/contracts'
+import type { WantManagerCadenceSeconds } from '@nabvy/contracts/modules/want-manager'
 
 /** Shared core shapes come from the contracts package; they are never retyped here. */
-export type { Currency, DeliveryMethod, Money, Source }
+export type { Currency, DeliveryMethod, Money, Source, WantManagerCadenceSeconds }
 
 /** T-timestamps shown to the user, as ISO strings. A missing stage has not happened yet. */
 export type Freshness = {
@@ -117,6 +118,7 @@ export type Hunt = {
   radiusKm: number
   maxAsk?: Money
   delivery: 'all' | DeliveryMethod
+  cadenceSeconds: WantManagerCadenceSeconds
   status: HuntStatus
   alertsThisWeek: number
   lastAlertAt?: string
