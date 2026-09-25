@@ -1,0 +1,18 @@
+{
+  "outcomes": [
+    {
+      "refused": "pricing-console.below_floor"
+    },
+    {
+      "refused": "pricing-console.below_floor"
+    },
+    {
+      "changed": true
+    },
+    {
+      "amount": 10,
+      "offer": null,
+      "floored": false
+    }
+  ]
+}

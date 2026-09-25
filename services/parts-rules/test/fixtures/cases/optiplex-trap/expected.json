@@ -1,0 +1,23 @@
+{
+  "listings": {
+    "1816901372840238": {
+      "parts": [
+        "title:cpu:i5-10505 → cpu:intel:core-i5-gen10",
+        "title:ram_size:16GB RAM",
+        "title:storage_size:256GB",
+        "title:storage_type:SSD",
+        "description:cpu:i5-10505 → cpu:intel:core-i5-gen10",
+        "description:ram_size:RAM: 16GB",
+        "description:ram_generation:DDR4",
+        "description:storage_size:Storage: 256GB",
+        "description:storage_type:NVMe",
+        "description:storage_type:SSD"
+      ],
+      "signals": ["title:cpu_or_pc:OptiPlex", "title:cpu_or_pc:i5-10505"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["gpu:not_stated"],
+      "fullVerified": true
+    }
+  }
+}

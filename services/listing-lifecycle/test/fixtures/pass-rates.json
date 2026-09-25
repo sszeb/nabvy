@@ -1,6 +1,12 @@
 {
   "stages": {
-    "status": { "passed": 7, "total": 7 },
-    "recheck": { "passed": 4, "total": 4 }
+    "status": {
+      "passed": 8,
+      "total": 8
+    },
+    "recheck": {
+      "passed": 4,
+      "total": 4
+    }
   }
 }

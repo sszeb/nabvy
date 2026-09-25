@@ -5,6 +5,11 @@ Task 1.0 records the Facebook actor's real fields and maps them to the target sh
 the adapter on this record. Implemented so far: the route-health helper and the actor-input
 validation with Nabvy's run presets (task 1.1a; both below).
 
+## Decisions
+
+Recorded under "Decisions (task 1.0)" in the Facebook Marketplace actor section below; Route
+health and Actor input and run presets have not recorded any yet.
+
 ## Facebook Marketplace actor (task 1.0)
 
 - **Actor.** The owner's private Apify verification actor `YfdUav3sZ2BgEf8rh`

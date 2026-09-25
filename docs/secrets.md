@@ -38,6 +38,7 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `MODEL_DEFAULT`, `MODEL_ESCALATION`, `MODEL_VISION` | model calls | Config: `claude-haiku-4-5-20251001`, `claude-sonnet-5`, `claude-sonnet-5` |
 | `USD_GBP_RATE` | source-adapters (Apify cost) | Config, updated weekly |
 | `LIVE_PROVIDERS` | tests | Config: `false` by default; `true` enables live adapter smoke tests |
+| `NODE_ENV` | web app (admin fixtures refused under `production`, task 4.3af) | Config, set by Node and Next.js: `development` by default; `next build` and `next start` set `production` |
 | `DUB_API_KEY`, `DUB_PROGRAM_ID` | billing-entitlements (lead, sale and chargeback tracking) | Dub workspace → API keys; the Partners programme ID |
 | `NEXT_PUBLIC_DUB_DOMAIN` | web app (link domain, cookie read) | Dub custom domain, e.g. `nabvy.link` |
 | `SENTRY_DSN` | all | Sentry project |

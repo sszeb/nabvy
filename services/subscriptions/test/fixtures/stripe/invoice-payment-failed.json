@@ -1,0 +1,45 @@
+{
+  "id": "evt_TestInvoiceFailed",
+  "object": "event",
+  "api_version": "2026-08-26.dahlia",
+  "created": 1920328200,
+  "data": {
+    "object": {
+      "id": "in_TestC1b",
+      "object": "invoice",
+      "customer": "cus_TestC1",
+      "billing_reason": "subscription_cycle",
+      "amount_paid": 0,
+      "currency": "gbp",
+      "total_taxes": [],
+      "parent": {
+        "type": "subscription_details",
+        "subscription_details": {
+          "subscription": "sub_TestC1",
+          "metadata": {
+            "userId": "00000000-0000-4000-8000-0000000000c1"
+          }
+        }
+      },
+      "lines": {
+        "object": "list",
+        "data": [
+          {
+            "id": "il_TestC1b",
+            "period": {
+              "start": 1920326400,
+              "end": 1922918400
+            }
+          }
+        ]
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "invoice.payment_failed"
+}

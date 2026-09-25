@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "source": "rule 11 of docs/design/modules/_rules.md: off acknowledges and writes nothing",
+  "programme": "channel-not-linked",
+  "step": "2h",
+  "moduleState": "off",
+  "marketingConsentState": "on",
+  "granted": true,
+  "suppressed": false,
+  "triggerEvent": "hunt_created",
+  "triggerProperties": { "pack": "gpu-pc", "radius": 10, "minDealScore": 0.5 },
+  "triggerAgeMinutes": 180,
+  "exitEvent": null,
+  "exitAgeMinutes": null,
+  "priorMarketingRunToday": false
+}

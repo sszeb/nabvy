@@ -27,12 +27,12 @@ export type ApifyGatewayJobStatus = z.infer<typeof ApifyGatewayJobStatus>
 
 /**
  * The run shapes of actor-integration.md 2.3. The shape names the job; its sizes are the
- * caller's (task 1.1a builds them). Each shape fetches one run kind.
+ * caller's (task 1.1a builds them). Each shape fetches one run kind. No `catch-up` shape: actor
+ * test T2 dropped the default-order catch-up job ("Do not schedule it"; task 1.1i).
  */
 export const ApifyGatewayRunShape = z.enum([
   'verification',
   'newest-check',
-  'catch-up',
   'sweep-narrow',
   'sweep-broad',
   'details-text',
@@ -43,7 +43,6 @@ export type ApifyGatewayRunShape = z.infer<typeof ApifyGatewayRunShape>
 export const APIFY_GATEWAY_KIND_OF_SHAPE: Record<ApifyGatewayRunShape, ApifyGatewayRunKind> = {
   verification: 'search',
   'newest-check': 'search',
-  'catch-up': 'search',
   'sweep-narrow': 'search',
   'sweep-broad': 'search',
   'details-text': 'details',
