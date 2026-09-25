@@ -1,0 +1,1 @@
+Two users pasting the same link make two requests but one deduplicated queue item: the fetch is shared, never per user (rule 13). Synthetic rows in listing_ingest and detail_evidence (the same shape listing-card's own fixtures seed), built from the recorded run's 17-digit ID form; no seller field is ever read.

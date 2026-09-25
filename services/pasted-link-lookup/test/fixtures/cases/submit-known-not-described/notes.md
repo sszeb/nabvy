@@ -1,0 +1,1 @@
+A listing the pipeline has seen but not fetched details for is queued with its listing recorded, and the settle tick asks the shared queue for its details. Synthetic rows in listing_ingest and detail_evidence (the same shape listing-card's own fixtures seed), built from the recorded run's 17-digit ID form; no seller field is ever read.
