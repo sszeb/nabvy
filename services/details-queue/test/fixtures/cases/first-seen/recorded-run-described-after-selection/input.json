@@ -9,10 +9,10 @@
   },
   "steps": [
     {
-      "firstSeen": "all"
+      "selected": "all"
     },
     {
-      "selected": "all"
+      "firstSeen": "all"
     },
     {
       "submit": true
