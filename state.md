@@ -1,11 +1,12 @@
 # Coordinator state
 
-Setup check 2 at 21:59 UTC: repo ok, state write ok, GitHub ok, session tools failed, Supabase ok (ledger 91). Session tools (add_repo, get_trigger, fire_trigger, create_session, get_session) returned nothing from ToolSearch in the fired run; the sweep cron stays parked.
+Updated 22:05 UTC 2026-09-25 by coordinator 16. Setup check 2 (21:59): repo, state write, GitHub, Supabase ok (ledger 91); session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron restored (`37 */2 * * *`). Last sweep: none yet.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
-- Reviewer 14: `session_01S1zLkd1F9tHKsNc1MiwKF5`, inbox `trig_01HBnPvViK2spaRpcTnCv8du`. Its inbox prompt names coordinator 14's inbox, which forwards 14 → 15 → 16 → this Routine. At the next reviewer hand-off, name this Routine directly.
-- Relay `trig_01FPLnjfTATPb7YQivWvA7FX` (step 2 → this Routine). Watchdog `trig_011fjd2grZBEWR3FqfDzTWJR` (step 4 → this Routine).
+- Reviewer runs: on request `trig_01FPLnjfTATPb7YQivWvA7FX` (the old relay ID), hourly `trig_011fjd2grZBEWR3FqfDzTWJR` (the old watchdog ID).
+- Dispatcher: `session_01LDvAXYfdUJv4TS7aT1ph7r` (Haiku, depth 7), woken by `trig_01FfBryD1G7vjpEVYpRxdSML` (`52 */2 * * *`).
+- Reviewer 14 `session_01S1zLkd1F9tHKsNc1MiwKF5` stopped at 19:37 (322k); its inbox `trig_01HBnPvViK2spaRpcTnCv8du` is obsolete.
 - Old coordinator inboxes forward: 11 `trig_01W4s8vjL92nj6mW89oiLs34` → 12 `trig_01NQq5pF6QXYV6omzE8LafYm` → 13 `trig_01RWmeGsimSKC8sX8N8oao8w` → 14 `trig_01PQbRJk6Rb78r4oYm2XuzHg` → 15 `trig_01Xrhk1z2Bb1iNN3DWbbPxSB` → 16 `trig_012hwP8EisfTTijBVBCAWhU5` → this Routine; 17 `trig_01EPFT3WRpVqsmDa2y8WMyHo` → this Routine.
 - Poke Routines: L1 web `trig_01KmJ4pPZXoRKmXRTUhtMgMF`, L2 wiring `trig_01VD8NBTFhNtAp2SnxZTVuqw`.
 - Supabase project `rlgufxmsrkhyeiabdeic`. Trigger.dev project `proj_aazrktvhdfmimvxwxsnq` (secret key on the owner's PC only).
@@ -37,15 +38,22 @@ Setup check 2 at 21:59 UTC: repo ok, state write ok, GitHub ok, session tools fa
 - photo-review stays parked (owner).
 
 ## Waiting on the owner
-- In claude.ai/code/routines, edit "Nabvy coordinator (inbox and sweep)": attach the repository sszeb/nabvy and the Supabase connector, and set the model. A session cannot do any of these. Then fire it once to confirm a run can write state.
+- In claude.ai/code/routines, for "Nabvy reviewer (on request)" and "Nabvy reviewer (hourly)": attach the repository sszeb/nabvy and set the model to Sonnet 5 (as done for the coordinator at 21:57). Until then reviewer runs may fail.
 - Attach the Supabase connector to the coordinator Routine, and set its model to Opus 5.5, in claude.ai/code/routines (sessions cannot).
 - Approve L2's pending permission prompt (session "Nabvy L2: pipeline wiring and local runner").
 - `ROUTER_API_KEY` secret for router-gateway (owed since 16:45).
 - Optional: detach unused connectors from the Nabvy environment (smaller context for every session).
 
+## Merged, migrations pending
+
+## Sessions to start
+
+## Messages to send
+
 ## Docs to record (the sweep writes these into docs/progress.md)
 - 21:40 stateless coordinator in place (`docs/decisions.md` "Stateless coordinator"); coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4` retired, its sweep deleted.
 - router-gateway PR #102 opened (by 21:15).
+- 22:00 reviewer runs replace the relay and watchdog; dispatcher `session_01LDvAXYfdUJv4TS7aT1ph7r` started; docs stack folded into #101 (#84, #86, #91, #95, #103 closed).
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
