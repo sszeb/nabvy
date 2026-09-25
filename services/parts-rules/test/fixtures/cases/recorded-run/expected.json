@@ -1,0 +1,359 @@
+{
+  "totals": {
+    "runs": 20,
+    "parts": 153
+  },
+  "listings": {
+    "1072745435569624": {
+      "parts": [
+        "title:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb",
+        "title:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000",
+        "title:ram_size:16GB RAM",
+        "description:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb",
+        "description:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000",
+        "description:ram_size:16GB RAM",
+        "description:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb",
+        "description:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000",
+        "description:ram_size:RAM: 16GB",
+        "description:ram_generation:DDR4",
+        "description:storage_size:SSD: 500GB",
+        "description:storage_type:SSD",
+        "description:storage_type:M.2",
+        "description:storage_type:NVMe",
+        "description:ram_size:16GB of RAM",
+        "description:storage_type:NVMe"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    },
+    "1073353648648306": {
+      "parts": [
+        "description:cpu:i5 10600KF → cpu:intel:core-i5-gen10",
+        "description:chipset:Z490",
+        "description:gpu:3070 → gpu:nvidia:rtx-3070:8gb",
+        "description:storage_size:1.5TB",
+        "description:storage_type:SSD",
+        "description:storage_type:HDD",
+        "description:storage_size:1.5TB",
+        "description:storage_type:HDD",
+        "description:psu_wattage:750W"
+      ],
+      "signals": ["title:pc:Gaming PC"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["ram_size:not_stated"],
+      "fullVerified": true
+    },
+    "1083674317719227": {
+      "parts": ["description:ram_size:16GB RAM"],
+      "signals": ["title:pc:gaming pc"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["gpu:not_stated", "cpu:not_stated", "storage_size:not_stated"],
+      "fullVerified": true
+    },
+    "1123980543398026": {
+      "parts": [
+        "description:gpu:GTX 1080 → gpu:nvidia:gtx-1080:8gb",
+        "description:psu_wattage:750 watt"
+      ],
+      "signals": ["title:pc:Gaming PC"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["cpu:not_stated", "ram_size:not_stated", "storage_size:not_stated"],
+      "fullVerified": true
+    },
+    "1154042653756525": {
+      "parts": [],
+      "signals": ["title:pc:PC", "title:not_a_pc:Headset", "title:not_a_pc:Xbox"],
+      "tagBlocks": [],
+      "kind": "gap:conflict",
+      "gaps": [
+        "gpu:not_stated",
+        "cpu:not_stated",
+        "ram_size:not_stated",
+        "storage_size:not_stated"
+      ],
+      "fullVerified": true
+    },
+    "1352645884594841": {
+      "parts": [
+        "attribute:cpu:Ryzen 5 3600 → cpu:amd:ryzen-5-3000",
+        "description:storage_type:hard drive",
+        "description:cpu:Ryzen 5 3600 → cpu:amd:ryzen-5-3000",
+        "description:chipset:B450",
+        "description:ram_size:Memory: Corsair Vengeance LPK 16 GB",
+        "description:ram_size:2 x 8 GB",
+        "description:ram_generation:DDR4",
+        "description:storage_size:120 GB",
+        "description:storage_type:SSD",
+        "description:gpu:GTX 1660 SUPER → gpu:nvidia:gtx-1660-super:6gb",
+        "description:psu_wattage:500 W"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:pc:bundle"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    },
+    "1380502417485603": {
+      "parts": [],
+      "signals": ["title:pc:Gaming pc"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [
+        "gpu:not_stated",
+        "cpu:not_stated",
+        "ram_size:not_stated",
+        "storage_size:not_stated"
+      ],
+      "fullVerified": true
+    },
+    "1397200465308431": {
+      "parts": [
+        "title:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb",
+        "title:cpu:7700x",
+        "title:ram_size:32GB DDR5",
+        "title:ram_generation:DDR5",
+        "title:storage_size:2TB",
+        "title:storage_type:M.2",
+        "title:storage_type:SSD",
+        "description:gpu:5070 → gpu:nvidia:rtx-5070:12gb",
+        "description:cpu:7700x",
+        "description:ram_size:32gb corsair vengeance ddr5",
+        "description:ram_size:2x16gb",
+        "description:ram_generation:ddr5",
+        "description:storage_size:2TB",
+        "description:storage_type:GEN 4 M.2",
+        "description:storage_type:NVMe",
+        "description:storage_type:SSD",
+        "description:chipset:b650",
+        "description:psu_wattage:750W",
+        "description:psu_wattage:CX-750"
+      ],
+      "signals": ["title:pc:PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["cpu:unresolved"],
+      "fullVerified": true
+    },
+    "1403975981250476": {
+      "parts": [
+        "title:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb",
+        "title:cpu:i7-10700K → cpu:intel:core-i7-gen10",
+        "title:ram_size:16GB RAM",
+        "description:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb",
+        "description:cpu:i7-10700K → cpu:intel:core-i7-gen10",
+        "description:ram_size:16GB RAM",
+        "description:storage_size:1.5TB",
+        "description:storage_type:SSD",
+        "description:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb",
+        "description:cpu:i7-10700K → cpu:intel:core-i7-gen10",
+        "description:ram_size:16GB RAM",
+        "description:storage_size:512GB",
+        "description:storage_size:1TB",
+        "description:storage_size:1.5TB",
+        "description:storage_type:SSD",
+        "description:storage_type:SSD",
+        "description:storage_type:SSD"
+      ],
+      "signals": ["title:laptop_family:Legion", "title:pc:Gaming PC", "title:cpu_or_pc:i7-10700"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    },
+    "1639721697586478": {
+      "parts": [],
+      "signals": ["title:pc:gaming pc"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [
+        "gpu:not_stated",
+        "cpu:not_stated",
+        "ram_size:not_stated",
+        "storage_size:not_stated"
+      ],
+      "fullVerified": true
+    },
+    "1716871313386322": {
+      "parts": [
+        "title:gpu:RTX 3090 Ti → gpu:nvidia:rtx-3090-ti:24gb",
+        "title:cpu:i9-12900KF → cpu:intel:core-i9-gen12",
+        "title:ram_size:32GB DDR5",
+        "title:ram_generation:DDR5",
+        "title:storage_size:2TB",
+        "title:storage_type:SSD",
+        "description:gpu:RTX 3090 Ti → gpu:nvidia:rtx-3090-ti:24gb",
+        "description:cpu:i9-12900KF → cpu:intel:core-i9-gen12",
+        "description:chipset:Z790",
+        "description:ram_size:RAM: 32GB",
+        "description:ram_generation:DDR5",
+        "description:storage_size:Storage: 1TB",
+        "description:storage_size:1TB",
+        "description:storage_size:2TB",
+        "description:storage_type:970 EVO",
+        "description:storage_type:NVMe",
+        "description:storage_type:860 EVO",
+        "description:storage_type:SATA",
+        "description:storage_type:SSD",
+        "description:psu_wattage:850W"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:pc:Build", "title:cpu_or_pc:i9-12900"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    },
+    "1756692548940192": {
+      "parts": [
+        "title:gpu:GTX+1660 → gpu:nvidia:gtx-1660:6gb",
+        "title:cpu:Ryzen+7+2700X → cpu:amd:ryzen-7-2000"
+      ],
+      "signals": ["title:pc:Gaming+PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["ram_size:not_stated", "storage_size:not_stated"],
+      "fullVerified": true
+    },
+    "1775698700306989": {
+      "parts": [
+        "description:cpu:i5-12400F → cpu:intel:core-i5-gen12",
+        "description:gpu:GTX 970",
+        "description:ram_size:RAM: 16GB",
+        "description:ram_generation:DDR5",
+        "description:chipset:B760",
+        "description:storage_size:Storage: 1TB"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:pc:Bundle", "title:pc:Gaming PC"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["gpu:unresolved"],
+      "fullVerified": true
+    },
+    "1783301919382894": {
+      "parts": [
+        "description:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb",
+        "description:cpu:9800X3D",
+        "description:ram_size:32GB DDR5",
+        "description:ram_generation:DDR5",
+        "description:cpu:Ryzen 7 9800X3D → cpu:amd:ryzen-7-9000",
+        "description:gpu:RTX 5070 → gpu:nvidia:rtx-5070:12gb",
+        "description:ram_size:RAM: 32GB",
+        "description:ram_generation:DDR5",
+        "description:storage_size:Storage: 2TB",
+        "description:storage_type:970 EVO",
+        "description:storage_type:NVMe",
+        "description:storage_type:SSD",
+        "description:chipset:B850",
+        "description:psu_wattage:1000W"
+      ],
+      "signals": ["title:pc:Gaming PC"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    },
+    "1816901372840238": {
+      "parts": [
+        "title:gpu:GTX 970",
+        "title:cpu:i7-4790",
+        "title:ram_size:8GB RAM",
+        "description:cpu:i7-4790",
+        "description:gpu:GTX 970",
+        "description:ram_size:RAM: 8GB",
+        "description:ram_size:1x8GB",
+        "description:ram_generation:DDR3",
+        "description:storage_size:Storage: 250GB",
+        "description:storage_type:SSD",
+        "description:chipset:Z97",
+        "description:psu_wattage:550W"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:pc:Tower", "title:cpu_or_pc:i7-4790"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["gpu:unresolved", "cpu:unresolved"],
+      "fullVerified": true
+    },
+    "2005582460147017": {
+      "parts": [
+        "description:cpu:Ryzen 7 3800x → cpu:amd:ryzen-7-3000",
+        "description:ram_size:16gb Corsair rgb ram",
+        "description:gpu:Gtx 1650 → gpu:nvidia:gtx-1650:4gb",
+        "description:storage_size:2tb",
+        "description:storage_type:hard drive"
+      ],
+      "signals": ["title:pc:Gaming pc"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    },
+    "2126837844711748": {
+      "parts": [],
+      "signals": ["title:pc:PC", "title:not_a_pc:Headset"],
+      "tagBlocks": [],
+      "kind": "gap:conflict",
+      "gaps": [
+        "gpu:not_stated",
+        "cpu:not_stated",
+        "ram_size:not_stated",
+        "storage_size:not_stated"
+      ],
+      "fullVerified": true
+    },
+    "2264485254402498": {
+      "parts": [
+        "title:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb",
+        "title:cpu:Ryzen 5 5500 → cpu:amd:ryzen-5-5000",
+        "title:ram_size:16GB RAM",
+        "title:storage_size:1TB",
+        "title:storage_type:SSD",
+        "description:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb",
+        "description:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb",
+        "description:cpu:Ryzen 5 5500 → cpu:amd:ryzen-5-5000",
+        "description:ram_size:16GB DDR4",
+        "description:ram_generation:DDR4",
+        "description:storage_size:1TB",
+        "description:storage_type:NVMe",
+        "description:storage_type:SSD",
+        "description:psu_wattage:500W"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    },
+    "2537899006714740": {
+      "parts": [],
+      "signals": ["title:pc:Gaming pc"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [
+        "gpu:not_stated",
+        "cpu:not_stated",
+        "ram_size:not_stated",
+        "storage_size:not_stated"
+      ],
+      "fullVerified": true
+    },
+    "28242423458759790": {
+      "parts": [
+        "description:gpu:rtx 3060ti → gpu:nvidia:rtx-3060-ti:8gb",
+        "description:cpu:i5-12400f → cpu:intel:core-i5-gen12",
+        "description:storage_size:Storage 928GB",
+        "description:ram_size:Ram- ddr4 16gb",
+        "description:ram_generation:ddr4"
+      ],
+      "signals": ["title:pc:Gaming pc"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    }
+  }
+}

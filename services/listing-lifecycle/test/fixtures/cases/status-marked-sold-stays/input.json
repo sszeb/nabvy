@@ -1,7 +1,7 @@
 {
   "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
   "synthetic": true,
-  "source": "row 0's availability flags set to sold at +2 h, then two sweeps without it",
+  "source": "row 0's availability flags set to sold at +2 h, then two sweeps without it (complete sweeps)",
   "steps": [
     {
       "job": {
@@ -35,14 +35,16 @@
       "job": {
         "kind": "search",
         "collectedAt": "2026-09-25T03:40:43.415Z",
-        "drop": ["1816901372840238"]
+        "drop": ["1816901372840238"],
+        "coverage": "complete"
       }
     },
     {
       "job": {
         "kind": "search",
         "collectedAt": "2026-09-26T03:40:43.415Z",
-        "drop": ["1816901372840238"]
+        "drop": ["1816901372840238"],
+        "coverage": "complete"
       }
     },
     {

@@ -100,6 +100,30 @@ describe('switch', () => {
     expect(left?.n).toBe(0)
   })
 
+  it('no miss is counted while run-coverage is off', async () => {
+    // Fail conservative: with run-coverage off its view is empty, so two complete sweeps that
+    // leave a listing out do not make it not-seen-recently, and no recheck is sent.
+    await t.switches({ 'run-coverage': 'off' })
+    await tick(t.db, { now: NOW })
+    const x = (await listingIdsBySource(t)).get('1816901372840238') as string
+    for (const collectedAt of ['2026-09-24T13:40:43.415Z', '2026-09-25T01:40:43.415Z']) {
+      await runJob(t, recorded, {
+        kind: 'search',
+        collectedAt,
+        drop: ['1816901372840238'],
+        coverage: 'complete',
+      })
+    }
+    const report = await tick(t.db, { now: new Date('2026-09-25T02:00:00.000Z') })
+    expect(report.changed).toEqual([])
+    const [row] = await t.asPipeline(
+      'select status, missed_sweeps from listing_lifecycle.v_status where listing_id = $1',
+      [x],
+    )
+    expect(row).toEqual({ status: 'live', missed_sweeps: 0 })
+    expect(await queued()).toBe(0)
+  })
+
   it('listing-ingest and detail-evidence carry on with this module off', async () => {
     await t.switches({ 'listing-lifecycle': 'off' })
     await runJob(t, recorded, { kind: 'search', collectedAt: '2026-09-25T01:40:43.415Z' })

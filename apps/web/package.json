@@ -13,6 +13,8 @@
     "icons": "node scripts/render-icons.mjs"
   },
   "dependencies": {
+    "@nabvy/auth": "workspace:*",
+    "@nabvy/config": "workspace:*",
     "@nabvy/contracts": "workspace:*",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
@@ -26,6 +28,7 @@
     "tailwind-merge": "3.7.0"
   },
   "devDependencies": {
+    "@nabvy/db": "workspace:*",
     "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.20.4",

@@ -5,7 +5,13 @@
  *
  * Every function is async on purpose, so screens already await them the way they will await
  * procedures.
+ *
+ * Server only (task 4.3af, audit A11): screens are server components, and nothing here may reach a
+ * client bundle. The admin reads refuse under a production build (`refuseAdminFixturesInProduction`).
  */
+import 'server-only'
+
+import { loadEnv } from '@nabvy/config'
 import {
   account,
   alertDeliveries,
@@ -104,10 +110,26 @@ export async function getPreferences(): Promise<Preferences> {
   return preferences
 }
 
+/**
+ * Admin fixtures never reach a production admin page (docs/design/admin-hardening.md, H13 and
+ * A11). `next build` and `next start` set NODE_ENV to `production`, so a deployed admin page
+ * fails rather than show fixture spend and runs as if they were real, until task 4.1 replaces
+ * these two bodies with the audited procedures. Read at call time, from `@nabvy/config`.
+ */
+function refuseAdminFixturesInProduction(): void {
+  if (loadEnv(['runtime']).NODE_ENV === 'production') {
+    throw new Error(
+      'Admin fixtures are not served in production (task 4.3af, H13); the admin procedures arrive with task 4.1',
+    )
+  }
+}
+
 export async function getAdminOverview(): Promise<AdminOverview> {
+  refuseAdminFixturesInProduction()
   return adminOverview
 }
 
 export async function listReviewQueue(): Promise<ReviewItem[]> {
+  refuseAdminFixturesInProduction()
   return reviewQueue
 }

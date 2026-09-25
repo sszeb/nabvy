@@ -1,0 +1,33 @@
+{
+  "listings": {
+    "1072745435569624": {
+      "parts": [
+        "title:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb",
+        "title:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000",
+        "title:ram_size:16GB RAM",
+        "description:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb",
+        "description:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000",
+        "description:ram_size:16GB RAM",
+        "description:gpu:RTX 2070 Super → gpu:nvidia:rtx-2070-super:8gb",
+        "description:cpu:Ryzen 7 2700X → cpu:amd:ryzen-7-2000",
+        "description:ram_size:RAM: 16GB",
+        "description:ram_generation:DDR4",
+        "description:storage_size:SSD: 500GB",
+        "description:storage_type:SSD",
+        "description:storage_type:M.2",
+        "description:storage_type:NVMe",
+        "description:ram_size:16GB of RAM",
+        "description:storage_type:NVMe"
+      ],
+      "signals": ["title:pc:Gaming PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [
+        "description:tag.hashtags:527-564",
+        "description:tag.label:566-639",
+        "description:tag.model-list:641-691"
+      ],
+      "kind": "pc",
+      "gaps": [],
+      "fullVerified": true
+    }
+  }
+}

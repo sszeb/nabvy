@@ -1,0 +1,5 @@
+{
+  "module": "parts-rules",
+  "schema": "parts_rules",
+  "dependsOn": ["core", "switches", "listing-ingest", "detail-evidence", "product-catalogue"]
+}

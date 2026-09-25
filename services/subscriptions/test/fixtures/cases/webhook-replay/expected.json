@@ -1,0 +1,48 @@
+{
+  "outcomes": [
+    {
+      "outcome": "applied",
+      "tier": "pro",
+      "status": "active",
+      "areas": 5
+    },
+    {
+      "outcome": "applied",
+      "tier": "pro",
+      "status": "active",
+      "areas": 5
+    },
+    {
+      "outcome": "replayed",
+      "tier": "pro",
+      "status": "active",
+      "areas": 5
+    },
+    {
+      "outcome": "replayed",
+      "tier": "pro",
+      "status": "active",
+      "areas": 5
+    },
+    {
+      "outcome": "applied",
+      "tier": "pro",
+      "status": "active",
+      "areas": 5
+    },
+    {
+      "outcome": "replayed",
+      "tier": "pro",
+      "status": "active",
+      "areas": 5
+    }
+  ],
+  "published": {
+    "subscriptions.entitlement-changed": 1
+  },
+  "grants": {
+    "allowance": 1,
+    "topup": 1
+  },
+  "billingEvents": 3
+}
