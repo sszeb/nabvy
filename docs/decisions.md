@@ -379,6 +379,7 @@ The owner asked how to cut coordinator token use and said "you do it all now". M
 - The coordinator never subscribes to pull requests. Merges and new PRs arrive as messages, and the sweep lists open PRs.
 - Docs changes are batched: only the sweep pushes to the one rolling docs PR (#101, `claude/coordinator-16` into `main`). The stacked docs PRs #84, #86, #91, #95 and #103 are folded into it and closed.
 - The owner sets this Routine's model (Opus, per "Model by job, revised") and attaches the Supabase connector in the app. A session cannot do either.
+- 22:00, after two setup checks: a fired Routine session can read and push the repository and use GitHub and Supabase (when attached in the app, and loaded with ToolSearch), but it has no session tools. So the relay and the watchdog could never reach a reviewer, and no reviewer ran from 19:37 to 22:00. The relay ID became "Nabvy reviewer (on request)" and the watchdog ID "Nabvy reviewer (hourly)": stateless reviewer runs, one PR each, that record merged migrations in `state.md`. Session starts and messages are queued in `state.md` for a small dispatcher session (`session_01LDvAXYfdUJv4TS7aT1ph7r`, Haiku) woken every two hours by its bound Routine.
 
 ## Model by job, revised: Opus for coordinators, Sonnet for medium tasks, Haiku for code and code reviews (owner, 2026-09-25, 19:58)
 
