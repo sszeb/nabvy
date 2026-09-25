@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "builtFrom": "docs/design/modules/demand-signals.md (cells under 10 suppressed; a wanted advert posted in many towns counts once per cell and week) and the input views as want-manager, listing-assessment, city-pages and copy-advert publish them",
+  "now": "2026-09-25T00:00:00Z",
+  "weekStart": "2026-09-14",
+  "wants": [{ "centre": "A", "catalogueId": "rtx-3090", "count": 11 }],
+  "adverts": [
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090", "ryzen-7-5800x3d"],
+      "listedAt": "2026-09-15T10:00:00Z",
+      "repeat": 10
+    }
+  ]
+}
