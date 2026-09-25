@@ -1,7 +1,7 @@
 {
   "synthetic": true,
-  "source": "docs/design/drafts/search-map-routes.md §4.2, worked numbers: 10 extra miles",
+  "source": "docs/design/drafts/search-map-routes.md §4.2, worked numbers (at the 1 Mar 2026 quarter's 14p rate, so priced in that quarter): 10 extra miles",
   "userId": "00000000-0000-4000-8000-0000000000e5",
   "legs": [{ "roadMiles": 26, "minutes": 44.57142857142857 }],
-  "now": "2026-09-24T00:00:00.000Z"
+  "now": "2026-05-01T00:00:00.000Z"
 }

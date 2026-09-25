@@ -8,7 +8,9 @@ import { createTestDatabase, type TestDatabase } from '../support/database'
 // against the real seeded rate rows (packages/db/migrations/travel-cost/*_travel_cost_seed.sql),
 // not a hand-rolled array (test/domain.test.ts covers the pure logic on its own). Each case prices
 // one leg (already-measured road miles and minutes) at a given moment, optionally after changing
-// the user's settings first.
+// the user's settings first. The worked-number cases are priced in the 1 Mar 2026 quarter, whose
+// 14p petrol rate §4.2 used; the "current-quarter" cases price the same trip on 2026-09-24 and
+// must pick the 1 Sep 2026 rows GOV.UK published on 21 August 2026.
 
 const Input = z.strictObject({
   synthetic: z.literal(true),
@@ -19,6 +21,10 @@ const Input = z.strictObject({
   settings: z
     .strictObject({
       preset: z.enum(['fuel-only', 'hmrc-business', 'custom']).optional(),
+      fuel: z.enum(['petrol', 'diesel', 'lpg']).optional(),
+      engineBand: z
+        .enum(['1400-or-less', '1401-2000', 'over-2000', '1600-or-less', '1601-2000'])
+        .optional(),
       valueOfTimePenceHour: z.number().int().nonnegative().optional(),
     })
     .optional(),

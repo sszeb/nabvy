@@ -49,7 +49,9 @@ describe('travel-cost on', () => {
       (tx) => tripCost(tx, { userId: U1, legs: [LEG] }, NOW),
       U1,
     )
-    expect(result.amount.amountMinor).toBe(131)
+    // 2.6 road miles at the 1 Sep 2026 petrol 1,401–2,000cc rate (17p) plus 4.46 minutes at
+    // £12.71/h: the §4.2 figure (£1.31) holds at the March quarter's 14p, priced at NOW it is £1.39.
+    expect(result.amount.amountMinor).toBe(139)
 
     const rates = await db.as('nabvy_pipeline', (tx) => listRates(tx))
     expect(rates.length).toBeGreaterThan(0)

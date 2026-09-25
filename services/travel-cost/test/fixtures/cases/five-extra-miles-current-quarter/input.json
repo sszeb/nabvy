@@ -1,0 +1,7 @@
+{
+  "synthetic": true,
+  "source": "GOV.UK advisory fuel rates, read 2026-09-25 (page last updated 21 August 2026): petrol 1,401–2,000cc is 17p from 1 Sep 2026, so the §4.2 '5 extra miles' trip priced in the current quarter picks the 17p row, not the 14p row",
+  "userId": "00000000-0000-4000-8000-0000000000e7",
+  "legs": [{ "roadMiles": 13, "minutes": 22.285714285714285 }],
+  "now": "2026-09-24T00:00:00.000Z"
+}

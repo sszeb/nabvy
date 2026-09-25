@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "source": "GOV.UK advisory fuel rates, read 2026-09-25 (page last updated 21 August 2026): diesel 1,601–2,000cc is 16p from 1 Sep 2026 (17p from 1 Jun, 13p from 1 Mar); the fuel-only preset on a diesel picks the diesel row by date",
+  "userId": "00000000-0000-4000-8000-0000000000e8",
+  "legs": [{ "roadMiles": 13, "minutes": 22.285714285714285 }],
+  "now": "2026-09-24T00:00:00.000Z",
+  "settings": { "fuel": "diesel", "engineBand": "1601-2000" }
+}

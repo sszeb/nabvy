@@ -64,7 +64,7 @@ Postgres schema `travel_cost`.
 
 | Rule | Value | Basis | Status |
 | --- | --- | --- | --- |
-| Advisory fuel rate, petrol 1,401–2,000cc | 14p/mile, from 1 Mar 2026 | `travel_rates` seed row; GOV.UK advisory fuel rates | Dated row, reviewed quarterly |
+| Advisory fuel rate, petrol 1,401–2,000cc (the `fuel-only` default) | 14p/mile from 1 Mar 2026, 17p from 1 Jun 2026, 17p from 1 Sep 2026 | `travel_rates` seed rows; GOV.UK advisory fuel rates, read 2026-09-25 | Dated rows, one per quarter and band (27 advisory rows: petrol, diesel and LPG, three bands each, three quarters), reviewed quarterly |
 | Approved mileage rate (HMRC business preset) | 55p/mile first 10,000 business miles, 25p after, from 6 Apr 2026 | `travel_rates` seed rows; GOV.UK AMAP increase | Dated row. `tripCost` prices every trip at the standard (55p) tier — no per-user annual-mileage tracking yet, so the reduced tier is seeded but unused |
 | Default value of time | £12.71/hour, from 1 Apr 2026 (National Living Wage) | `travel_rates` seed row; GOV.UK minimum wage rates | Dated row, reviewed alongside the annual NLW change |
 | Road miles per straight-line mile (`c`) | 1.3 | `packages/config/src/modules/travel-cost.ts`; Lovelace thesis ch. 5 (circuity) | Starting value, to calibrate against OSRM once `travel-time` ships |
@@ -84,14 +84,14 @@ against gov.uk before merge". Every check, successful or not, is recorded here.
 
 | Checked on | By | Page "last updated" | Result |
 | --- | --- | --- | --- |
-| 2026-09-25 | Fix session for PR #50, from the build sandbox | Not seen | **Not checked.** `https://www.gov.uk/guidance/advisory-fuel-rates` and the National Archives mirror `webarchive.nationalarchives.gov.uk` are both refused by the sandbox's egress proxy (HTTP 403 on CONNECT, `EGRESS_BLOCKED`), and a web search returns the page title but no figures. No rate was guessed: the seed still carries only the 1 Mar 2026 petrol 1,401–2,000cc row, and the coordinator or owner confirms the current quarter's rates before merge (`docs/questions/travel-cost.md`, "GOV.UK unreachable"). The draft itself notes the page changed on 2026-08-21 (`docs/design/drafts/search-map-routes.md`), so a 1 Jun 2026 and a 1 Sep 2026 table are expected and, until seeded, `tripCost` prices today's trips at the March rate. |
+| 2026-09-25 | Fix session for PR #50, from the build sandbox | Not seen | **Not checked.** `www.gov.uk` and the National Archives mirror were both refused by the sandbox's egress proxy (`EGRESS_BLOCKED`); no rate was guessed. Superseded by the next row. |
+| 2026-09-25 | Finishing session for PR #50, after the owner opened the environment's network | 21 August 2026 | **Checked, all figures match.** Read `https://www.gov.uk/guidance/advisory-fuel-rates` (HTTP 200, "Published 21 July 2020, Last updated 21 August 2026"). The page publishes three quarters from 1 March 2026, pence per mile. From 1 September 2026: petrol 14 / 17 / 27 (1,400cc or less / 1,401–2,000cc / over 2,000cc), diesel 15 / 16 / 22 (1,600cc or less / 1,601–2,000cc / over 2,000cc), LPG 11 / 13 / 20; electric 7 home, 15 public. From 1 June to 31 August 2026: petrol 14 / 17 / 26, diesel 15 / 17 / 23, LPG 11 / 13 / 21. From 1 March to 31 May 2026: petrol 12 / 14 / 22, diesel 12 / 13 / 18, LPG 10 / 12 / 19. The seeded 1 Mar 2026 petrol 1,401–2,000cc row (14p) matched; the other 26 advisory rows were added to the seed exactly as published. The AMAP page (`.../increasing-mileage-rates`, published 17 June 2026) confirms 55p for the first 10,000 miles and 25p after, retrospective from 6 April 2026, as seeded. The minimum-wage page confirms £12.71 for 21 and over from April 2026, as seeded. These are the same figures the second review supplied from the page on the same day. |
 
-When the page can be read, add one row per quarter it publishes after 1 Mar 2026, for every
-fuel and engine band in its table (the same table carries diesel and LPG, so the second
-finding of the first review closes with it), as a new seed migration with the rates exactly as
-published, and a row to this log naming the date checked and the page's own "last updated"
-date. Electric (the advisory electric rate) needs its own design first: it is a flat rate with
-no engine band.
+Each later quarter is a new seed migration with one row per fuel and band, exactly as
+published, plus a row in this log naming the date checked and the page's own "last updated"
+date. Electric (the advisory electric rate, 7p home and 15p public from 1 Sep 2026) needs its own
+design first: it is keyed by charging location, not engine band, so the `travel_rates` shape
+does not hold it (`docs/questions/travel-cost.md`, "electric advisory rate").
 
 **Rounding.** `tripCost` sums the fuel and time pence for every leg *unrounded*, and rounds the
 total once. Rounding each leg or each part separately drifts a penny off the card's own worked
@@ -101,10 +101,13 @@ numbers (below).
 
 Stage `trip-cost` (`test/fixtures/trip-cost.fixtures.ts`), run against the real seeded rate rows
 through PGlite (not a hand-rolled rate array — `test/domain.test.ts` covers the pure logic on its
-own), reproducing every worked number in `docs/design/drafts/search-map-routes.md` §4.2: the
-per-extra-mile figure (£1.31), 5 extra miles at the default (£6.54), fuel only (£1.82) and the
-HMRC business rate plus time (£11.87), 10 extra miles (£13.08), and a date before any rate applies
-(refused, `travel-cost.no_rate` — "picks the dated rate by date"). Pass rate 6/6.
+own), reproducing every worked number in `docs/design/drafts/search-map-routes.md` §4.2, priced
+in the 1 Mar 2026 quarter whose 14p petrol rate §4.2 used: the per-extra-mile figure (£1.31), 5
+extra miles at the default (£6.54), fuel only (£1.82) and the HMRC business rate plus time
+(£11.87), 10 extra miles (£13.08); a date before any rate applies (refused, `travel-cost.no_rate`);
+and two current-quarter cases on 2026-09-24 that must pick the 1 Sep 2026 rows, the same 5-extra-
+mile trip at petrol 1,401–2,000cc's 17p (£6.93) and on a diesel 1,601–2,000cc at 16p (£6.80)
+("picks the dated rate by date"). Pass rate 8/8 (was 6/6).
 `test/domain.test.ts` covers `resolveRate`'s date selection, each preset, the mpg-to-pence
 conversion, `£0` value of time ("don't count my time"), and `params()`'s rounding and overrides.
 `test/idempotency.test.ts`, `test/switch.test.ts` and `test/contracts.test.ts` follow the shape
@@ -134,6 +137,15 @@ table's constraints, RLS isolation and the switch-gated view on real Postgres (`
   tracking; the reduced (25p) tier is seeded, sourced and ready, but nothing reads it yet — a
   future task that tracks a user's business miles in the tax year can switch the resolution
   without a schema change.
+- 2026-09-25: the GOV.UK check is done by this session itself, not taken on trust from the
+  review. The advisory-fuel-rates page, the AMAP page and the minimum-wage page were fetched
+  directly (the owner had opened the environment's network), every seeded figure was compared
+  with the published table, and the missing quarters and bands were seeded exactly as published,
+  with the page's "last updated" date in the seed's comment and in the check log. The seed
+  migration is amended in place because it is not merged yet; once merged, every later quarter is
+  a new migration. The §4.2 worked-number fixtures are pinned to the quarter whose rate they were
+  worked at (1 Mar 2026, 14p) rather than rewritten, because they exist to reproduce the draft's
+  own figures; separate current-quarter fixtures prove the date selection picks the newest row.
 - 2026-09-24: `tripCost`/`params`/`updateSettings`/`listRates` all refuse while the module is off
   (`assertModuleOn`, the same pattern `services/account` uses for its writes). Unlike `account`'s
   `getProfile`, there is no "read what's already there" case here worth exempting: a settings row
@@ -144,15 +156,16 @@ table's constraints, RLS isolation and the switch-gated view on real Postgres (`
 
 - `docs/questions/travel-cost.md`, "w1 travel-cost: default rate and value-of-time choice"
   (`docs/design/drafts/search-map-routes.md` §10, rows 7–8).
-- `docs/questions/travel-cost.md`, "w1 travel-cost: GOV.UK unreachable from the sandbox" (the
-  check log above).
+- `docs/questions/travel-cost.md`, "w1 travel-cost: electric advisory rate" (a rate keyed by
+  charging location, not engine band; see the check log above).
 
 ## Review round 1 (2026-09-25, reviewed head f430d21)
 
-- Finding 1 (blocking, the GOV.UK check): not closable from the sandbox; see "GOV.UK check log"
-  and the open question. No rate was invented.
-- Finding 2 (diesel, LPG and the other petrol bands): waits on the same page; the band enum and
-  the CHECK are in place so the rows drop straight in.
+- Finding 1 (blocking, the GOV.UK check): closed in round 2's fix. The page was read on
+  2026-09-25 once the owner opened the network; every figure matched, and the 1 Jun and 1 Sep
+  2026 quarters are seeded ("GOV.UK check log").
+- Finding 2 (diesel, LPG and the other petrol bands): closed with finding 1; all nine bands are
+  seeded for each of the three quarters.
 - Finding 3: `engine_band` is now `TravelEngineBand` in contracts and a CHECK on both tables
   (`packages/db/migrations/travel-cost/20260924172655_travel_cost_tables.sql`, amended, as the
   migrations are not merged).
@@ -168,6 +181,16 @@ table's constraints, RLS isolation and the switch-gated view on real Postgres (`
 - Finding 8: a custom rate that rounds to 0p a mile is refused at save time
   (`assertUsableSettings`) and again in `resolveParams`, with `travel-cost.invalid_input`, rather
   than handing `TravelParams` a 0 or flooring it to an invented 1p.
+
+## Review round 2 (2026-09-25, reviewed head 40c81f7)
+
+- Finding 1 (blocking, unchanged from round 1): the reviewer read the page and pasted its three
+  tables. This session re-read the same page (and the AMAP and minimum-wage pages) itself, found
+  the same figures, seeded all 27 advisory rows and logged the check; the worked-number fixtures
+  are pinned to the 1 Mar 2026 quarter and two new fixtures price 2026-09-24 at the September rows.
+- Finding 2 (the questions entry): the "GOV.UK unreachable" entry is replaced by a closed note
+  saying the figures came from the page itself on 2026-09-25 (and matched the reviewer's), so
+  nobody chases the owner for them; the electric rate is the one open question left.
 
 ## Incidents
 
