@@ -1,0 +1,1455 @@
+{
+  "id": "6b6e389e-4d93-4aa8-aeec-5ca873c892d8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "pickup_location.ai_queue": {
+      "name": "ai_queue",
+      "schema": "pickup_location",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "queued_at": {
+          "name": "queued_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "done_at": {
+          "name": "done_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "ai_queue_listing_hash_key": {
+          "name": "ai_queue_listing_hash_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "listing_id",
+            "evidence_hash"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "ai_queue_hash_check": {
+          "name": "ai_queue_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "ai_queue_reason_check": {
+          "name": "ai_queue_reason_check",
+          "value": "\"pickup_location\".\"ai_queue\".\"reason\" in ('uncertain', 'delivers_elsewhere')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_location.candidates": {
+      "name": "candidates",
+      "schema": "pickup_location",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "resolution_id": {
+          "name": "resolution_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "area_id": {
+          "name": "area_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cue": {
+          "name": "cue",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strength": {
+          "name": "strength",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rejection": {
+          "name": "rejection",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_distance_km": {
+          "name": "field_distance_km",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "candidates_listing_idx": {
+          "name": "candidates_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "candidates_resolution_id_resolutions_id_fk": {
+          "name": "candidates_resolution_id_resolutions_id_fk",
+          "tableFrom": "candidates",
+          "tableTo": "resolutions",
+          "schemaTo": "pickup_location",
+          "columnsFrom": [
+            "resolution_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "candidates_resolution_seq_key": {
+          "name": "candidates_resolution_seq_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "resolution_id",
+            "seq"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "candidates_seq_check": {
+          "name": "candidates_seq_check",
+          "value": "\"pickup_location\".\"candidates\".\"seq\" >= 0"
+        },
+        "candidates_kind_check": {
+          "name": "candidates_kind_check",
+          "value": "\"pickup_location\".\"candidates\".\"kind\" in ('place', 'postcode_full', 'postcode_district')"
+        },
+        "candidates_role_check": {
+          "name": "candidates_role_check",
+          "value": "role in ('pickup', 'seller_base', 'meetup', 'near', 'delivery_area', 'origin', 'mention')"
+        },
+        "candidates_strength_check": {
+          "name": "candidates_strength_check",
+          "value": "strength in ('strong', 'medium', 'weak')"
+        },
+        "candidates_rejection_check": {
+          "name": "candidates_rejection_check",
+          "value": "\"pickup_location\".\"candidates\".\"rejection\" is null or \"pickup_location\".\"candidates\".\"rejection\" in ('stop_list', 'tag_block', 'no_gazetteer_match', 'no_point', 'weak_cue', 'not_pickup_class', 'far_from_field')"
+        },
+        "candidates_point_check": {
+          "name": "candidates_point_check",
+          "value": "(\"pickup_location\".\"candidates\".\"lat\" is null) = (\"pickup_location\".\"candidates\".\"lng\" is null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_location.current": {
+      "name": "current",
+      "schema": "pickup_location",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "resolution_id": {
+          "name": "resolution_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pass": {
+          "name": "pass",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decided_by": {
+          "name": "decided_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'rules'"
+        },
+        "conflict": {
+          "name": "conflict",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "approximate": {
+          "name": "approximate",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "town_or_area": {
+          "name": "town_or_area",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "area_id": {
+          "name": "area_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "area_district": {
+          "name": "area_district",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uncertainty_km": {
+          "name": "uncertainty_km",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note_code": {
+          "name": "note_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note_place_label": {
+          "name": "note_place_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listed_in_label": {
+          "name": "listed_in_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "current_resolution_id_resolutions_id_fk": {
+          "name": "current_resolution_id_resolutions_id_fk",
+          "tableFrom": "current",
+          "tableTo": "resolutions",
+          "schemaTo": "pickup_location",
+          "columnsFrom": [
+            "resolution_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "current_pass_check": {
+          "name": "current_pass_check",
+          "value": "\"pickup_location\".\"current\".\"pass\" in ('card', 'detail')"
+        },
+        "current_status_check": {
+          "name": "current_status_check",
+          "value": "status in ('confirmed', 'from_description', 'conflicting', 'field_only', 'uncertain', 'unknown')"
+        },
+        "current_basis_check": {
+          "name": "current_basis_check",
+          "value": "basis in ('field', 'text', 'ai', 'fallback')"
+        },
+        "current_source_check": {
+          "name": "current_source_check",
+          "value": "source in ('both', 'description', 'listing', 'none')"
+        },
+        "current_note_check": {
+          "name": "current_note_check",
+          "value": "note_code is null or note_code in ('description_says_collection_from', 'listed_in', 'description_names_other_pickup', 'description_delivers_elsewhere', 'pickup_place_not_stated')"
+        },
+        "current_district_check": {
+          "name": "current_district_check",
+          "value": "\"pickup_location\".\"current\".\"area_district\" is null or \"pickup_location\".\"current\".\"area_district\" ~ '^[A-Z]{1,2}[0-9]{1,2}$'"
+        },
+        "current_point_check": {
+          "name": "current_point_check",
+          "value": "(\"pickup_location\".\"current\".\"lat\" is null) = (\"pickup_location\".\"current\".\"lng\" is null)\n        and (\"pickup_location\".\"current\".\"lat\" is null or \"pickup_location\".\"current\".\"lat\" between -90 and 90)\n        and (\"pickup_location\".\"current\".\"lng\" is null or \"pickup_location\".\"current\".\"lng\" between -180 and 180)"
+        },
+        "current_area_check": {
+          "name": "current_area_check",
+          "value": "(\"pickup_location\".\"current\".\"town_or_area\" is null) = (\"pickup_location\".\"current\".\"area_id\" is null) and (\"pickup_location\".\"current\".\"town_or_area\" is null) = (\"pickup_location\".\"current\".\"lat\" is null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_location.handover": {
+      "name": "handover",
+      "schema": "pickup_location",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "collection": {
+          "name": "collection",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unknown'"
+        },
+        "meetup_offered": {
+          "name": "meetup_offered",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "local_delivery": {
+          "name": "local_delivery",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'none'"
+        },
+        "postage": {
+          "name": "postage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'none'"
+        },
+        "delivery_only_text": {
+          "name": "delivery_only_text",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "postage_only_text": {
+          "name": "postage_only_text",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "courier_only_text": {
+          "name": "courier_only_text",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "handover_collection_check": {
+          "name": "handover_collection_check",
+          "value": "collection in ('yes', 'no', 'unknown')"
+        },
+        "handover_local_delivery_check": {
+          "name": "handover_local_delivery_check",
+          "value": "local_delivery in ('field', 'text', 'none')"
+        },
+        "handover_postage_check": {
+          "name": "handover_postage_check",
+          "value": "postage in ('field', 'text', 'none')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_location.mentions": {
+      "name": "mentions",
+      "schema": "pickup_location",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "resolution_id": {
+          "name": "resolution_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "candidate_seq": {
+          "name": "candidate_seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote_start": {
+          "name": "quote_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote_end": {
+          "name": "quote_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote_redacted": {
+          "name": "quote_redacted",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cue": {
+          "name": "cue",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strength": {
+          "name": "strength",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "mentions_listing_idx": {
+          "name": "mentions_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "mentions_resolution_id_resolutions_id_fk": {
+          "name": "mentions_resolution_id_resolutions_id_fk",
+          "tableFrom": "mentions",
+          "tableTo": "resolutions",
+          "schemaTo": "pickup_location",
+          "columnsFrom": [
+            "resolution_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "mentions_resolution_seq_key": {
+          "name": "mentions_resolution_seq_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "resolution_id",
+            "seq"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "mentions_source_check": {
+          "name": "mentions_source_check",
+          "value": "\"pickup_location\".\"mentions\".\"source\" in ('title', 'description')"
+        },
+        "mentions_position_check": {
+          "name": "mentions_position_check",
+          "value": "\"pickup_location\".\"mentions\".\"quote_start\" >= 0 and \"pickup_location\".\"mentions\".\"quote_end\" > \"pickup_location\".\"mentions\".\"quote_start\""
+        },
+        "mentions_role_check": {
+          "name": "mentions_role_check",
+          "value": "role in ('pickup', 'seller_base', 'meetup', 'near', 'delivery_area', 'origin', 'mention')"
+        },
+        "mentions_strength_check": {
+          "name": "mentions_strength_check",
+          "value": "strength in ('strong', 'medium', 'weak')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_location.overrides": {
+      "name": "overrides",
+      "schema": "pickup_location",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "area_id": {
+          "name": "area_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "town_or_area": {
+          "name": "town_or_area",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "by": {
+          "name": "by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "overrides_point_check": {
+          "name": "overrides_point_check",
+          "value": "\"pickup_location\".\"overrides\".\"lat\" between -90 and 90 and \"pickup_location\".\"overrides\".\"lng\" between -180 and 180"
+        },
+        "overrides_reason_check": {
+          "name": "overrides_reason_check",
+          "value": "length(\"pickup_location\".\"overrides\".\"reason\") between 1 and 500"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_location.resolutions": {
+      "name": "resolutions",
+      "schema": "pickup_location",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pass": {
+          "name": "pass",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confidence": {
+          "name": "confidence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "decided_by": {
+          "name": "decided_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'rules'"
+        },
+        "conflict": {
+          "name": "conflict",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "approximate": {
+          "name": "approximate",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "town_or_area": {
+          "name": "town_or_area",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "area_id": {
+          "name": "area_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "area_district": {
+          "name": "area_district",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uncertainty_km": {
+          "name": "uncertainty_km",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note_code": {
+          "name": "note_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note_place_label": {
+          "name": "note_place_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listed_in_label": {
+          "name": "listed_in_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_label": {
+          "name": "field_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_lat": {
+          "name": "field_lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_lng": {
+          "name": "field_lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_distance_km": {
+          "name": "field_distance_km",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ai_eligible": {
+          "name": "ai_eligible",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "input_fetched_at": {
+          "name": "input_fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "done_at": {
+          "name": "done_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "resolutions_listing_idx": {
+          "name": "resolutions_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "resolutions_listing_pass_hash_version_key": {
+          "name": "resolutions_listing_pass_hash_version_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "listing_id",
+            "pass",
+            "evidence_hash",
+            "rule_version"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "resolutions_pass_check": {
+          "name": "resolutions_pass_check",
+          "value": "\"pickup_location\".\"resolutions\".\"pass\" in ('card', 'detail')"
+        },
+        "resolutions_hash_check": {
+          "name": "resolutions_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "resolutions_version_check": {
+          "name": "resolutions_version_check",
+          "value": "rule_version ~ '^r[0-9]+\\.[0-9a-f]{8}$'"
+        },
+        "resolutions_status_check": {
+          "name": "resolutions_status_check",
+          "value": "status in ('confirmed', 'from_description', 'conflicting', 'field_only', 'uncertain', 'unknown')"
+        },
+        "resolutions_basis_check": {
+          "name": "resolutions_basis_check",
+          "value": "basis in ('field', 'text', 'ai', 'fallback')"
+        },
+        "resolutions_source_check": {
+          "name": "resolutions_source_check",
+          "value": "source in ('both', 'description', 'listing', 'none')"
+        },
+        "resolutions_confidence_check": {
+          "name": "resolutions_confidence_check",
+          "value": "\"pickup_location\".\"resolutions\".\"confidence\" in ('high', 'medium', 'low', 'none')"
+        },
+        "resolutions_decided_by_check": {
+          "name": "resolutions_decided_by_check",
+          "value": "\"pickup_location\".\"resolutions\".\"decided_by\" in ('rules', 'ai', 'review')"
+        },
+        "resolutions_note_check": {
+          "name": "resolutions_note_check",
+          "value": "note_code is null or note_code in ('description_says_collection_from', 'listed_in', 'description_names_other_pickup', 'description_delivers_elsewhere', 'pickup_place_not_stated')"
+        },
+        "resolutions_district_check": {
+          "name": "resolutions_district_check",
+          "value": "\"pickup_location\".\"resolutions\".\"area_district\" is null or \"pickup_location\".\"resolutions\".\"area_district\" ~ '^[A-Z]{1,2}[0-9]{1,2}$'"
+        },
+        "resolutions_point_check": {
+          "name": "resolutions_point_check",
+          "value": "(\"pickup_location\".\"resolutions\".\"lat\" is null) = (\"pickup_location\".\"resolutions\".\"lng\" is null)\n        and (\"pickup_location\".\"resolutions\".\"lat\" is null or \"pickup_location\".\"resolutions\".\"lat\" between -90 and 90)\n        and (\"pickup_location\".\"resolutions\".\"lng\" is null or \"pickup_location\".\"resolutions\".\"lng\" between -180 and 180)"
+        },
+        "resolutions_area_check": {
+          "name": "resolutions_area_check",
+          "value": "(\"pickup_location\".\"resolutions\".\"town_or_area\" is null) = (\"pickup_location\".\"resolutions\".\"area_id\" is null) and (\"pickup_location\".\"resolutions\".\"town_or_area\" is null) = (\"pickup_location\".\"resolutions\".\"lat\" is null)"
+        },
+        "resolutions_uncertainty_check": {
+          "name": "resolutions_uncertainty_check",
+          "value": "\"pickup_location\".\"resolutions\".\"uncertainty_km\" is null or \"pickup_location\".\"resolutions\".\"uncertainty_km\" between 0 and 500"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "pickup_location": "pickup_location"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "pickup_location.v_ai_usage": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "queued_at": {
+          "name": "queued_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "done_at": {
+          "name": "done_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "name": "v_ai_usage",
+      "schema": "pickup_location",
+      "isExisting": true,
+      "materialized": false
+    },
+    "pickup_location.v_areas": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "town_or_area": {
+          "name": "town_or_area",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "approximate": {
+          "name": "approximate",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conflict": {
+          "name": "conflict",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_areas",
+      "schema": "pickup_location",
+      "isExisting": true,
+      "materialized": false
+    },
+    "pickup_location.v_evidence": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pass": {
+          "name": "pass",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cue": {
+          "name": "cue",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strength": {
+          "name": "strength",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rejection": {
+          "name": "rejection",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quote": {
+          "name": "quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start": {
+          "name": "start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end": {
+          "name": "end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "name": "v_evidence",
+      "schema": "pickup_location",
+      "isExisting": true,
+      "materialized": false
+    },
+    "pickup_location.v_handover": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "collection": {
+          "name": "collection",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "meetup_offered": {
+          "name": "meetup_offered",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "local_delivery": {
+          "name": "local_delivery",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "postage": {
+          "name": "postage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_only_text": {
+          "name": "delivery_only_text",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "postage_only_text": {
+          "name": "postage_only_text",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "courier_only_text": {
+          "name": "courier_only_text",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_handover",
+      "schema": "pickup_location",
+      "isExisting": true,
+      "materialized": false
+    },
+    "app.v_pickup_location": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "town_or_area": {
+          "name": "town_or_area",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "approximate": {
+          "name": "approximate",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "area_id": {
+          "name": "area_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "area_district": {
+          "name": "area_district",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "area_landmass": {
+          "name": "area_landmass",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "note_code": {
+          "name": "note_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note_place_label": {
+          "name": "note_place_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listed_in_label": {
+          "name": "listed_in_label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uncertainty_km": {
+          "name": "uncertainty_km",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "collection": {
+          "name": "collection",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "meetup_offered": {
+          "name": "meetup_offered",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "local_delivery": {
+          "name": "local_delivery",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "postage": {
+          "name": "postage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_pickup_location",
+      "schema": "app",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
