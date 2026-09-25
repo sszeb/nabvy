@@ -1,0 +1,17 @@
+{
+  "requests": [
+    {
+      "scheduled": 1,
+      "alreadyScheduled": 0,
+      "unknown": 0
+    }
+  ],
+  "ticks": [
+    {
+      "queued": 0,
+      "skipped": 1,
+      "waiting": 0
+    }
+  ],
+  "queuedByPriority": {}
+}

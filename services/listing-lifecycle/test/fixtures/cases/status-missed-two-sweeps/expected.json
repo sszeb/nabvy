@@ -1,0 +1,20 @@
+{
+  "counts": {
+    "live": 19,
+    "not-seen-recently": 1
+  },
+  "listings": {
+    "1816901372840238": {
+      "status": "not-seen-recently",
+      "basis": "missed-sweeps",
+      "missedSweeps": 2
+    }
+  },
+  "announced": 21,
+  "queued": {
+    "1816901372840238": {
+      "priority": "sweep",
+      "reason": "recheck"
+    }
+  }
+}
