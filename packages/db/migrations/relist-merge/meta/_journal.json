@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790275597837,
+      "tag": "20260924184637_relist_merge_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790275599763,
+      "tag": "20260924184639_relist_merge_access",
+      "breakpoints": true
+    }
+  ]
+}

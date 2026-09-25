@@ -1,0 +1,74 @@
+{
+  "synthetic": true,
+  "source": "Card pricing-console: every change has an audit row (docs/security.md: every admin action writes audit_log)",
+  "steps": [
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "monthlyPriceMinor": 3100
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "price",
+        "key": "export",
+        "fields": {
+          "credits": 40
+        }
+      }
+    },
+    {
+      "set": {
+        "kind": "offer",
+        "key": "spring",
+        "value": {
+          "userId": null,
+          "segment": "all",
+          "item": "price:export",
+          "discountBps": 1000,
+          "startsAt": "$now-60s",
+          "endsAt": "$now+3600s"
+        }
+      }
+    },
+    {
+      "retire": {
+        "kind": "offer",
+        "key": "spring"
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "monthlyPriceMinor": 3100
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "price",
+        "key": "photo-scan",
+        "fields": {
+          "credits": 5
+        }
+      }
+    },
+    {
+      "audit": "policy:tier/pro"
+    },
+    {
+      "audit": "policy:price/export"
+    },
+    {
+      "audit": "policy:offer/spring"
+    },
+    {
+      "audit": "policy:price/photo-scan"
+    }
+  ]
+}

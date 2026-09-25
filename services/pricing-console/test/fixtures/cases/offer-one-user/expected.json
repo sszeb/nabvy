@@ -1,0 +1,22 @@
+{
+  "outcomes": [
+    {
+      "changed": true
+    },
+    {
+      "amount": 14,
+      "offer": "welcome-a",
+      "floored": false
+    },
+    {
+      "amount": 15,
+      "offer": null,
+      "floored": false
+    },
+    {
+      "amount": 15,
+      "offer": null,
+      "floored": false
+    }
+  ]
+}
