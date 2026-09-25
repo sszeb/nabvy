@@ -12,3 +12,10 @@ export {
 export { createMemoryPublisher, type MemoryPublisher } from './memory'
 export { byTask, emit, type Publisher } from './publisher'
 export { createTriggerPublisher, type TriggerClient, type TriggerItem } from './trigger'
+export {
+  createEventRegistry,
+  dispatchEvent,
+  registerEvent,
+  type EventRegistry,
+  type RegistryEntry,
+} from './registry'
