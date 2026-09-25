@@ -1,4 +1,3 @@
-/* biome-ignore file/noExplicitAny: Pending full type definition in wiring phase */
 /**
  * Event task wiring (backlog L2): maps event types to their handlers and creates thin task wrappers.
  * Thin pattern: each task file (id: 'event-type') receives an EventEnvelope, runs all registered
@@ -7,6 +6,7 @@
  *
  * This file documents the wiring and provides helper functions. Individual task files import from here.
  */
+// biome-ignore lint/suspicious/noExplicitAny: Pending full type definition in wiring phase
 
 import type { EventEnvelope } from '@nabvy/contracts'
 import type { EventHandler } from '@nabvy/transport'
