@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "source": "docs/marketing.md, \"Lifecycle programmes\": a cap of one marketing message per user per day",
+  "programme": "cap-reached",
+  "step": "immediate",
+  "moduleState": "on",
+  "marketingConsentState": "on",
+  "granted": true,
+  "suppressed": false,
+  "triggerEvent": "usage_refused",
+  "triggerProperties": { "action": "search", "pricePence": 50, "balanceAfter": 0 },
+  "triggerAgeMinutes": 5,
+  "exitEvent": null,
+  "exitAgeMinutes": null,
+  "priorMarketingRunToday": true
+}
