@@ -83,7 +83,7 @@ export interface SubscriptionsStripeEnv {
 
 /**
  * The Stripe client, webhook secret and pack price IDs from the `stripe` group of
- * docs/secrets.md, through `@nabvy/config` (never `process.env` here). Throws `EnvError`, which
+ * docs/secrets.md, through `@nabvy/config` (never the raw environment here). Throws `EnvError`, which
  * names missing variables and never their values.
  */
 export function subscriptionsStripeFromEnv(source?: EnvSource): SubscriptionsStripeEnv {
