@@ -1,0 +1,39 @@
+{
+  "synthetic": true,
+  "source": "Card pricing-console: an offer for one user is not shown to another",
+  "steps": [
+    {
+      "set": {
+        "kind": "offer",
+        "key": "welcome-a",
+        "value": {
+          "userId": "$A",
+          "segment": null,
+          "item": "price:live-lookup",
+          "discountBps": 1000,
+          "startsAt": "$now-60s",
+          "endsAt": "$now+3600s"
+        }
+      }
+    },
+    {
+      "price": {
+        "user": "A",
+        "item": "price:live-lookup"
+      }
+    },
+    {
+      "price": {
+        "user": "B",
+        "item": "price:live-lookup"
+      }
+    },
+    {
+      "price": {
+        "user": "B",
+        "item": "price:live-lookup",
+        "role": "pipeline"
+      }
+    }
+  ]
+}

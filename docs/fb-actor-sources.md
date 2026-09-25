@@ -17,7 +17,7 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
    **Rebuilt from the listed files only** (owner, 2026-09-24). `docs/fb-actor-scope-report.md` records
    what the old version held that the listed files do not support.
 
-1. `docs/APP_INTEGRATION_GUIDE.md` (not written yet; checked for until it lands. Nabvy writes its own
+1. `docs/APP_INTEGRATION_GUIDE.md` (exists since 2026-09-24, 178 KB, folded by coordinator 5; the coordinator re-checks it at each sweep. Nabvy writes its own
    integration plan either way: `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/APP_INTEGRATION_GUIDE.md
 2. `docs/HANDOFF.md`: read only the sections "Rules" and "The app: what we want it to do, and
@@ -29,7 +29,7 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
 3. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/PARTS_INTELLIGENCE.md
 4. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/CONTAINER_LISTINGS.md
 5. https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/SELLER_DATA.md
-6. `docs/design/COPY_ADVERT_SPAM.md` (not written yet; checked for until it lands. Nabvy writes its own
+6. `docs/design/COPY_ADVERT_SPAM.md` (exists since 2026-09-24, 26 KB, found at the 19:40 sweep, commit `1c9fd3b`; the `copy-advert` session reads it. Nabvy writes its own
    copy-advert spam design either way: `docs/decisions.md`, "The actor is a tool")
    https://github.com/sebtimize/fb-scrap-engine/blob/main/docs/design/COPY_ADVERT_SPAM.md
 
@@ -57,3 +57,7 @@ only calling the actor. See `docs/decisions.md`, "The actor is a tool".
 - The Apify token is a Supabase Edge Function secret; never put it in code or chat.
 - Seller identity (names, IDs, pictures) is internal only. Labels read "Suspected ...:" followed
   by the facts behind them.
+
+## Checks
+
+- **2026-09-24 23:50 UTC (coordinator 9, GitHub API only).** Latest commit `edf7ba2` (20:58). Six commits since `d7be0a4`: `a84bc50`, `ab61374`, `802a3a1`, `fc5176f` (location lookup diagnostics, since removed), `72351f0` ("A city name is a search location: slugs bind like numeric IDs; drop the lookup fetch": `src/gateway-input.js` accepts `cityId` as `^\d{5,30}$` or a lowercase slug `^[a-z0-9]{2,60}$` that is not a reserved segment; `src/source-binding.js` binds the slug from Facebook's own request; the fetch-based resolver is deleted) and `edf7ba2` (`docs/EVIDENCE_LEDGER.md`, build 1.0.12: "A slug is now a search location bound exactly like a numeric ID"; the validation ran on the public Store edition, which Nabvy never calls). **`docs/APP_INTEGRATION_GUIDE.md` and `docs/design/COPY_ADVERT_SPAM.md` now exist** (backlog 0.18). Numeric IDs as text are unchanged, so `city-pages` needs nothing; `location` gets backlog 1.1b.
