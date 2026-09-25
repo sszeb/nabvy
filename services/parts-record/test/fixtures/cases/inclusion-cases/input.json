@@ -1,0 +1,55 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1783301919382894", "1083674317719227", "1380502417485603"],
+  "responses": {
+    "1083674317719227": {
+      "responseId": "msg_rec_1083674317719227",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "cpu",
+            "name": "AMD64 processor",
+            "quote": "~3900Mhz AMD64 processor",
+            "inclusion": "offered"
+          },
+          {
+            "partType": "gpu",
+            "name": "Geforce RTX",
+            "quote": "Geforce RTX graphics card",
+            "inclusion": "offered"
+          },
+          {
+            "partType": "storage_size",
+            "name": null,
+            "quote": "I can include 300GB extended storage for an extra \u00a320",
+            "inclusion": "not_included"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 745,
+        "outputTokens": 121,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    },
+    "1380502417485603": {
+      "responseId": "msg_rec_1380502417485603",
+      "output": {
+        "kind": null,
+        "parts": []
+      },
+      "usage": {
+        "inputTokens": 690,
+        "outputTokens": 12,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 900
+    }
+  }
+}

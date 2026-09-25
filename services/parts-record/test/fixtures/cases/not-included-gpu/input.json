@@ -1,0 +1,36 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1380502417485603"],
+  "edits": [
+    {
+      "listingId": "1380502417485603",
+      "fields": {
+        "description": "Gaming pc and curved Samsung monitor. Upgraded so selling.\n\nRTX 3070 not included, it goes in my new build.\nRyzen 5 3600\n16GB DDR4\n1TB SSD\n\nThis does not include HDMi lead or keyboard or mouse."
+      }
+    }
+  ],
+  "responses": {
+    "1380502417485603": {
+      "responseId": "msg_syn_not_included_gpu",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "gpu",
+            "name": "RTX 3070",
+            "quote": "RTX 3070 not included",
+            "inclusion": "not_included"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 700,
+        "outputTokens": 60,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 800
+    }
+  }
+}

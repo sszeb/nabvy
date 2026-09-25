@@ -1,0 +1,8 @@
+{
+  "outcomes": ["ok:created:chichester", "ok:created:redhill"],
+  "wants": ["chichester:active", "redhill:active"],
+  "terms": ["chichester/RTX 40=1/1", "redhill/RTX 40=1/1"],
+  "areas": ["chichester@50.85,-0.8:25", "redhill@51.25,-0.15:40+post"],
+  "parts": 4,
+  "pipelineWants": 2
+}
