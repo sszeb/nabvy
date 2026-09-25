@@ -10,7 +10,6 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | source-adapters, recognition (Storage only, server-side) | Supabase project settings |
 | `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | auth | Generated once; the app's public URL |
 | `TRIGGER_SECRET_KEY`, `TRIGGER_PROJECT_ID` | trigger/ | Trigger.dev project |
-| `ROUTER_API_KEY` (with config `ROUTER_PROVIDER=openrouteservice`, `ROUTER_BASE_URL`) | router-gateway (server-side only) | The owner's openrouteservice account (account.heigit.org), free Standard plan; owner decision 2026-09-25 |
 | `APIFY_TOKEN` | source-adapters | Apify account → Integrations |
 | `APIFY_FB_ACTOR_ID` | source-adapters | The Nabvy Facebook actor |
 | `APIFY_FB_ACTOR_FALLBACK_ID` | source-adapters | Chosen Store actor after the first-week comparison |
@@ -46,5 +45,8 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `POSTHOG_KEY`, `POSTHOG_HOST` | web app and server (`eu.i.posthog.com`) | PostHog project, EU cloud |
 | `TOKEN_ENCRYPTION_KEY` | inventory-resale | Generated once; encrypts eBay refresh tokens at rest |
 | `FB_DAILY_CAP_MINOR`, `GUMTREE_DAILY_CAP_MINOR`, `SCAN_SPEND_CAP_MINOR` | crawl-planner, recognition | Config: defaults 1000, 500, 5 |
+
+Pending (owner decision 2026-09-25, docs/decisions.md "Routing: openrouteservice first"): the router-gateway pull request adds the routing provider's variables to this table (the API key of the owner's openrouteservice account at account.heigit.org on the free Standard plan, read only by router-gateway server-side, plus the provider name and base URL). The variable inventory test in packages/config keeps this table and the config schema in step, so the row lands with that PR.
+
 
 Accounts a human must create before Phase 1: Apify (with the Nabvy actor deployed), Anthropic, Trigger.dev, Telegram bot. Before Phase 2: eBay developer keyset. Before Phase 3: eBay Sell API consent flow (RuName) and Sandbox seller. Before Phase 4: Stripe (products created per `docs/billing.md`, Stripe Tax enabled, legal entity set), Resend with `mail.nabvy.com` and `news.nabvy.com` verified, PostHog Workflows enabled with an email sender on `news.nabvy.com`, VAPID keys, Sentry, PostHog, Cloudflare Turnstile, Google OAuth client. Before launch: ICO registration, legal documents, external security scan, Dub workspace with the Partners programme configured per `docs/affiliates.md` and `nabvy.link` connected.
