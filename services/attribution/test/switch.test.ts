@@ -1,5 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { captureAttribution, getAttribution, inMemoryPartnerClient, trackSale } from '../src'
+import {
+  captureAttribution,
+  getAttribution,
+  inMemoryPartnerClient,
+  reverseSale,
+  trackSale,
+} from '../src'
 import { addUsers, createTestDatabase, setSwitch, type TestDatabase } from './support/database'
 
 const U1 = '00000000-0000-4000-8000-0000000000f1'
@@ -52,6 +58,29 @@ describe('shadow and on', () => {
     const result = await capture()
     expect(result.ok).toBe(true)
     expect((await attribution()).rows).toHaveLength(1)
+  })
+
+  it('shadow refuses trackSale and reverseSale (money moves only when on) and records nothing', async () => {
+    const sale = await db.as('nabvy_pipeline', (tx) =>
+      trackSale(
+        tx,
+        {
+          userId: U1,
+          invoiceId: 'in_shadow',
+          kind: 'subscription',
+          amountMinor: 900,
+          currency: 'GBP',
+        },
+        deps(),
+      ),
+    )
+    expect(sale).toMatchObject({ ok: false, error: { code: 'attribution.not_on' } })
+    expect(!sale.ok && sale.error.message).toMatch(/not live/)
+    const reversal = await db.as('nabvy_pipeline', (tx) =>
+      reverseSale(tx, { userId: U1, stripeEventId: 'evt_shadow', reason: 'chargeback' }, deps()),
+    )
+    expect(reversal).toMatchObject({ ok: false, error: { code: 'attribution.not_on' } })
+    expect(await db.sql('select * from attribution.partner_events')).toEqual([])
   })
 
   it('on serves getAttribution as before', async () => {

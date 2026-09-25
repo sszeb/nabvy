@@ -133,6 +133,8 @@ export type AttributionLeadResult = z.infer<typeof AttributionLeadResult>
 export const AttributionErrorCode = z.enum([
   /** The module is not on: rule 11 names no exception for this module. */
   'attribution.off',
+  /** The module is in shadow: sale tracking and referral credit move money, so they require `on` (rule 11). */
+  'attribution.not_on',
   /** A referral code that resolves to the signing-up user themself (docs/affiliates.md, "Prohibited"). */
   'attribution.self_referral',
   /** Sign-up was already captured for this user; a second call with different details is refused. */
@@ -147,6 +149,7 @@ export type AttributionError = z.infer<typeof AttributionError>
 
 export const ATTRIBUTION_MESSAGES: Record<AttributionErrorCode, string> = {
   'attribution.off': 'Attribution is paused for a moment. Nothing was recorded.',
+  'attribution.not_on': 'Sale tracking is not live yet. Nothing was recorded.',
   'attribution.self_referral': 'A referral code cannot be your own.',
   'attribution.mismatch': 'Sign-up was already recorded with different details.',
   'attribution.account_inactive': 'This account cannot be credited right now.',

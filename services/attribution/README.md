@@ -10,9 +10,11 @@ Off by default (rule 11 of `docs/design/modules/_rules.md`; no seed row, so
 reversal all refuse (`attribution.off`); `v_attributions` has no rows. Rule 11 names no exception
 for this module, so nothing keeps recording while off — unlike a payment webhook, a lost sign-up
 capture only loses attribution for that user, never money (card, "When off": "no attribution;
-nothing else changes"). **Shadow**: writes and records; no user-facing view exists yet either way
-(see "Decisions"). **On**: all of it. MVP, live from day one of the public beta
-(`docs/decisions.md:225`), BP4 (`docs/backlog.md:72`).
+nothing else changes"). **Shadow**: sign-up capture writes and records (the Dub lead included); `trackSale`
+and `reverseSale` refuse (`attribution.not_on`), because a commission and a referral credit both
+move money and rule 11 requires `on` for that; no user-facing view exists yet either way (see
+"Decisions"). **On**: all of it. MVP, live from day one of the public beta
+(`docs/decisions.md:225`); backlog 4.7a (`docs/backlog.md:125`; the card's "BP4" is that entry).
 
 ## Inputs
 
@@ -48,8 +50,8 @@ nothing else changes"). **Shadow**: writes and records; no user-facing view exis
 - **Functions** (`@nabvy/attribution`): `captureAttribution(q, input, deps)`,
   `trackSale(q, input, deps)`, `reverseSale(q, input, deps)`, `getAttribution(q, userId)`,
   `purge(q, userIds)`, `accountDeletedHandler(deps)`, `inMemoryPartnerClient()`.
-- Error codes `attribution.off | self_referral | mismatch | account_inactive`, each with a message
-  in `ATTRIBUTION_MESSAGES`.
+- Error codes `attribution.off | not_on | self_referral | mismatch | account_inactive`, each with
+  a message in `ATTRIBUTION_MESSAGES`.
 
 ## Tables
 
@@ -149,6 +151,13 @@ filter (`pnpm db:dry-run`).
 - 2026-09-24: an unknown referral code is dropped rather than refusing the whole sign-up: a typo
   or a stale marketing link should never block account creation. Recorded as a conservative choice
   in `docs/questions/attribution.md`.
+
+- 2026-09-25: `trackSale` and `reverseSale` require the switch `on`; in `shadow` they refuse with
+  `attribution.not_on` and write nothing, so a shadow run can never pay a creator a commission or
+  grant a user credit (rule 11: "anything that moves money or sends to a user requires `on`").
+  Sign-up capture still runs in shadow, Dub lead included: a lead pays nobody. A sale that
+  arrives in shadow is not recorded and is not replayed later; the module is switched on before
+  billing goes live, so no real sale is expected to reach it in shadow.
 
 ## Open questions
 

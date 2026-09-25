@@ -220,7 +220,8 @@ export async function captureAttribution(
  * not credited yet (`kind: 'subscription'` only — a top-up never triggers the pair, README.md,
  * "Decisions"). A user with no partner attribution and no referral pairing makes no calls at all.
  * Idempotent on the invoice ID for the Dub call, and on the pair for the credit (whichever
- * invoice reaches it first).
+ * invoice reaches it first). Requires the switch `on`: a commission and a credit both move
+ * money (rule 11), so `shadow` refuses (`attribution.not_on`) and records nothing.
  */
 export async function trackSale(
   q: Queryable,
@@ -228,7 +229,9 @@ export async function trackSale(
   deps: AttributionDeps,
 ): Promise<Result<AttributionSaleResult, AttributionError>> {
   const s = AttributionSaleInput.parse(input)
-  if ((await state(q, 'attribution')) === 'off') return refuse('attribution.off')
+  const switchState = await state(q, 'attribution')
+  if (switchState === 'off') return refuse('attribution.off')
+  if (switchState !== 'on') return refuse('attribution.not_on')
   if (!(await isActive(q, s.userId))) return refuse('attribution.account_inactive')
   await repo.lockUser(q, s.userId)
 
@@ -287,7 +290,8 @@ export async function trackSale(
  * A dispute or a legally required refund on a previously tracked sale: claws back the Dub
  * commission only (README.md, "Decisions" — a referral credit already granted is never reversed;
  * no refund path exists anywhere, `docs/decisions.md`, "No refunds"). A user with no partner
- * attribution makes no call. Idempotent on the Stripe dispute or refund event ID.
+ * attribution makes no call. Idempotent on the Stripe dispute or refund event ID. Like
+ * `trackSale`, requires the switch `on` (rule 11: it moves money); `shadow` refuses.
  */
 export async function reverseSale(
   q: Queryable,
@@ -295,7 +299,9 @@ export async function reverseSale(
   deps: AttributionDeps,
 ): Promise<Result<{ reversed: boolean }, AttributionError>> {
   const r = AttributionReversalInput.parse(input)
-  if ((await state(q, 'attribution')) === 'off') return refuse('attribution.off')
+  const switchState = await state(q, 'attribution')
+  if (switchState === 'off') return refuse('attribution.off')
+  if (switchState !== 'on') return refuse('attribution.not_on')
   await repo.lockUser(q, r.userId)
 
   const utm = await repo.selectUtmAttribution(q, r.userId)
