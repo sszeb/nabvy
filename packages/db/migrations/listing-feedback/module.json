@@ -1,0 +1,5 @@
+{
+  "module": "listing-feedback",
+  "schema": "listing_feedback",
+  "dependsOn": ["core", "switches", "listing-suppression"]
+}
