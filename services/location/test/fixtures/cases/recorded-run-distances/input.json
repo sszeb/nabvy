@@ -1,0 +1,28 @@
+{
+  "synthetic": false,
+  "source": "fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "centre": { "lat": 50.836, "lng": -0.775 },
+  "basis": "coordinates",
+  "points": [
+    { "label": "Epsom", "lat": 51.363830566406, "lng": -0.2362060546875 },
+    { "label": "Westbury", "lat": 51.259460449219, "lng": -2.1807861328125 },
+    { "label": "London", "lat": 51.435241699219, "lng": -0.1702880859375 },
+    { "label": "Woking", "lat": 51.319885253906, "lng": -0.5657958984375 },
+    { "label": "Wembley", "lat": 51.561584472656, "lng": -0.2691650390625 },
+    { "label": "London", "lat": 51.545104980469, "lng": -0.1702880859375 },
+    { "label": "Enfield", "lat": 51.665954589844, "lng": -0.0384521484375 },
+    { "label": "Pulborough", "lat": 50.957336425781, "lng": -0.5108642578125 },
+    { "label": "Harrow", "lat": 51.578063964844, "lng": -0.3570556640625 },
+    { "label": "Chessington", "lat": 51.363830566406, "lng": -0.3131103515625 },
+    { "label": "Poole", "lat": 50.732116699219, "lng": -2.0269775390625 },
+    { "label": "Feltham", "lat": 51.435241699219, "lng": -0.4010009765625 },
+    { "label": "Chichester", "lat": 50.732116699219, "lng": -0.7855224609375 },
+    { "label": "London", "lat": 51.523132324219, "lng": -0.0714111328125 },
+    { "label": "Basingstoke", "lat": 51.286926269531, "lng": -1.0601806640625 },
+    { "label": "Portsmouth", "lat": 50.809020996094, "lng": -1.0601806640625 },
+    { "label": "Bournemouth", "lat": 50.748596191406, "lng": -1.8951416015625 },
+    { "label": "Uxbridge", "lat": 51.528625488281, "lng": -0.4559326171875 },
+    { "label": "Eastbourne", "lat": 50.770568847656, "lng": 0.2801513671875 },
+    { "label": "Southampton", "lat": 50.918884277344, "lng": -1.3677978515625 }
+  ]
+}

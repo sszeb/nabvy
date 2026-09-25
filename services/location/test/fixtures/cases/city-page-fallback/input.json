@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "source": "two verified centres' town-level coordinates, public knowledge (not the city-pages seed file)",
+  "basis": "city_page",
+  "cases": [
+    { "from": { "lat": 54.5973, "lng": -5.9301 }, "to": { "lat": 55.9533, "lng": -3.1883 } }
+  ]
+}
