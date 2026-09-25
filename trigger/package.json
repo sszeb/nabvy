@@ -9,7 +9,9 @@
   "dependencies": {
     "@nabvy/account": "workspace:*",
     "@nabvy/config": "workspace:*",
+    "@nabvy/copy-advert": "workspace:*",
     "@nabvy/db": "workspace:*",
+    "@nabvy/lifecycle-messaging": "workspace:*",
     "@nabvy/spend-governor": "workspace:*",
     "@trigger.dev/sdk": "4.6.4"
   }

@@ -49,7 +49,7 @@ export async function start(t: TestDatabase, jobId: number, recorded: RecordedRu
       recorded.apifyRunId,
       JSON.stringify({
         startedAt: recorded.run.startedAt,
-        buildNumber: '1.0.82',
+        buildNumber: '1.0.83',
         status: 'RUNNING',
       }),
       jobId,
