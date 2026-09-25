@@ -174,6 +174,12 @@ not run in this task (`docs/questions/copy-advert.md`).
   `in_area` for some active centre; nothing else in this module tracks "active hunts" directly.
 - **2026-09-24: candidate priority is `sweep`**, the lowest `details-queue` has, standing in for
   "after sweep follow-ups" until a lower priority exists (`docs/questions/copy-advert.md`).
+- **2026-09-25: the clustering stage builds its database in a `beforeEach` hook with a 60 s
+  timeout**, as the other modules' fixture stages do (`account`, `audit-log`, `waitlist`). The
+  fixtures CLI (`pnpm test:fixtures`) starts Vitest with `config: false`, so the module's
+  `vitest.config.ts` timeouts do not apply there and each case runs under the default 5 s. PGlite
+  startup plus nine modules' migrations takes 2 to 4 s on a warm machine (CI timed out at 5 s on
+  the first case); the case bodies themselves (ingest plus `recompute`) take under half a second.
 - **2026-09-24: `applyCorrection()` records an override and its audit row, but `recomputeClusters`
   does not read `overrides` yet.** `review-console`, the intended caller of the correction path, does
   not exist; wiring overrides into the clustering pass (S8's "connected components, with overrides
