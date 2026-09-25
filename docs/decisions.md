@@ -343,6 +343,10 @@ The owner, on the coordinator's speed-up findings ("Go ahead implement your find
 
 The owner asked to get started on Stripe for Billing, Invoicing, Tax, Connect and Payments, using the Stripe plugin and its implementation planner where available, and to review the integration already in progress against that plan. Recorded as backlog 4.10c: a plan document (`docs/design/stripe-integration.md`) that maps each Stripe product to the subscriptions, pricing-console and usage-ledger modules and reviews PR #54, with the gaps as backlog tasks. Connect has no consumer in the current design (Nabvy pays no sellers through Stripe); it is a question, not a build. Keys stay in the environment's secrets, never in chat.
 
+## Fable everywhere, ultracode for the coordinator, low effort elsewhere (owner, 2026-09-24, 23:45)
+
+The owner, to coordinator 9: "For next session run everything on fable, the ultracode for coordinator everything else effort on low." From coordinator 10 on: every new session (coordinator, reviewer, build and fix sessions, workflow agents) runs on Fable, the top model; the coordinator session runs with ultracode (multi-agent workflows opted in for the session); every other session runs at low effort, stated in its brief. This replaces "Sonnet by default" under "Faster build" and the model tiers in the module cards; `CLAUDE.md` "Model and effort by job" reads through this decision until the owner changes it. Model tiers in docs stay "top" or "Sonnet" by name, never model IDs.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
