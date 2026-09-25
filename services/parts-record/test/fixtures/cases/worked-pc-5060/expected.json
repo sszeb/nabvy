@@ -1,0 +1,21 @@
+{
+  "listings": {
+    "29056633657273875": {
+      "parts": [
+        "rules:description:gpu:RTX 5060 → gpu:nvidia:rtx-5060:8gb [offered]",
+        "rules:description:cpu:Ryzen 5 5500 → cpu:amd:ryzen-5-5000 [offered]",
+        "rules:description:ram_size:16GB RAM [offered]",
+        "rules:description:storage_size:1TB [offered]",
+        "rules:description:storage_type:SSD [offered]"
+      ],
+      "kind": "rules:pc:title:Pc",
+      "versions": {
+        "rules": true,
+        "ai": null,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 5
+    }
+  }
+}

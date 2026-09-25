@@ -1,0 +1,657 @@
+{
+  "id": "b2988278-36ce-4e7b-8ad2-6487084f4c68",
+  "prevId": "c632e29b-535d-49fe-babe-40bbc72d13c8",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "parts_record.parts": {
+      "name": "parts",
+      "schema": "parts_record",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "record_id": {
+          "name": "record_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "part_type": {
+          "name": "part_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attrs": {
+          "name": "attrs",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "inclusion": {
+          "name": "inclusion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "extractor": {
+          "name": "extractor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "extractor_version": {
+          "name": "extractor_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote": {
+          "name": "quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote_start": {
+          "name": "quote_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote_end": {
+          "name": "quote_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conflict": {
+          "name": "conflict",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "correction": {
+          "name": "correction",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "parts_listing_idx": {
+          "name": "parts_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "evidence_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "parts_catalogue_idx": {
+          "name": "parts_catalogue_idx",
+          "columns": [
+            {
+              "expression": "catalogue_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "parts_record_id_records_id_fk": {
+          "name": "parts_record_id_records_id_fk",
+          "tableFrom": "parts",
+          "columnsFrom": [
+            "record_id"
+          ],
+          "tableTo": "records",
+          "schemaTo": "parts_record",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "parts_record_seq_key": {
+          "name": "parts_record_seq_key",
+          "columns": [
+            "record_id",
+            "seq"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "parts_hash_check": {
+          "name": "parts_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "parts_part_type_check": {
+          "name": "parts_part_type_check",
+          "value": "part_type in ('gpu', 'cpu', 'ram_size', 'ram_generation', 'storage_size', 'storage_type', 'psu_wattage', 'chipset')"
+        },
+        "parts_inclusion_check": {
+          "name": "parts_inclusion_check",
+          "value": "inclusion in ('offered', 'mention', 'not_included')"
+        },
+        "parts_source_check": {
+          "name": "parts_source_check",
+          "value": "source in ('title', 'description', 'attribute', 'photo')"
+        },
+        "parts_extractor_check": {
+          "name": "parts_extractor_check",
+          "value": "extractor in ('rules', 'ai', 'photo')"
+        },
+        "parts_source_extractor_check": {
+          "name": "parts_source_extractor_check",
+          "value": "(\"parts_record\".\"parts\".\"extractor\" = 'photo') = (\"parts_record\".\"parts\".\"source\" = 'photo')"
+        },
+        "parts_position_check": {
+          "name": "parts_position_check",
+          "value": "\"parts_record\".\"parts\".\"quote_start\" >= 0 and \"parts_record\".\"parts\".\"quote_end\" > \"parts_record\".\"parts\".\"quote_start\""
+        },
+        "parts_seq_check": {
+          "name": "parts_seq_check",
+          "value": "\"parts_record\".\"parts\".\"seq\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "parts_record.records": {
+      "name": "records",
+      "schema": "parts_record",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ai_version": {
+          "name": "ai_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_version": {
+          "name": "photo_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_gap": {
+          "name": "kind_gap",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_by": {
+          "name": "kind_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_source": {
+          "name": "kind_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_quote": {
+          "name": "kind_quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_start": {
+          "name": "kind_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_end": {
+          "name": "kind_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "part_count": {
+          "name": "part_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conflict": {
+          "name": "conflict",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "recorded_at": {
+          "name": "recorded_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "records_listing_recorded_idx": {
+          "name": "records_listing_recorded_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "evidence_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "recorded_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "records_version_key": {
+          "name": "records_version_key",
+          "columns": [
+            "listing_id",
+            "evidence_hash",
+            "rule_version",
+            "ai_version",
+            "photo_version"
+          ],
+          "nullsNotDistinct": true
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "records_hash_check": {
+          "name": "records_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "records_rule_version_check": {
+          "name": "records_rule_version_check",
+          "value": "rule_version ~ '^r[0-9]+\\.[0-9a-f]{8}$'"
+        },
+        "records_ai_version_check": {
+          "name": "records_ai_version_check",
+          "value": "ai_version ~ '^p[0-9]+\\.[0-9a-f]{8}$'"
+        },
+        "records_photo_version_check": {
+          "name": "records_photo_version_check",
+          "value": "photo_version ~ '^v[0-9]+\\.[0-9a-f]{8}$'"
+        },
+        "records_kind_check": {
+          "name": "records_kind_check",
+          "value": "kind in ('wanted_or_swap', 'laptop', 'pc', 'not_a_pc')"
+        },
+        "records_kind_gap_check": {
+          "name": "records_kind_gap_check",
+          "value": "kind_gap in ('no_signal', 'conflict')"
+        },
+        "records_kind_by_check": {
+          "name": "records_kind_by_check",
+          "value": "kind_by in ('rules', 'ai')"
+        },
+        "records_kind_source_check": {
+          "name": "records_kind_source_check",
+          "value": "kind_source in ('title', 'description', 'attribute', 'photo')"
+        },
+        "records_part_count_check": {
+          "name": "records_part_count_check",
+          "value": "\"parts_record\".\"records\".\"part_count\" >= 0"
+        },
+        "records_kind_complete_check": {
+          "name": "records_kind_complete_check",
+          "value": "(\"parts_record\".\"records\".\"kind\" is null and \"parts_record\".\"records\".\"kind_gap\" is not null and \"parts_record\".\"records\".\"kind_by\" is null and \"parts_record\".\"records\".\"kind_source\" is null and \"parts_record\".\"records\".\"kind_quote\" is null and \"parts_record\".\"records\".\"kind_start\" is null and \"parts_record\".\"records\".\"kind_end\" is null) or (\"parts_record\".\"records\".\"kind\" is not null and \"parts_record\".\"records\".\"kind_gap\" is null and \"parts_record\".\"records\".\"kind_by\" is not null and ((\"parts_record\".\"records\".\"kind_quote\" is null and \"parts_record\".\"records\".\"kind_source\" is null and \"parts_record\".\"records\".\"kind_start\" is null and \"parts_record\".\"records\".\"kind_end\" is null) or (\"parts_record\".\"records\".\"kind_quote\" is not null and \"parts_record\".\"records\".\"kind_source\" is not null and \"parts_record\".\"records\".\"kind_start\" >= 0 and \"parts_record\".\"records\".\"kind_end\" > \"parts_record\".\"records\".\"kind_start\")))"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "parts_record": "parts_record"
+  },
+  "views": {
+    "parts_record.v_parts": {
+      "name": "v_parts",
+      "schema": "parts_record",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seq": {
+          "name": "seq",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "part_type": {
+          "name": "part_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attrs": {
+          "name": "attrs",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inclusion": {
+          "name": "inclusion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rejected": {
+          "name": "rejected",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "extractor": {
+          "name": "extractor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "extractor_version": {
+          "name": "extractor_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quote": {
+          "name": "quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start": {
+          "name": "start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "end": {
+          "name": "end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conflict": {
+          "name": "conflict",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "correction": {
+          "name": "correction",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "parts_record.v_records": {
+      "name": "v_records",
+      "schema": "parts_record",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_gap": {
+          "name": "kind_gap",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_by": {
+          "name": "kind_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_source": {
+          "name": "kind_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_quote": {
+          "name": "kind_quote",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_start": {
+          "name": "kind_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind_end": {
+          "name": "kind_end",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ai_version": {
+          "name": "ai_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo_version": {
+          "name": "photo_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parts": {
+          "name": "parts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conflict": {
+          "name": "conflict",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recorded_at": {
+          "name": "recorded_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
