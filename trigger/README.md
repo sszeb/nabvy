@@ -12,12 +12,14 @@ dead-letter sink, with `retry: eventRetry` from `@nabvy/config`. The wrapper doe
 stamps, retries and dead-lettering (`packages/transport/README.md`, "Wiring").
 
 A scheduled task is thinner still: no event to validate, so it calls its module's function
-directly with `schedules.task({ id, cron, run })`. One exists so far:
+directly with `schedules.task({ id, cron, run })`. Two exist so far, both `*/15 * * * *`:
 
-- `spend-governor-recompute.ts` (backlog 1.2m) — `recompute` every 15 minutes, keeping
-  `spend_governor.throttle` from going stale.
+- `spend-governor-recompute.ts` (backlog 1.2m) — `recompute`, keeping `spend_governor.throttle`
+  from going stale.
+- `account-purge-schedule.ts` (backlog 4.3r) — `purgeDueDeletions`, the 24-hour deletion sweep.
 
-It does not publish the `budget-alerted` events `recompute` returns: no task consumes them yet,
-and the `TriggerClient` publisher adapter (`packages/transport/src/trigger.ts`) is task 1.2's to
-build (`docs/questions/schedules.md`). This folder is a pnpm workspace package (`@nabvy/trigger`,
-`pnpm-workspace.yaml`) depending on `@trigger.dev/sdk` (MIT) and the modules its tasks call.
+Neither publishes the events its function returns (`budget-alerted`, `account.deleted`): no task
+consumes them yet, and the `TriggerClient` publisher adapter (`packages/transport/src/trigger.ts`)
+is task 1.2's to build (`docs/questions/schedules.md`). This folder is a pnpm workspace package
+(`@nabvy/trigger`, `pnpm-workspace.yaml`) depending on `@trigger.dev/sdk` (MIT) and the modules its
+tasks call.

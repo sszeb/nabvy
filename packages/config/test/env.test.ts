@@ -71,6 +71,7 @@ describe('loadEnv', () => {
       POSTHOG_HOST: 'https://eu.i.posthog.com',
       LANGFUSE_SAMPLE_RATE: 1,
       LIVE_PROVIDERS: false,
+      NODE_ENV: 'development',
     }
     const error = failure(() => loadEnv(allGroups, {}))
     expect(error.missing).toEqual(envVariableNames.filter((name) => !(name in defaults)))
@@ -84,6 +85,7 @@ describe('loadEnv', () => {
       'posthog',
       'langfuse',
       'testing',
+      'runtime',
     ] as const
     const secrets = without(...Object.keys(defaults))
     expect(loadEnv(groups, secrets)).toMatchObject(defaults)

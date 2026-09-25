@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getAdminOverview } from '@/data'
+import { requireAdmin } from '@/lib/admin-gate'
 import { formatMoment } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Admin' }
@@ -36,6 +37,7 @@ const statusLabel = {
 const usd = (value: number) => `$${value.toFixed(value < 0.1 && value > 0 ? 4 : 2)}`
 
 export default async function AdminPage() {
+  await requireAdmin() // before any read (docs/design/admin-hardening.md, H1)
   const overview = await getAdminOverview()
   const tiles = [
     {
@@ -71,7 +73,7 @@ export default async function AdminPage() {
                 <CardTitle>Facebook collection</CardTitle>
                 <CardDescription>Actor runs through the Apify gateway</CardDescription>
               </div>
-              <ProviderSwitch initial={overview.providerEnabled} />
+              <ProviderSwitch enabled={overview.providerEnabled} />
             </CardHeader>
             <CardContent className="grid grid-cols-1">
               <Table>
