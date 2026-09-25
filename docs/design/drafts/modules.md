@@ -175,7 +175,6 @@ A module is done when its task's definition of done is met (`nabvy/CLAUDE.md:22`
 | After MVP: needs another source | `ebay-adapter`, `ebay-sold`, `cex-adapter`, `gumtree-adapter`, `cross-post-links`, `sold-price-book`, `valuation`, `similar-items`, `ebay-drafts`, `seo-price-pages` |
 | Later (the brief) | `side-discovery`, `sold-reports`, `opening-offer`, `part-out-calculator`, `flip-radar`, `seller-price-report`, `retail-comparison`, `seller-accounts`, `seller-boosts`, `trade-in-leads` |
 | Parked or gated on an owner decision | `boosts` (question 29), `seller-key` (question 9), `multi-quantity-filter` (question 22), `fake-door` (question 36) |
-| After MVP: self-hosted router host not approved (owner question, search-map-routes draft) | `router-gateway`, `travel-time` |
 | Parked: dropped by the owner (2026-09-25, `nabvy/docs/decisions.md` "Trip cost dropped"); users see only the map, the distance in miles and a rough time | `travel-cost` |
 
 An MVP module still ships in the switch state its card gives (off, shadow or on), and still waits for its own gates: an AI processor agreement (question 12) and legal review of label wording before it is shown (`nabvy/docs/decisions.md:13`; question 35). The LIA and DPIA gate on collection is lifted (`nabvy/docs/decisions.md:176`): collection runs only for users' active hunts and the team's test hunt (`nabvy/docs/decisions.md:131-136`; question 8).
@@ -1055,32 +1054,32 @@ Each card uses the same fields. "Depends on" lists every module whose views, eve
 - **Open questions:** default rate and value-of-time choice (search-map-routes.md §10 rows 7–8).
 
 ### `router-gateway`
-- **Purpose:** the only HTTP client for the router VM (self-hosted OSRM).
-- **Does / does not:** sends `table`, `route` and `health` calls to a private OSRM instance over bearer-token HTTPS, and nothing else; it is the sole caller, so no other module reaches the VM directly. Logs kind, location count, latency and status only — never a coordinate. Emits an event when the monthly OSM data rebuild switches over, so callers invalidate cached times.
-- **Inputs:** `@nabvy/config` (`ROUTER_BASE_URL`, `ROUTER_TOKEN`).
+- **Purpose:** the only HTTP client for the routing provider: openrouteservice's hosted API on its free Standard plan first (owner, 2026-09-25); self-hosted OSRM or a paid provider later, behind the same adapter.
+- **Does / does not:** sends `table` (Matrix V2), `route` (Directions V2) and `health` calls to the configured provider over HTTPS with the provider key, and nothing else; it is the sole caller, so no other module reaches a routing provider directly, and the browser never does. Providers sit behind one `RouterProvider` adapter (`openrouteservice` now; `osrm` later); switching is a config change. Counts calls per provider per day and per minute in `router_calls` and refuses with `router.quota` at the plan's caps (free Standard plan as read on 2026-09-25: Matrix V2 500 a day and 40 a minute, Directions V2 2000 a day and 40 a minute; caps are config with these defaults), so callers fall back. Logs kind, location count, latency, status and provider only, never a coordinate; sends only origin cells and place centroids for cached times, and a pickup point only for the user's own route request. Emits an event when the provider or its data build changes, so callers invalidate cached times.
+- **Inputs:** `@nabvy/config` (`ROUTER_PROVIDER`, `ROUTER_BASE_URL`, `ROUTER_API_KEY`; the openrouteservice key is the secret, server-side only).
 - **Outputs:** `table()`, `route()`, `health()`; event out `router.build-changed {osmBuild, at}`.
-- **Owns:** `router_calls` (kind, location_count, latency, status, at). No coordinates.
+- **Owns:** `router_calls` (provider, kind, location_count, latency, status, at). No coordinates.
 - **Views:** none.
 - **Contracts:** `RouterTableResult`, `RouterRouteResult`, `RouterBuildChangedEvent`.
 - **Depends on:** `switches`.
-- **When off, or the VM is down:** `travel-time` falls back to straight line × 1.3; the route planner still orders the day on that estimate and keeps navigation links.
-- **Tests and fixtures:** recorded-response fixtures for table/route/health; schema introspection finds no coordinate column on `router_calls`; the fallback path exercised with the gateway down.
-- **Priority and phase:** After MVP (search-map-routes draft, task 4.1h); the self-hosted router host is not approved (owner question).
+- **When off, over quota, or the provider is down:** `travel-time` falls back to straight line × 1.3; the route planner still orders the day on that estimate and keeps navigation links.
+- **Tests and fixtures:** recorded-response fixtures for table/route/health (no live call in tests); the quota guard refuses the 501st matrix call of a day and the 41st of a minute; schema introspection finds no coordinate column on `router_calls`; the fallback path exercised with the gateway down.
+- **Priority and phase:** MVP (owner, 2026-09-25: openrouteservice's free plan for a start, a paid provider or a self-hosted router when there is turnover); task 4.1i.
 - **Sources:** `search-map-routes.md` §6.6, §7.5, §11 task 4.1h.
-- **Open questions:** self-host vs. hosted routing, and the host (search-map-routes.md §10 rows 1–2).
+- **Open questions:** none; the routing decision is in `nabvy/docs/decisions.md` "Routing: openrouteservice first".
 
 ### `travel-time`
 - **Purpose:** road distance and time from an origin cell to places, for display and hints.
-- **Does / does not:** caches OSRM road times per origin cell (origin rounded to 0.01°, about 1.1×0.7 km) and place, keyed to the current OSM build; detects ferry crossings from `location.landmassFor()` plus OSRM's own ferry legs. Holds no user ID and never caches a pickup point — pickup routing calls `router-gateway` directly with no caching. Falls back to straight line × 1.3, labelled "estimate", whenever `router-gateway` is off or the VM is down.
+- **Does / does not:** caches the provider's road times (through `router-gateway`) per origin cell (origin rounded to 0.01°, about 1.1×0.7 km) and place, keyed to the current provider build; detects ferry crossings from `location.landmassFor()` plus the provider's own ferry legs. Holds no user ID and never caches a pickup point — pickup routing calls `router-gateway` directly with no caching. Falls back to straight line × 1.3, labelled "estimate", whenever `router-gateway` is off, over quota or the provider is down.
 - **Inputs:** `router.build-changed` (invalidates the cache); `location.landmassFor()`.
-- **Outputs:** `roadTimes(originCell, placeIds[])` — one batched OSRM table call for missing cells.
+- **Outputs:** `roadTimes(originCell, placeIds[])` — one batched `table` call for missing cells.
 - **Owns:** `road_times` (origin_cell, place_id, osm_build, metres, seconds, crossing, computed_at).
 - **Views:** none; the cache is read only through the exported function.
 - **Contracts:** `RoadTimeResult`.
 - **Depends on:** `switches`, `router-gateway`, `location`.
 - **When off:** straight line × 1.3, labelled "estimate".
-- **Tests and fixtures:** recorded OSRM table responses; the Ryde (Isle of Wight) ferry case; cache invalidation on a new OSM build; the fallback label.
-- **Priority and phase:** After MVP (search-map-routes draft, task 4.1i); follows `router-gateway`.
+- **Tests and fixtures:** recorded provider table responses; the Ryde (Isle of Wight) ferry case; cache invalidation on a new OSM build; the fallback label.
+- **Priority and phase:** MVP (owner, 2026-09-25); follows `router-gateway`; task 4.1j.
 - **Sources:** `search-map-routes.md` §4.1, §7.6, §11 task 4.1i.
 - **Open questions:** none beyond the routing decisions (search-map-routes.md §10 rows 1–2).
 

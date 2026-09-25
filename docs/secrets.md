@@ -10,6 +10,7 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | source-adapters, recognition (Storage only, server-side) | Supabase project settings |
 | `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | auth | Generated once; the app's public URL |
 | `TRIGGER_SECRET_KEY`, `TRIGGER_PROJECT_ID` | trigger/ | Trigger.dev project |
+| `ROUTER_API_KEY` (with config `ROUTER_PROVIDER=openrouteservice`, `ROUTER_BASE_URL`) | router-gateway (server-side only) | The owner's openrouteservice account (account.heigit.org), free Standard plan; owner decision 2026-09-25 |
 | `APIFY_TOKEN` | source-adapters | Apify account → Integrations |
 | `APIFY_FB_ACTOR_ID` | source-adapters | The Nabvy Facebook actor |
 | `APIFY_FB_ACTOR_FALLBACK_ID` | source-adapters | Chosen Store actor after the first-week comparison |

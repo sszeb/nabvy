@@ -137,6 +137,7 @@ Started on the owner's go-ahead (2026-09-24, 12:45 UTC). Each module starts when
 | listing-assessment | 7 | started 16:08 on 2026-09-25 [cp 9] by coordinator 14, branch `task/w2-listing-assessment` from main (parts-record, detail-evidence, listing-ingest merged) | `session_01Q7DmZPh2dxYb9NgrE1wukx` | Opus |
 | seller-reply-reports | 4 | started 16:08 on 2026-09-25 [cp 6] by coordinator 14, branch `task/w2-seller-reply-reports` stacked on pickup-location #90 (copy-advert, relist-merge, warning-signs, parts-record, listing-feedback, account-integrity soft); shadow first; wording to its question file | `session_01U3VJw1mfZ6n1syQaHj7v3K` | Opus |
 | search-planner | 6 | started 16:08 on 2026-09-25 [cp 2] by coordinator 14, branch `task/w2-search-planner` stacked on want-manager #88 (side-discovery soft) | `session_014FfP4BL46j5zAsswC6BjjM` | Opus |
+| router-gateway | 2 | started 16:50 on 2026-09-25 [cp 2] by coordinator 14 after the owner's routing decision (`docs/decisions.md` "Routing: openrouteservice first"), branch `task/w2-router-gateway` from main; openrouteservice free plan behind the `RouterProvider` adapter, quota guard, no coordinates logged; needs the owner's `ROUTER_API_KEY` in the environment before any live call | `session_01ETdUVwpWrdfWdAPLvk8R8i` | Opus |
 
 ## Work outside the backlog
 

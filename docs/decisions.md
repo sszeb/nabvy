@@ -371,6 +371,16 @@ The owner dropped the trip-cost feature: "user only need to see the map with cal
 - `deal-hints` weighs the price gap against distance and rough time, never a trip cost; `pickup-routes` keeps no trip-cost input (the injected stub in PR #89 is a no-op to remove in a later clean-up).
 - The "Lowest price + trip" sort (search-map-routes draft §4.2) has no trip cost to sort on; the coordinator has listed the wording of the distance and time labels as an owner question rather than choosing it.
 
+## Routing: openrouteservice first, a paid provider or self-hosting when there is turnover (owner, 2026-09-25, 16:45)
+
+The owner, shown the openrouteservice (HeiGIT) free Standard plan: "Can we use that for a start and when we have turnover to allow move to google maps or something else?" Decision: yes.
+
+- `router-gateway` and `travel-time` move into the MVP. Road distance and rough time come from openrouteservice's hosted API on the free plan (as read on 2026-09-25: Directions V2 2000 a day and 40 a minute, Matrix V2 500 a day and 40 a minute), behind the `RouterProvider` adapter in `router-gateway`. The self-hosted OSRM router (Hetzner CX43, `docs/questions.md` 2026-09-24 "4.1h: router host") is no longer needed now; it, or Google's routing API, is a later provider behind the same adapter, chosen when there is turnover.
+- Quotas are enforced in the gateway (`router_calls` counts per provider per day and per minute; over the cap the call is refused and `travel-time` falls back to straight line × 1.3, labelled an estimate). `travel-time`'s cache per origin cell and place keeps daily calls far below the cap.
+- Privacy: only origin cells (about 1 km) and place centroids reach the provider for cached times; a pickup point reaches it only for that user's own route request, uncached. The gateway logs no coordinate. This replaces the "addresses never leave Nabvy" reason for self-hosting; the owner accepted the trade-off for the start.
+- The openrouteservice key is the owner's account's, stored as the environment secret `ROUTER_API_KEY`, read only by `router-gateway` server-side, never in a client bundle, never in chat. HeiGIT's terms of service and attribution requirement are listed in `docs/legal-review.md`.
+- Labels: a listing shows the distance in miles and a rough time (`docs/questions.md`, coordinator 14, "labels for distance and rough time" still open for the wording).
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.
