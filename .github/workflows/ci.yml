@@ -2,6 +2,12 @@
 # task that enables it: Vercel preview (0.5a), a migration dry-run against a real Supabase branch
 # (needs a SUPABASE_ACCESS_TOKEN repository secret), and the deploy steps on merge (1.2, 0.5a; the
 # coordinator applies merged migrations, packages/db/README.md).
+#
+# Runners (owner, 2026-09-24, 22:40): the repository is public until the production beta is about
+# 90% built, so GitHub-hosted runners cost nothing and every job uses them. When the owner makes
+# the repository private again, switch every `runs-on` below to `[self-hosted, linux, x64]` and
+# install a runner from docs/ops/self-hosted-runner.md (never run a self-hosted runner for a
+# public repository: a fork's pull request would execute on the machine).
 name: CI
 
 on:
