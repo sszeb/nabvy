@@ -1,0 +1,22 @@
+{
+  "items": {
+    "1000000000000001": {
+      "status": "queued",
+      "attempts": 0,
+      "requeues": 0,
+      "lastOutcome": "not-requested-time-limit"
+    },
+    "1000000000000002": {
+      "status": "queued",
+      "attempts": 0,
+      "requeues": 0,
+      "lastOutcome": "not-requested-cap"
+    },
+    "1000000000000003": {
+      "status": "queued",
+      "attempts": 1,
+      "requeues": 0,
+      "lastOutcome": "not-requested-request-cap"
+    }
+  }
+}

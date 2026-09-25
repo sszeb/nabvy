@@ -1,0 +1,33 @@
+{
+  "synthetic": true,
+  "source": "Backlog 4.10a; docs/decisions.md, \"Free tier: bursts under a lifetime cap\" (coordinator shape, 16:50)",
+  "steps": [
+    {
+      "patch": {
+        "kind": "free-tier",
+        "key": "default",
+        "fields": {
+          "lifetimeCapPence": 100
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "free-tier",
+        "key": "default",
+        "fields": {
+          "lifetimeCapPence": 180
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "free-tier",
+        "key": "default",
+        "fields": {
+          "windowMinutes": 600
+        }
+      }
+    }
+  ]
+}

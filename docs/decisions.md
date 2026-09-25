@@ -259,6 +259,94 @@ The owner, after missing a £350 RTX 3090 Ti in Redhill that sold within hours:
 - **Dynamic pricing.** An admin page (`pricing-console`) with sliders for margins, bundles and discounts, and per-user or per-segment offers and promotions.
 - **Precedence.** How fast Facebook can actually be checked still follows the actor brief and test T2; the price of a faster interval follows from its measured cost.
 
+## Free tier: bursts under a lifetime cap (owner, 2026-09-24, 16:50)
+
+The owner, on the free tier ("hook them right away, blown away, then a couple more tries"):
+- **One keyword.** A free account has one want (keyword and area) at a time. It can be changed only when the next window opens, after the 72-hour reset.
+- **Bursts, not a steady trickle.** Up to three 8-hour windows, each starting fast and slowing down, with 72 hours between windows. Once the windows are used the account stays on the daily digest and "Missed deals". The exact shape of each burst is the coordinator's to trim (owner: "you do trim it how you find best"), inside the cap below.
+- **Hard cap: £2 per free account, lifetime,** measured in attributed provider and model cost (the account's share of each check it caused, lone cost where no one else funds the area). At the cap the burst stops mid-window and the account falls to the digest; nothing runs at a loss.
+- **Guardrails against burner accounts** (the owner's example: 20,000 bots opening accounts): a global free-burst pool per day, week and month, revenue-linked with a floor, beyond which new bursts wait for the next period or run only where a paid watcher already funds the area; sign-up limits per IP, device and email domain; a card check (never charged, one card per account) before windows two and three; a per-area anomaly stop; and a kill switch for free bursts. All in `account-integrity`, `spend-governor` and `switches`.
+- **Everything adjustable at run time.** Every number above (window count, window length, reset hours, burst shape, per-account lifetime cap, per-user, per-week and per-month caps, the pools, the sign-up limits) is a versioned policy row the owner edits from the admin console, audited, applied within a minute, never a constant in code. Usage is recorded per account so the owner can run the numbers and change the policy at any time.
+
+Coordinator's shape, 16:50, within the cap (1.31p per lone check, measured): window one runs 1 minute for 20 minutes, 5 minutes for 100 minutes, 15 minutes for 2 hours, then hourly (52 checks, 68p lone); windows two and three run 1 minute for 10 minutes, 5 minutes for 50 minutes, 15 minutes for 2 hours, then hourly (33 checks, 43p each). Three windows cost £1.54 lone plus about 10p of model calls, under the £2 cap with room for retries; where a paid watcher already funds the area the burst costs nothing extra. The free-burst pool starts at £20 a day and 5% of the previous month's net revenue, whichever is higher. These are the initial policy values, not owner decisions.
+
+## Hard daily, weekly and monthly spend caps (owner, 2026-09-24, 17:00)
+
+- **Caps stop spending by themselves.** A daily, weekly or monthly cap reached is an automatic stop of all paid calls (Apify, model calls, other paid sources), not a notice to an admin. Example: a £10 daily cap means the day's bill is at most £10 plus the run-off, and never more than £11.
+- **The run-off is bounded, not hoped for.** The stop is checked synchronously before every paid submit, against reserved plus settled cost (never on a schedule alone); every run reserves its capped cost before it starts (a per-run cost cap in the actor input); concurrency is capped; so the overrun is at most the reservations in flight at the moment the cap is hit, which the caps are set to keep under 10%.
+- **Caps are policy rows** (spend-governor budgets), editable at run time, audited, with periods of day, week and month, on top of the gateway's own monthly hard cap and Apify's platform limit as second and third fences.
+
+## Sign-up throttle and surge stop (owner, 2026-09-24, 17:05)
+
+- **Sign-ups are throttled globally.** Policy rows set how many new accounts may join per minute, hour and day, on top of the per-IP, device and email-domain limits. Beyond the rate, new sign-ups join a queue and are admitted in order ("we are letting people in gradually"), never refused outright.
+- **Free bursts are admitted, not fired.** A new free account's first window starts when the admission scheduler admits it, normally within seconds, under a surge in order at a policy-set rate. Spend rate is therefore bounded by the admission rate times the burst cost, and stopping admission stops the spend at once.
+- **Thresholds start low.** Initial breaker and admission thresholds are set for a surge of 100 accounts or fewer, not thousands; they are raised from measured traffic, never guessed (owner, 17:08).
+- **Queue at the edge first.** Sign-up queueing and bot filtering run in front of the app where possible: Cloudflare Turnstile on sign-up, Cloudflare rate-limiting rules and Bot Fight Mode on the sign-up and search routes, and Cloudflare Waiting Room on the sign-up page if the plan allows it (owner: prefer an existing Cloudflare or open-source tool over building one). The admission queue in `account-integrity` remains the authority: the edge slows a flood, the queue decides who is admitted.
+- **Sign-up farming and resource extraction are identified and stopped from day one** (owner, 17:07): the threat model covers both as their own sections, with detection signals, an automatic response ladder and fixtures, not only cost bounds.
+- **Abuse audit from day one.** A written threat model of cost and abuse exploits (burner accounts, sign-up floods, free-burst farming, credit and referral gaming, card-check bypass, Telegram and webhook replay, Apify cost amplification, account sharing) with a test plan, adversarially checked, before the free tier opens (owner, 17:08).
+- **Surge stop.** Circuit breakers in the synchronous spend gate trip on any of: sign-ups per minute, paid submits per minute, submits from accounts younger than a policy-set age, or cost per minute, each a policy row. A trip sets `hold-new` immediately for free bursts and new accounts (paid watchers keep their funded cadence while under the caps), pauses admission, and alerts the founder. It resets only by an admin, with an audit row. The owner's case: 1,000 bots creating accounts and searching at once trip the breaker within the first minute, so the spend is at most the reservations in flight.
+
+## Free-tier limits, paid users and the daily cap (owner, 2026-09-24, 17:20 and 17:25)
+
+Said by the owner to the 4.3t threat-model session and relayed to the coordinator at 18:20; recorded here verbatim as the owner's decision.
+
+1. On the free pool (17:20): "We do limit the free tier obviously the paid users are welcome to sign up any time at all times - same for upgrading from free to paid plan."
+2. On scans and paid calls (17:25): "You figure this out that we cap max individual user £2 a day so if a daily cap is £20 spend we can either have 10 users who runs their usage dry or a few who does but then a couple which goes slow etc And remember these caps have to be adjustable from admin panel. And the admin panel have to be hardened and adversarial security audit run."
+
+What this means for the build (PR #39, `docs/design/abuse-threat-model.md`):
+- **Only the free tier is limited.** Paid sign-ups and upgrades from free to paid are never queued, throttled or held, at any time.
+- **£2 a day per free account**, counting every paid action (checks, scans, pasted links, model calls), as a policy row editable from the admin panel. The owner clarified at 18:24: "Free tier only. Obviously". Paid accounts have no daily cap; they are bounded by their credits and by the global daily, weekly and monthly caps.
+- **The pool drains gracefully.** As a daily pool (the example: £20) runs down, the remaining accounts slow rather than stop at once.
+- **The admin panel is hardened and adversarially audited** before it is exposed (`docs/design/admin-hardening.md`; backlog 4.3af to 4.3ah; the admin gate 4.3af blocks the web deploy 0.5a).
+
+## Cadence slider and the app's look (owner, 2026-09-24, 17:12)
+
+- **One control for speed.** Each want's check interval is set with a slider modelled on Claude Code's "Effort" control: 1-minute checks at the top as the "ultracode" equivalent, 4 hours at the bottom as the slow pace, with the intermediate steps between. It should be interesting and good-looking in the way that control is.
+- **Look like Claude and ChatGPT.** The app's overall look stays close to Claude and ChatGPT: easy to read, calm, never tiring on the eyes. This refines "a calm, spacious layout" under "MVP scope and pipeline runtime".
+- The control's design is in `docs/design/cadence-slider.md` (coordinator, from a two-designer panel with a critic); wording shown to users in it is provisional until the owner approves it.
+
+## Paid ladder (owner, 2026-09-24, 17:35)
+
+The owner, on coordinator 5's recalculation of the ladder (17:00: Starter 3 h base to 1 h with credits, Pro 2 h base, Max 1 h base to 1 min, with Pro's floor at 5 minutes recommended):
+- **Pro starts at 30 minutes and bundles credits to power up.** Pro's base cadence is 30 minutes, and the plan comes with credits so a user can buy faster checks on a want, down to the plan's floor.
+- **Base and floor for every tier are the coordinator's to set** ("I will let you figure out all the base floor").
+- **Every value is adjustable from the admin panel.** Base cadence, floor, bundle size, price, top-up rate, unit prices, area and want counts, per tier: versioned policy rows in `pricing-console`, edited from the admin console, audited, applied without a deploy, never a constant in code. The floor rule ("Always profitable") still refuses any value that sells below cost plus the minimum margin.
+- **Cloudflare stays on the free plan** until the production app is ready; the owner pays and upgrades then. Waiting Room is out until that upgrade; Turnstile, rate-limiting rules and Bot Fight Mode are on every plan and stay.
+- **Slider wording is the coordinator's to settle** and can change later.
+
+This changes "Speed is a property of the cell, never an artificial delay" under "Pricing and cadence": a want's cadence is now capped by its plan's base, or by the floor it has bought credits for, and that cap is a paid entitlement. Below the cap, delivered speed still follows the 60% rule per area ("delivered where the area funds it"); plans are marketed as "up to" their cadence.
+
+Coordinator 6's ladder, 17:40, on the slider's steps (initial policy values, not owner decisions; prices are the placeholders from `docs/design/pricing-model.md` until the owner confirms them):
+
+| Tier | Monthly | Base cadence (included for the plan's areas, funded by the fee) | Floor (fastest a want can buy with credits) | Bundled credits (starting point; `pricing-console` sizes them against the 60% rule with the base funded by the fee) |
+|---|---|---|---|---|
+| Free | £0 | bursts, as decided at 16:50 | none | none |
+| Starter | £12 | 2 h | 1 h | 1,200 |
+| Pro | £29 | 30 min (owner) | 5 min | 6,000 |
+| Max | £99 | 15 min | 1 min | 24,000 |
+| Business | from £299 | 15 min | 1 min, round the clock | 80,000 |
+
+## Starting prices (owner, 2026-09-24, 19:55)
+
+The owner, on the coordinator's ladder above: "Use your suggestion as a start." The table's prices are therefore the starting prices, no longer placeholders: Starter £12, Pro £29, Max £99, Business from £299 a month, with the base cadences, floors and bundled credits as listed. They are `pricing-console` policy rows, changed from the admin panel without a deploy; annual prices, top-up rates and unit prices stay the coordinator's to set within the 60% rule. Stripe Products and Prices are created in test mode from these values (backlog 4.10c and its gap tasks). This also answers the "price ladder go" item that was open for the owner.
+
+## Faster build: fresh-session reviewer, merge clerk, Sonnet by default (owner, 2026-09-24, 18:50)
+
+The owner, on the coordinator's speed-up findings ("Go ahead implement your findings then pause all work and resume in 40min"):
+- **The usage allowance is model-weighted.** Anthropic's Claude Code usage page: "Opus uses meaningfully more of your quota, so you should consider switching to Sonnet for routine work" (support.claude.com, "Models, usage and limits in Claude Code"); all surfaces, subagents and Routines draw on the same pool. So Sonnet is the tier for every remaining module that is not money, security or pipeline core, and the top model stays only where `CLAUDE.md` names it. Re-tiered today: parts-record, pickup-location, details-selector, copy-advert.
+- **The reviewer is a fresh session per fire** (backlog 0.14): one Routine on the top model with a standalone brief, fired with the PR number by build sessions and the watchdog, instead of a long-lived reviewer that hands off hourly. The reviewer still reviews, approves and merges everything and never touches Supabase.
+- **A merge clerk Routine may apply merged migrations** (backlog 0.15): a Sonnet fresh session that reads `docs/security.md`, applies the merge's pending migrations, checks the ledger and records the merge, so the coordinator wakes only for exceptions and the sweep. This amends "the coordinator applies every merged migration" in `CLAUDE.md`; the coordinator remains accountable and checks the ledger at each sweep.
+- **Pauses.** When the owner says pause, the coordinator interrupts every running session, disables the watchdog, and re-wakes them with one-shot triggers at the resume time.
+- **Coordinator note (coordinator 8, 21:45).** The fresh-session reviewer Routine posted nothing in three fires (19:46, 20:32, 21:39; each under a minute, about 50k tokens), including the 21:39 test fire for PR #58 after a repository step was added to its prompt. Backlog 0.14 stays open. Until a fresh-session reviewer works, the reviewer is a long-lived session again, reviewer 9 (`session_01HPaY77nosRBs1HAG3pMa2S`, top model, briefed from the Routine's steps and `docs/session-conventions.md`); the Routine `trig_01FPLnjfTATPb7YQivWvA7FX` is now a relay that forwards each review request to reviewer 9 as a one-shot trigger, so build sessions need no re-briefing, and the watchdog wakes reviewer 9 by session ID.
+
+## Stripe scope (owner, 2026-09-24, 19:50)
+
+The owner asked to get started on Stripe for Billing, Invoicing, Tax, Connect and Payments, using the Stripe plugin and its implementation planner where available, and to review the integration already in progress against that plan. Recorded as backlog 4.10c: a plan document (`docs/design/stripe-integration.md`) that maps each Stripe product to the subscriptions, pricing-console and usage-ledger modules and reviews PR #54, with the gaps as backlog tasks. Connect has no consumer in the current design (Nabvy pays no sellers through Stripe); it is a question, not a build. Keys stay in the environment's secrets, never in chat.
+
+## Fable everywhere, ultracode for the coordinator, low effort elsewhere (owner, 2026-09-24, 23:45)
+
+The owner, to coordinator 9: "For next session run everything on fable, the ultracode for coordinator everything else effort on low." From coordinator 10 on: every new session (coordinator, reviewer, build and fix sessions, workflow agents) runs on Fable, the top model; the coordinator session runs with ultracode (multi-agent workflows opted in for the session); every other session runs at low effort, stated in its brief. This replaces "Sonnet by default" under "Faster build" and the model tiers in the module cards; `CLAUDE.md` "Model and effort by job" reads through this decision until the owner changes it. Model tiers in docs stay "top" or "Sonnet" by name, never model IDs.
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.

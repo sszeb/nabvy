@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "source": "docs/design/modules/source-health.md: \"new Facebook operation IDs (from route-health)\"",
+  "jobs": [
+    {
+      "jobId": 1,
+      "routes": ["http"],
+      "sellerPresence": [],
+      "newOperationIds": ["newquery123"],
+      "breakerTripped": false
+    }
+  ]
+}

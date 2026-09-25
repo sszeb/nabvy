@@ -1,0 +1,83 @@
+{
+  "synthetic": true,
+  "source": "review of PR #35: out-of-order job replay can re-announce first-seen; card: deduplicates by listing ID",
+  "jobTags": {
+    "7": {
+      "module": "check-scheduler",
+      "region": "chichester",
+      "purpose": "newest",
+      "shape": "newest-check"
+    },
+    "8": {
+      "module": "pasted-link-lookup",
+      "region": "uk",
+      "purpose": "pasted",
+      "shape": "details-text"
+    }
+  },
+  "listings": [
+    {
+      "id": "01930000-0000-7000-8000-000000000001",
+      "sourceListingId": "2000000000000001",
+      "jobId": 7,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000002",
+      "sourceListingId": "2000000000000002",
+      "jobId": 7,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000003",
+      "sourceListingId": "2000000000000003",
+      "jobId": 7,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000004",
+      "sourceListingId": "2000000000000004",
+      "jobId": 7,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000009",
+      "sourceListingId": "2000000000000009",
+      "jobId": 8,
+      "kind": "detail"
+    }
+  ],
+  "steps": [
+    {
+      "firstSeen": [
+        "01930000-0000-7000-8000-000000000001",
+        "01930000-0000-7000-8000-000000000002",
+        "01930000-0000-7000-8000-000000000003",
+        "01930000-0000-7000-8000-000000000009"
+      ]
+    },
+    {
+      "firstSeen": ["01930000-0000-7000-8000-000000000001", "01930000-0000-7000-8000-000000000002"]
+    },
+    {
+      "submit": true
+    },
+    {
+      "firstSeen": ["01930000-0000-7000-8000-000000000003", "01930000-0000-7000-8000-000000000004"]
+    },
+    {
+      "closeAll": "full_verified"
+    },
+    {
+      "firstSeen": [
+        "01930000-0000-7000-8000-000000000001",
+        "01930000-0000-7000-8000-000000000002",
+        "01930000-0000-7000-8000-000000000003",
+        "01930000-0000-7000-8000-000000000004"
+      ]
+    },
+    {
+      "submit": true
+    }
+  ]
+}

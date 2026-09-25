@@ -1,0 +1,12 @@
+{
+  "stages": {
+    "health-day": {
+      "passed": 2,
+      "total": 2
+    },
+    "ramp-advance": {
+      "passed": 4,
+      "total": 4
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "rule 12 of docs/design/modules/_rules.md: every job acting for a user checks standing through account first",
+  "moduleState": "on",
+  "banned": true,
+  "granted": true,
+  "paused": false,
+  "suppressed": false
+}

@@ -1,0 +1,15 @@
+{
+  "listings": {
+    "1756692548940192": {
+      "parts": [
+        "title:gpu:GTX+1660 → gpu:nvidia:gtx-1660:6gb",
+        "title:cpu:Ryzen+7+2700X → cpu:amd:ryzen-7-2000"
+      ],
+      "signals": ["title:pc:Gaming+PC", "title:cpu_or_pc:Ryzen"],
+      "tagBlocks": [],
+      "kind": "pc",
+      "gaps": ["ram_size:not_stated", "storage_size:not_stated"],
+      "fullVerified": true
+    }
+  }
+}

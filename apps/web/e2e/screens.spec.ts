@@ -16,8 +16,7 @@ const screens = [
   { name: 'account', path: '/app/account' },
   { name: 'preferences', path: '/app/account/preferences' },
   { name: 'scan', path: '/app/scan' },
-  { name: 'admin', path: '/admin' },
-  { name: 'review', path: '/admin/review' },
+  // /admin and /admin/review need an admin session since task 4.3af: e2e/admin-gate.spec.ts.
   { name: 'design', path: '/design' },
 ]
 

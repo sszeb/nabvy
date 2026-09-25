@@ -124,6 +124,11 @@ export const envGroups = {
   }),
   tokenEncryption: z.object({ TOKEN_ENCRYPTION_KEY: required() }),
   testing: z.object({ LIVE_PROVIDERS: flag().default(false) }),
+  // Set by Node and Next.js (`next build` and `next start` set `production`). The web app refuses
+  // admin fixtures under it (task 4.3af, H13); nothing else reads it.
+  runtime: z.object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  }),
 } as const
 
 export type EnvGroup = keyof typeof envGroups

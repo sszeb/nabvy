@@ -1,0 +1,60 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md, \"Paid ladder\": the floor refuses a ladder value below cost plus the minimum margin (Pro)",
+  "steps": [
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "monthlyPriceMinor": 1500
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "yearlyPriceMinor": 15000
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "bundledCredits": 10000
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "topupNetMicrosPerCredit": 2500
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "floorCadenceMinutes": 60
+        }
+      }
+    },
+    {
+      "patch": {
+        "kind": "tier",
+        "key": "pro",
+        "fields": {
+          "monthlyPriceMinor": 3200
+        }
+      }
+    }
+  ]
+}
