@@ -1,0 +1,5 @@
+{
+  "module": "seller-reply-reports",
+  "schema": "seller_reply_reports",
+  "dependsOn": ["core", "switches", "listing-suppression"]
+}

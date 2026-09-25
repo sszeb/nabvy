@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "listings": { "a": {}, "b": {} },
+  "reporters": { "buyer": { "ageDays": 90 } },
+  "reports": [
+    {
+      "listing": "a",
+      "reporter": "buyer",
+      "hoursAgo": 20,
+      "reasons": [{ "reason": "link_or_fb_delivery", "detail": "delivery_link" }]
+    }
+  ]
+}
