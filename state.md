@@ -24,6 +24,7 @@ Updated 07:28 UTC 2026-09-26 by coordinator (PR #70 round-2 fix queued; sweep 06
 - #93 seller-reply-reports — `session_01U3VJw1mfZ6n1syQaHj7v3K`.
 - #89 pickup-routes [cp 1], #81 listing-card [cp 5]: sessions in docs/progress.md.
 - #70 price-drop-watch [cp 6] (changes-needed, review 5324943052: cross-pass relist under-announce + CI timeout) — round-1 session `session_013TTwsCCZGwSmh4kpgXT2pr` could not fire the fixer; round-2 fix session queued.
+- #110 ci: raise the 15-minute job timeouts to 25 (coordinator, branch claude/funny-ptolemy-rdpsq9): every main CI run since #83 is cancelled at 15 min; unblocks all PRs incl. #70. Merge first; #104 supersedes it later.
 - #101 coordinator docs (rolling, `claude/coordinator-16` into main; carries the old stack #84, #86, #91, #95, #103).
 
 ## Sessions without a PR
