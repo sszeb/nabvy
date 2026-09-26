@@ -14,8 +14,8 @@ export { byTask, emit, type Publisher } from './publisher'
 export {
   createEventRegistry,
   dispatchEvent,
-  registerEvent,
   type EventRegistry,
   type RegistryEntry,
+  registerEvent,
 } from './registry'
 export { createTriggerPublisher, type TriggerClient, type TriggerItem } from './trigger'
