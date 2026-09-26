@@ -1,0 +1,17 @@
+{
+  "module": "spec-match",
+  "schema": "spec_match",
+  "dependsOn": [
+    "core",
+    "switches",
+    "want-manager",
+    "parts-record",
+    "listing-assessment",
+    "noise-filter",
+    "listing-ingest",
+    "copy-advert",
+    "listing-suppression",
+    "quote-redaction",
+    "account"
+  ]
+}

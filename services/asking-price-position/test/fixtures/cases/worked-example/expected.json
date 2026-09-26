@@ -1,0 +1,25 @@
+{
+  "positions": {
+    "target@gpu:rtx-5080|in_pc|used_good": {
+      "rank": 4,
+      "n": 12,
+      "percentile": 29.2
+    },
+    "target@cpu:9800x3d|in_pc|used_good": {
+      "rank": 4,
+      "n": 12,
+      "percentile": 29.2
+    },
+    "like-new-target@gpu:rtx-5080|in_pc|used_like_new": {
+      "rank": 2,
+      "n": 6,
+      "percentile": 25
+    }
+  },
+  "recorded": 36,
+  "shown": 24,
+  "shownFor": {
+    "target": 2,
+    "like-new-target": 0
+  }
+}

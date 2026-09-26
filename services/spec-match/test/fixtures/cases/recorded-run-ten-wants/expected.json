@@ -1,0 +1,169 @@
+{
+  "wants": {
+    "rtx-3090": {},
+    "rtx-3090-ti": {
+      "1716871313386322": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description+title", "distance:match:within_radius"]
+      }
+    },
+    "rtx-5060": {
+      "2264485254402498": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description+title", "distance:match:within_radius"]
+      }
+    },
+    "rtx-5070": {
+      "1397200465308431": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description+title", "distance:match:within_radius"]
+      },
+      "1783301919382894": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description", "distance:match:within_radius"]
+      }
+    },
+    "rtx-3070": {
+      "1073353648648306": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description", "distance:match:within_radius"]
+      },
+      "1403975981250476": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description+title", "distance:match:within_radius"]
+      }
+    },
+    "rtx-2070-super": {
+      "1072745435569624": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description+title", "distance:match:within_radius"]
+      }
+    },
+    "gtx-1660": {
+      "1756692548940192": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:title", "distance:match:within_radius"]
+      }
+    },
+    "gtx-970": {},
+    "ram-32gb-ddr5": {
+      "1397200465308431": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["ram:match:named:description+title", "distance:match:within_radius"]
+      },
+      "1716871313386322": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["ram:match:named:description+title", "distance:match:within_radius"]
+      },
+      "1783301919382894": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["ram:match:named:description", "distance:match:within_radius"]
+      }
+    },
+    "storage-1tb": {
+      "1073353648648306": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description", "distance:match:within_radius"]
+      },
+      "1397200465308431": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description+title", "distance:match:within_radius"]
+      },
+      "1403975981250476": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description", "distance:match:within_radius"]
+      },
+      "1716871313386322": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description+title", "distance:match:within_radius"]
+      },
+      "1775698700306989": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description", "distance:match:within_radius"]
+      },
+      "1783301919382894": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description", "distance:match:within_radius"]
+      },
+      "2005582460147017": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description", "distance:match:within_radius"]
+      },
+      "2264485254402498": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["storage:match:named:description+title", "distance:match:within_radius"]
+      }
+    }
+  },
+  "counts": {
+    "rtx-3090": {
+      "matches": 0,
+      "notStated": 0,
+      "fromDescriptionOnly": 0
+    },
+    "rtx-3090-ti": {
+      "matches": 1,
+      "notStated": 0,
+      "fromDescriptionOnly": 0
+    },
+    "rtx-5060": {
+      "matches": 1,
+      "notStated": 0,
+      "fromDescriptionOnly": 0
+    },
+    "rtx-5070": {
+      "matches": 2,
+      "notStated": 0,
+      "fromDescriptionOnly": 1
+    },
+    "rtx-3070": {
+      "matches": 2,
+      "notStated": 0,
+      "fromDescriptionOnly": 1
+    },
+    "rtx-2070-super": {
+      "matches": 1,
+      "notStated": 0,
+      "fromDescriptionOnly": 0
+    },
+    "gtx-1660": {
+      "matches": 1,
+      "notStated": 0,
+      "fromDescriptionOnly": 0
+    },
+    "gtx-970": {
+      "matches": 0,
+      "notStated": 0,
+      "fromDescriptionOnly": 0
+    },
+    "ram-32gb-ddr5": {
+      "matches": 3,
+      "notStated": 0,
+      "fromDescriptionOnly": 1
+    },
+    "storage-1tb": {
+      "matches": 8,
+      "notStated": 0,
+      "fromDescriptionOnly": 5
+    }
+  }
+}

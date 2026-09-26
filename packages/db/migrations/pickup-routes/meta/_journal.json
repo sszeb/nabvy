@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790347089411,
+      "tag": "20260925143809_pickup_routes_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790347090814,
+      "tag": "20260925143810_pickup_routes_access",
+      "breakpoints": true
+    }
+  ]
+}

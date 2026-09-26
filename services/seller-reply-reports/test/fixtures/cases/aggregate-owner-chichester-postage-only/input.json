@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "listings": { "chichester": { "point": [50.84, -0.78] } },
+  "reporters": { "buyer": { "ageDays": 45 } },
+  "reports": [
+    {
+      "listing": "chichester",
+      "reporter": "buyer",
+      "hoursAgo": 20,
+      "shippingOffered": false,
+      "reasons": [{ "reason": "postage_only", "secondAnswer": "bank_transfer" }]
+    }
+  ]
+}

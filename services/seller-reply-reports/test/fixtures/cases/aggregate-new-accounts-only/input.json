@@ -1,0 +1,29 @@
+{
+  "synthetic": true,
+  "listings": { "l": {} },
+  "reporters": {
+    "a": { "ageDays": 29 },
+    "b": { "ageDays": 5 },
+    "c": { "ageDays": 400, "verified": false }
+  },
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "a",
+      "hoursAgo": 60,
+      "reasons": [{ "reason": "payment_first", "detail": "bank_transfer" }]
+    },
+    {
+      "listing": "l",
+      "reporter": "b",
+      "hoursAgo": 40,
+      "reasons": [{ "reason": "payment_first", "detail": "bank_transfer" }]
+    },
+    {
+      "listing": "l",
+      "reporter": "c",
+      "hoursAgo": 2,
+      "reasons": [{ "reason": "payment_first", "detail": "bank_transfer" }]
+    }
+  ]
+}

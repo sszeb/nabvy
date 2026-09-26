@@ -1,0 +1,22 @@
+{
+  "positions": {
+    "used-0@gpu:rtx-3090|standalone|used_good": {
+      "rank": 1,
+      "n": 10,
+      "new_median": 84500,
+      "new_n": 10
+    },
+    "new-0@gpu:rtx-3090|standalone|new": {
+      "rank": 1,
+      "n": 10,
+      "new_median": null,
+      "new_n": null
+    }
+  },
+  "recorded": 20,
+  "shown": 20,
+  "shownFor": {
+    "used-0": 1,
+    "new-0": 1
+  }
+}

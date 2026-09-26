@@ -1,0 +1,23 @@
+{
+  "positions": {
+    "outlier@gpu:rtx-3090|standalone|used_good": {
+      "rank": 13,
+      "n": 12,
+      "percentile": 100
+    },
+    "noise@gpu:rtx-3090|standalone|used_good": {
+      "none": true
+    },
+    "ask-00@gpu:rtx-3090|standalone|used_good": {
+      "rank": 1,
+      "n": 12,
+      "percentile": 4.2
+    }
+  },
+  "recorded": 13,
+  "shown": 13,
+  "shownFor": {
+    "outlier": 1,
+    "noise": 0
+  }
+}

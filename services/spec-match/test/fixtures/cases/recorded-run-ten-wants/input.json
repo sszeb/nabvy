@@ -1,0 +1,127 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "points": {
+    "*": {
+      "lat": 50.8376,
+      "lng": -0.7749,
+      "basis": "fallback"
+    }
+  },
+  "wants": {
+    "rtx-3090": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 3090",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-3090-ti": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 3090 Ti",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5060": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 5060",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5070": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 5070",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-3070": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 3070",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-2070-super": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 2070 Super",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "gtx-1660": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "GTX 1660",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "gtx-970": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "GTX 970",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "ram-32gb-ddr5": {
+      "criteria": [
+        {
+          "partType": "ram",
+          "catalogueId": null,
+          "family": null,
+          "minAttr": {
+            "sizeGb": 32,
+            "generation": "ddr5"
+          },
+          "orBetter": false
+        }
+      ]
+    },
+    "storage-1tb": {
+      "criteria": [
+        {
+          "partType": "storage",
+          "catalogueId": null,
+          "family": null,
+          "minAttr": {
+            "sizeGb": 1000
+          },
+          "orBetter": false
+        }
+      ]
+    }
+  }
+}

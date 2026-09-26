@@ -1,0 +1,8 @@
+{
+  "ok": {
+    "provider": "openrouteservice",
+    "build": "2026-09-15T20:21:03Z",
+    "distanceM": 71234.5,
+    "durationS": 4012.7
+  }
+}

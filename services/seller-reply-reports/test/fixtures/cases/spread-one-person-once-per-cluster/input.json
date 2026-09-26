@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "listings": { "a": {}, "b": {}, "c": {} },
+  "reporters": { "buyer": { "ageDays": 90 } },
+  "cluster": ["a", "b", "c"],
+  "reports": [
+    {
+      "listing": "a",
+      "reporter": "buyer",
+      "hoursAgo": 40,
+      "reasons": [{ "reason": "payment_first", "detail": "deposit" }]
+    },
+    {
+      "listing": "b",
+      "reporter": "buyer",
+      "hoursAgo": 10,
+      "reasons": [{ "reason": "payment_first", "detail": "deposit" }]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "module": "pickup-routes",
+  "schema": "pickup_routes",
+  "dependsOn": ["core", "switches"]
+}
