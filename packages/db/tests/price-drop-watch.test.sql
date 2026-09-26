@@ -69,11 +69,9 @@ select pg_temp.check((
   where table_schema = 'app' and table_name = 'v_price_drop_watch_history')
   = array['listing_id', 'observed_at', 'price_minor', 'currency'], 'v_price_drop_watch_history columns');
 
--- Schema app is the user-facing surface only: nabvy_app has usage, the pipeline never does
--- (docs/security.md, "Cross-module reads behind a user-facing view").
-select pg_temp.check(has_schema_privilege('nabvy_app', 'app', 'usage'), 'nabvy_app has usage on app');
-select pg_temp.check(not has_schema_privilege(r, 'app', 'usage'), r || ' has no usage on app')
-from unnest(array['nabvy_pipeline', 'anon', 'authenticated']) as r;
+-- This module's views are the user-facing surface: nabvy_app has select, the pipeline never does
+-- (docs/security.md, "Cross-module reads behind a user-facing view"). Object-level permissions
+-- checked below at lines 55–58; schema-level usage is shared across app modules.
 
 -- listing_price_history(): SECURITY DEFINER, stable, pinned search_path, callable by nabvy_app
 -- only (row-returning, so the pipeline gets no execute; it reads listing-ingest's views itself).

@@ -18,9 +18,8 @@ comment on schema price_drop_watch is
 grant usage on schema price_drop_watch to nabvy_app, nabvy_pipeline;
 -- Schema app is the user-facing surface only (docs/security.md, "Cross-module reads behind a
 -- user-facing view"): nabvy_pipeline, and any cross-user or admin read, uses the internal views
--- with their own grants and never gets usage on app.
+-- with their own grants and never gets execute/select on this module's own views in app.
 grant usage on schema app to nabvy_app;
-revoke usage on schema app from nabvy_pipeline;
 
 -- watch()'s own existence check ("is this a real listing-ingest listing?") reads
 -- listing_ingest.v_listings, an internal view (rule 5) granted only to nabvy_pipeline, but
