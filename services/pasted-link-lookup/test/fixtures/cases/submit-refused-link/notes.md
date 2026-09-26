@@ -1,0 +1,1 @@
+A refused link writes nothing and queues nothing. Synthetic rows in listing_ingest and detail_evidence (the same shape listing-card's own fixtures seed), built from the recorded run's 17-digit ID form; no seller field is ever read.

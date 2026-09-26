@@ -1,0 +1,1 @@
+A listing the pipeline has never seen is queued and sent to the shared details queue, which fetches it through the Apify gateway; this module fetches nothing. Synthetic rows in listing_ingest and detail_evidence (the same shape listing-card's own fixtures seed), built from the recorded run's 17-digit ID form; no seller field is ever read.

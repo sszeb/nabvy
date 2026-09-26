@@ -1,0 +1,5 @@
+{
+  "module": "pasted-link-lookup",
+  "schema": "pasted_link_lookup",
+  "dependsOn": ["core", "switches", "listing-card"]
+}

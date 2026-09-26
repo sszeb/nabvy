@@ -1,0 +1,7 @@
+{
+  "outcomes": ["ready"],
+  "created": [true],
+  "requests": 1,
+  "ready": 1,
+  "enqueued": []
+}
