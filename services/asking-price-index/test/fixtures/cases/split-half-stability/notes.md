@@ -1,0 +1,1 @@
+Twelve asks from 55000 to 66000 and one at 5000. The 5000 ask is below Q1 - 1.5 x IQR (Tukey's fence) and is cut; n = 12. Dealt alternately into two halves by listing ID, the halves' medians differ by 1000, about 1.7% of the median, inside the 25% starting tolerance, so the group is stable.
