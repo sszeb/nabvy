@@ -1018,3 +1018,277 @@ file per module so parallel build sessions never conflict. The coordinator folds
 - **2026-09-25, w2 search-planner: when the admin-test pair ends.** `actor-integration.md` task 1.2b says it is removed "once want-manager is on and the team's rtx3090 want exists"; the plan cannot see whose want is whose (no user IDs). Option taken: once want-manager's switch is `on`, a new admin pair is refused and the next replan drops any left, without an audit row (a replan has no actor). The team should create its want before switching want-manager on.
 - **2026-09-25, w2 search-planner: pivot suggestions.** `side-discovery` is a soft edge; its related-search terms are "suggestions only". Option taken: an injected port (`SearchPlannerDeps.pivotSuggestions`, stub `noPivotSuggestions` answering none) whose output is returned and never written; origin `pivot` exists in the schema but nothing writes it until the owner says how a suggestion is accepted (for example an audited admin action like the test pair).
 - **2026-09-25, w2 search-planner: rank ties.** "Favouring paying subscribers" orders pairs by paid wants, then all wants; the tie-break (narrow before broad, then centre and term) is this module's. Option taken as stated; it only matters once the 46-pair bound binds.
+
+### Folded from docs/questions/asking-price-position.md (sweep 16:38, 2026-09-26)
+
+- **Task:** asking-price-position, the worked example's "9800X3D + RTX 5080 PCs of any condition,
+  n=12" (PARTS_INTELLIGENCE.md:74-79). **Ambiguity:** asking-price-index keys each group by one
+  catalogue item and one condition, so there is no "any condition" group and no group for a PC's
+  whole spec. **Option taken:** position each listing in every index group it belongs to (for a PC,
+  one per offered part), within one condition; the fixture reproduces the example's figures (n = 12,
+  29th percentile, shown; like-new n = 6, hidden) inside that grouping. **Why conservative:** it
+  adds no grouping the index does not publish, and a narrower group only hides more positions.
+- **Task:** asking-price-position, "with context where a new build asks the same"
+  (HANDOFF.md:189-190). **Ambiguity:** the card's user-facing column list has no column for it, and
+  wording shown to users is a product decision. **Option taken:** the same item's `new` group
+  median and n are kept in `v_positions` (`new_median`, `new_n`) when that group has n ≥ 10; the
+  user-facing view keeps exactly the card's columns. **Why conservative:** nothing new is shown to
+  users until the owner words it.
+- **Task:** asking-price-position, when positions are refreshed. **Ambiguity:** the card consumes
+  only `asking-price-index.updated`, which fires when a group's figures change; an ask that changes
+  without changing the figures (for example an outlier's) does not trigger a re-position.
+  **Option taken:** as the card says; the stored position keeps the old ask until the group's
+  figures next change. **Why conservative:** it reads no event the card does not name; a sweep or
+  a `listing-ingest.card-changed` consumer can be added if the owner wants it.
+
+### Folded from docs/questions/check-scheduler.md (sweep 16:38, 2026-09-26)
+
+- **2026-09-25, w2 check-scheduler: the newest-first cadence.** The card's starting values are the brief's (every 30-60 minutes in the daytime); actor test T2 has since reported newest-first page 1 hourly in active hours (`docs/design/actor-app-guide.md` item 16; `docs/decisions.md` Precedence, "Cadence and tiers"). Option taken: hourly (`CHECK_SCHEDULER_NEWEST_CADENCE_S`). Conservative because it is the slow end of both and T2's measured figure. The card's acceptance ("found within a few minutes of posting") cannot be met at an hourly cadence; lag cannot beat the check interval (guide item 17). The owner decides whether a faster cadence for cells with live Instant wants is worth its cost.
+- **2026-09-25, w2 check-scheduler: the active hours.** Neither the card ("daytime") nor T2 ("active hours") gives the hours. Option taken: 08:00-22:00 Europe/London for newest-first checks; sweeps run at any hour. Conservative because it is the narrower common reading.
+- **2026-09-25, w2 check-scheduler: how much each throttle level slows.** spend-governor fixes the order (`slow-free`, `slow-paid`, `slow-sweeps`, `hold-new`) but no factor. Option taken: each level doubles the cadences it names and the levels compound (at `slow-paid` a free-only region checks every 4 hours, a paid one every 2); `hold-new` starts no pair that has never run and no one-off, while running pairs and queued reruns continue; nothing is dropped. Conservative because every level only removes runs.
+- **2026-09-25, w2 check-scheduler: the catch-up kind.** The card lists `catch-up` (default order, pages 1-4, "kept only if actor test T2 shows it earns its cost"); T2 dropped it ("Do not schedule it") and apify-gateway has no shape for it (task 1.1i). Option taken: the kind stays in `CheckSchedulerKind` so the card's vocabulary is one list, and it is never scheduled.
+- **2026-09-25, w2 check-scheduler: what the ramp counts.** source-health's `max_checks_per_day` does not say whether a check is a run or a search. Option taken: one term searched in one run is one check, counted over submitted runs per London day. Conservative because a run of three terms uses three checks.
+- **2026-09-25, w2 check-scheduler: shadow.** Rule 11 says shadow runs and writes. For a module whose only output is paid runs, option taken: shadow decides and records each run (`status: shadow`) and submits nothing; one-offs wait for `on`. Conservative because shadow spends nothing.
+- **2026-09-25, w2 check-scheduler: one run per region per tick.** A region can have a rerun, a one-off, a newest check and a sweep due at once, and the gateway takes one shape per run. Option taken: at most one run per region per 5-minute tick, in the order rerun, one-off or verification, newest check, sweep (broad terms first); the rest go in later ticks. Conservative because it never sends two runs to one region at once.
+- **2026-09-25, w2 check-scheduler: sweeps of many terms.** The actor allows 5,000 listings a run and a full read is about 60 pages a term, so only 3 terms fit a full sweep. Option taken: all of a class's terms go in one sweep run and the pages per term shrink to fit (`floor(5000 / (terms × 25))`, at most 60). The alternative, one sweep run per 3 terms, reads deeper at a higher cost. A region with more than 20 terms of a class (the actor's per-run limit) sends its 20 best-ranked; the 46-pair budget bound makes that unlikely.
+- **2026-09-25, w2 check-scheduler: yield.** The card reads a yield per pair from `v_check_runs` and `v_sightings`. With one run per region per tick, yield is used only to order regions of equal payment and kind when the ramp cap cannot fit them all. Option taken: new listings per region over 7 days (listings first fetched at or after the run that saw them). A per-pair yield is kept for when the owner wants it to drop or slow low-yield pairs, which would be a product decision.
+- **2026-09-25, w2 check-scheduler: details one-offs.** search-planner's one-off input may carry listing IDs. Option taken: this module carries out search one-offs (approved, or verifications) only; a details one-off stays pending, because details runs belong to details-queue, which is not a dependency of this module.
+- **2026-09-25, w2 check-scheduler: a refused one-off.** When the gateway refuses a one-off (the cap, a switch), the refusal is recorded and the next tick tries again, so a long refusal writes one refused row per tick. Option taken as stated; a rerun or a scheduled check refused in a slot waits for the next slot the same way, and a rerun is attempted once only.
+
+### Folded from docs/questions/demand-signals.md (sweep 16:38, 2026-09-26)
+
+- **2026-09-25, w2 demand-signals: who sees demand data (card, question 20).** The card: "No
+  user-facing view until the owner says who sees it." Option taken: nothing user-facing. The
+  module has only the internal `demand_signals.v_cells`, granted to `nabvy_pipeline`; `nabvy_app`
+  has no usage on the schema. Conservative because nothing reaches a user until the owner decides.
+- **2026-09-25, w2 demand-signals: what "cells under 10 suppressed" means.** A cell has two
+  counts (wants, adverts). Option taken: each count under 10 is never stored (null); a cell whose
+  counts are both null is `suppressed`, and a cell with one count shown keeps the other null.
+  The table's checks refuse a stored count under 10, so no small count exists anywhere, not only
+  in the view. Conservative because "suppress the cell when the sum is under 10" would show a
+  count of 9 wants beside 5 adverts. The threshold shown anywhere: nowhere (no user-facing view).
+- **2026-09-25, w2 demand-signals: the week's want count is a snapshot.** want-manager publishes
+  only the current `v_want_terms_by_centre`, not a history. Option taken: the wants of a week are
+  the active wants when the week is published (the job runs after the week closes), and a
+  published week is never rewritten. Conservative because it invents no history; a history view in
+  want-manager (not this module's file) would allow a week's average instead.
+- **2026-09-25, w2 demand-signals: what a wanted or swap advert is.** The card names
+  `v_assessments`; the kind lives there as parts-record's `kind`, and `wanted_or_swap` is one kind
+  for both. Option taken: an advert is a listing whose latest assessment has kind
+  `wanted_or_swap`, weeked by T0 (`listed_at`), else T1 (`first_fetched_at`) when Facebook gave
+  no listing time; its centre is city-pages' nearest centre to its city page
+  (`v_area_membership`, the same "nearest centre" want-manager uses); its families are its
+  confirmed parts' catalogue items (else the catalogue ID). Wanted and swap are not told apart
+  (no input does). An advert naming no catalogue part is not counted. Conservative because it
+  counts only what an input states.
+- **2026-09-25, w2 demand-signals: the inputs `want-manager.changed` and
+  `copy-advert.clustered`.** The card lists both events. Option taken: neither is consumed; a
+  week is published once, after it closes, from the views as they then stand, so a change event
+  would have nothing to do. Conservative because it adds no handler that writes on a user's action.
+- **2026-09-25, w2 demand-signals: the weekly scheduled task.** A Trigger.dev task lives in
+  `trigger/`, whose `package.json` is shared. Option taken: the module exports `runWeekly(deps,
+  now)` (publishes the latest closed week) and the task file is left for the coordinator or the
+  trigger owner to add (`schedules.task`, e.g. Monday 03:07 UTC). Conservative because this
+  session edits only its own files (rule 2).
+- **2026-09-25, w2 demand-signals: suppressed listings.** Listings `listing-suppression` hides
+  still count in an internal aggregate. Option taken: counted, since no count leaves the pipeline
+  and none is under 10. To revisit when a user-facing view is approved.
+
+### Folded from docs/questions/listing-card.md (sweep 16:38, 2026-09-26)
+
+- **2026-09-25, w1 listing-card: showing lifecycle status.** The module card lists `listing_lifecycle.v_status` as an input, but its column list does not name a status field, and inventing new user-facing wording for `live`/`pending`/`marked-sold`/`not-seen-recently`/`unknown` is a product decision (CLAUDE.md, "Ask, don't guess"). Option taken: read `v_status` only to keep an `unresolved` listing (a removed ID the pipeline could not identify) off the card; every other status value still shows, since it is a system inference, not the seller's own `availability` flag, which the card does show. Conservative because it exposes no new wording and hides only a listing that is arguably broken, not merely unwatched or possibly sold.
+- **2026-09-25, w1 listing-card: `redact()` versus `quote()` for the title.** The module card names `quote_redaction.redact()` specifically for the title, but `quote-redaction`'s own contract is to fail closed (`quote()`, returning `null`) while its switch is off, and rule 5 says quotes generally "pass through quote-redaction". Option taken: follow the card literally and use `redact()`, which always masks regardless of the switch, so a listing's title keeps showing (still masked) even if `quote-redaction` is off, rather than every card losing its title. Conservative in the sense that it follows the card's explicit, more specific instruction over the general rule; flagging in case the owner intended `quote()`'s fail-closed behaviour here too.
+- **2026-09-25, w1 listing-card: `nabvy_core.view_violations()` does not scan `app.*` views.** The check's module-schema list comes from the migration ledger's `module` column, not from the schema a migration's SQL actually writes to, so a view in the shared `app` schema (the first one built) is invisible to it even though this module's ledger row is named `listing-card`. Option taken: this module's own `packages/db/tests/listing-card.test.sql` asserts `security_invoker` and the exact column allowlist by hand for `app.v_listing_card`. Not fixed here because `nabvy_core.view_violations()` lives in `packages/db/migrations/core/`, outside a module session's file ownership (rule 2). Needed: a coordinator or foundation follow-up to extend the check to `app.*` views before a second user-facing view is built without the same manual check.
+
+### Folded from docs/questions/pickup-routes.md (sweep 16:38, 2026-09-26)
+
+Same format as `docs/questions.md`: date, task, question, option taken and why. Build sessions
+append here, never to `docs/questions.md` itself (`docs/session-conventions.md`, "Questions from a
+build session"); the coordinator folds this file in at a batched push.
+
+- **2026-09-25, w2 pickup-routes: soft seam to `router-gateway` (not merged).** The card reads
+  `router-gateway.table()` for the OSRM matrix. Option taken: `RouterGatewayPort` in
+  `services/pickup-routes/src/index.ts`, injected through `PickupRoutesDeps.router`, default
+  `noRouter` (returns `undefined`), so every plan is an `estimate` (straight line × 1.3) until the
+  gateway merges and the web app injects its `table()`. Conservative: no route call, no
+  coordinate leaves the process. The router host and self-host question (search-map-routes.md §10
+  rows 1–2) stays the owner's; nothing here chooses one.
+- **2026-09-25, w2 pickup-routes: soft seam to `travel-cost` (PR #50, open).** The card reads
+  `travel-cost.tripCost()` for the day's £. Option taken: `TravelCostPort`, injected through
+  `PickupRoutesDeps.travelCost`, default `noTravelCost` (returns `undefined`): `costMinor` and
+  `costBasis` are null and no £ is shown. Conservative: no invented number.
+- **2026-09-25, w2 pickup-routes: route optimiser and router host are open on the card (§10
+  rows 1–2, 25).** Option taken: the in-house exact solver over an injected matrix, the card's
+  and draft's recommended default; no VROOM, no routing library, no host chosen.
+- **2026-09-25, w2 pickup-routes: `PICKUPS_DATA_KEY` was not in `docs/secrets.md`.** Added the
+  row there, the `pickupsData` group in `packages/config/src/env.ts`, the `.env.example` line and
+  the config test fixture (files outside the module, each named in the PR). The secret must be
+  generated per environment by a human before the module's switch is turned on.
+- **2026-09-25, w2 pickup-routes: retention period (§10 row 15).** Option taken: pickups, with
+  their days and plans, deleted 30 days after their day (`PICKUP_ROUTES_RETENTION_DAYS`), at
+  once on `account.deleted`, and by the user at any time. The draft's interim default; the owner
+  sets the period.
+- **2026-09-25, w2 pickup-routes: reminder wording (§10 row 16).** Option taken: label and time
+  only, in the draft's own words ("3 pickups tomorrow · first at 10:30", "Leave by 10:02 for
+  'RTX 3090 – Bognor' at 10:30", "One pickup tomorrow has no agreed time"); with no plan the
+  leave-by text reads "Time to leave for '…' at …". Wording shown to users is the owner's to
+  change.
+- **2026-09-25, w2 pickup-routes: the estimate's speed.** The draft fixes "straight line × 1.3"
+  for distance but no speed to turn it into minutes. Option taken: 40 km/h
+  (`PICKUP_ROUTES_ESTIMATE_SPEED_KMH`), always labelled `estimate` and never shown as a measured
+  time; the owner may prefer another figure or none until the router is on.
+- **2026-09-25, w2 pickup-routes: the pickups purge on `account.deleted` is immediate**, inside
+  the handler, rather than "within 24 hours" (rule 12's upper bound). Nothing to decide; noted so
+  the coordinator's wiring of the handler is the only step left.
+- **2026-09-25, w2 pickup-routes: two card tests belong to the web app.** "The deal-card prefill
+  carries no location/day/time/price" and "pasted seller text never reaches a request, log or row"
+  test the sheet in `apps/web`, which this module does not own. What the module guarantees:
+  `PickupRoutesPickupInput` is a strict object with no free-text field beyond label, address text
+  and notes, refuses unknown keys (a pasted-text field cannot pass), and `test/contracts.test.ts`
+  checks that no event or stored plan carries an address, postcode or coordinate. The web-app
+  session should add the two UI tests when it builds the sheet.
+- **2026-09-25, w2 pickup-routes: `dependsOn` in `module.json` lists `core` and `switches`
+  only.** No SQL here references `switches.*`, `better_auth.*` or `location.*` objects (the
+  switch and standing checks run in application code; geocoding is a function call), the same
+  reading `location`'s migration took.
+
+### Folded from docs/questions/prepared-message.md (sweep 16:38, 2026-09-26)
+
+- **2026-09-25, w2 prepared-message: the wording of the message and checklist.** The card says
+  the template wording is the owner's, and no wording exists. Option taken: a plain placeholder
+  template (`services/prepared-message/src/domain/template.ts`, version `placeholder-1`): a
+  greeting, one question per unknown part ("Which graphics card (GPU) does it have?"), a thank
+  you, and checklist checks "Check in person: the listing says "…"". Conservative because the
+  module's switch stays off until the owner approves the wording, so no user sees it, and every
+  message carries its template version.
+- **2026-09-25, w2 prepared-message: where the pack template lives.** The card reads "the pack
+  template" (`docs/web-app.md:30-32`), but the pack format (`CategoryPack`) has no message
+  template, and `packages/packs` is outside this module's files. Option taken: the template sits
+  in the module, typed by the `PreparedMessageTemplate` contract and keyed by pack ID `gpu-pc`,
+  to move into the pack (a `message` field on `CategoryPack`) once the owner sets the wording.
+  Conservative because it changes no shared file and the contract is ready for the move.
+
+### Folded from docs/questions/router-gateway.md (sweep 16:38, 2026-09-26)
+
+Same entry format as `docs/questions.md`: date, task, question, option taken and why.
+
+- **2026-09-25, 4.1i router-gateway: `ROUTER_*` variables not in `docs/secrets.md`.** The module reads `ROUTER_PROVIDER` (default `openrouteservice`), `ROUTER_BASE_URL` (default `https://api.openrouteservice.org`) and the secret `ROUTER_API_KEY`. `docs/secrets.md` does not list them, and adding them to the shared `packages/config/src/env.ts` would edit a shared file (rule 2) and fail its test that the variables match `docs/secrets.md`. Option taken: the loader lives in `packages/config/src/modules/router-gateway.ts` (still the only place that reads `process.env`); the coordinator adds the three names to `docs/secrets.md` (and may move them into `env.ts` then). Conservative because it touches no shared file and needs no value.
+- **2026-09-25, 4.1i router-gateway: no health endpoint on openrouteservice's public API.** Its documentation says `/v2/health` and `/v2/status` are "not available in the public API", only on self-hosted instances. Option taken: `health()` makes no provider call; it reports unconfigured, off, at quota, or the outcome of the newest call logged in the last 15 minutes (`unknown` when none). A self-hosted OSRM adapter can add a real probe. Conservative because a probe would spend the free plan's quota and could not reach an endpoint that exists.
+- **2026-09-25, 4.1i router-gateway: openrouteservice's per-request limits.** The public docs pages reachable from this session give the Matrix V2 and Directions V2 shapes but not the hosted API's per-request limits (locations per matrix, waypoints per route). Option taken: Nabvy's own starting values, labelled as such in config: at most 50 locations per `table()` and 25 stops per `route()`; anything larger is refused before a call (`router.too-large`). The owner or a later session confirms against the plan page. Conservative because it sends less than any limit is likely to be, and invents no provider figure.
+- **2026-09-25, 4.1i router-gateway: event and error names.** Rule 7 names events `<module>.<what>` (`router-gateway.build-changed`), but the card and the brief say `router.build-changed` and `router.quota`. Option taken: the card's names (`router.build-changed`; error codes `router.*`). Conservative because readers (`travel-time`) are designed against the card; a rename is one line in the contract file.
+- **2026-09-25, 4.1i router-gateway: provider switch.** The gateway calls only while its module switch is `on` or `shadow` and the provider switch `openrouteservice` (kind `provider`) is `on`, as `apify-gateway` does with `apify`. No seed: an unknown switch reads `off`. Option taken: the coordinator or the owner sets both after the key is in place. Conservative because it fails closed.
+- **2026-09-25, 4.1i router-gateway: `router_calls` retention.** Rows are needed for today's quota and the recent health window only. Option taken: keep all rows for now (a few thousand a day at most); a pruning job waits for an owner retention decision. Conservative because it deletes nothing.
+
+### Folded from docs/questions/seller-reply-reports.md (sweep 16:38, 2026-09-26)
+
+Same entry format as `docs/questions.md`; the coordinator folds these in. Conservative options taken; nothing user-facing ships until the owner approves the wording (the module is `off`, and shadow shows reports to testers only).
+
+- **Task w2 seller-reply-reports (1.7j), notifier not merged.** The card says notifier is a hard dependency and merged; it is on neither `main` nor any branch, so `notifier.v_alert_open_context` does not exist. Option taken: the open record is the injected seam `deps.openRecords`, whose default returns no open, so `canReport()` answers "not allowed" and `submit()` refuses (`not_eligible`) until notifier lands. Conservative: no report is taken without the 5-minute to 14-day interaction gate (§3.1). When notifier merges, `defaultDeps.openRecords` reads its view; nothing else changes.
+- **Task w2 seller-reply-reports, noise-filter not merged.** `noise_filter.v_classifications` does not exist either. Option taken: seam `deps.noiseListings`, default none (rule 11: a missing row is "no data", never "no"). The open gate above keeps the sheet closed meanwhile.
+- **Task w2 seller-reply-reports, listing flags.** `detail_evidence.v_current` publishes no `messagingEnabled`, `shippingOffered` or checkout flag. Option taken: seam `deps.listingFlags`, default unknown; unknown messaging does not close the sheet, and unknown shipping does not stop a `postage_only` report counting (the field was false on all 20 recorded rows, `docs/fb-actor-reference.md:318`). The recorded columns stay null. Asks detail-evidence to publish the three flags.
+- **Task w2 seller-reply-reports, email verification.** No published view carries a user's email-verified flag, and `better_auth."user"` is granted to no application role. Option taken: `defaultDeps.reporterAccounts` reads account age from `account.v_profiles.created_at` and standing from `better_auth.account_active()`, and leaves email verification unknown, which never counts: every report is `email_unverified` at weight 0 until auth or account publishes the flag. Conservative (§3.2: only verified, established accounts count). Also: profile creation stands in for sign-up time.
+- **Task w2 seller-reply-reports, the listing key.** The card keys reports and evidence on `source + source_listing_id` and §6.4 types `listingId` as `ListingStub.sourceListingId`. Option taken: `listing_id` is listing-ingest's UUID, with `source` kept, as listing-feedback, pickup-location and copy-advert (all merged) key their rows; `listing_suppression.is_suppressed()` also takes that UUID. The unique key is `(listing_id, reporter_user_id)`; evidence is unique on `(source, listing_id, family, scope, rule_version)`, with `scope` added so own and spread evidence are separate rows.
+- **Task w2 seller-reply-reports, reported places.** `location.v_places` and `listing_location.v_resolved` do not exist. Option taken: a reported place is a city-page ID (the gazetteer pickup-location uses), its point read from `city_pages.v_city_pages`; the listing's point comes from `pickup-location`'s `pointsFor()`; distances from `location.distanceKm()`, which rounds to 5 km, so the 50 km threshold means a raw distance of 47.5 km or more.
+- **Task w2 seller-reply-reports, other soft seams.** account-integrity's `linkedGroupOf()` (default: each user alone), copy-advert's possible original (not published; default none), asking-price-position's gem candidates (not built; default none, so no gem-burst hold yet), and warning-signs/parts-record fault facts (default none) are injected seams in `SellerReplyReportsDeps` with those defaults. relist-merge is not read: carried relist reports are never shown and complete no path (owner decision 24's default), so `carried_from_relist` is always false.
+- **Task w2 seller-reply-reports, path B.** The card's levels count every counted reason; §3.1 also has reasons that count "only in path B" (`didnt_ask`, "Didn't say" where). Option taken: `report_reasons.counts` records `path_b_only`, but only `any_path` reasons reach `weight_sum` and the level, because `listing_evidence` has no separate path-B column and suspected-labels is not built. Conservative: fewer levels. suspected-labels may ask for a `path_b_weight` column.
+- **Task w2 seller-reply-reports, bursts.** Option taken: reports caught in a burst are `burst_hold` (weight 0) and the evidence row is `held` with reason `burst`, so a held listing usually reads level `none` until a reviewer releases it. Holds are never released automatically.
+- **Task w2 seller-reply-reports, shadow audience.** Design §6.2: in shadow the sheet is shown to testers only, and tester reports never count. Option taken as written; so shadow yields no counted evidence from real users. If the owner wants real reports calibrated in shadow, the sheet must open to more accounts.
+- **Task w2 seller-reply-reports, retention (owner decision 15).** Not enforced in this build (no 90-day job). `account.deleted` deletes the user's reports outright rather than keeping an anonymous contribution, so a mark could drop after a reporter deletes their account. Conservative for privacy; the anonymous-contribution table can follow the owner's answer.
+- **Task w2 seller-reply-reports, contract changes.** `SubmitInput`, `EditInput`, `WithdrawInput` and `CanReportInput` carry the session's `userId` (as listing-feedback's inputs do); `SellerReplyReportsEligibility` adds `pending` (not yet assessed); distance bands use ASCII codes (`lt_10`, `10_25`, `25_50`, `50_100`, `100_plus`, `unknown`); the place ID is a city-page ID pattern, never a postcode.
+- **Task w2 seller-reply-reports, owner wording.** Every chip label, follow-up question, the report statuses shown in "Your reports" (`saved`, `helping_warn`, `not_shown`, `removed_after_check`, `withdrawn`), the "Don't open it or enter card details" line and the §3.1 signposting box are the owner's (and the signposting box needs its Report Fraud details checked on the primary page). This module stores codes only; no text crosses its boundary.
+- **Task w2 seller-reply-reports, report reasons and "Nothing odd".** The card calls the reasons "five fixed" but lists seven codes, including the proposed `as_listed` (owner decision 3) and `other` without free text (owner decision 14). Option taken: all seven codes exist; `other` and `as_listed` never count towards a level; no free text is accepted anywhere (`note_text` is held null by a check constraint).
+
+### Folded from docs/questions/spec-match.md (sweep 16:38, 2026-09-26)
+
+- **2026-09-26, w2 spec-match: which pairs are stored and shown.** The card says silence is never
+  a "no" and a missing part shows as "GPU not stated — ask the seller", but not whether every
+  listing that states none of a want's parts is a result. Option taken: a want and listing pair
+  is stored only once a part criterion matches or is partly named (for example 16GB RAM with no
+  generation against "16GB DDR5"); after that it is re-matched on every new input, so a later
+  "no" is recorded. A PC that names no wanted part is not a result, never a `no_match`.
+  Conservative because it shows nothing the listing does not name, and never records silence as
+  a "no".
+- **2026-09-26, w2 spec-match: PC containment.** want-manager stores `pcContainment` ("PC
+  containment off by default", per-hunt alternative controls) while this card matches parts inside
+  PCs and shows them in a collapsed "inside a PC" section. Option taken: spec-match always matches
+  containers and marks each result `insidePc`; `pcContainment` is left to `alert-router` (whether
+  an inside-a-PC match alerts). Conservative because it hides nothing in-app and sends nothing.
+- **2026-09-26, w2 spec-match: "or better".** No dependency publishes a catalogue ranking, so an
+  "or better" criterion cannot tell a better card from a worse one. Option taken: the named item
+  and its variants match; any other included card of the type is `not_stated` (`ambiguous`),
+  never a match and never a "no". To revisit when product-catalogue ranks items.
+- **2026-09-26, w2 spec-match: the verdict values.** The card fixes `match`, `no_match` and
+  `not_stated` per criterion. Option taken: the whole verdict uses the same three values (any
+  `no_match` wins; all `match` is `match`; else `not_stated`), and the user-facing view leaves
+  out `no_match` verdicts. Wording shown to users ("GPU not stated — ask the seller") stays the
+  owner's; the module stores reason codes only.
+- **2026-09-26, w2 spec-match: posting.** Facebook's delivery vocabulary for a seller who posts
+  is not in the recorded run (only IN_PERSON, PUBLIC_MEETUP, DOOR_PICKUP, DOOR_DROPOFF). Option
+  taken: `SHIPPING`, `SHIPPING_ONSITE` and `SHIPPING_OFFSITE` count as posting
+  (`packages/config/src/modules/spec-match.ts`), a starting value to verify on a run that holds a
+  posted listing. A want that accepts posting then matches a posting listing at any distance.
+- **2026-09-26, w2 spec-match: condition filter.** The search takes the owner's condition filter,
+  but no dependency publishes a listing's condition (detail-evidence is not on the card's
+  "Depends on" line). Option taken: the filter is accepted and not applied (every listing keeps
+  its place) until a dependency publishes condition. Conservative because it hides nothing on a
+  guess.
+- **2026-09-26, w2 spec-match: soft seams.** `app.v_copy_advert_flags` (copy-advert task 1.7c),
+  `app.v_multi_quantity_filter_flags` (multi-quantity-filter) and `v_positions`
+  (asking-price-position) do not exist yet, and pickup-location is soft. Option taken: each is an
+  injected function (`spamFlags`, `multiQuantityFlags`, `positions`, `pointsFor`) whose stub
+  returns no data: nothing hidden as spam or multi-quantity, every position sorts last, and every
+  distance is `not_stated` until the task wiring passes pickup-location's `pointsFor`.
+- **2026-09-26, w2 spec-match: worth-the-trip hints.** The card computes them in shadow only until
+  their travel cost and wording are set (`actor-integration.md` question 16). Option taken: not
+  computed at all yet: there is no travel cost to compute with, and inventing one would be an
+  invented number.
+- **2026-09-26, w2 spec-match: match origin.** `own_search` is read as: a search sighting of the
+  listing whose centres include the want's centre and whose terms name one of the want's parts
+  (its family or catalogue model). Otherwise `other_search`.
+- **2026-09-26, w2 spec-match: where search runs.** Spec search reads only shared internal views,
+  which `nabvy_app` cannot read. Option taken: `search()` runs inside `withPipeline` after the
+  procedure has checked the session, and checks the account's standing itself; `results()` (the
+  user's own matches) runs inside `withUser` over `app.v_spec_match_results`.
+
+### Folded from docs/questions/warning-signs.md (sweep 16:38, 2026-09-26)
+
+- **2026-09-26, task w2 warning-signs: which codes users see.** The card calls the facts "neutral
+  facts for users" but names only stock phrasing as internal, and the too-good-to-be-true design
+  proposes `thin_text` as user-facing and every other new code as internal until calibrated.
+  Option taken: `app.v_warning_signs` shows `pay_first_text` (catalogue question 18, answered
+  "yes" by the design pending wording), `box_only`, `mining_text`, `untested_text` and
+  `not_working_text`; `ask_far_below_similar`, `low_ask_explained`, `thin_text` and every
+  too-good-to-be-true support or counter code stay internal (`userFacingCodes` in
+  `packages/config/src/modules/warning-signs.ts`, and the same list in the access migration).
+  Conservative because a price or thin-text statement shown to users needs the owner's wording,
+  and adding a code later is one list change. Needed from the owner: the list, and the wording
+  of each shown fact.
+- **2026-09-26, task w2 warning-signs: postage-only is not republished.** The card and design
+  §6.5 say postage-only is read from `pickup-location`'s handover flags and republished here, but
+  `pickup-location` is not on the card's "Depends on" line. Option taken: no postage-only fact;
+  readers take it from `pickup_location.v_handover` directly. Conservative because it adds no
+  unlisted dependency and duplicates nothing. Needed: add the edge to the card, or confirm.
+- **2026-09-26, task w2 warning-signs: `v_suppressed` is not read.** The card lists
+  `listing_suppression.v_suppressed` as an input. Option taken: facts are computed for every
+  listing (internal) and the user-facing view hides suppressed listings with `is_suppressed()`,
+  as noise-filter does. Conservative because suppression then always applies at read time,
+  including to entries added after the facts were written.
+- **2026-09-26, task w2 warning-signs: an `evaluations` table beside the card's `facts`.** Without
+  a record of each evaluation, an evaluation that finds nothing could not clear the facts an
+  earlier one found. Option taken: one `evaluations` row per (listing, evidence hash, card hash,
+  input hash, rule version), with `facts` hanging off it; the views show the latest evaluation's
+  facts. Conservative because it keeps the card's `facts` columns and only adds the module's own
+  bookkeeping.
+- **2026-09-26, task w2 warning-signs: a far-below ask explained by material-state wording.** The
+  card's test says such an ask "is not flagged"; the design's P reads the pair of facts. Option
+  taken: with material-state wording (not working, for parts, named fault, box only, core part
+  missing, part not included) no `ask_far_below_similar` fact is written, only
+  `low_ask_explained` with each reason; with only swap, offers or cosmetic wording both are
+  written. Conservative because a cheap faulty item is never presented as "far below".
+- **2026-09-26, task w2 warning-signs: outlier-cut asks are compared.** asking-price-index
+  excludes asks outside its Tukey fences, which is exactly where a far-below ask sits. Option
+  taken: members that are counted, or excluded only as `outlier`, are compared with their group;
+  every other exclusion (noise, sold, suppressed, copy, relist…) is not.
+- **Legal points listed, not reviewed** (`docs/legal-review.md`): storing redacted quotes of
+  payment and contact wording as internal evidence; showing "asks for payment before viewing" as a
+  neutral fact on a listing.
