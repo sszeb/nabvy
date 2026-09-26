@@ -1,0 +1,36 @@
+{
+  "synthetic": true,
+  "kind": "table",
+  "input": {
+    "sources": [
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      }
+    ],
+    "destinations": [
+      {
+        "lon": -0.1372,
+        "lat": 50.8225
+      },
+      {
+        "lon": -0.3714,
+        "lat": 50.8179
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "durations": [[448.82, null]],
+      "distances": [[5012.3, null]],
+      "metadata": {
+        "engine": {
+          "version": "9.3.0",
+          "osm_date": "0000-00-00T00:00:00Z",
+          "graph_date": "2026-09-20T02:00:00Z"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "aggregate": { "passed": 8, "total": 8 },
+    "gate": { "passed": 10, "total": 10 },
+    "privacy": { "passed": 4, "total": 4 },
+    "spread": { "passed": 4, "total": 4 }
+  }
+}

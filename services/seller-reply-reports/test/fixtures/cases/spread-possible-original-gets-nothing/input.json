@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "listings": { "copy": {}, "original": {} },
+  "reporters": { "buyer": { "ageDays": 90 } },
+  "cluster": ["copy", "original"],
+  "originals": ["original"],
+  "reports": [
+    {
+      "listing": "copy",
+      "reporter": "buyer",
+      "hoursAgo": 20,
+      "reasons": [{ "reason": "payment_first", "detail": "friends_and_family" }]
+    }
+  ]
+}

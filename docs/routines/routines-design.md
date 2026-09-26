@@ -89,13 +89,13 @@ Every prompt starts with the same line: *"If the file named below is missing on 
   - read CI results, never re-run them;
   - merge on Approved with green CI;
   - on Changes needed, or when a backstop finds CI red, add `changes-needed`;
-  - after each review, `git push origin <head>:refs/reviewed/pr-<n>`;
+  - claim the head before reviewing and record the verdict after, as lines in `reviewed.txt` on `claude/coordinator-state` (`node scripts/precheck.mjs claim|record`; pushes to `refs/reviewed/*` get HTTP 403, 2026-09-26);
   - no Supabase.
 - Cut "skip if CI is running". Cut "record migrations" once R2 has passed.
 - **API pre-check (2 calls):**
   1. `pull_request_read get`: exit if the PR is closed or a draft, or its head differs from the payload.
   2. `get_reviews`: exit if the last review's `commit_id` equals the head.
-- **Backstop pre-check (1 call):** `node scripts/precheck.mjs reviewer` lists open PRs whose `refs/pull/<n>/head` differs from `refs/reviewed/pr-<n>`. If there are none, end. This does not use the search qualifier `status:success`: it is ASSUMED to reflect the legacy Commit Status API rather than the Checks that Actions writes, so it could hide exactly the PRs the backstop exists for.
+- **Backstop pre-check (1 call):** `node scripts/precheck.mjs reviewer` lists open PRs whose head has no line in `reviewed.txt` (`review`) and heads approved while CI ran (`merge`). If there are none, end. This does not use the search qualifier `status:success`: it is ASSUMED to reflect the legacy Commit Status API rather than the Checks that Actions writes, so it could hide exactly the PRs the backstop exists for.
 
 **Fixer (new).** The prompt lives in `docs/routines/fixer.md`, about 1 KB.
 - **Pre-check (at most 2 calls):**
@@ -166,7 +166,7 @@ Every prompt starts with the same line: *"If the file named below is missing on 
 | R3 | Runners reach api.anthropic.com; API fires count toward the daily run cap | First PR after step 4; check usage at claude.ai/code/routines | reviewer backstop |
 | R4 | One Routine can hold API, cron and GitHub triggers together (API plus GitHub is VERIFIED) | Try it in the editor | two Routines with the same prompt |
 | R5 | A fired run can read an environment secret, and the network allows the API | `test -n "$BUILDER_FIRE_TOKEN" && curl -o /dev/null -w '%{http_code}'` against a no-op Routine | keep the dispatcher at `52 *` |
-| R6 | `refs/pull/*`, and pushes to `refs/reviewed/*`, work through the git proxy; `get_check_runs` reflects Actions results | One command each in the control session | `search_pull_requests is:open` plus `get_reviews` per PR |
+| R6 | `refs/pull/*` works through the git proxy (pushes to `refs/reviewed/*` do not: HTTP 403, so `reviewed.txt` on a branch replaced them); `get_check_runs` reflects Actions results | One command each in the control session | `search_pull_requests is:open` plus `get_reviews` per PR |
 | R7 | Haiku holds up on hard modules (the only evidence is the 0.9b trial: $0.60, one round) | Run the Builder on prepared-message and demand-signals first | `fix-r3`, then `fix-stuck` and a question |
 | R8 | A no-op run ends near 40k context (about $0.40) | Read `get_session` on the next quiet sweep | trim the prompt further |
 | R9 | Duplicate fires (VERIFIED: a GitHub trigger fires on every matching event) | covered by the label lock, the payload SHA check and the atomic branch lock | none |
