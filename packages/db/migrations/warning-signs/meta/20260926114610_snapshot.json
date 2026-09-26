@@ -1,0 +1,415 @@
+{
+  "id": "55b0b708-683e-4fc8-b60b-189905c68e24",
+  "prevId": "846a2163-1ab5-4375-b520-252feb2c3575",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "warning_signs.evaluations": {
+      "name": "evaluations",
+      "schema": "warning_signs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "input_hash": {
+          "name": "input_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fetched_at": {
+          "name": "fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "evaluated_at": {
+          "name": "evaluated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "evaluations_listing_evaluated_idx": {
+          "name": "evaluations_listing_evaluated_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "evaluated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "evaluations_version_key": {
+          "name": "evaluations_version_key",
+          "columns": [
+            "listing_id",
+            "evidence_hash",
+            "card_hash",
+            "input_hash",
+            "rule_version"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "evaluations_evidence_hash_check": {
+          "name": "evaluations_evidence_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "evaluations_card_hash_check": {
+          "name": "evaluations_card_hash_check",
+          "value": "card_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "evaluations_input_hash_check": {
+          "name": "evaluations_input_hash_check",
+          "value": "input_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "evaluations_rule_version_check": {
+          "name": "evaluations_rule_version_check",
+          "value": "rule_version ~ '^w[0-9]+\\.[0-9a-f]{8}$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "warning_signs.facts": {
+      "name": "facts",
+      "schema": "warning_signs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "evaluation_id": {
+          "name": "evaluation_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "evidence": {
+          "name": "evidence",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_text": {
+          "name": "evidence_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rule_id": {
+          "name": "rule_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "found_at": {
+          "name": "found_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "facts_listing_idx": {
+          "name": "facts_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "facts_evaluation_id_evaluations_id_fk": {
+          "name": "facts_evaluation_id_evaluations_id_fk",
+          "tableFrom": "facts",
+          "columnsFrom": [
+            "evaluation_id"
+          ],
+          "tableTo": "evaluations",
+          "schemaTo": "warning_signs",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "facts_evaluation_code_key": {
+          "name": "facts_evaluation_code_key",
+          "columns": [
+            "evaluation_id",
+            "code",
+            "reason"
+          ],
+          "nullsNotDistinct": true
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "facts_code_check": {
+          "name": "facts_code_check",
+          "value": "code in ('pay_first_text', 'platform_claim_text', 'away_story_text', 'off_platform_contact_text', 'urgency_text', 'thin_text', 'viewing_offered_text', 'payment_on_collection_text', 'protected_payment_text', 'box_only', 'mining_text', 'untested_text', 'not_working_text', 'stock_phrasing_text', 'ask_far_below_similar', 'low_ask_explained')"
+        },
+        "facts_reason_check": {
+          "name": "facts_reason_check",
+          "value": "(code = 'low_ask_explained') = (reason is not null) and (reason is null or reason in ('not_working', 'for_parts', 'named_fault', 'box_only', 'core_part_missing', 'part_not_included', 'swap_or_trade', 'offers', 'cosmetic'))"
+        },
+        "facts_evidence_check": {
+          "name": "facts_evidence_check",
+          "value": "jsonb_typeof(\"warning_signs\".\"facts\".\"evidence\") = 'object'"
+        },
+        "facts_evidence_text_check": {
+          "name": "facts_evidence_text_check",
+          "value": "\"warning_signs\".\"facts\".\"evidence_text\" is null or char_length(\"warning_signs\".\"facts\".\"evidence_text\") between 1 and 200"
+        },
+        "facts_rule_id_check": {
+          "name": "facts_rule_id_check",
+          "value": "rule_id ~ '^warning-signs\\.[a-z_]+$'"
+        },
+        "facts_rule_version_check": {
+          "name": "facts_rule_version_check",
+          "value": "rule_version ~ '^w[0-9]+\\.[0-9a-f]{8}$'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "warning_signs": "warning_signs"
+  },
+  "views": {
+    "warning_signs.v_facts": {
+      "name": "v_facts",
+      "schema": "warning_signs",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "input_hash": {
+          "name": "input_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "evidence": {
+          "name": "evidence",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_id": {
+          "name": "rule_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fetched_at": {
+          "name": "fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "found_at": {
+          "name": "found_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "app.v_warning_signs": {
+      "name": "v_warning_signs",
+      "schema": "app",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_text": {
+          "name": "evidence_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
