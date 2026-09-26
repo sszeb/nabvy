@@ -1,0 +1,8 @@
+{
+  "written": 3,
+  "cells": [
+    { "centre": "A", "family": "rtx-3090", "wants": 10, "adverts": null, "suppressed": false },
+    { "centre": "A", "family": "rtx-4090", "wants": null, "adverts": null, "suppressed": true },
+    { "centre": "B", "family": "rtx-3090", "wants": null, "adverts": 10, "suppressed": false }
+  ]
+}
