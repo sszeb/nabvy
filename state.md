@@ -55,13 +55,12 @@ Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs 
 ## Merged, migrations pending
 
 ## Sessions to start
-- warning-signs: model claude-opus-5-5; branch task/w2-warning-signs; base main; brief briefs/warning-signs.md
-- scan-lookup: model claude-sonnet-5; branch task/w2-scan-lookup; base main; brief briefs/scan-lookup.md
 - price-drop-watch-fix2: model claude-haiku-4-5-20251001; branch task/w1-price-drop-watch; base task/w1-price-drop-watch; brief briefs/price-drop-watch-fix2.md
 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 11:39 UTC dispatcher started asking-price-position as session_01H1uNBCmVwu3CQKJcozi74Y\ - 11:39 UTC dispatcher started warning-signs as session_011Zj6qGMEBWqYF6Vr8fYKnJ\ - 11:43 UTC dispatcher started scan-lookup as session_01NrX4WGkyZ76JoBoK6inbsY
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
