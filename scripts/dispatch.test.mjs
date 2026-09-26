@@ -1,97 +1,102 @@
-import test from 'node:test'
 import assert from 'node:assert'
+import test from 'node:test'
 
-// Fixture test for dispatch.mjs reconciler logic
-// Verifies that the dispatcher correctly identifies conditions for firing Routines
+import { allChecksPassing, anyChecksFailing, decideActions, parseFixAttempts } from './dispatch.mjs'
 
-test('dispatcher: fire conditions', async (t) => {
-  // Test case 1: Non-draft PR with all checks passing should fire review
-  await t.test('fires review when PR is ready', () => {
-    const pr = {
-      draft: false,
-      labels: [],
-      head: { sha: 'abc123' },
-    }
-    const checkRuns = [
+// Fixture test for dispatch.mjs reconciler logic. Imports and exercises the shipped functions
+// directly, so a regression in the real logic fails this test rather than a re-implemented copy.
+
+test('allChecksPassing', () => {
+  assert.strictEqual(allChecksPassing([]), false, 'no checks is not passing')
+  assert.strictEqual(allChecksPassing([{ status: 'completed', conclusion: 'success' }]), true)
+  assert.strictEqual(
+    allChecksPassing([{ status: 'in_progress', conclusion: null }]),
+    false,
+    'a running check is not passing',
+  )
+  assert.strictEqual(
+    allChecksPassing([
       { status: 'completed', conclusion: 'success' },
-      { status: 'completed', conclusion: 'success' },
-    ]
-    const hasChainReview = false
+      { status: 'completed', conclusion: 'failure' },
+    ]),
+    false,
+  )
+})
 
-    // All checks passing, not draft, no chain review status
-    const shouldFireReview =
-      !pr.draft && checkRuns.every((r) => r.conclusion === 'success') && !hasChainReview
+test('anyChecksFailing', () => {
+  assert.strictEqual(anyChecksFailing([]), false)
+  assert.strictEqual(anyChecksFailing([{ status: 'completed', conclusion: 'failure' }]), true)
+  assert.strictEqual(anyChecksFailing([{ status: 'completed', conclusion: 'success' }]), false)
+})
 
-    assert.strictEqual(shouldFireReview, true, 'should fire review')
-  })
+test('parseFixAttempts', () => {
+  assert.strictEqual(parseFixAttempts('fix-attempt: 2'), 2)
+  assert.strictEqual(parseFixAttempts('no marker here'), 0)
+  assert.strictEqual(parseFixAttempts(undefined), 0)
+  // Regression: the count must be a number, not a string, or "attempt " + (fixAttempts + 1)
+  // string-concatenates ("2" + 1 -> "21") instead of incrementing.
+  assert.strictEqual(parseFixAttempts('fix-attempt: 2') + 1, 3)
+})
 
-  // Test case 2: PR with changes-needed label should fire fix
-  await t.test('fires fix when changes-needed label present', () => {
-    const pr = {
-      labels: [{ name: 'changes-needed' }],
-      body: 'fix-attempt: 1',
-    }
-    const hasChainBuild = false
-    const fixAttempts = parseInt(pr.body?.match(/fix-attempt: (\d+)/)?.[1] || '0', 10)
+test('decideActions: fires review when PR is ready', () => {
+  const pr = { draft: false, labels: [], body: '', head: { sha: 'abc123' } }
+  const checkRuns = [
+    { status: 'completed', conclusion: 'success' },
+    { status: 'completed', conclusion: 'success' },
+  ]
+  const result = decideActions({ pr, checkRuns, hasChainReview: false, hasChainFix: false })
+  assert.strictEqual(result.shouldFireReview, true)
+  assert.strictEqual(result.shouldFireFix, false)
+})
 
-    const shouldFireFix =
-      (pr.labels.some((l) => l.name === 'changes-needed') || false) &&
-      !hasChainBuild &&
-      fixAttempts < 3
+test('decideActions: fires fix when changes-needed label present', () => {
+  const pr = { draft: false, labels: [{ name: 'changes-needed' }], body: 'fix-attempt: 1' }
+  const checkRuns = []
+  const result = decideActions({ pr, checkRuns, hasChainReview: false, hasChainFix: false })
+  assert.strictEqual(result.shouldFireFix, true)
+  assert.strictEqual(result.fixAttempts, 1)
+})
 
-    assert.strictEqual(shouldFireFix, true, 'should fire fix')
-  })
+test('decideActions: fires fix when checks are failing, even without the label', () => {
+  const pr = { draft: false, labels: [], body: '' }
+  const checkRuns = [{ status: 'completed', conclusion: 'failure' }]
+  const result = decideActions({ pr, checkRuns, hasChainReview: false, hasChainFix: false })
+  assert.strictEqual(result.shouldFireFix, true)
+})
 
-  // Test case 3: Max fix attempts reached should not fire
-  await t.test('stops firing after 3 fix attempts', () => {
-    const pr = {
-      labels: [{ name: 'changes-needed' }],
-      body: 'fix-attempt: 3',
-    }
-    const fixAttempts = parseInt(pr.body?.match(/fix-attempt: (\d+)/)?.[1] || '0', 10)
+test('decideActions: stops firing fix after 3 attempts', () => {
+  const pr = { draft: false, labels: [{ name: 'changes-needed' }], body: 'fix-attempt: 3' }
+  const result = decideActions({ pr, checkRuns: [], hasChainReview: false, hasChainFix: false })
+  assert.strictEqual(result.shouldFireFix, false, 'should not fire after max attempts')
+})
 
-    const shouldFireFix = fixAttempts < 3
+test('decideActions: does not fire review for a draft PR', () => {
+  const pr = { draft: true, labels: [], body: '' }
+  const checkRuns = [{ status: 'completed', conclusion: 'success' }]
+  const result = decideActions({ pr, checkRuns, hasChainReview: false, hasChainFix: false })
+  assert.strictEqual(result.shouldFireReview, false, 'should not fire for draft')
+})
 
-    assert.strictEqual(shouldFireFix, false, 'should not fire after max attempts')
-  })
+test('decideActions: does not fire review while checks are still running', () => {
+  const pr = { draft: false, labels: [], body: '' }
+  const checkRuns = [{ status: 'in_progress', conclusion: null }]
+  const result = decideActions({ pr, checkRuns, hasChainReview: false, hasChainFix: false })
+  assert.strictEqual(result.shouldFireReview, false, 'should not fire while checks running')
+})
 
-  // Test case 4: Draft PR should not fire review
-  await t.test('does not fire review for draft PR', () => {
-    const pr = {
-      draft: true,
-      labels: [],
-      head: { sha: 'abc123' },
-    }
-    const checkRuns = [{ status: 'completed', conclusion: 'success' }]
-    const hasChainReview = false
+test('decideActions: does not re-fire review when chain/review status already exists', () => {
+  const pr = { draft: false, labels: [], body: '' }
+  const checkRuns = [{ status: 'completed', conclusion: 'success' }]
+  const result = decideActions({ pr, checkRuns, hasChainReview: true, hasChainFix: false })
+  assert.strictEqual(result.shouldFireReview, false, 'should not fire with existing chain status')
+})
 
-    const shouldFireReview =
-      !pr.draft && checkRuns.every((r) => r.conclusion === 'success') && !hasChainReview
-
-    assert.strictEqual(shouldFireReview, false, 'should not fire for draft')
-  })
-
-  // Test case 5: Checks still running should not fire
-  await t.test('does not fire when checks are still running', () => {
-    const pr = { draft: false, labels: [] }
-    const checkRuns = [{ status: 'in_progress', conclusion: null }]
-    const hasChainReview = false
-
-    const allPassing = checkRuns.every((r) => r.conclusion === 'success')
-    const shouldFireReview = !pr.draft && allPassing && !hasChainReview
-
-    assert.strictEqual(shouldFireReview, false, 'should not fire while checks running')
-  })
-
-  // Test case 6: Existing chain/review status should not fire
-  await t.test('does not fire when chain/review status exists', () => {
-    const pr = { draft: false, labels: [] }
-    const checkRuns = [{ status: 'completed', conclusion: 'success' }]
-    const hasChainReview = true
-
-    const shouldFireReview =
-      !pr.draft && checkRuns.every((r) => r.conclusion === 'success') && !hasChainReview
-
-    assert.strictEqual(shouldFireReview, false, 'should not fire with existing chain status')
-  })
+test('decideActions: does not re-fire fix when chain/fix status already exists', () => {
+  const pr = { draft: false, labels: [{ name: 'changes-needed' }], body: 'fix-attempt: 0' }
+  const result = decideActions({ pr, checkRuns: [], hasChainReview: false, hasChainFix: true })
+  assert.strictEqual(
+    result.shouldFireFix,
+    false,
+    'should not re-fire with existing chain/fix status',
+  )
 })

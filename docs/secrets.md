@@ -45,6 +45,18 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `POSTHOG_KEY`, `POSTHOG_HOST` | web app and server (`eu.i.posthog.com`) | PostHog project, EU cloud |
 | `TOKEN_ENCRYPTION_KEY` | inventory-resale | Generated once; encrypts eBay refresh tokens at rest |
 | `FB_DAILY_CAP_MINOR`, `GUMTREE_DAILY_CAP_MINOR`, `SCAN_SPEND_CAP_MINOR` | crawl-planner, recognition | Config: defaults 1000, 500, 5 |
-**`REVIEW_FIRE_TOKEN` and `FIX_FIRE_TOKEN`** (not in the table above: they are GitHub Actions repository secrets, not application config, so they never reach `packages/config` or `.env`, and the variable-inventory test in `packages/config` doesn't expect them). Each is a per-Routine API token — one for the reviewer Routine, one for the Fixer — generated once in the Routines app and stored as a GitHub repository secret, never in code, commits or chat. The plan is for a CI job on each PR event to `POST` to `https://api.anthropic.com/v1/claude_code/routines/<id>/fire` with the matching token, so a run on a green or failed head can wake the reviewer or Fixer Routine without a human or a long-lived session in the loop; that job is not in `.github/workflows/ci.yml` yet, so for now this paragraph only reserves the names and the intended use.
+**GitHub Actions repository secrets and variables, not application config** (not in the table above: they are read only by `.github/workflows/dispatch.yml`, never reach `packages/config` or `.env`, and the variable-inventory test in `packages/config` doesn't expect them):
+
+| Name | Kind | Purpose |
+| --- | --- | --- |
+| `REVIEW_FIRE_TOKEN` | Repository secret | Per-Routine API bearer token that fires the Reviewer Routine (`POST https://api.anthropic.com/v1/claude_code/routines/<id>/fire`) |
+| `FIX_FIRE_TOKEN` | Repository secret | Per-Routine API bearer token that fires the Fixer Routine |
+| `BUILDER_FIRE_TOKEN` | Repository secret | Reserved: per-Routine API bearer token for a future Builder Routine; not yet wired into any workflow |
+| `REVIEW_ROUTINE_ID` | Repository variable | The Reviewer Routine's ID |
+| `FIX_ROUTINE_ID` | Repository variable | The Fixer Routine's ID |
+| `BUILDER_ROUTINE_ID` | Repository variable | Reserved: the future Builder Routine's ID; not yet wired into any workflow |
+| `CHAIN_LIVE` | Repository variable | `'false'` pauses the dispatch reconciler globally; any other value (including unset) leaves it live |
+
+Each fire token is generated once in the Routines app and stored as a GitHub repository secret, never in code, commits or chat. `dispatch.yml` only triggers off the default branch (`workflow_run`, `push` to `main`, and a 30-minute schedule), never `pull_request`, so these secrets are never exposed to a PR's own copy of the workflow or script.
 
 Accounts a human must create before Phase 1: Apify (with the Nabvy actor deployed), Anthropic, Trigger.dev, Telegram bot. Before Phase 2: eBay developer keyset. Before Phase 3: eBay Sell API consent flow (RuName) and Sandbox seller. Before Phase 4: Stripe (products created per `docs/billing.md`, Stripe Tax enabled, legal entity set), Resend with `mail.nabvy.com` and `news.nabvy.com` verified, PostHog Workflows enabled with an email sender on `news.nabvy.com`, VAPID keys, Sentry, PostHog, Cloudflare Turnstile, Google OAuth client. Before launch: ICO registration, legal documents, external security scan, Dub workspace with the Partners programme configured per `docs/affiliates.md` and `nabvy.link` connected.
