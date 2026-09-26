@@ -45,7 +45,7 @@ nabvy/
 
 ## How to build
 
-1. Read `CLAUDE.md`, then `docs/decisions.md`, `docs/engineering.md`, `docs/contracts.md` and `docs/progress.md`.
+1. Read `CLAUDE.md`, then `docs/decisions.md`, `docs/engineering.md`, `docs/contracts.md` and `docs/progress.md`. `docs/rules.md` holds how to work, working economy, repository conventions and commands.
 2. Work through `docs/backlog.md` in order. Each task has a definition of done; record the outcome in `docs/progress.md`.
 3. Secrets come from a human; see `docs/secrets.md`. Never commit them.
 4. When a spec is unclear, write the question in `docs/questions.md` and take the conservative option; do not invent policy.
@@ -54,8 +54,9 @@ nabvy/
 
 | File | Purpose |
 | --- | --- |
-| `CLAUDE.md` | Rules for agents working in this repository |
-| `docs/decisions.md` | Standing decisions and constraints |
+| `CLAUDE.md` | Non-negotiable rules for agents working in this repository |
+| `docs/rules.md` | How to work, working economy, repository conventions and commands |
+| `docs/decisions.md` | Standing decisions and constraints in force (history: `docs/decisions-history.md`) |
 | `docs/architecture.md` | System architecture: principles, stack, modules, data flow, controls |
 | `docs/contracts.md` | Entities, events, fact templates, tables per module, provider adapter interface |
 | `docs/modules.md` | One specification per module: responsibility, inputs, outputs, tables, tests, secrets |
@@ -78,4 +79,4 @@ nabvy/
 | `docs/fixtures.md` | Fixture format and the initial set to collect |
 | `docs/secrets.md` | Environment variables and where each comes from |
 | `docs/readiness.md` | Coverage, human actions, risks, review verdict |
-| `docs/questions.md` | Open questions raised during the build |
+| `docs/questions.md` | Open questions raised during the build (resolved: `docs/questions-archive.md`) |
