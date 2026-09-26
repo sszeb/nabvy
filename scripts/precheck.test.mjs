@@ -222,14 +222,34 @@ test('CLI coordinator mode: a new PR with no merge ref yet makes the run BUSY', 
   assert.equal(stdout, 'BUSY')
 })
 
-test('CLI reviewer mode: closed PRs are never candidates', () => {
+test('CLI reviewer mode: includes head-only PRs (may be closed, but avoids missing open-conflicted PRs)', () => {
   const dir = withState(QUIET_STATE)
   const { code, stdout } = runCli('reviewer', dir, {
     'open-heads': LIVE_REFS,
     'reviewed-refs': '93bd4e7\trefs/reviewed/pr-101',
   })
   assert.equal(code, 0)
-  assert.equal(stdout, '#102')
+  // #5 has a head but no merge ref (likely closed, but could be open with a conflict).
+  // #102 is unreviewed and open (has merge ref).
+  // Both are listed as candidates; the reviewer filters as needed.
+  assert.equal(stdout, '#5 #102')
+})
+
+test('CLI reviewer mode: an open PR with a conflict (lower-numbered) is a candidate', () => {
+  const dir = withState(QUIET_STATE)
+  const conflictedRefs = [
+    '90abd12\trefs/pull/90/head', // open but conflicted: no merge ref
+    '93bd4e7\trefs/pull/101/head',
+    '9999999\trefs/pull/101/merge',
+    '54dee1e\trefs/pull/102/head',
+    '8888888\trefs/pull/102/merge',
+  ].join('\n')
+  const { code, stdout } = runCli('reviewer', dir, {
+    'open-heads': conflictedRefs,
+    'reviewed-refs': '93bd4e7\trefs/reviewed/pr-101\n54dee1e\trefs/reviewed/pr-102',
+  })
+  assert.equal(code, 0)
+  assert.equal(stdout, '#90')
 })
 
 test('CLI: an unknown mode fails with a usage message', () => {

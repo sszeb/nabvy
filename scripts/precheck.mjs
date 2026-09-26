@@ -139,7 +139,14 @@ export function parseReviewedRefs(lsRemoteOutput) {
 
 // Heads of open PRs only (openPrNumbers), keyed by PR number.
 export function parseOpenPrHeads(lsRemoteOutput) {
-  const open = openPrNumbers(lsRemoteOutput)
+  // Extract all head PR numbers to seed `known` - any PR with a head ref
+  // should be considered open, even if it lacks a merge ref (conflict case).
+  const allHeads = []
+  for (const line of lsRemoteOutput.split('\n')) {
+    const m = /^[0-9a-f]{7,40}\s+refs\/pull\/(\d+)\/head$/.exec(line.trim())
+    if (m) allHeads.push(Number(m[1]))
+  }
+  const open = openPrNumbers(lsRemoteOutput, allHeads)
   const out = new Map()
   for (const line of lsRemoteOutput.split('\n')) {
     const m = /^([0-9a-f]{7,40})\s+refs\/pull\/(\d+)\/head$/.exec(line.trim())
