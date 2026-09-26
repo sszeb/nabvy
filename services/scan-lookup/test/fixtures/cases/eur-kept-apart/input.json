@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md, Precedence, 'Region and currency': 'For the beta: UK only, Ireland skipped'",
+  "catalogueId": "gpu:rtx3090",
+  "credits": 5,
+  "groups": [
+    {
+      "groupKey": "gpu:rtx3090@standalone@used_good@IE@EUR@30",
+      "context": "standalone",
+      "condition": "used_good",
+      "country": "IE",
+      "currency": "EUR",
+      "n": 15,
+      "median": 28000,
+      "p25": 26000,
+      "p75": 30000
+    }
+  ]
+}

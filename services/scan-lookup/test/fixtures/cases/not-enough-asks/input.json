@@ -1,0 +1,7 @@
+{
+  "synthetic": true,
+  "source": "docs/design/modules/scan-lookup.md, 'Tests and fixtures': 'with every other source off, a scan shows the asking-price position or \"not enough asks\"'",
+  "catalogueId": "gpu:rtx3090",
+  "credits": 5,
+  "groups": []
+}
