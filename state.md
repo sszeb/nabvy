@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): repo, state write, GitHub, Supabase ok (ledger 91); session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron restored (`37 */2 * * *`). Last sweep: 22:37. Fingerprint: 5479d39; #102@54dee1e,#101@93bd4e7,#100@945a138,#99@703d09c,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#92@7c9ec6a,#89@a3d114b,#85@4845b8b,#83@e0ba4ad,#81@b08ee6b,#70@33077da; ledger 91.
+Updated 00:15 UTC 2026-09-26 by coordinator run (#105 opened). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok (ledger 91); session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron restored (`37 */2 * * *`). Last sweep: 22:37. Fingerprint: 5479d39; #102@54dee1e,#101@93bd4e7,#100@945a138,#99@703d09c,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#92@7c9ec6a,#89@a3d114b,#85@4845b8b,#83@e0ba4ad,#81@b08ee6b,#70@33077da; ledger 91.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -14,6 +14,7 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 91 rows = plan 91 (checked 22:37). Nothing pending.
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
+- #105 L1 web local run [cp 4], no migrations, head 410853f — `session_01ULyWCky4X9u2Dn35prXFPr` (Sonnet). Reads app.v_listing_card (needs #81's migration).
 - #102 router-gateway [cp 2], 2 migrations — `session_01ETdUVwpWrdfWdAPLvk8R8i` (Opus). On merge: start travel-time.
 - #100 L2 pipeline wiring [cp 5] — `session_01EdCvNpwGNoqFD77bC9LGJa` (Haiku); blocked on a permission prompt the owner must approve.
 - #99 noise-filter [cp 8] — `session_01PAUb9EWufR4DsmqKijgCpk`.
@@ -28,7 +29,6 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 
 ## Sessions without a PR
 - W2 CI speed and reconciler `session_01WsDVema6i3QcYMjPNZK17M` (Haiku), W3 docs slimming `session_01B5g9DjscTSFaP122ZnWuDn` (Sonnet): started 00:06 by coordinator 18 (owner 2026-09-26: implement all improvements now, no pilots; docs/routines/implementation-brief.md). W1 Routines implementer: the owner starts it from the app (it changes Routine prompts).
-- L1 web local run `session_01ULyWCky4X9u2Dn35prXFPr` (Sonnet): had halted on "L1 not in backlog" (milestone L is only on the docs branch until #101 merges); told to go ahead at 21:35.
 - L3 owner setup `session_013w6mgdrer6N4BGjUZSxMTE` (Sonnet): the owner talks to it directly (WSL Ubuntu, `scripts/wsl-bootstrap.sh`, `docs/local-run.md`).
 - pasted-link-lookup, inventory: stacked on #81; open their PRs after #81 merges.
 
@@ -56,6 +56,7 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 2026-09-26 00:09 UTC L1 web: PR #105 opened (head 410853f, [cp 4], no migrations).
 - 23:30 UTC coordinator 18: both reviewer Routine prompts carry their rules inline (no read of docs/session-conventions.md; backstop order: base of a stack, then [cp N], then oldest); on-request reviews fired for #83, #85, #89; fleet and Routines plan in docs/routines/improvement-plan.md.
 - 22:52 UTC dispatcher run: nothing queued
 
