@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "listings": { "l": {} },
+  "reporters": { "buyer": { "ageDays": 45 } },
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "buyer",
+      "hoursAgo": 20,
+      "shippingOffered": true,
+      "reasons": [{ "reason": "postage_only", "secondAnswer": "bank_transfer" }]
+    }
+  ]
+}

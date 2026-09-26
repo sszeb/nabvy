@@ -1,0 +1,58 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "only": ["2264485254402498", "1072745435569624", "1123980543398026"],
+  "edits": [
+    {
+      "listingId": "2264485254402498",
+      "fields": {
+        "title": "Pc",
+        "description": "Gaming pc for sale\nRyzen 5 5500\n16GB RAM\n1TB SSD\nWindows 11\nCollection only"
+      }
+    },
+    {
+      "listingId": "1072745435569624",
+      "fields": {
+        "descriptionStatus": "partial",
+        "descriptionComplete": false
+      }
+    },
+    {
+      "listingId": "1123980543398026",
+      "fields": {
+        "title": "Gaming PC",
+        "description": "Gaming PC, no graphics card included.\nRyzen 5 5500\n16GB RAM\n1TB SSD",
+        "descriptionStatus": "full_verified"
+      }
+    }
+  ],
+  "points": {
+    "*": {
+      "lat": 50.8376,
+      "lng": -0.7749,
+      "basis": "field"
+    }
+  },
+  "wants": {
+    "16gb-and-rtx-5060": {
+      "criteria": [
+        {
+          "partType": "ram",
+          "catalogueId": null,
+          "family": null,
+          "minAttr": {
+            "sizeGb": 16
+          },
+          "orBetter": false
+        },
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 5060",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    }
+  }
+}

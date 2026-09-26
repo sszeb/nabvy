@@ -1,0 +1,42 @@
+{
+  "synthetic": true,
+  "builtFrom": "SELLER_DATA.md:329 (no row below n=10); asks are synthetic",
+  "listings": [
+    {
+      "id": "ask-0",
+      "priceMinor": 60000
+    },
+    {
+      "id": "ask-1",
+      "priceMinor": 61000
+    },
+    {
+      "id": "ask-2",
+      "priceMinor": 62000
+    },
+    {
+      "id": "ask-3",
+      "priceMinor": 63000
+    },
+    {
+      "id": "ask-4",
+      "priceMinor": 64000
+    },
+    {
+      "id": "ask-5",
+      "priceMinor": 65000
+    },
+    {
+      "id": "ask-6",
+      "priceMinor": 66000
+    },
+    {
+      "id": "ask-7",
+      "priceMinor": 67000
+    },
+    {
+      "id": "ask-8",
+      "priceMinor": 68000
+    }
+  ]
+}

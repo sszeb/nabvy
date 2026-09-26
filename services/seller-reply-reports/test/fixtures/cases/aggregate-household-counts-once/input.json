@@ -1,0 +1,22 @@
+{
+  "synthetic": true,
+  "listings": { "l": {} },
+  "reporters": {
+    "a": { "ageDays": 90, "group": "household" },
+    "b": { "ageDays": 90, "group": "household" }
+  },
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "a",
+      "hoursAgo": 40,
+      "reasons": [{ "reason": "payment_first", "detail": "deposit" }]
+    },
+    {
+      "listing": "l",
+      "reporter": "b",
+      "hoursAgo": 10,
+      "reasons": [{ "reason": "payment_first", "detail": "deposit" }]
+    }
+  ]
+}

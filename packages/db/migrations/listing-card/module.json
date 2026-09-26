@@ -1,0 +1,13 @@
+{
+  "module": "listing-card",
+  "schema": "listing_card",
+  "dependsOn": [
+    "core",
+    "switches",
+    "listing-ingest",
+    "detail-evidence",
+    "listing-lifecycle",
+    "listing-suppression",
+    "quote-redaction"
+  ]
+}

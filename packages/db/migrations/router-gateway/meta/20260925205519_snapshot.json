@@ -1,0 +1,137 @@
+{
+  "id": "0d542c37-37f2-47e6-bbf1-deb2efbef271",
+  "prevId": "61250450-2352-44ae-9419-0eac7ca9b711",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "router_gateway.router_calls": {
+      "name": "router_calls",
+      "schema": "router_gateway",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "location_count": {
+          "name": "location_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latency_ms": {
+          "name": "latency_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "build": {
+          "name": "build",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "router_calls_quota_idx": {
+          "name": "router_calls_quota_idx",
+          "columns": [
+            {
+              "expression": "provider",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "router_calls_provider_check": {
+          "name": "router_calls_provider_check",
+          "value": "provider in ('openrouteservice', 'osrm')"
+        },
+        "router_calls_kind_check": {
+          "name": "router_calls_kind_check",
+          "value": "kind in ('table', 'route', 'health')"
+        },
+        "router_calls_status_check": {
+          "name": "router_calls_status_check",
+          "value": "status in ('pending', 'ok', 'refused_quota', 'provider_quota', 'http_error', 'invalid_response', 'timeout', 'network_error')"
+        },
+        "router_calls_location_count_check": {
+          "name": "router_calls_location_count_check",
+          "value": "\"router_gateway\".\"router_calls\".\"location_count\" >= 0"
+        },
+        "router_calls_latency_check": {
+          "name": "router_calls_latency_check",
+          "value": "\"router_gateway\".\"router_calls\".\"latency_ms\" is null or \"router_gateway\".\"router_calls\".\"latency_ms\" >= 0"
+        },
+        "router_calls_build_check": {
+          "name": "router_calls_build_check",
+          "value": "\"router_gateway\".\"router_calls\".\"build\" is null or length(\"router_gateway\".\"router_calls\".\"build\") <= 100"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "router_gateway": "router_gateway"
+  },
+  "views": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
