@@ -1,0 +1,28 @@
+{
+  "synthetic": true,
+  "kind": "table",
+  "input": {
+    "sources": [
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      }
+    ],
+    "destinations": [
+      {
+        "lon": -0.1372,
+        "lat": 50.8225
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "durations": [["448; drop table"]],
+      "distances": [[-5]],
+      "__proto__": {
+        "x": 1
+      }
+    }
+  }
+}
