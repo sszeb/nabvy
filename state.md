@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 06:38 UTC 2026-09-26 by coordinator (sweep 06:38). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 06:38. Fingerprint: d1f1ffa; #109@ba09f25,#106@cbb3ecc,#104@190c16c,#102@54dee1e,#101@1a4f508,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 99.
+Updated 07:28 UTC 2026-09-26 by coordinator (PR #70 round-2 fix queued; sweep 06:38). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 06:38. Fingerprint: d1f1ffa; #109@ba09f25,#106@cbb3ecc,#104@190c16c,#102@54dee1e,#101@1a4f508,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 99.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -23,7 +23,7 @@ Updated 06:38 UTC 2026-09-26 by coordinator (sweep 06:38). Setup check 2 (21:59)
 - #96 prepared-message [cp 5] — `session_011twSaUcxY8Ga8dmJHH3nHx`.
 - #93 seller-reply-reports — `session_01U3VJw1mfZ6n1syQaHj7v3K`.
 - #89 pickup-routes [cp 1], #81 listing-card [cp 5]: sessions in docs/progress.md.
-- #70 price-drop-watch [cp 6] — fix session `session_013TTwsCCZGwSmh4kpgXT2pr`; its CI re-run check-in fires 22:09.
+- #70 price-drop-watch [cp 6] (changes-needed, review 5324943052: cross-pass relist under-announce + CI timeout) — round-1 session `session_013TTwsCCZGwSmh4kpgXT2pr` could not fire the fixer; round-2 fix session queued.
 - #101 coordinator docs (rolling, `claude/coordinator-16` into main; carries the old stack #84, #86, #91, #95, #103).
 
 ## Sessions without a PR
@@ -40,6 +40,7 @@ Updated 06:38 UTC 2026-09-26 by coordinator (sweep 06:38). Setup check 2 (21:59)
 ## Waiting on the owner
 - Start coordinator 19 from the app (Opus 5.5, medium effort, repo sszeb/nabvy at claude/coordinator-16, tags nabvy, nabvy-coordinator); coordinator 18 passed 150k at 23:32. First prompt: "You are Nabvy coordinator 19, the owner's control session (same brief as coordinator 18: answer the owner, check the fleet when asked, unblock stuck sessions, do session-tool work Routines cannot). Read CLAUDE.md, state.md on claude/coordinator-state , docs/routines/improvement-plan.md and docs/routines/daisy-chain.md (owner asked 23:40 for daisy-chained Routines; decide the k-way split only after the two-module pilot); everything else by grep or sed -n slices. Coordinator 18 at 23:30 put the reviewer rules inline in both reviewer Routine prompts, fired on-request reviews for #83, #85 and #89 (#81 was refused by the permission classifier), and wrote the improvement plan. Next: once the owner has done the plan's owner actions 1-3, queue the docs-and-scripts PR (plan rollout step 2) for a Sonnet docs session via state.md; then follow the rollout order. First turn: get_trigger on the coordinator and hourly reviewer Routines, report the three review runs' outcomes, then wait for the owner."
 - (coordinator 18, 23:30) Plan: docs/routines/improvement-plan.md on claude/coordinator-16 (#101). Owner in the app: (1) remove the "Pull request: Converted to draft" GitHub trigger from "Nabvy reviewer (on request)", keep it API-only; (2) on the coordinator Routine add GitHub trigger "Pull request: Closed" with filters Is merged = true and Base branch = main; (3) later, per the plan's rollout: API tokens for the reviewer and Fixer as repository secrets (never in chat).
+- Agents cannot fire the Fixer Routine `trig_01UhN94zqkCRYjd7fjwSgKYF` (created via http_api); fix rounds go through the dispatcher until the owner recreates it from the app.
 - PR #81 review fire was refused by the permission classifier at 23:30; the hourly reviewer backstop or the owner fires it.
 - In claude.ai/code/routines, for "Nabvy reviewer (on request)" and "Nabvy reviewer (hourly)": attach the repository sszeb/nabvy and set the model to Sonnet 5 (as done for the coordinator at 21:57). Until then reviewer runs may fail.
 - Approve L2's pending permission prompt (session "Nabvy L2: pipeline wiring and local runner").
@@ -53,6 +54,7 @@ Updated 06:38 UTC 2026-09-26 by coordinator (sweep 06:38). Setup check 2 (21:59)
 - asking-price-position: model claude-opus-5-5; branch task/w2-asking-price-position; base main; brief briefs/asking-price-position.md
 - warning-signs: model claude-opus-5-5; branch task/w2-warning-signs; base main; brief briefs/warning-signs.md
 - scan-lookup: model claude-sonnet-5; branch task/w2-scan-lookup; base main; brief briefs/scan-lookup.md
+- price-drop-watch-fix2: model claude-haiku-4-5-20251001; branch task/w1-price-drop-watch; base task/w1-price-drop-watch; brief briefs/price-drop-watch-fix2.md
 
 ## Messages to send
 
