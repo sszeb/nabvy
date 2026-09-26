@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs merged as 2fbe3b8, no migrations, ledger 99 = plan 99; it carried the 15→25 min CI timeouts, so #110 is superseded). Earlier: sweep 10:37. Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 10:37. Fingerprint: 2fbe3b8; #112@0e837a1,#111@1881b8c,#110@2d2d13e,#109@ba09f25,#106@2049a03,#104@2ad368d,#102@54dee1e,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 99.
+Updated 12:40 UTC 2026-09-26 by coordinator (sweep 12:37: no merges, ledger 99 = plan 99; #114 warning-signs opened; docs batch 4fd62ac). Earlier: merge event 10:50 (#101 as 2fbe3b8). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 12:37. Fingerprint: 2fbe3b8; #114@b53c411,#113@f0f27cf,#112@0e837a1,#111@1881b8c,#110@2d2d13e,#109@ba09f25,#106@367a86d,#104@027acc2,#102@54dee1e,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@f7f3e11; ledger 99.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -15,6 +15,7 @@ Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs 
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
 - #113 scripts: precheck counts only open PRs [cp 0] — coordinator 19 (branch claude/exciting-cray-42nw7p); unreviewed. Fixes the always-BUSY coordinator pre-check.
+- #114 warning-signs [cp 6]: opened ~12:17 by its queued session (`session_011Zj6qGMEBWqYF6Vr8fYKnJ`); unreviewed.
 - #111 asking-price-position [cp 6]: opened 08:53 by its queued session; unreviewed.
 - #112 W3 docs slimming (base claude/coordinator-16; #101 merged 10:4x, so retarget #112 to main): `session_01B5g9DjscTSFaP122ZnWuDn`.
 - #109 spec-match [cp 6]: last review (04:39, head 4944a85) approves; waits on CI (#110); head ba09f25 (timeout bump) since then unreviewed.
@@ -26,7 +27,7 @@ Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs 
 - #96 prepared-message [cp 5] — `session_011twSaUcxY8Ga8dmJHH3nHx`.
 - #93 seller-reply-reports — `session_01U3VJw1mfZ6n1syQaHj7v3K`.
 - #89 pickup-routes [cp 1], #81 listing-card [cp 5]: sessions in docs/progress.md.
-- #70 price-drop-watch [cp 6] (changes-needed, review 5324943052: cross-pass relist under-announce + CI timeout) — round-1 session `session_013TTwsCCZGwSmh4kpgXT2pr` could not fire the fixer; round-2 fix session queued.
+- #70 price-drop-watch [cp 6] (changes-needed, review 5324943052: cross-pass relist under-announce + CI timeout) — round-1 session `session_013TTwsCCZGwSmh4kpgXT2pr` could not fire the fixer; round-2 fix session `session_01Sw7J2MCK4DVGz2Wg5Z9tdd` pushed f7f3e11 (12:35).
 - #110 ci timeouts 15→25: superseded, main has the same change since #101 merged (48e70cd); close it unreviewed. PRs whose CI was cancelled need main merged in to pick up the timeouts.
 
 ## Sessions without a PR
@@ -71,11 +72,6 @@ Notes: #107 was merged by a session (not a reviewer run) with its test job cance
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
-- 12:25 UTC dispatcher started price-drop-watch-fix2 as session_01Sw7J2MCK4DVGz2Wg5Z9tdd
-- 11:39 UTC dispatcher started asking-price-position as session_01H1uNBCmVwu3CQKJcozi74Y
-- 11:39 UTC dispatcher started warning-signs as session_011Zj6qGMEBWqYF6Vr8fYKnJ
-- 11:43 UTC dispatcher started scan-lookup as session_01NrX4WGkyZ76JoBoK6inbsY
-- 12:00 UTC coordinator 19: workflow check (section "Workflow check"); PR #113 opened (precheck counts only open PRs).
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
