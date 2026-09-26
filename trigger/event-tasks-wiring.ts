@@ -6,7 +6,6 @@
  *
  * This file documents the wiring and provides helper functions. Individual task files import from here.
  */
-// biome-ignore lint/suspicious/noExplicitAny: Pending full type definition in wiring phase
 
 import type { EventEnvelope } from '@nabvy/contracts'
 import type { EventHandler } from '@nabvy/transport'

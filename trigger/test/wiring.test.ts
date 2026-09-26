@@ -14,13 +14,13 @@ import {
   APIFY_GATEWAY_RUN_COLLECTED,
   DETAIL_EVIDENCE_CHANGED,
   DETAIL_EVIDENCE_UNRESOLVED,
+  type EventHandlers,
   LISTING_INGEST_CARD_CHANGED,
   LISTING_INGEST_FIRST_SEEN,
   LISTING_SUPPRESSION_CHANGED,
   PARTS_AI_EXTRACTED,
   PARTS_RECORD_RECORDED,
   PARTS_RULES_RAN,
-  type EventHandlers,
 } from '../event-tasks-wiring'
 
 // Fixture: 10 sample listings for testing
