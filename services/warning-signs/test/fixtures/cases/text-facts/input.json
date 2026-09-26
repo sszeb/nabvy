@@ -1,0 +1,104 @@
+{
+  "synthetic": true,
+  "source": "the card's wording rules (docs/packs/gpu-pc.md:40-47) and the design's W1–W4, L3 and X2 (§2.2–2.3); row 18's \"@ BACK PANEL\" (dataset.json:6135)",
+  "listings": [
+    {
+      "id": "00000000-0000-4000-8003-000000000001",
+      "title": "RTX 3090",
+      "description": "Call 07700 900123 for details. Kept in a smoke-free home, thanks for looking.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000002",
+      "title": "RTX 3090",
+      "description": "No Scammers. Thermal pads replaced @ BACK PANEL, runs cool and quiet.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000003",
+      "title": "RTX 3090",
+      "description": "Facebook delivery available, pay via link once confirmed.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000004",
+      "title": "RTX 3090",
+      "description": "More photos on facebook.com/marketplace, collection only.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000005",
+      "title": "RTX 3090",
+      "description": "More stock at www.example-shop.co.uk today.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000006",
+      "title": "RTX 3090",
+      "description": "Working away so my brother has it for collection.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000007",
+      "title": "RTX 3090",
+      "description": "Must go today, great condition card. Kept in a smoke-free home, thanks for looking.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000008",
+      "title": "RTX 3090",
+      "description": "Works.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-000000000009",
+      "title": "RTX 3090",
+      "description": "Works.",
+      "descriptionStatus": "partial",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-00000000000a",
+      "title": "RTX 3090",
+      "description": "Never used for mining, gaming only, great temps.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-00000000000b",
+      "title": "RTX 3090 ex mining card",
+      "description": "Great temps, repasted last month and fully working.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-00000000000c",
+      "title": "RTX 3090",
+      "description": "PayPal goods and services accepted, can post.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-00000000000d",
+      "title": "RTX 3090 for spares or repairs",
+      "description": "Card powers on but shows no display, sold as seen.",
+      "descriptionStatus": "full_verified",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8003-00000000000e",
+      "title": "RTX 3090",
+      "description": "Untested as I have no PC to put it in, sorry.",
+      "descriptionStatus": "missing",
+      "cautions": []
+    }
+  ]
+}
