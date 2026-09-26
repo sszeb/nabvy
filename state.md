@@ -14,7 +14,9 @@ Updated 08:38 UTC 2026-09-26 by coordinator (sweep 08:37: no merges, ledger 99 =
 99 rows = plan 99 (03:10: #108 asking-price-index applied as `asking_price_index_pr108`, checksums and transcription md5 verified). Earlier: 97 rows = plan 97 (checked 00:40: #85 attribution, #99 noise-filter, #92 search-planner applied 00:39, transcriptions verified). Nothing pending.
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
-- #109 spec-match [cp 6] (changes-needed): dispatcher session started 01:02.
+- #111 asking-price-position [cp 6]: opened 08:53 by its queued session; unreviewed.
+- #112 W3 docs slimming (base claude/coordinator-16, rides on #101): `session_01B5g9DjscTSFaP122ZnWuDn`.
+- #109 spec-match [cp 6]: last review (04:39, head 4944a85) approves; waits on CI (#110); head ba09f25 (timeout bump) since then unreviewed.
 - #106 dispatch: zero-token reconciler (W2), #104 ci: faster scoped CI (W2) — `session_01WsDVema6i3QcYMjPNZK17M`.
 - #102 router-gateway [cp 2], 2 migrations — `session_01ETdUVwpWrdfWdAPLvk8R8i` (Opus). On merge: start travel-time.
 - #100 L2 pipeline wiring [cp 5] — `session_01EdCvNpwGNoqFD77bC9LGJa` (Haiku); blocked on a permission prompt the owner must approve.
@@ -54,7 +56,6 @@ Updated 08:38 UTC 2026-09-26 by coordinator (sweep 08:37: no merges, ledger 99 =
 ## Merged, migrations pending
 
 ## Sessions to start
-- asking-price-position: model claude-opus-5-5; branch task/w2-asking-price-position; base main; brief briefs/asking-price-position.md
 - warning-signs: model claude-opus-5-5; branch task/w2-warning-signs; base main; brief briefs/warning-signs.md
 - scan-lookup: model claude-sonnet-5; branch task/w2-scan-lookup; base main; brief briefs/scan-lookup.md
 - price-drop-watch-fix2: model claude-haiku-4-5-20251001; branch task/w1-price-drop-watch; base task/w1-price-drop-watch; brief briefs/price-drop-watch-fix2.md
@@ -63,7 +64,6 @@ Updated 08:38 UTC 2026-09-26 by coordinator (sweep 08:37: no merges, ledger 99 =
 - Fire reviewer on-request `trig_01FPLnjfTATPb7YQivWvA7FX` with "PR #110: ci: raise the 15-minute job timeouts to 25" (priority: every PR's CI is cancelled until it merges).
 
 ## Docs to record (the sweep writes these into docs/progress.md)
-- W3 docs slimming: PR #112 (`task/0.20c-docs-slim`, base `claude/coordinator-16`, rides on #101) opened, then merged with the advanced base (729ecff) — CLAUDE.md 11,965→3,967 B, docs/decisions.md 76,420→21,195 B (history: docs/decisions-history.md), docs/questions.md 229,162→70,771 B (archive: docs/questions-archive.md, 185,089 B); docs/rules.md new. Note for the coordinator: README.md was independently emptied by the owner directly on GitHub (755115b, outside any session) while this PR was open; W3 kept that edit rather than reverting it, so README.md's pointers are not updated. CI running on 729ecff as of 09:02.
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
