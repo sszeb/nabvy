@@ -50,12 +50,11 @@ Updated 00:45 UTC 2026-09-26 by coordinator sweep. Setup check 2 (21:59): repo, 
 ## Merged, migrations pending
 
 ## Sessions to start
-- asking-price-index: model claude-opus-5-5; branch task/w2-asking-price-index; base main; brief briefs/asking-price-index.md
-- spec-match: model claude-opus-5-5; branch task/w2-spec-match; base main; brief briefs/spec-match.md
 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 01:02 UTC dispatcher started asking-price-index as session_01ActYkBhNtpcqMRWWSjE61p\ - 01:02 UTC dispatcher started spec-match as session_01EXXNdf8VXEm7qaHEbiBWaU
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
