@@ -13,6 +13,6 @@
 - **Depends on:** `switches`, `auth`, `account`.
 - **When off:** no hints and no "Lowest price + trip" sort; the route planner shows miles and time without £.
 - **Tests and fixtures:** reproduces the worked numbers (£1.31 per extra mile, £6.54 at 5 miles) at the defaults; picks the dated rate by date; value of time £0 handled.
-- **Priority and phase:** MVP (search-map-routes draft, task 4.1g).
+- **Priority and phase:** Dropped by the owner on 2026-09-25 (`nabvy/docs/decisions.md` "Trip cost dropped"): users see only the map, the distance in miles and a rough time. PR #50 closed unmerged; the branch `task/w1-travel-cost` stays for reference.
 - **Sources:** `search-map-routes.md` §4.2, §7.4, §11 task 4.1g.
 - **Open questions:** default rate and value-of-time choice (search-map-routes.md §10 rows 7–8).
