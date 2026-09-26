@@ -476,3 +476,37 @@ Resolved questions moved to `docs/questions-archive.md`. These remain genuinely 
 
 
 - **Task w2 pickup-location, owner wording.** Every `note_code` (`description_says_collection_from`, `listed_in`, `description_names_other_pickup`, `description_delivers_elsewhere`, `pickup_place_not_stated`), the "approximate" mark and the status names need the owner's wording before the switch goes `on` (draft §10). Only codes cross the boundary.
+### Folded from docs/questions/L1-web.md (sweep 04:38, 2026-09-26; genuinely open items)
+
+- **2026-09-25, L1 web: Turnstile is required even for the local run.** `docs/decisions.md`
+  ("Local single-user run first") lists the `.env.local` variables the local run needs and does
+  not include `TURNSTILE_SITE_KEY`/`TURNSTILE_SECRET_KEY`; `services/auth`'s captcha plugin
+  refuses `/sign-in/magic-link` with no `x-captcha-response` token regardless. Option taken: kept
+  Turnstile required (never weakened the captcha check to make the local run easier), and the
+  sign-in page shows a plain message instead of the widget when the keys are absent
+  (`safeLoadEnv`, never a crash). The owner needs to add both keys to `.env.local` for sign-in to
+  work locally; Cloudflare publishes fixed "always passes" test keys
+  (`1x00000000000000000000AA` / `1x0000000000000000000000000000000AA`) for exactly this kind of
+  local, non-production use, if real keys are not wanted yet. `docs/local-run.md` (task L3) should
+  list whichever the owner chooses.
+- **2026-09-25, L1 web: a want has no name, category or stored postcode.** `HuntForm`'s existing
+  fields (name, category, postcode district) do not exist on `WantManagerWant`/
+  `WantManagerUpsertWantInput`; the postcode is deliberately never stored
+  (`services/want-manager/README.md`). Option taken: dropped the name and category inputs (a
+  want's display name is derived from its criteria); the postcode input stays but is asked for
+  again on every save, including edits, since there is nothing to prefill; `HuntCard`'s location
+  line shows the resolved `centreId` instead of a postcode district. Whether a want should carry
+  its own display name, and whether prefilling the postcode on edit is worth storing something
+  for, are product decisions, not this session's to make.
+- **2026-09-25, L1 web: the pre-existing screenshot suite (`e2e/screens.spec.ts`,
+  `interaction.spec.ts`) is now silently testing the sign-in redirect, not the screen.** Those
+  specs navigate to `/app`, `/app/deals`, `/app/deal/d-1002`, `/app/hunts`, `/app/hunts/h-1`,
+  `/app/account` and `/app/account/preferences` with no session; task L1 added a real signed-in
+  gate to those pages (`lib/session.ts`), so an unauthenticated run now redirects to `/sign-in`
+  before the intended screen renders. The tests still pass (a 200 response, a visible `<h1>`, and
+  the copy rules hold trivially on the sign-in page's own text), so this is not a CI failure, but
+  the named screens' screenshots and copy checks are not actually exercised any more. Fixing this
+  needs those specs to sign in for real (this task's own `e2e/l1.spec.ts` shows one way to), which
+  is a larger, separate change to test infrastructure the L1 task did not ask for. Flagged here
+  rather than silently left for someone to notice later.
+

@@ -1,0 +1,4 @@
+{
+  "outcomes": [{ "ok": true }, { "ok": true }, { "refused": "attribution.mismatch" }],
+  "partnerEventsCount": 1
+}
