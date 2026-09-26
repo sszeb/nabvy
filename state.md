@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 00:45 UTC 2026-09-26 by coordinator sweep. Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 00:38. Fingerprint: 1606658; #107@bda06d3,#106@cbb3ecc,#104@da4e7ec,#102@54dee1e,#101@ee78e16,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 97.
+Updated 01:12 UTC 2026-09-26 by coordinator (PR #107 merged event). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 00:38. Fingerprint: 1606658; #107@bda06d3,#106@cbb3ecc,#104@da4e7ec,#102@54dee1e,#101@ee78e16,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 97.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -14,7 +14,6 @@ Updated 00:45 UTC 2026-09-26 by coordinator sweep. Setup check 2 (21:59): repo, 
 97 rows = plan 97 (checked 00:40: #85 attribution, #99 noise-filter, #92 search-planner applied 00:39, transcriptions verified). Nothing pending.
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
-- #107 routines: role files and pre-check [W1 step A], no migrations, head bda06d3 — W1 Routines implementer (this session, Sonnet, `task/0.20a-routine-files`). Subscribed; fires the reviewer once CI is green.
 - #106 dispatch: zero-token reconciler (W2), #104 ci: faster scoped CI (W2) — `session_01WsDVema6i3QcYMjPNZK17M`.
 - #102 router-gateway [cp 2], 2 migrations — `session_01ETdUVwpWrdfWdAPLvk8R8i` (Opus). On merge: start travel-time.
 - #100 L2 pipeline wiring [cp 5] — `session_01EdCvNpwGNoqFD77bC9LGJa` (Haiku); blocked on a permission prompt the owner must approve.
@@ -54,6 +53,7 @@ Updated 00:45 UTC 2026-09-26 by coordinator sweep. Setup check 2 (21:59): repo, 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 01:10 UTC #107 routines role files and pre-check (W1 step A) merged; no migrations; main 5641855.
 - 01:02 UTC dispatcher started asking-price-index as session_01ActYkBhNtpcqMRWWSjE61p\ - 01:02 UTC dispatcher started spec-match as session_01EXXNdf8VXEm7qaHEbiBWaU
 
 ## Retired
