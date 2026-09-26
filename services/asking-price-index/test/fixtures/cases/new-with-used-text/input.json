@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "builtFrom": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k/dataset.json:2178,2244 (a listing marked \"New\" whose text says \"Only used for 1 month\")",
+  "listings": [
+    {
+      "id": "new-used",
+      "priceMinor": 50000,
+      "condition": "new",
+      "description": "Only used for 1 month, boxed."
+    },
+    {
+      "id": "new-sealed",
+      "priceMinor": 70000,
+      "condition": "new",
+      "description": "Never used, still sealed."
+    }
+  ],
+  "now": "2026-09-26T00:00:00Z"
+}

@@ -1,23 +1,26 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import type { ChannelKind, Hunt, WantManagerCadenceSeconds } from '@/data/types'
+import { useActionState, useState } from 'react'
+import { saveHunt } from '@/app/app/(shell)/hunts/actions'
+import type { Hunt, WantManagerCadenceSeconds } from '@/data/types'
 import { CADENCE_DEFAULT_SECONDS } from '@/lib/cadence'
 import { CadenceSlider } from './cadence-slider'
-import { channelName } from './hunt-card'
 import { Button } from './ui/button'
-import { Checkbox } from './ui/checkbox'
 import { Input, NativeSelect } from './ui/input'
 import { FieldHint, Label } from './ui/label'
 import { Switch } from './ui/switch'
 
-/** The categories come from the category packs; the first pack is GPUs and gaming PCs. */
-const categories = ['GPUs and gaming PCs']
 const radii = [10, 25, 40, 60]
-const channelKinds: ChannelKind[] = ['telegram', 'push', 'email']
 
-/** Create or edit a hunt. UI only: task 4.1 saves it through the hunts procedures. */
+/**
+ * Create or edit a hunt (task L1), saved through `want-manager`'s functions. A want has no
+ * `name` or `category` field, and never stores the postcode it was created from (README.md:
+ * "the postcode is never stored"), so "What to look for" becomes the want's GPU criteria and
+ * the postcode is asked for again on every save, including edits. Recorded in
+ * docs/questions/L1-web.md.
+ */
 export function HuntForm({ hunt }: { hunt?: Hunt }) {
   const router = useRouter()
   const [active, setActive] = useState(hunt ? hunt.status === 'active' : true)
@@ -27,26 +30,20 @@ export function HuntForm({ hunt }: { hunt?: Hunt }) {
   const [previewCadence, setPreviewCadence] = useState<WantManagerCadenceSeconds>(savedCadence)
   // No estimate until want-manager (task 1.8e) ships its estimate procedure: the slider then shows
   // no credit or cadence line rather than a client-side number (CLAUDE.md, "No invented numbers").
-  // Swap `null` for that procedure's (debounced) answer for `previewCadence` when it exists.
   const cadenceEstimate = null
+  const [state, formAction, pending] = useActionState(
+    async (_prev: { error?: string }, formData: FormData) => saveHunt(formData),
+    {},
+  )
   return (
-    <form
-      className="grid max-w-xl gap-6"
-      onSubmit={(event) => {
-        event.preventDefault()
-        router.push('/app/hunts')
-      }}
-    >
-      <div className="grid gap-2">
-        <Label htmlFor="hunt-name">Name</Label>
-        <Input
-          id="hunt-name"
-          name="name"
-          defaultValue={hunt?.name}
-          required
-          placeholder="For example: RTX cards near home"
-        />
-      </div>
+    <form className="grid max-w-xl gap-6" action={formAction}>
+      <input type="hidden" name="wantId" value={hunt?.id ?? ''} />
+      <input type="hidden" name="active" value={String(active)} />
+      {state?.error ? (
+        <p role="alert" className="text-destructive text-sm">
+          {state.error}
+        </p>
+      ) : null}
       <div className="grid gap-2">
         <Label htmlFor="hunt-terms">What to look for</Label>
         <Input
@@ -57,31 +54,24 @@ export function HuntForm({ hunt }: { hunt?: Hunt }) {
           aria-describedby="hunt-terms-hint"
           placeholder="rtx 3070, rtx 3080"
         />
-        <FieldHint id="hunt-terms-hint">Separate terms with commas.</FieldHint>
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="hunt-category">Category</Label>
-        <NativeSelect
-          id="hunt-category"
-          name="category"
-          defaultValue={hunt?.category ?? categories[0]}
-        >
-          {categories.map((category) => (
-            <option key={category}>{category}</option>
-          ))}
-        </NativeSelect>
+        <FieldHint id="hunt-terms-hint">
+          Separate terms with commas. Each becomes one spec criterion.
+        </FieldHint>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="grid gap-2">
-          <Label htmlFor="hunt-postcode">Postcode district</Label>
+          <Label htmlFor="hunt-postcode">Postcode</Label>
           <Input
             id="hunt-postcode"
             name="postcode"
-            defaultValue={hunt?.postcodeDistrict}
             required
             className="uppercase"
-            placeholder="PO19"
+            placeholder="PO19 1SB"
+            aria-describedby="hunt-postcode-hint"
           />
+          <FieldHint id="hunt-postcode-hint">
+            Never stored — used once to find the nearest checked area, every time you save.
+          </FieldHint>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="hunt-radius">Radius</Label>
@@ -126,22 +116,13 @@ export function HuntForm({ hunt }: { hunt?: Hunt }) {
           estimate={cadenceEstimate}
         />
       </div>
-      <fieldset className="grid gap-3">
-        <legend className="mb-3 font-medium text-sm">Send alerts to</legend>
-        {channelKinds.map((kind) => (
-          <div key={kind} className="flex items-center gap-3">
-            <Checkbox
-              id={`channel-${kind}`}
-              name="channels"
-              value={kind}
-              defaultChecked={hunt ? hunt.channels.includes(kind) : kind === 'email'}
-            />
-            <Label htmlFor={`channel-${kind}`} className="font-normal">
-              {channelName[kind]}
-            </Label>
-          </div>
-        ))}
-      </fieldset>
+      <p className="text-muted-foreground text-sm">
+        Where alerts go is set once for every hunt, in{' '}
+        <Link href="/app/account/preferences" className="text-link underline underline-offset-4">
+          Preferences
+        </Link>
+        .
+      </p>
       {hunt ? (
         <div className="flex items-center justify-between gap-4 rounded-xl border p-4">
           <div className="grid gap-1">
@@ -152,7 +133,9 @@ export function HuntForm({ hunt }: { hunt?: Hunt }) {
         </div>
       ) : null}
       <div className="flex flex-wrap gap-3">
-        <Button type="submit">{hunt ? 'Save changes' : 'Create hunt'}</Button>
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Saving…' : hunt ? 'Save changes' : 'Create hunt'}
+        </Button>
         <Button type="button" variant="ghost" onClick={() => router.push('/app/hunts')}>
           Cancel
         </Button>

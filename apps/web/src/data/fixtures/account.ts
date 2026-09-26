@@ -108,10 +108,12 @@ export const alertDeliveries: AlertDelivery[] = [
   },
 ]
 
+/** Unused since task L1 wired `getAccount()` to `@nabvy/account`; kept for `/design`'s reference
+ * only if a screen there wants an example account (docs/questions/L1-web.md). */
 export const account: Account = {
   email: 'alex@example.com',
   displayName: 'Alex',
-  postcodeDistrict: 'PO19',
+  homeArea: 'PO19',
   signInMethods: ['magic_link', 'google'],
   createdAt: '2026-09-20T09:00:00Z',
 }
