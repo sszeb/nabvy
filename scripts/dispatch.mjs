@@ -1,5 +1,7 @@
-import { execSync } from 'node:child_process'
+import { execFileSync, execSync } from 'node:child_process'
 import https from 'node:https'
+
+import { parseReviewed, STATE_BRANCH } from './precheck.mjs'
 
 const GITHUB_API = 'https://api.github.com'
 const ROUTINE_API = 'https://api.anthropic.com/v1/claude_code/routines'
@@ -7,6 +9,12 @@ const ROUTINE_API = 'https://api.anthropic.com/v1/claude_code/routines'
 const CHAIN_REVIEW_CONTEXT = 'chain/review'
 const CHAIN_FIX_CONTEXT = 'chain/fix'
 const MAX_FIX_ATTEMPTS = 3
+// A claim in reviewed.txt this fresh means a Reviewer run is likely mid-flight on the head: the
+// reconciler backs off rather than firing a second one. Shorter than precheck.mjs's own
+// STALE_CLAIM_MS (2h, which governs when the reviewer itself may re-claim a head that a crashed
+// run left claimed) because this guard only needs to survive the gap until the reviewer's own
+// claim or the chain/review status lands, not a whole dead run's timeout.
+const REVIEWED_CLAIM_STALE_MS = 30 * 60 * 1000
 
 const {
   GITHUB_TOKEN,
@@ -18,6 +26,29 @@ const {
   EVENT_NAME,
   WORKFLOW_RUN_HEAD_SHA,
 } = process.env // convention-check: ignore no-process-env (CI script, not app config)
+
+// Read reviewed.txt off the state branch (the reviewer's own claim/verdict memory,
+// scripts/precheck.mjs), so the reconciler can skip a head the reviewer already has in hand.
+// Best-effort: a fetch failure (network hiccup, branch briefly missing) falls back to an empty
+// map, which never blocks a fire -- the chain/review status stays as the guard in that case.
+function fetchReviewedText() {
+  try {
+    execFileSync(
+      'git',
+      ['fetch', '-q', 'origin', `+refs/heads/${STATE_BRANCH}:refs/remotes/origin/${STATE_BRANCH}`],
+      {
+        stdio: 'pipe',
+      },
+    )
+    return execFileSync('git', ['show', `origin/${STATE_BRANCH}:reviewed.txt`], {
+      encoding: 'utf-8',
+      stdio: 'pipe',
+    })
+  } catch (err) {
+    console.error('Could not read reviewed.txt from state branch:', err.message)
+    return ''
+  }
+}
 
 // Parse owner/repo from git remote
 function getOwnerRepo() {
@@ -67,14 +98,13 @@ async function httpsRequest(url, options = {}) {
   })
 }
 
-// Fire a Routine
-async function fireRoutine(routineId, fireToken, prNumber, headSha) {
+// Fire a Routine with the given text.
+async function fireRoutine(routineId, fireToken, text) {
   if (!fireToken || !routineId) {
     console.log('Skipping fire: missing token or routine ID')
     return null
   }
 
-  const text = `PR #${prNumber} sha=${headSha}`
   try {
     const response = await httpsRequest(`${ROUTINE_API}/${routineId}/fire`, {
       method: 'POST',
@@ -123,7 +153,7 @@ async function findOpenPRForSha(owner, repo, sha) {
 
   const prs = JSON.parse(response.body)
   const open = prs.find(
-    (pr) => pr.state === 'open' && pr.head.repo.full_name === `${owner}/${repo}`
+    (pr) => pr.state === 'open' && pr.head.repo.full_name === `${owner}/${repo}`,
   )
   return open ? open.number : null
 }
@@ -201,12 +231,31 @@ export function parseFixAttempts(prBody) {
   return Number.parseInt(prBody?.match(/fix-attempt: (\d+)/)?.[1] ?? '0', 10)
 }
 
-export function decideActions({ pr, checkRuns, hasChainReview, hasChainFix }) {
+// Second guard alongside the chain/review commit status: reviewed.txt (scripts/precheck.mjs) is
+// the reviewer's own memory, written before the reconciler's status can exist for a fresh claim.
+// A recorded verdict (approved/merged/changes) blocks forever -- that head already has an
+// outcome. A claim blocks only while it is fresh; a stale one (the claiming run died) never
+// arrived at a verdict, so the head is fireable again.
+export function reviewedBlocksReview(reviewedMap, prNumber, headSha, nowMs) {
+  const entry = reviewedMap.get(`${prNumber}@${headSha.slice(0, 7)}`)
+  if (!entry) return false
+  if (entry.status !== 'claimed') return true
+  const age = nowMs - Date.parse(entry.at)
+  return Number.isNaN(age) || age < REVIEWED_CLAIM_STALE_MS
+}
+
+export function decideActions({
+  pr,
+  checkRuns,
+  hasChainReview,
+  hasChainFix,
+  reviewedBlocked = false,
+}) {
   const allPassing = allChecksPassing(checkRuns)
   const anyFailing = anyChecksFailing(checkRuns)
   const fixAttempts = parseFixAttempts(pr.body)
 
-  const shouldFireReview = pr.draft !== true && allPassing && !hasChainReview
+  const shouldFireReview = pr.draft !== true && allPassing && !hasChainReview && !reviewedBlocked
 
   const needsFix = (pr.labels ?? []).some((label) => label.name === 'changes-needed') || anyFailing
   const shouldFireFix = needsFix && !hasChainFix && fixAttempts < MAX_FIX_ATTEMPTS
@@ -216,7 +265,7 @@ export function decideActions({ pr, checkRuns, hasChainReview, hasChainFix }) {
 
 // -- Orchestration (I/O) --
 
-async function reconcilePR(owner, repo, prNumber) {
+async function reconcilePR(owner, repo, prNumber, reviewedMap) {
   const pr = await getPRDetails(owner, repo, prNumber)
   if (!pr) {
     console.log(`Could not fetch PR #${prNumber}`)
@@ -228,23 +277,30 @@ async function reconcilePR(owner, repo, prNumber) {
   }
 
   const headSha = pr.head.sha
-  console.log(`PR #${prNumber}: draft=${pr.draft}, sha=${headSha.slice(0, 7)}`)
+  const sha7 = headSha.slice(0, 7)
+  console.log(`PR #${prNumber}: draft=${pr.draft}, sha=${sha7}`)
 
   const status = await getCommitStatus(owner, repo, headSha)
   const hasChainReview = status?.statuses?.some((s) => s.context === CHAIN_REVIEW_CONTEXT) ?? false
   const hasChainFix = status?.statuses?.some((s) => s.context === CHAIN_FIX_CONTEXT) ?? false
   const checkRuns = await getCheckRuns(owner, repo, headSha)
+  const reviewedBlocked = reviewedBlocksReview(reviewedMap, prNumber, headSha, Date.now())
 
   const { shouldFireReview, shouldFireFix, fixAttempts } = decideActions({
     pr,
     checkRuns,
     hasChainReview,
     hasChainFix,
+    reviewedBlocked,
   })
 
   if (shouldFireReview) {
     console.log(`[REVIEW] PR #${prNumber} is ready for review`)
-    await fireRoutine(REVIEW_ROUTINE_ID, REVIEW_FIRE_TOKEN, prNumber, headSha)
+    await fireRoutine(
+      REVIEW_ROUTINE_ID,
+      REVIEW_FIRE_TOKEN,
+      `PR #${prNumber}: ${pr.title}; head ${sha7}; CI green`,
+    )
     await createCommitStatus(owner, repo, headSha, CHAIN_REVIEW_CONTEXT, 'Reviewer Routine fired')
   }
 
@@ -252,7 +308,7 @@ async function reconcilePR(owner, repo, prNumber) {
     console.log(
       `[FIX] PR #${prNumber} needs fixes (attempt ${fixAttempts + 1}/${MAX_FIX_ATTEMPTS})`,
     )
-    await fireRoutine(FIX_ROUTINE_ID, FIX_FIRE_TOKEN, prNumber, headSha)
+    await fireRoutine(FIX_ROUTINE_ID, FIX_FIRE_TOKEN, `PR #${prNumber} sha=${headSha}`)
     await createCommitStatus(owner, repo, headSha, CHAIN_FIX_CONTEXT, 'Fixer Routine fired')
   } else if (fixAttempts >= MAX_FIX_ATTEMPTS) {
     console.log(`[HOLD] PR #${prNumber} reached max fix attempts, needs a human`)
@@ -278,15 +334,17 @@ async function main() {
       console.log(`No open PR found for sha ${WORKFLOW_RUN_HEAD_SHA.slice(0, 7)}, nothing to do`)
       return
     }
-    await reconcilePR(owner, repo, prNumber)
+    const reviewedMap = parseReviewed(fetchReviewedText())
+    await reconcilePR(owner, repo, prNumber, reviewedMap)
     return
   }
 
   if (EVENT_NAME === 'schedule') {
     const prNumbers = await listOpenPRNumbers(owner, repo)
     console.log(`Backstop sweep: ${prNumbers.length} open PR(s)`)
+    const reviewedMap = parseReviewed(fetchReviewedText())
     for (const prNumber of prNumbers) {
-      await reconcilePR(owner, repo, prNumber)
+      await reconcilePR(owner, repo, prNumber, reviewedMap)
     }
     return
   }

@@ -1,7 +1,13 @@
 import assert from 'node:assert'
 import test from 'node:test'
 
-import { allChecksPassing, anyChecksFailing, decideActions, parseFixAttempts } from './dispatch.mjs'
+import {
+  allChecksPassing,
+  anyChecksFailing,
+  decideActions,
+  parseFixAttempts,
+  reviewedBlocksReview,
+} from './dispatch.mjs'
 
 // Fixture test for dispatch.mjs reconciler logic. Imports and exercises the shipped functions
 // directly, so a regression in the real logic fails this test rather than a re-implemented copy.
@@ -98,5 +104,54 @@ test('decideActions: does not re-fire fix when chain/fix status already exists',
     result.shouldFireFix,
     false,
     'should not re-fire with existing chain/fix status',
+  )
+})
+
+test('decideActions: does not fire review when reviewed.txt already blocks the head', () => {
+  const pr = { draft: false, labels: [], body: '' }
+  const checkRuns = [{ status: 'completed', conclusion: 'success' }]
+  const result = decideActions({
+    pr,
+    checkRuns,
+    hasChainReview: false,
+    hasChainFix: false,
+    reviewedBlocked: true,
+  })
+  assert.strictEqual(result.shouldFireReview, false, 'reviewed.txt guard should block the fire')
+})
+
+// reviewed.txt guard: a second guard alongside the chain/review commit status, since a fresh
+// claim in reviewed.txt (scripts/precheck.mjs) can predate the reconciler's own status on the
+// head -- the two systems can't see each other's writes until the status lands.
+test('reviewedBlocksReview', () => {
+  const now = Date.parse('2026-09-26T18:00Z')
+  const reviewed = new Map([
+    ['106@367a86d', { status: 'changes', at: '2026-09-26T17:03Z' }],
+    ['200@aaaaaaa', { status: 'claimed', at: '2026-09-26T17:45Z' }], // 15 min old: fresh
+    ['201@bbbbbbb', { status: 'claimed', at: '2026-09-26T16:00Z' }], // 2h old: stale
+    ['202@ccccccc', { status: 'approved', at: '2026-09-26T17:00Z' }],
+    ['203@ddddddd', { status: 'merged', at: '2026-09-26T17:00Z' }],
+  ])
+  assert.strictEqual(
+    reviewedBlocksReview(reviewed, 106, '367a86dxx', now),
+    true,
+    'a recorded changes verdict blocks forever',
+  )
+  assert.strictEqual(reviewedBlocksReview(reviewed, 202, 'cccccccxx', now), true, 'approved blocks')
+  assert.strictEqual(reviewedBlocksReview(reviewed, 203, 'dddddddxx', now), true, 'merged blocks')
+  assert.strictEqual(
+    reviewedBlocksReview(reviewed, 200, 'aaaaaaaxx', now),
+    true,
+    'a fresh claim (< 30 min) blocks',
+  )
+  assert.strictEqual(
+    reviewedBlocksReview(reviewed, 201, 'bbbbbbbxx', now),
+    false,
+    'a stale claim (> 30 min) does not block',
+  )
+  assert.strictEqual(
+    reviewedBlocksReview(reviewed, 999, '0000000xx', now),
+    false,
+    'no entry for the head does not block',
   )
 })
