@@ -14,6 +14,7 @@ Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs 
 99 rows = plan 99 (03:10: #108 asking-price-index applied as `asking_price_index_pr108`, checksums and transcription md5 verified). Earlier: 97 rows = plan 97 (checked 00:40: #85 attribution, #99 noise-filter, #92 search-planner applied 00:39, transcriptions verified). Nothing pending.
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
+- #113 scripts: precheck counts only open PRs [cp 0] — coordinator 19 (branch claude/exciting-cray-42nw7p); unreviewed. Fixes the always-BUSY coordinator pre-check.
 - #111 asking-price-position [cp 6]: opened 08:53 by its queued session; unreviewed.
 - #112 W3 docs slimming (base claude/coordinator-16; #101 merged 10:4x, so retarget #112 to main): `session_01B5g9DjscTSFaP122ZnWuDn`.
 - #109 spec-match [cp 6]: last review (04:39, head 4944a85) approves; waits on CI (#110); head ba09f25 (timeout bump) since then unreviewed.
@@ -41,16 +42,27 @@ Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs 
 - photo-review stays parked (owner).
 
 ## Waiting on the owner
-- (08:20) Regenerate the reviewer on-request API token (the 01:09 one was pasted in chat) and update the GitHub secret REVIEW_FIRE_TOKEN; confirm W3 in its session ("Nabvy W3: docs slimming").
-- Start coordinator 19 from the app (Opus 5.5, medium effort, repo sszeb/nabvy at claude/coordinator-16, tags nabvy, nabvy-coordinator); coordinator 18 passed 150k at 23:32. First prompt: "You are Nabvy coordinator 19, the owner's control session (same brief as coordinator 18: answer the owner, check the fleet when asked, unblock stuck sessions, do session-tool work Routines cannot). Read CLAUDE.md, state.md on claude/coordinator-state , docs/routines/improvement-plan.md and docs/routines/daisy-chain.md (owner asked 23:40 for daisy-chained Routines; decide the k-way split only after the two-module pilot); everything else by grep or sed -n slices. Coordinator 18 at 23:30 put the reviewer rules inline in both reviewer Routine prompts, fired on-request reviews for #83, #85 and #89 (#81 was refused by the permission classifier), and wrote the improvement plan. Next: once the owner has done the plan's owner actions 1-3, queue the docs-and-scripts PR (plan rollout step 2) for a Sonnet docs session via state.md; then follow the rollout order. First turn: get_trigger on the coordinator and hourly reviewer Routines, report the three review runs' outcomes, then wait for the owner."
-- (coordinator 18, 23:30) Plan: docs/routines/improvement-plan.md on claude/coordinator-16 (#101). Owner in the app: (1) remove the "Pull request: Converted to draft" GitHub trigger from "Nabvy reviewer (on request)", keep it API-only; (2) on the coordinator Routine add GitHub trigger "Pull request: Closed" with filters Is merged = true and Base branch = main; (3) later, per the plan's rollout: API tokens for the reviewer and Fixer as repository secrets (never in chat).
+- (12:00) Start coordinator 20 from the app (Opus 5.5, medium effort, repo sszeb/nabvy at main, tags nabvy, nabvy-coordinator); coordinator 19 passed 150k at 11:52. First prompt: "You are Nabvy coordinator 20, the owner's control session (same brief as coordinator 19: answer the owner, check the fleet when asked, unblock stuck sessions, do session-tool work Routines cannot). Read CLAUDE.md and state.md on claude/coordinator-state; its "Workflow check" section is your fix list, in order. Read docs/routines/reviewer.md and docs/routines/fixer.md (2 KB each) before changing them; everything else by grep or sed -n slices. Coordinator 19 checked the new workflow at 12:00 UTC: merge -> coordinator and changes-needed -> Fixer work; the pre-check was always BUSY (fix in PR #113); reviewer markers cannot be pushed (HTTP 403 on refs/reviewed/*), so reviewer runs re-review heads and post duplicates while green heads wait. First turn: get_session on the dispatcher and on W2b, check PR #113, then start fix 1 (queue a Sonnet session with a brief in briefs/, or do it yourself if small). Hand off at 150k."
+- Dispatcher: every create_session waits for your approval (pending again 11:52, for price-drop-watch-fix2). Pick "always allow" for create_session in "Nabvy dispatcher" if offered. It is at 132k of 200k.
+- Reviewer (on request) `trig_01FPLnjfTATPb7YQivWvA7FX`: remove every GitHub trigger so it is API-only (plan action 1). Today one PR event starts two runs: duplicate reviews seconds apart on #104, #106, #107, #108, #109, #112.
+- If not done: put the 08:24 regenerated reviewer token into the GitHub secret REVIEW_FIRE_TOKEN (never in chat).
+- W2b `session_0184s4vadhBCiHcAW7ZNZRRW` idle since 08:36 at 190k, asking whether to monitor #104/#106 (both red). Answer it, or coordinator 20 replaces it.
+- Weekly usage: sessions report the seven-day limit as "allowed_warning" (11:52).
 - Agents cannot fire the Fixer Routine `trig_01UhN94zqkCRYjd7fjwSgKYF` (created via http_api); fix rounds go through the dispatcher until the owner recreates it from the app.
-- PR #81 review fire was refused by the permission classifier at 23:30; the hourly reviewer backstop or the owner fires it.
-- In claude.ai/code/routines, for "Nabvy reviewer (on request)" and "Nabvy reviewer (hourly)": attach the repository sszeb/nabvy and set the model to Sonnet 5 (as done for the coordinator at 21:57). Until then reviewer runs may fail.
 - Approve L2's pending permission prompt (session "Nabvy L2: pipeline wiring and local runner").
 - `ROUTER_API_KEY` secret for router-gateway (owed since 16:45).
-- #81 and #89 still unreviewed (#83, #85 merged); #96, #97, #98 unreviewed over four hours; the hourly reviewer likely cannot run until its Routine has the repository attached (item above).
 - Optional: detach unused connectors from the Nabvy environment (smaller context for every session).
+
+## Workflow check (coordinator 19, 12:00 UTC)
+Works: merge -> coordinator run within seconds (#107, #108, #101; $0.40, 58k); label changes-needed -> Fixer (#101 10:39, one commit, fix-r1); hourly reviewer merges approved green heads; sweeps every 2 h.
+Fix list, in order:
+1. Reviewer memory. reviewer.md step 6 (`git push <sha>:refs/reviewed/pr-<n>`) gets HTTP 403: only branch pushes work, so no marker exists and runs re-review heads (#70, #93, #101, #108 three times) while green heads wait (#109 7 h, #110). Replace it with a claim line `#<n> <sha7> <verdict>` in `reviewed.txt` on this branch, pushed fast-forward BEFORE reviewing (rejected push: re-fetch; head already claimed: end). precheck reviewer reads that file. Add: a head approved while CI ran is merged by the next backstop once CI is green. One Sonnet PR (reviewer.md, precheck.mjs, test).
+2. On-request reviewer API-only (owner, above).
+3. Unstick PRs: #109 remove the stale changes-needed (01:46, older head) and get ba09f25 reviewed; close #110 (main has its change); retarget #112 to main (the Fixer trigger filters Base = main); #70's label predates the Fixer trigger. CI cancelled at 15 min on #89, #93, #111, #112, #70: merge main (25-min timeouts since 11:36).
+4. #81 [cp 5] unreviewed since 13:00 yesterday; #100 never reviewed (red CI).
+5. W2: #104 red (turbo filter), #106 red (tests); add `node --test scripts/precheck.test.mjs` to ci.yml there (CI never runs it).
+6. Dispatcher needs an approval per session start; retire it once #106's Builder path is live.
+Notes: #107 was merged by a session (not a reviewer run) with its test job cancelled; post-merge approval 01:15. The merge-event coordinator run wrote "Updated 10:50" at 11:37.
 
 ## Merged, migrations pending
 
@@ -60,7 +72,10 @@ Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
-- 11:39 UTC dispatcher started asking-price-position as session_01H1uNBCmVwu3CQKJcozi74Y\ - 11:39 UTC dispatcher started warning-signs as session_011Zj6qGMEBWqYF6Vr8fYKnJ\ - 11:43 UTC dispatcher started scan-lookup as session_01NrX4WGkyZ76JoBoK6inbsY
+- 11:39 UTC dispatcher started asking-price-position as session_01H1uNBCmVwu3CQKJcozi74Y
+- 11:39 UTC dispatcher started warning-signs as session_011Zj6qGMEBWqYF6Vr8fYKnJ
+- 11:43 UTC dispatcher started scan-lookup as session_01NrX4WGkyZ76JoBoK6inbsY
+- 12:00 UTC coordinator 19: workflow check (section "Workflow check"); PR #113 opened (precheck counts only open PRs).
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
