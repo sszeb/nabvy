@@ -1,0 +1,237 @@
+{
+  "id": "668a8901-8856-40ee-8557-4f137bd30808",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "price_drop_watch.drops": {
+      "name": "drops",
+      "schema": "price_drop_watch",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "watch_id": {
+          "name": "watch_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "from_minor": {
+          "name": "from_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "to_minor": {
+          "name": "to_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "observed_at": {
+          "name": "observed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "relist_group_id": {
+          "name": "relist_group_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "drops_watch_idx": {
+          "name": "drops_watch_idx",
+          "columns": [
+            {
+              "expression": "watch_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "drops_watch_id_watches_id_fk": {
+          "name": "drops_watch_id_watches_id_fk",
+          "tableFrom": "drops",
+          "tableTo": "watches",
+          "schemaTo": "price_drop_watch",
+          "columnsFrom": [
+            "watch_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "drops_watch_card_key": {
+          "name": "drops_watch_card_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "watch_id",
+            "card_hash"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "drops_currency_check": {
+          "name": "drops_currency_check",
+          "value": "\"price_drop_watch\".\"drops\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "drops_from_check": {
+          "name": "drops_from_check",
+          "value": "\"price_drop_watch\".\"drops\".\"from_minor\" >= 0"
+        },
+        "drops_to_check": {
+          "name": "drops_to_check",
+          "value": "\"price_drop_watch\".\"drops\".\"to_minor\" >= 0"
+        },
+        "drops_is_drop_check": {
+          "name": "drops_is_drop_check",
+          "value": "\"price_drop_watch\".\"drops\".\"to_minor\" < \"price_drop_watch\".\"drops\".\"from_minor\""
+        },
+        "drops_card_hash_check": {
+          "name": "drops_card_hash_check",
+          "value": "\"price_drop_watch\".\"drops\".\"card_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "price_drop_watch.watches": {
+      "name": "watches",
+      "schema": "price_drop_watch",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "watches_listing_active_idx": {
+          "name": "watches_listing_active_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"price_drop_watch\".\"watches\".\"active\"",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "watches_user_listing_key": {
+          "name": "watches_user_listing_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id",
+            "listing_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "price_drop_watch": "price_drop_watch"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

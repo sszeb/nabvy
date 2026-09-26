@@ -1,0 +1,19 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": false,
+  "source": "the recorded run's row for 1072745435569624: asking £450 with the seller's own displayed previous price £499 (dataset.json, listingId 1072745435569624, conflicts[0])",
+  "listingSourceId": "1072745435569624",
+  "steps": [
+    {
+      "collectedAt": "2026-09-25T01:40:43.415Z",
+      "edits": [
+        {
+          "listingId": "1072745435569624",
+          "fields": {
+            "title": "Gaming PC - RTX 2070 Super, Ryzen 7 2700X, 16GB RAM (bundle extras)"
+          }
+        }
+      ]
+    }
+  ]
+}
