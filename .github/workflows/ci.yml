@@ -222,13 +222,13 @@ jobs:
     steps:
       - name: Fire reviewer
         run: |
-          if [ -z "${{ secrets.REVIEW_FIRE_TOKEN }}" ] || [ -z "${{ secrets.REVIEW_ROUTINE_ID }}" ]; then
+          if [ -z "${{ secrets.REVIEW_FIRE_TOKEN }}" ] || [ -z "${{ vars.REVIEW_ROUTINE_ID }}" ]; then
             echo "REVIEW_FIRE_TOKEN or REVIEW_ROUTINE_ID not set, skipping"
             exit 0
           fi
 
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
-            "https://api.anthropic.com/v1/claude_code/routines/${{ secrets.REVIEW_ROUTINE_ID }}/fire" \
+            "https://api.anthropic.com/v1/claude_code/routines/${{ vars.REVIEW_ROUTINE_ID }}/fire" \
             -H "Authorization: Bearer ${{ secrets.REVIEW_FIRE_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"text\": \"PR #${{ github.event.pull_request.number }} sha=${{ github.event.pull_request.head.sha }}\"}")
@@ -259,13 +259,13 @@ jobs:
     steps:
       - name: Fire fixer
         run: |
-          if [ -z "${{ secrets.FIX_FIRE_TOKEN }}" ] || [ -z "${{ secrets.FIX_ROUTINE_ID }}" ]; then
+          if [ -z "${{ secrets.FIX_FIRE_TOKEN }}" ] || [ -z "${{ vars.FIX_ROUTINE_ID }}" ]; then
             echo "FIX_FIRE_TOKEN or FIX_ROUTINE_ID not set, skipping"
             exit 0
           fi
 
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
-            "https://api.anthropic.com/v1/claude_code/routines/${{ secrets.FIX_ROUTINE_ID }}/fire" \
+            "https://api.anthropic.com/v1/claude_code/routines/${{ vars.FIX_ROUTINE_ID }}/fire" \
             -H "Authorization: Bearer ${{ secrets.FIX_FIRE_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"text\": \"PR #${{ github.event.pull_request.number }} sha=${{ github.event.pull_request.head.sha }}\"}")
