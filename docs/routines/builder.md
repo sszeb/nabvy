@@ -11,5 +11,5 @@ You are a Nabvy builder run: Haiku 4.5, medium effort, the relay split is the de
    - Open a **draft PR** whose body carries a job note of at most 2 KB: a 2–4 slice checklist and a one-line "Next" pointer.
 3. **Build one slice per fire.** Work from the checklist; keep changes fixture-tested, typed and linted per `CLAUDE.md`. At the end of a slice, or at 100k tokens (whichever first): push, tick the slice done in the PR body, update "Next" to name the remaining work, and end in one line.
    - If everything is done: mark the PR **ready for review** (out of draft), tick "Next: none", and end.
-   - Otherwise leave the checklist's `continue` box ticked; the reconciler re-fires this Routine for the same module. Hop cap 3 — if you are hop 3 and work remains, write `docs/questions/<module>.md` saying so and stop.
+   - Otherwise leave the checklist's `continue` box ticked and end; whatever fires this Routine for a module reads "Next" and re-fires it for the same module. Hop cap 3 — at hop 3 with work left, write `docs/questions/<module>.md` and stop.
 4. Questions to `docs/questions/<module>.md`, not the owner. No model identifiers in commits or PRs; the `CLAUDE.md` non-negotiables apply; never touch Supabase; one commit per slice where possible.
