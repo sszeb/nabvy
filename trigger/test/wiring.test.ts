@@ -9,6 +9,20 @@ import { createMemoryPublisher } from '@nabvy/transport'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
+import {
+  ACCOUNT_DELETED,
+  APIFY_GATEWAY_RUN_COLLECTED,
+  DETAIL_EVIDENCE_CHANGED,
+  DETAIL_EVIDENCE_UNRESOLVED,
+  LISTING_INGEST_CARD_CHANGED,
+  LISTING_INGEST_FIRST_SEEN,
+  LISTING_SUPPRESSION_CHANGED,
+  PARTS_AI_EXTRACTED,
+  PARTS_RECORD_RECORDED,
+  PARTS_RULES_RAN,
+  type EventHandlers,
+} from '../event-tasks-wiring'
+
 // Fixture: 10 sample listings for testing
 const listings = [
   {
@@ -94,29 +108,38 @@ describe('L2 Pipeline Wiring', () => {
     expect(publisher.duplicates).toHaveLength(1) // still just one duplicate
   })
 
-  it('builds registry from event-tasks-wiring.ts exports', () => {
-    // Import the wiring constants and verify they have the expected shape
-    // biome-ignore lint/suspicious/noExplicitAny: Dynamic import to verify structure
-    const wiring = [
-      { type: 'account.deleted', producers: ['account'], handlers: 5 },
-      { type: 'apify-gateway.run-collected', producers: ['apify-gateway'], handlers: 4 },
-      { type: 'detail-evidence.changed', producers: ['detail-evidence'], handlers: 4 },
-      { type: 'detail-evidence.unresolved', producers: ['detail-evidence'], handlers: 1 },
-      { type: 'listing-ingest.card-changed', producers: ['listing-ingest'], handlers: 2 },
-      { type: 'listing-ingest.first-seen', producers: ['listing-ingest'], handlers: 5 },
-      { type: 'listing-suppression.changed', producers: ['listing-suppression'], handlers: 1 },
-      { type: 'parts-ai.extracted', producers: ['parts-ai'], handlers: 1 },
-      { type: 'parts-record.recorded', producers: ['parts-record'], handlers: 1 },
-      { type: 'parts-rules.ran', producers: ['parts-rules'], handlers: 2 },
-    ] as any
+  it('imports and verifies all 10 merged event handlers', () => {
+    const wiring: EventHandlers[] = [
+      ACCOUNT_DELETED,
+      APIFY_GATEWAY_RUN_COLLECTED,
+      DETAIL_EVIDENCE_CHANGED,
+      DETAIL_EVIDENCE_UNRESOLVED,
+      LISTING_INGEST_CARD_CHANGED,
+      LISTING_INGEST_FIRST_SEEN,
+      LISTING_SUPPRESSION_CHANGED,
+      PARTS_AI_EXTRACTED,
+      PARTS_RECORD_RECORDED,
+      PARTS_RULES_RAN,
+    ]
 
-    // Verify all 10 merged events are properly structured
-    for (const entry of wiring) {
-      expect(entry.type).toBeDefined()
-      expect(entry.producers).toHaveLength(1)
-      expect(entry.handlers).toBeGreaterThan(0)
-    }
+    // Verify all 10 merged events are properly structured and have correct counts
     expect(wiring).toHaveLength(10)
+    expect(ACCOUNT_DELETED.handlers).toHaveLength(5)
+    expect(APIFY_GATEWAY_RUN_COLLECTED.handlers).toHaveLength(4)
+    expect(DETAIL_EVIDENCE_CHANGED.handlers).toHaveLength(4)
+    expect(DETAIL_EVIDENCE_UNRESOLVED.handlers).toHaveLength(1)
+    expect(LISTING_INGEST_CARD_CHANGED.handlers).toHaveLength(2)
+    expect(LISTING_INGEST_FIRST_SEEN.handlers).toHaveLength(5)
+    expect(LISTING_SUPPRESSION_CHANGED.handlers).toHaveLength(1)
+    expect(PARTS_AI_EXTRACTED.handlers).toHaveLength(1)
+    expect(PARTS_RECORD_RECORDED.handlers).toHaveLength(1)
+    expect(PARTS_RULES_RAN.handlers).toHaveLength(2)
+
+    for (const entry of wiring) {
+      expect(entry.eventType).toBeDefined()
+      expect(entry.producers).toHaveLength(1)
+      expect(entry.handlers.length).toBeGreaterThan(0)
+    }
   })
 
   it('tracks unfilled event slots for not-yet-merged modules', () => {
