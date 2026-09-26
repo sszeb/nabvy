@@ -7,6 +7,7 @@ import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import {
   coordinatorQuiet,
+  openPrNumbers,
   parseFingerprint,
   parseOpenPrHeads,
   parsePrHeads,
@@ -177,6 +178,58 @@ test('CLI reviewer mode: lists PR numbers with no matching reviewed ref, lowest 
   })
   assert.equal(code, 0)
   assert.equal(stdout, '#10 #12')
+})
+
+// GitHub keeps refs/pull/<n>/head for closed and merged PRs; only open PRs keep refs/pull/<n>/merge.
+const LIVE_REFS = [
+  '1111111\trefs/pull/5/head', // closed long ago: no merge ref
+  '93bd4e7\trefs/pull/101/head',
+  '9999999\trefs/pull/101/merge',
+  '54dee1e\trefs/pull/102/head',
+  '8888888\trefs/pull/102/merge',
+].join('\n')
+
+test('openPrNumbers keeps PRs with a merge ref, known PRs and newer heads; drops closed PRs', () => {
+  assert.deepEqual([...openPrNumbers(LIVE_REFS)].sort(), [101, 102])
+  // #5 is known (in the Fingerprint): kept even without a merge ref.
+  assert.deepEqual(
+    [...openPrNumbers(LIVE_REFS, [5])].sort((a, b) => a - b),
+    [5, 101, 102],
+  )
+  // #103 opened with a conflict (no merge ref yet) but is newer than every open PR: kept.
+  const withNew = `${LIVE_REFS}\n7777777\trefs/pull/103/head`
+  assert.deepEqual([...openPrNumbers(withNew)].sort(), [101, 102, 103])
+  // No merge refs at all (older caller): every head counts, which errs towards BUSY.
+  assert.deepEqual([...openPrNumbers('aaaa111\trefs/pull/10/head')], [10])
+})
+
+test('CLI coordinator mode: closed PRs in ls-remote output do not break QUIET', () => {
+  const dir = withState(QUIET_STATE)
+  const { code, stdout } = runCli('coordinator', dir, {
+    'main-sha': 'abc1234',
+    'pr-heads': LIVE_REFS,
+  })
+  assert.equal(code, 0)
+  assert.equal(stdout, 'QUIET')
+})
+
+test('CLI coordinator mode: a new PR with no merge ref yet makes the run BUSY', () => {
+  const dir = withState(QUIET_STATE)
+  const { stdout } = runCli('coordinator', dir, {
+    'main-sha': 'abc1234',
+    'pr-heads': `${LIVE_REFS}\n7777777\trefs/pull/103/head`,
+  })
+  assert.equal(stdout, 'BUSY')
+})
+
+test('CLI reviewer mode: closed PRs are never candidates', () => {
+  const dir = withState(QUIET_STATE)
+  const { code, stdout } = runCli('reviewer', dir, {
+    'open-heads': LIVE_REFS,
+    'reviewed-refs': '93bd4e7\trefs/reviewed/pr-101',
+  })
+  assert.equal(code, 0)
+  assert.equal(stdout, '#102')
 })
 
 test('CLI: an unknown mode fails with a usage message', () => {

@@ -4,9 +4,14 @@
 // Usage:
 //   node scripts/precheck.mjs coordinator [rootDir] [--main-sha=<sha>] [--pr-heads=<ls-remote output>]
 //   node scripts/precheck.mjs reviewer [rootDir] [--open-heads=<ls-remote output>] [--reviewed-refs=<ls-remote output>]
+// (--pr-heads and --open-heads take `git ls-remote origin 'refs/pull/*/head' 'refs/pull/*/merge'` output.)
 //
 // Real runs shell out to git; the --main-sha/--pr-heads/--open-heads/--reviewed-refs flags let
 // precheck.test.mjs exercise both modes end to end without a network call or a real remote.
+//
+// GitHub keeps refs/pull/<n>/head for every PR ever opened, closed and merged ones included, so a
+// head list alone is not the open-PR list. It removes refs/pull/<n>/merge when a PR closes, so both
+// modes ask for heads and merge refs in one ls-remote and keep only open PRs (see openPrNumbers).
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -59,12 +64,36 @@ export function queueEmpty(stateText, heading) {
   return true
 }
 
+// The PR numbers to treat as open, from `git ls-remote origin 'refs/pull/*/head' 'refs/pull/*/merge'`:
+// every PR with a merge ref, every number in `known` (the Fingerprint's PRs, so one that loses its
+// merge ref to a conflict still counts), and every head numbered above all of those (a new PR that
+// opened with a conflict has no merge ref yet). Output with no merge refs at all (an older caller or
+// fixture) keeps every head, which errs towards BUSY.
+export function openPrNumbers(lsRemoteOutput, known = []) {
+  const heads = []
+  const open = new Set(known)
+  let sawMerge = false
+  for (const line of lsRemoteOutput.split('\n')) {
+    const m = /^[0-9a-f]{7,40}\s+refs\/pull\/(\d+)\/(head|merge)$/.exec(line.trim())
+    if (!m) continue
+    if (m[2] === 'merge') {
+      sawMerge = true
+      open.add(Number(m[1]))
+    } else heads.push(Number(m[1]))
+  }
+  if (!sawMerge) return new Set(heads)
+  const newest = Math.max(0, ...open)
+  for (const n of heads) if (n > newest) open.add(n)
+  return open
+}
+
 // "<sha>\trefs/pull/<n>/head" lines -> {"#<n>@<sha7>", ...}, the shape state.md's Fingerprint uses.
-export function parsePrHeads(lsRemoteOutput) {
+// With `open`, only those PR numbers are kept.
+export function parsePrHeads(lsRemoteOutput, open) {
   const out = new Set()
   for (const line of lsRemoteOutput.split('\n')) {
     const m = /^([0-9a-f]{7,40})\s+refs\/pull\/(\d+)\/head$/.exec(line.trim())
-    if (m) out.add(`#${m[2]}@${m[1].slice(0, 7)}`)
+    if (m && (!open || open.has(Number(m[2])))) out.add(`#${m[2]}@${m[1].slice(0, 7)}`)
   }
   return out
 }
@@ -86,8 +115,15 @@ function coordinatorMain(rootDir, flags) {
   const mainSha = flags['main-sha'] ?? run('git', ['rev-parse', '--short', 'origin/main'], rootDir)
   const lsRemote =
     flags['pr-heads'] ??
-    attempt(() => run('git', ['ls-remote', 'origin', 'refs/pull/*/head'], rootDir), '')
-  console.log(coordinatorQuiet(stateText, mainSha, parsePrHeads(lsRemote)) ? 'QUIET' : 'BUSY')
+    attempt(
+      () => run('git', ['ls-remote', 'origin', 'refs/pull/*/head', 'refs/pull/*/merge'], rootDir),
+      '',
+    )
+  const known = [...(parseFingerprint(stateText)?.prs ?? [])].map((p) =>
+    Number(/^#(\d+)@/.exec(p)?.[1]),
+  )
+  const heads = parsePrHeads(lsRemote, openPrNumbers(lsRemote, known))
+  console.log(coordinatorQuiet(stateText, mainSha, heads) ? 'QUIET' : 'BUSY')
 }
 
 // --- reviewer: list open PRs whose head has no matching refs/reviewed/pr-<n>. ---
@@ -101,11 +137,13 @@ export function parseReviewedRefs(lsRemoteOutput) {
   return out
 }
 
+// Heads of open PRs only (openPrNumbers), keyed by PR number.
 export function parseOpenPrHeads(lsRemoteOutput) {
+  const open = openPrNumbers(lsRemoteOutput)
   const out = new Map()
   for (const line of lsRemoteOutput.split('\n')) {
     const m = /^([0-9a-f]{7,40})\s+refs\/pull\/(\d+)\/head$/.exec(line.trim())
-    if (m) out.set(Number(m[2]), m[1])
+    if (m && open.has(Number(m[2]))) out.set(Number(m[2]), m[1])
   }
   return out
 }
@@ -125,7 +163,10 @@ export function unreviewedPrs(prHeads, reviewedRefs) {
 function reviewerMain(rootDir, flags) {
   const lsOpen =
     flags['open-heads'] ??
-    attempt(() => run('git', ['ls-remote', 'origin', 'refs/pull/*/head'], rootDir), '')
+    attempt(
+      () => run('git', ['ls-remote', 'origin', 'refs/pull/*/head', 'refs/pull/*/merge'], rootDir),
+      '',
+    )
   const lsReviewed =
     flags['reviewed-refs'] ??
     attempt(() => run('git', ['ls-remote', 'origin', 'refs/reviewed/pr-*'], rootDir), '')
