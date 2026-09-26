@@ -1,6 +1,11 @@
 {
   "results": [
     {
+      "queued": 0,
+      "alreadyQueued": 0,
+      "skipped": 0
+    },
+    {
       "queued": 3,
       "alreadyQueued": 0,
       "skipped": 0
@@ -11,8 +16,18 @@
       "skipped": 0
     },
     {
+      "queued": 0,
+      "alreadyQueued": 0,
+      "skipped": 0
+    },
+    {
       "queued": 1,
       "alreadyQueued": 1,
+      "skipped": 0
+    },
+    {
+      "queued": 0,
+      "alreadyQueued": 0,
       "skipped": 0
     },
     {

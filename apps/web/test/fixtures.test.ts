@@ -5,22 +5,24 @@ import { suspicionText } from '@/lib/labels'
 
 /**
  * The rules the UI must follow (docs/decisions.md, Precedence and "Actor data kept in full"),
- * checked on everything the data-access layer returns. When procedures replace the fixtures,
- * the same checks run on procedure output.
+ * checked on everything the data-access layer returns that vitest can reach with no database or
+ * session: `listExampleDeals()` (the design page's fixtures) and the account/admin/marketing
+ * fixtures that have not been wired to a real module yet.
+ *
+ * `listDeals`, `getDeal`, `listHunts`, `getHunt` and `getAccount` now call real oRPC procedures
+ * (task L1: `docs/backlog.md` "Milestone L") that need a signed-in session and a database
+ * connection, neither of which this suite has, so they moved out of this file. Playwright covers
+ * them end to end (`test/screens/l1.spec.ts`); the module's own fixture tests
+ * (`services/want-manager/test`, `services/pickup-location/test`, …) cover their own rules.
+ * Recorded in docs/questions/L1-web.md.
  */
 
 async function everything(): Promise<unknown[]> {
-  const deals = await data.listDeals()
-  const detailed = await Promise.all(deals.map((deal) => data.getDeal(deal.id)))
   const examples = await data.listExampleDeals()
   return [
-    deals,
-    detailed,
     examples,
-    await data.listHunts(),
     await data.listChannels(),
     await data.listAlertDeliveries(),
-    await data.getAccount(),
     await data.getPreferences(),
     await data.getDashboardSummary(),
     await data.getAdminOverview(),
@@ -73,7 +75,8 @@ describe('user-facing data', () => {
   })
 
   it('keeps price history within one listing ID', async () => {
-    for (const deal of await data.listDeals()) {
+    const { deals, irish } = await data.listExampleDeals()
+    for (const deal of [...deals, irish]) {
       for (const change of deal.priceChanges) {
         expect(Object.keys(change).sort()).toEqual(['ask', 'at'])
         expect(change.ask.currency).toBe(deal.listing.ask.currency)
@@ -91,13 +94,14 @@ describe('user-facing data', () => {
   it('compares asks only within their own currency group', async () => {
     const { deals, irish } = await data.listExampleDeals()
     for (const deal of [...deals, irish]) {
-      expect(deal.position.currency).toBe(deal.listing.ask.currency)
-      expect(deal.position.askMinor).toBe(deal.listing.ask.amountMinor)
+      expect(deal.position?.currency).toBe(deal.listing.ask.currency)
+      expect(deal.position?.askMinor).toBe(deal.listing.ask.amountMinor)
     }
   })
 
   it('words every label as a suspicion, with evidence and a rule', async () => {
-    for (const deal of await data.listDeals()) {
+    const { deals, irish } = await data.listExampleDeals()
+    for (const deal of [...deals, irish]) {
       for (const suspicion of deal.suspicions) {
         expect(suspicionText(suspicion)).toMatch(/^Suspected [a-z ]+: /)
         expect(suspicion.evidence.length).toBeGreaterThan(0)
@@ -115,14 +119,16 @@ describe('user-facing data', () => {
   })
 
   it('names a contracts source and links only to placeholder hosts', async () => {
-    for (const deal of await data.listDeals()) {
+    const { deals, irish } = await data.listExampleDeals()
+    for (const deal of [...deals, irish]) {
       expect(Source.safeParse(deal.listing.source).success).toBe(true)
       expect(new URL(deal.listing.listingUrl).hostname).toMatch(/\.invalid$/)
     }
   })
 
   it('never ties evidence to other listings by place', async () => {
-    for (const deal of await data.listDeals()) {
+    const { deals, irish } = await data.listExampleDeals()
+    for (const deal of [...deals, irish]) {
       for (const suspicion of deal.suspicions) {
         for (const item of suspicion.evidence) expect(item.label).not.toMatch(/town|place|area/i)
       }
@@ -135,22 +141,5 @@ describe('user-facing data', () => {
       expect(value).not.toContain('!')
       expect(value).not.toMatch(/\b(worth|fair value|relisted|seen before|hurry|last chance)\b/i)
     })
-  })
-})
-
-describe('data access', () => {
-  it('filters deals by text, hunt and low asks', async () => {
-    expect((await data.listDeals({ q: 'rtx 3070' })).length).toBeGreaterThan(0)
-    for (const deal of await data.listDeals({ huntId: 'h-2' })) expect(deal.huntId).toBe('h-2')
-    for (const deal of await data.listDeals({ lowAsksOnly: true })) {
-      expect(deal.position.comparableCount).toBeGreaterThanOrEqual(10)
-      expect(deal.position.percentile).toBeLessThanOrEqual(25)
-    }
-    expect(await data.listDeals({ q: 'no such thing anywhere' })).toEqual([])
-  })
-
-  it('returns deals newest first', async () => {
-    const found = (await data.listDeals()).map((deal) => Date.parse(deal.listing.freshness.foundAt))
-    expect(found).toEqual([...found].sort((a, b) => b - a))
   })
 })

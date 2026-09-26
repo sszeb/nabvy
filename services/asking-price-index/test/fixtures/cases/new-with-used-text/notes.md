@@ -1,0 +1,1 @@
+When the Condition attribute and the text disagree, the lower condition (the card's starting rule): "New" with "Only used for 1 month" is grouped as used_good. "Never used" does not lower a condition.
