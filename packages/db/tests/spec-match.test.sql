@@ -156,6 +156,20 @@ select pg_temp.check((select count(*) from app.v_spec_match_results) = 0,
   'user B sees no result and none of user A''s');
 select pg_temp.check((select count(*) from spec_match.matches) = 1,
   'a direct read of the table by user B sees only B''s own row');
+-- User A: direct table read should apply the restrictive policy (no no_match, no suppressed listings)
+-- and should not have access to raw criteria. With RLS, they see only their own rows; the policy
+-- filters by verdict and suppression status, mirroring what the view shows.
+select set_config('app.user_id', '01920000-0000-7000-8000-0000000000e1', true);
+-- After the update above, user A's rows: 2 with listing c1 (not_stated and match), 1 with c2 suppressed
+-- Direct read should apply: verdict <> 'no_match' and not is_suppressed
+-- Expected: 2 rows (both with c1, neither is no_match)
+select pg_temp.check((select count(*) from spec_match.matches) = 2,
+  'user A direct table read with restrictive policy: sees 2 rows (not no_match, not suppressed)');
+-- All user A's visible rows should have verdict <> 'no_match'
+select pg_temp.check(
+  not exists (select 1 from spec_match.matches where verdict = 'no_match'),
+  'user A direct read: no no_match verdicts visible (policy enforces verdict <> ''no_match'')');
+reset role;
 -- Outside withUser: nothing.
 select set_config('app.user_id', '', true);
 select pg_temp.check((select count(*) from app.v_spec_match_results) = 0,

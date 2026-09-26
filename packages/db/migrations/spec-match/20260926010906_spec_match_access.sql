@@ -92,12 +92,16 @@ grant select on app.v_spec_match_results to nabvy_app;
 
 -- The table behind a security_invoker view must be readable by the view's reader: nabvy_app gets
 -- column-level select on exactly the columns the view and its policies read (never the hashes or
--- the rule version), user_isolation (enable_user_rls above) gives it only its own rows, and a
--- restrictive policy adds the view's own conditions, so a direct read of the table by the app
--- role sees no more than the view. The pipeline role keeps every row through allow_pipeline.
+-- the rule version, never the raw criteria which contains unredacted quotes), user_isolation
+-- (enable_user_rls above) gives it only its own rows, and a restrictive policy adds the view's own
+-- conditions, so a direct read of the table by the app role sees no more than the view. The
+-- pipeline role keeps every row through allow_pipeline. The app role does not need direct access
+-- to criteria because app.v_spec_match_results is security_invoker and redacts criteria in its
+-- query; a direct table read by the app role should see neither no_match verdicts nor raw quotes.
 grant usage on schema spec_match to nabvy_app;
-grant select (id, want_id, user_id, listing_id, verdict, criteria, inside_pc, origin, backfill,
+grant select (id, want_id, user_id, listing_id, verdict, inside_pc, origin, backfill,
   matched_at) on spec_match.matches to nabvy_app;
 create policy app_user_facing on spec_match.matches as restrictive for select to nabvy_app
   using (switches.is_on('spec-match') and switches.is_on('listing-suppression')
+         and verdict <> 'no_match'
          and not listing_suppression.is_suppressed(listing_id));
