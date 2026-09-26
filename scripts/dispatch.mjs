@@ -65,16 +65,22 @@ function authHeaders() {
   }
 }
 
+// Request options for https.request. The caller's headers are merged over the defaults, never
+// in place of them: GitHub answers 403 to any API request without a User-Agent.
+export function requestOptions(options = {}) {
+  return {
+    ...options,
+    headers: {
+      'User-Agent': 'Nabvy Dispatcher',
+      ...(options.headers || {}),
+    },
+  }
+}
+
 // Make HTTPS request
 async function httpsRequest(url, options = {}) {
   return new Promise((resolve, reject) => {
-    const reqOptions = {
-      headers: {
-        'User-Agent': 'Nabvy Dispatcher',
-        ...(options.headers || {}),
-      },
-      ...options,
-    }
+    const reqOptions = requestOptions(options)
 
     const req = https.request(url, reqOptions, (res) => {
       let data = ''
@@ -147,7 +153,9 @@ async function findOpenPRForSha(owner, repo, sha) {
   })
 
   if (response.status !== 200) {
-    console.error(`Failed to look up PRs for sha ${sha}: ${response.status}`)
+    console.error(
+      `Failed to look up PRs for sha ${sha}: ${response.status} ${response.body.slice(0, 200)}`,
+    )
     return null
   }
 
