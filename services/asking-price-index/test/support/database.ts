@@ -49,7 +49,7 @@ function ordered(targets: string[]): string[] {
     if (out.includes(module)) return
     const meta = join(migrations, module, 'module.json')
     const deps: string[] =
-      module === 'core' ? [] : JSON.parse(readFileSync(meta, 'utf8')).dependsOn ?? ['core']
+      module === 'core' ? [] : (JSON.parse(readFileSync(meta, 'utf8')).dependsOn ?? ['core'])
     for (const dep of deps) visit(dep)
     out.push(module)
   }
@@ -118,4 +118,166 @@ export async function setSwitch(
      on conflict (name) do update set state = excluded.state`,
     [state, name],
   )
+}
+
+/** One synthetic listing, seeded through the upstream modules' own tables. */
+export interface SeedListing {
+  id: string
+  priceMinor: number | null
+  currency?: 'GBP' | 'EUR'
+  moneyKind?: string | null
+  availability?: string
+  binding?: string | null
+  cityPageId?: string
+  lastSeenAt?: string
+  title?: string
+  description?: string
+  condition?: string | null
+  form?: 'system' | 'bundle' | 'part' | 'box_only' | 'unknown'
+  offered?: string[]
+  foundByTerms?: string[]
+  noise?: boolean
+}
+
+const hex = (n: number) => n.toString(16).padStart(64, '0')
+
+/**
+ * Seeds the centres (GB `gb-town`, IE `ie-town`), the catalogue items and the listings, as the
+ * migration superuser. Each listing gets a card, a current detail version, an assessment and a
+ * parts record naming `offered`.
+ */
+export async function seed(db: TestDatabase, listings: SeedListing[]): Promise<void> {
+  await db.pg.exec(`
+    insert into city_pages.city_pages (city_page_id, name, coord_source, first_seen_at)
+    values ('gb-town', 'GB town', 'seed', now()), ('ie-town', 'IE town', 'seed', now())
+    on conflict do nothing;
+    insert into city_pages.centres (city_page_id, country, currency, area_km)
+    values ('gb-town', 'GB', 'GBP', 40), ('ie-town', 'IE', 'EUR', 40) on conflict do nothing;
+    insert into product_catalogue.items (catalogue_id, kind, name, family, variant)
+    values ('gpu:rtx-3090', 'gpu', 'RTX 3090', 'rtx', '3090'),
+           ('gpu:rtx-3080', 'gpu', 'RTX 3080', 'rtx', '3080')
+    on conflict do nothing;`)
+  for (const [i, l] of listings.entries()) {
+    const n = i + 1
+    const evidence = hex(n)
+    const card = hex(10_000 + n)
+    await db.sql(
+      `insert into listing_ingest.listings (id, source, source_listing_id, card_hash, title,
+         first_fetched_at, last_seen_at, availability, item_job_id, item_seq, price_minor, currency,
+         money_kind, binding, city_page_id, found_by_terms)
+       values ($1, 'facebook', $2, $3, $4, $5, $5, $6, 1, $7, $8, $9, $10, $11, $12, $13)`,
+      [
+        l.id,
+        `fb-${n}`,
+        card,
+        l.title ?? 'RTX 3090',
+        l.lastSeenAt ?? '2026-09-25T12:00:00Z',
+        l.availability ?? 'live',
+        n,
+        l.priceMinor,
+        l.currency ?? 'GBP',
+        l.moneyKind === undefined ? 'fixed' : l.moneyKind,
+        l.binding === undefined ? 'verified' : l.binding,
+        l.cityPageId ?? 'gb-town',
+        l.foundByTerms ?? ['3090'],
+      ],
+    )
+    await db.sql(
+      `insert into detail_evidence.evidence (source, source_listing_id, listing_id, evidence_hash,
+         first_seen_at, last_seen_at, item_job_id, item_seq, title, description, condition,
+         description_status)
+       values ('facebook', $1, $2, $3, now(), now(), 1, $4, $5, $6, $7, 'full_verified')`,
+      [
+        `fb-${n}`,
+        l.id,
+        evidence,
+        n,
+        l.title ?? 'RTX 3090',
+        l.description ?? 'Works well.',
+        l.condition === undefined ? 'used_good' : l.condition,
+      ],
+    )
+    await db.sql(
+      `insert into detail_evidence.fetches (source, source_listing_id, job_id, seq, fetched_at,
+         listing_id, evidence_hash, description_status)
+       values ('facebook', $1, 1, $2, now(), $3, $4, 'full_verified')`,
+      [`fb-${n}`, n, l.id, evidence],
+    )
+    await db.sql(
+      `insert into listing_assessment.assessments (listing_id, evidence_hash, card_hash, record_hash,
+         rule_version, form, container, container_reason, gpu_state, coverage, assessed_at)
+       values ($1, $2, $3, $2, 'a1.00000000', $4, false, 'placed', 'named', '{}', now())`,
+      [l.id, evidence, card, l.form ?? 'part'],
+    )
+    const [record] = await db.sql(
+      `insert into parts_record.records (listing_id, evidence_hash, rule_version, part_count,
+         kind_gap)
+       values ($1, $2, 'r1.00000000', $3, 'no_signal') returning id`,
+      [l.id, evidence, (l.offered ?? ['gpu:rtx-3090']).length],
+    )
+    for (const [seq, catalogueId] of (l.offered ?? ['gpu:rtx-3090']).entries()) {
+      await db.sql(
+        `insert into parts_record.parts (record_id, listing_id, evidence_hash, seq, part_type,
+           catalogue_id, inclusion, source, extractor, extractor_version, quote, quote_start,
+           quote_end)
+         values ($1, $2, $3, $4, 'gpu', $5, 'offered', 'title', 'rules', 'r1', 'RTX', 0, 3)`,
+        [record?.id, l.id, evidence, seq, catalogueId],
+      )
+    }
+    if (l.noise) {
+      await db.sql(
+        `insert into noise_filter.classifications (listing_id, evidence_hash, input_hash,
+           rule_version, classified_at, reasons)
+         values ($1, $2, $2, 'n1.00000000', now(), '["wanted"]')`,
+        [l.id, evidence],
+      )
+    }
+  }
+}
+
+/** Turns the switches the index reads on, as an admin would. */
+export async function switchOn(db: TestDatabase, names: string[]): Promise<void> {
+  for (const name of names) await setSwitch(db, 'on', name)
+}
+
+export const UPSTREAM = [
+  'pipeline',
+  'listing-ingest',
+  'detail-evidence',
+  'parts-record',
+  'listing-assessment',
+  'noise-filter',
+  'city-pages',
+  'product-catalogue',
+  'listing-suppression',
+]
+
+/** Puts these listings in one relist group (the first is the origin), as relist-merge would. */
+export async function relistGroup(db: TestDatabase, listingIds: string[]): Promise<void> {
+  const [group] = await db.sql('insert into relist_merge.groups default values returning id')
+  for (const [i, id] of listingIds.entries()) {
+    await db.sql(
+      `insert into relist_merge.members (group_id, listing_id, basis, matched_listing_id,
+         input_fetched_at)
+       values ($1, $2, $3, $4, now())`,
+      [group?.id, id, i === 0 ? 'origin' : 'description', i === 0 ? null : listingIds[0]],
+    )
+  }
+}
+
+/** Puts these listings in one active copy cluster, as copy-advert would. */
+export async function copyCluster(db: TestDatabase, key: string, listingIds: string[]) {
+  await db.sql(
+    `insert into copy_advert.clusters (cluster_key, rule_version, member_set_hash, listing_count,
+       town_count, span_days, mass_posted, status, as_of)
+     values ($1, 'c1', $1, $2, 1, 0, false, 'active', now())`,
+    [key, listingIds.length],
+  )
+  for (const id of listingIds) {
+    await db.sql(
+      `insert into copy_advert.members (cluster_key, listing_id, source_listing_id, basis, joined_at)
+       values ($1, $2, $3, 'text', now())`,
+      [key, id, id],
+    )
+  }
 }

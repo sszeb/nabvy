@@ -3,11 +3,12 @@
 // announces nothing: rule 8's "index group key and stats as_of") and publishes only after its
 // transaction commits (CLAUDE.md). The module is outside the T-stamp chain: each membership keeps
 // the ask's `seen_at` and each group's figures their `as_of` (rule 10).
+
+import type { EventEnvelope, Result } from '@nabvy/contracts'
 import { events as copyAdvertEvents } from '@nabvy/contracts/modules/copy-advert'
 import { events as listingAssessmentEvents } from '@nabvy/contracts/modules/listing-assessment'
 import { events as listingIngestEvents } from '@nabvy/contracts/modules/listing-ingest'
 import { events as relistMergeEvents } from '@nabvy/contracts/modules/relist-merge'
-import type { EventEnvelope, Result } from '@nabvy/contracts'
 import type { Queryable } from '@nabvy/db'
 import { defineHandler, type EventHandler } from '@nabvy/transport'
 import { type IndexEvidence, index } from '../index'

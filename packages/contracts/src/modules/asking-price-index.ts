@@ -67,7 +67,9 @@ export const AskingPriceIndexGroupKey = z.strictObject({
 export type AskingPriceIndexGroupKey = z.infer<typeof AskingPriceIndexGroupKey>
 
 /** The string form stored in `group_key`: `<catalogue>|<context>|<condition>|<country>|<currency>|<n>d`. */
-export const AskingPriceIndexGroupKeyString = z.string().regex(/^[^|]+\|[a-z_]+\|[a-z_]+\|[A-Z]{2}\|[A-Z]{3}\|\d+d$/)
+export const AskingPriceIndexGroupKeyString = z
+  .string()
+  .regex(/^[^|]+\|[a-z_]+\|[a-z_]+\|[A-Z]{2}\|[A-Z]{3}\|\d+d$/)
 
 /**
  * One group's figures (`asking_price_index.stats`, published in `v_groups`), in minor units of the

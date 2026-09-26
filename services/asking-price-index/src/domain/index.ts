@@ -163,7 +163,11 @@ export function sampleOriginOf(
   const names = [item.name, ...item.aliases].map(normalise).filter((n) => n.length > 0)
   const hit = foundByTerms
     .map(normalise)
-    .some((t) => t.length > 0 && names.some((n) => ` ${n} `.includes(` ${t} `) || ` ${t} `.includes(` ${n} `)))
+    .some(
+      (t) =>
+        t.length > 0 &&
+        names.some((n) => ` ${n} `.includes(` ${t} `) || ` ${t} `.includes(` ${n} `)),
+    )
   return hit ? 'on_target' : 'by_catch'
 }
 
@@ -206,7 +210,10 @@ export function quantile(sorted: number[], p: number): number {
 }
 
 export function median(values: number[]): number {
-  return quantile([...values].sort((a, b) => a - b), 0.5)
+  return quantile(
+    [...values].sort((a, b) => a - b),
+    0.5,
+  )
 }
 
 /** Tukey fences Q1 − k·IQR and Q3 + k·IQR over the values. */
@@ -282,11 +289,13 @@ export function figures(
       return false
     })
   }
-  for (const m of pool) outcome.set(m.listingId, { listingId: m.listingId, counted: true, excluded: null })
+  for (const m of pool)
+    outcome.set(m.listingId, { listingId: m.listingId, counted: true, excluded: null })
 
   const values = pool.map((m) => m.askMinor).sort((a, b) => a - b)
   const keyCounts = new Map<string, number>()
-  for (const m of pool) if (m.sellerKey) keyCounts.set(m.sellerKey, (keyCounts.get(m.sellerKey) ?? 0) + 1)
+  for (const m of pool)
+    if (m.sellerKey) keyCounts.set(m.sellerKey, (keyCounts.get(m.sellerKey) ?? 0) + 1)
   const topShare = values.length === 0 ? 0 : Math.max(0, ...keyCounts.values()) / values.length
   const result: Figures =
     values.length === 0
@@ -324,7 +333,10 @@ export function splitHalfStable(
 }
 
 /** Whether two figure sets are the same (so `as_of` is kept and no event is sent). */
-export function sameFigures(a: Figures & { copyCollapse: boolean }, b: Figures & { copyCollapse: boolean }): boolean {
+export function sameFigures(
+  a: Figures & { copyCollapse: boolean },
+  b: Figures & { copyCollapse: boolean },
+): boolean {
   return (
     a.n === b.n &&
     a.median === b.median &&

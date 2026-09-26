@@ -193,10 +193,7 @@ export async function writeMembers(
 ): Promise<Set<string>> {
   const touched = new Set<string>()
   if (listingIds.length === 0) return touched
-  const existing = await q
-    .select()
-    .from(members)
-    .where(inArray(members.listingId, listingIds))
+  const existing = await q.select().from(members).where(inArray(members.listingId, listingIds))
   const byKey = new Map(existing.map((m) => [`${m.groupKey}\u0000${m.listingId}`, m]))
   const wanted = new Set(rows.map((r) => `${r.groupKey}\u0000${r.listingId}`))
   for (const old of existing) {
@@ -273,7 +270,10 @@ export async function setOutcomes(
 
 export type StatsRow = Figures & { groupKey: string; copyCollapse: boolean; asOf: Date }
 
-export async function selectStats(q: Queryable, groupKeys: string[]): Promise<Map<string, StatsRow>> {
+export async function selectStats(
+  q: Queryable,
+  groupKeys: string[],
+): Promise<Map<string, StatsRow>> {
   if (groupKeys.length === 0) return new Map()
   const rows = await q.select().from(stats).where(inArray(stats.groupKey, groupKeys))
   return new Map(rows.map((r) => [r.groupKey, r]))
@@ -281,10 +281,7 @@ export async function selectStats(q: Queryable, groupKeys: string[]): Promise<Ma
 
 export async function upsertStats(q: Queryable, row: StatsRow): Promise<void> {
   const { groupKey, ...rest } = row
-  await q
-    .insert(stats)
-    .values(row)
-    .onConflictDoUpdate({ target: stats.groupKey, set: rest })
+  await q.insert(stats).values(row).onConflictDoUpdate({ target: stats.groupKey, set: rest })
 }
 
 /** Removes these listings from every group (rule 12). Returns the groups they were in. */
@@ -305,10 +302,7 @@ export async function deleteEmptyGroups(q: Queryable, groupKeys: string[]): Prom
     .where(
       and(
         inArray(groups.groupKey, groupKeys),
-        notInArray(
-          groups.groupKey,
-          q.select({ groupKey: members.groupKey }).from(members),
-        ),
+        notInArray(groups.groupKey, q.select({ groupKey: members.groupKey }).from(members)),
       ),
     )
 }

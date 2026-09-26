@@ -3,6 +3,7 @@
 // current asks into comparable groups and computes each group's figures (README.md). It shows no
 // position and never says "worth" or "fair" (nabvy/docs/decisions.md:15).
 
+import { createHash } from 'node:crypto'
 import {
   ASKING_PRICE_INDEX_EVENT_BATCH_SIZE,
   ASKING_PRICE_INDEX_IQR_FENCE,
@@ -21,7 +22,6 @@ import {
 import { AskingPriceIndexInput, events } from '@nabvy/contracts/modules/asking-price-index'
 import type { Queryable } from '@nabvy/db'
 import { isOn, state } from '@nabvy/switches'
-import { createHash } from 'node:crypto'
 import {
   chunk,
   collapseKeyOf,
