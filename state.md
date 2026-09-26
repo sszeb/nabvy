@@ -27,6 +27,7 @@ Updated 22:40 UTC 2026-09-25 by coordinator sweep 22:37. Setup check 2 (21:59): 
 - #101 coordinator docs (rolling, `claude/coordinator-16` into main; carries the old stack #84, #86, #91, #95, #103).
 
 ## Sessions without a PR
+- W2 CI speed and reconciler `session_01WsDVema6i3QcYMjPNZK17M` (Haiku), W3 docs slimming `session_01B5g9DjscTSFaP122ZnWuDn` (Sonnet): started 00:06 by coordinator 18 (owner 2026-09-26: implement all improvements now, no pilots; docs/routines/implementation-brief.md). W1 Routines implementer: the owner starts it from the app (it changes Routine prompts).
 - L1 web local run `session_01ULyWCky4X9u2Dn35prXFPr` (Sonnet): had halted on "L1 not in backlog" (milestone L is only on the docs branch until #101 merges); told to go ahead at 21:35.
 - L3 owner setup `session_013w6mgdrer6N4BGjUZSxMTE` (Sonnet): the owner talks to it directly (WSL Ubuntu, `scripts/wsl-bootstrap.sh`, `docs/local-run.md`).
 - pasted-link-lookup, inventory: stacked on #81; open their PRs after #81 merges.
