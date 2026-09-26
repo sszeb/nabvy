@@ -20,6 +20,7 @@ grant usage on schema price_drop_watch to nabvy_app, nabvy_pipeline;
 -- user-facing view"): nabvy_pipeline, and any cross-user or admin read, uses the internal views
 -- with their own grants and never gets usage on app.
 grant usage on schema app to nabvy_app;
+revoke usage on schema app from nabvy_pipeline;
 
 -- watch()'s own existence check ("is this a real listing-ingest listing?") reads
 -- listing_ingest.v_listings, an internal view (rule 5) granted only to nabvy_pipeline, but
