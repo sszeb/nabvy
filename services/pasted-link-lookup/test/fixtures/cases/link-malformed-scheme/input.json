@@ -1,0 +1,5 @@
+{
+  "stage": "link",
+  "synthetic": true,
+  "url": "javascript:alert(1)"
+}

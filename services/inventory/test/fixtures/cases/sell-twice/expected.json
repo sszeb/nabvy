@@ -1,0 +1,14 @@
+{
+  "results": ["created", "changed", "unchanged"],
+  "rows": 1,
+  "items": [
+    {
+      "id": "0190f1d2-0000-7000-8000-0000000000a1",
+      "costMinor": 42000,
+      "soldMinor": 55000,
+      "soldAt": "2026-09-24",
+      "soldOn": null,
+      "profitMinor": 13000
+    }
+  ]
+}

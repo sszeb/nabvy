@@ -1,0 +1,15 @@
+{
+  "stage": "submit",
+  "synthetic": true,
+  "listing": null,
+  "pastes": [
+    {
+      "userId": "0190f1d2-0000-7000-8000-000000000001",
+      "url": "https://www.facebook.com/marketplace/item/12345678901234567/"
+    },
+    {
+      "userId": "0190f1d2-0000-7000-8000-000000000001",
+      "url": "https://www.facebook.com/marketplace/item/12345678901234567/?ref=share"
+    }
+  ]
+}

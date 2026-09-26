@@ -1,0 +1,1 @@
+The same link pasted twice by one user (once with a tracking parameter) is one request row and one details-queue item (card, "the same link pasted twice makes one queue item"). Synthetic rows in listing_ingest and detail_evidence (the same shape listing-card's own fixtures seed), built from the recorded run's 17-digit ID form; no seller field is ever read.

@@ -1,0 +1,7 @@
+{
+  "outcomes": ["queued", "queued"],
+  "created": [true, false],
+  "requests": 1,
+  "ready": 0,
+  "enqueued": [["12345678901234567"]]
+}

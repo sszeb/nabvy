@@ -1,0 +1,1 @@
+The ordinary path: an RTX 3090 bought for £420.00 and sold on eBay for £550.00 four days later. Profit is £130.00, the user's two numbers subtracted (CLAUDE.md, "No invented numbers"). The event carries the item ID only.

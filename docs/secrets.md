@@ -46,7 +46,17 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `TOKEN_ENCRYPTION_KEY` | inventory-resale | Generated once; encrypts eBay refresh tokens at rest |
 | `PICKUPS_DATA_KEY` | pickup-routes | Generated once per environment (32 random bytes, hex or base64); encrypts pickup addresses, notes and points at rest (AES-256-GCM). The module does not ship until it exists |
 | `FB_DAILY_CAP_MINOR`, `GUMTREE_DAILY_CAP_MINOR`, `SCAN_SPEND_CAP_MINOR` | crawl-planner, recognition | Config: defaults 1000, 500, 5 |
-**`REVIEW_FIRE_TOKEN` and `FIX_FIRE_TOKEN`** (not in the table above: they are GitHub Actions repository secrets, not application config, so they never reach `packages/config` or `.env`, and the variable-inventory test in `packages/config` doesn't expect them). Each is a per-Routine API token — one for the reviewer Routine, one for the Fixer — generated once in the Routines app and stored as a GitHub repository secret, never in code, commits or chat. The plan is for a CI job on each PR event to `POST` to `https://api.anthropic.com/v1/claude_code/routines/<id>/fire` with the matching token, so a run on a green or failed head can wake the reviewer or Fixer Routine without a human or a long-lived session in the loop; that job is not in `.github/workflows/ci.yml` yet, so for now this paragraph only reserves the names and the intended use.
+**GitHub Actions repository secrets and variables, not application config** (deliberately not in a `| \`NAME\` |` table row above: they are read only by `.github/workflows/dispatch.yml`, never reach `packages/config` or `.env`, and the variable-inventory test in `packages/config` asserts they're absent from its schema):
+
+- `REVIEW_FIRE_TOKEN` (repository secret) — per-Routine API bearer token that fires the Reviewer Routine (`POST https://api.anthropic.com/v1/claude_code/routines/<id>/fire`).
+- `FIX_FIRE_TOKEN` (repository secret) — per-Routine API bearer token that fires the Fixer Routine.
+- `BUILDER_FIRE_TOKEN` (repository secret) — reserved: per-Routine API bearer token for a future Builder Routine; not yet wired into any workflow.
+- `REVIEW_ROUTINE_ID` (repository variable) — the Reviewer Routine's ID.
+- `FIX_ROUTINE_ID` (repository variable) — the Fixer Routine's ID.
+- `BUILDER_ROUTINE_ID` (repository variable) — reserved: the future Builder Routine's ID; not yet wired into any workflow.
+- `CHAIN_LIVE` (repository variable) — `'false'` pauses the dispatch reconciler globally; any other value (including unset) leaves it live.
+
+Each fire token is generated once in the Routines app and stored as a GitHub repository secret, never in code, commits or chat. `dispatch.yml` only triggers off the default branch (`workflow_run`, `push` to `main`, and a 30-minute schedule), never `pull_request`, so these secrets are never exposed to a PR's own copy of the workflow or script.
 
 Pending (owner decision 2026-09-25, docs/decisions.md "Routing: openrouteservice first"): the router-gateway pull request adds the routing provider's variables to this table (the API key of the owner's openrouteservice account at account.heigit.org on the free Standard plan, read only by router-gateway server-side, plus the provider name and base URL). The variable inventory test in packages/config keeps this table and the config schema in step, so the row lands with that PR.
 

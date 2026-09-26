@@ -1,0 +1,347 @@
+{
+  "id": "2d18256d-49d9-4b04-bd6a-5f1bdf4d6c1a",
+  "prevId": "fd9e5ba4-d337-4397-a5ef-d5fe54f968fa",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "inventory.items": {
+      "name": "items",
+      "schema": "inventory",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_key": {
+          "name": "product_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scan_id": {
+          "name": "scan_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cost_minor": {
+          "name": "cost_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bought_at": {
+          "name": "bought_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sold_minor": {
+          "name": "sold_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_at": {
+          "name": "sold_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_on": {
+          "name": "sold_on",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_recorded_at": {
+          "name": "sold_recorded_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "items_user_id_idx": {
+          "name": "items_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "items_source_listing_id_idx": {
+          "name": "items_source_listing_id_idx",
+          "columns": [
+            {
+              "expression": "source_listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "items_scan_id_idx": {
+          "name": "items_scan_id_idx",
+          "columns": [
+            {
+              "expression": "scan_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "items_names_something": {
+          "name": "items_names_something",
+          "value": "\"inventory\".\"items\".\"product_key\" is not null or \"inventory\".\"items\".\"source_listing_id\" is not null or \"inventory\".\"items\".\"scan_id\" is not null"
+        },
+        "items_product_key": {
+          "name": "items_product_key",
+          "value": "\"inventory\".\"items\".\"product_key\" is null or (length(\"inventory\".\"items\".\"product_key\") <= 200 and \"inventory\".\"items\".\"product_key\" ~ '^[a-z0-9-]+(:[a-z0-9-]+)+$')"
+        },
+        "items_currency": {
+          "name": "items_currency",
+          "value": "\"inventory\".\"items\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "items_cost_minor": {
+          "name": "items_cost_minor",
+          "value": "\"inventory\".\"items\".\"cost_minor\" between 0 and 100000000"
+        },
+        "items_sold_minor": {
+          "name": "items_sold_minor",
+          "value": "\"inventory\".\"items\".\"sold_minor\" is null or \"inventory\".\"items\".\"sold_minor\" between 0 and 100000000"
+        },
+        "items_bought_at": {
+          "name": "items_bought_at",
+          "value": "\"inventory\".\"items\".\"bought_at\" >= '2000-01-01'::date"
+        },
+        "items_sale_together": {
+          "name": "items_sale_together",
+          "value": "(\"inventory\".\"items\".\"sold_minor\" is null) = (\"inventory\".\"items\".\"sold_at\" is null) and (\"inventory\".\"items\".\"sold_minor\" is null) = (\"inventory\".\"items\".\"sold_recorded_at\" is null)"
+        },
+        "items_sold_after_bought": {
+          "name": "items_sold_after_bought",
+          "value": "\"inventory\".\"items\".\"sold_at\" is null or \"inventory\".\"items\".\"sold_at\" >= \"inventory\".\"items\".\"bought_at\""
+        },
+        "items_sold_on": {
+          "name": "items_sold_on",
+          "value": "\"inventory\".\"items\".\"sold_on\" is null or (\"inventory\".\"items\".\"sold_minor\" is not null and \"inventory\".\"items\".\"sold_on\" in ('ebay', 'facebook', 'gumtree', 'vinted', 'cex'))"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "inventory": "inventory"
+  },
+  "views": {
+    "app.v_inventory_items": {
+      "name": "v_inventory_items",
+      "schema": "app",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_key": {
+          "name": "product_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source_listing_id": {
+          "name": "source_listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scan_id": {
+          "name": "scan_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cost_minor": {
+          "name": "cost_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bought_at": {
+          "name": "bought_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sold_minor": {
+          "name": "sold_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_at": {
+          "name": "sold_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_on": {
+          "name": "sold_on",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profit_minor": {
+          "name": "profit_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "inventory.v_items": {
+      "name": "v_items",
+      "schema": "inventory",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_key": {
+          "name": "product_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cost_minor": {
+          "name": "cost_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bought_at": {
+          "name": "bought_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sold_minor": {
+          "name": "sold_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_at": {
+          "name": "sold_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_on": {
+          "name": "sold_on",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sold_recorded_at": {
+          "name": "sold_recorded_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

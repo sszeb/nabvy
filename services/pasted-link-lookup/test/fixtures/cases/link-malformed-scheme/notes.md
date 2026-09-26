@@ -1,0 +1,1 @@
+Only http and https. Refused. Synthetic (built from the link shape the module card names, `facebook.com/marketplace/item/<id>/`, and the 17-digit ID form of the recorded run `fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k`).

@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790287367654,
+      "tag": "20260924220247_price_drop_watch_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790287386810,
+      "tag": "20260924220306_price_drop_watch_access",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+name: Dispatch
+
+# Reconciler: watches PR state via the GitHub API only (never checks out or executes PR-branch
+# code) and fires the Reviewer or Fixer Routine when scripts/dispatch.mjs decides a PR needs one,
+# writing a chain/<role> commit status on the head sha so each role fires at most once per head.
+#
+# Runs only off the default branch: on workflow_run (CI finishing on some head sha), on push to
+# main, and on a 30-minute schedule as a backstop that sweeps every open PR in case an event was
+# missed. It deliberately never triggers on pull_request/pull_request_target: that would make
+# GitHub run this workflow file and script from the PR's own head ref, so a task/* branch could
+# edit either one and have its edits executed with REVIEW_FIRE_TOKEN/FIX_FIRE_TOKEN and a
+# statuses:write GITHUB_TOKEN before anyone reviewed the change.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+  statuses: write
+
+jobs:
+  dispatch:
+    name: Reconcile state and fire Routines
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      # No `ref`/`fetch-depth: 0`: for workflow_run and schedule this checks out the default
+      # branch's own copy of this script, never the PR's.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: corepack enable
+      - name: Run dispatcher
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEW_FIRE_TOKEN: ${{ secrets.REVIEW_FIRE_TOKEN }}
+          FIX_FIRE_TOKEN: ${{ secrets.FIX_FIRE_TOKEN }}
+          REVIEW_ROUTINE_ID: ${{ vars.REVIEW_ROUTINE_ID }}
+          FIX_ROUTINE_ID: ${{ vars.FIX_ROUTINE_ID }}
+          CHAIN_LIVE: ${{ vars.CHAIN_LIVE }}
+          EVENT_NAME: ${{ github.event_name }}
+          WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: node scripts/dispatch.mjs

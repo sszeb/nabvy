@@ -1,0 +1,28 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "source": "the recorded run's row for 1756692548940192, re-collected twice with a reworded title and the same price (the card's Romford listing: repeated captures, unchanged asking price, no alert)",
+  "listingSourceId": "1756692548940192",
+  "steps": [
+    {
+      "collectedAt": "2026-09-24T13:40:43.415Z",
+      "edits": [
+        {
+          "listingId": "1756692548940192",
+          "fields": {
+            "title": "MSI AlphaSync GTX 1660, Ryzen 7 2700X Gaming PC - reduced to clear"
+          }
+        }
+      ]
+    },
+    {
+      "collectedAt": "2026-09-25T01:40:43.415Z",
+      "edits": [
+        {
+          "listingId": "1756692548940192",
+          "fields": { "title": "MSI AlphaSync GTX 1660, Ryzen 7 2700X Gaming PC (still available)" }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "source": "docs/design/modules/scan-lookup.md, 'Tests and fixtures'",
+  "catalogueId": "gpu:rtx3090",
+  "credits": 5,
+  "groups": [
+    {
+      "groupKey": "gpu:rtx3090@standalone@used_good@GB@GBP@30",
+      "context": "standalone",
+      "condition": "used_good",
+      "country": "GB",
+      "currency": "GBP",
+      "n": 12,
+      "median": 25000,
+      "p25": 23000,
+      "p75": 27000
+    }
+  ]
+}
