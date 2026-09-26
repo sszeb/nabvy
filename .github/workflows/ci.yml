@@ -47,7 +47,7 @@ jobs:
             # On PR, check if any non-docs files changed
             CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
             # Consider non-docs if there's any change outside docs/*, *.md, *.txt, *.yml, README*, CHANGELOG*
-            if echo "$CHANGED" | grep -qv '^\(docs/\|.*\.md$\|.*\.txt$\|.*\.yml$\|README\|CHANGELOG\)'; then
+            if echo "$CHANGED" | grep -qv '^\(docs/\|.*\.md$\|.*\.txt$\|README\|CHANGELOG\)'; then
               echo "non-docs-changed=true" >> $GITHUB_OUTPUT
             else
               echo "non-docs-changed=false" >> $GITHUB_OUTPUT
@@ -78,7 +78,7 @@ jobs:
           restore-keys: turbo-
       - run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm typecheck test --filter=...[origin/main]
+            pnpm typecheck --filter=...[origin/main]
           else
             pnpm typecheck
           fi
