@@ -208,12 +208,13 @@ test('parseReviewed keeps the last line per head and ignores unknown lines', () 
   )
 })
 
-test('claimable: no line or a stale or unreadable claim; never a verdict', () => {
+test('claimable: no line, a released or stale or unreadable claim; never a verdict', () => {
   const now = Date.parse(T0)
   assert.equal(claimable(undefined, now), true)
-  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T11:30Z' }, now), false)
-  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T09:59Z' }, now), true)
+  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T11:45Z' }, now), false)
+  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T11:29Z' }, now), true)
   assert.equal(claimable({ status: 'claimed', at: '' }, now), true)
+  assert.equal(claimable({ status: 'released', at: '2026-09-26T11:59Z' }, now), true)
   for (const status of ['approved', 'merged', 'changes']) {
     assert.equal(claimable({ status, at: '2026-09-26T09:00Z' }, now), false)
   }
@@ -232,7 +233,7 @@ test('reviewerCandidates: unreviewed and stale-claimed heads to review, approved
   const heads = new Map([
     [10, 'aaaa111'], // approved while CI ran
     [11, 'bbbb222'], // head moved since its review
-    [12, 'cccc333'], // claimed an hour ago
+    [12, 'cccc333'], // claimed ten minutes ago
     [13, 'dddd444'], // claim from a run that died
     [14, 'eeee555'], // merged (ref not yet gone)
     [15, 'ffff666'], // changes needed on this head
@@ -241,7 +242,7 @@ test('reviewerCandidates: unreviewed and stale-claimed heads to review, approved
     [
       '#10 aaaa111 approved 2026-09-26T08:00Z',
       '#11 0000000 changes 2026-09-26T08:00Z',
-      '#12 cccc333 claimed 2026-09-26T11:00Z',
+      '#12 cccc333 claimed 2026-09-26T11:50Z',
       '#13 dddd444 claimed 2026-09-26T08:00Z',
       '#14 eeee555 merged 2026-09-26T08:00Z',
       '#15 ffff666 changes 2026-09-26T08:00Z',
@@ -335,7 +336,7 @@ test('CLI claim and record: one claim per head, verdicts appended, other files k
   )
   assert.equal(`${remoteFile(origin, 'state.md')}\n`, BUSY_STATE)
   assert.equal(remoteFile(origin, 'briefs/x.md'), 'brief')
-  // An approved head is never claimed again; a claim left by a dead run expires after 2 h.
+  // An approved head is never claimed again; a claim left by a dead run expires after 30 min.
   assert.equal(runWrite(['claim', '113', 'f0f27cf', reviewer]).stdout, 'TAKEN')
   assert.equal(runWrite(['claim', '114', 'abcdef1', reviewer]).stdout, 'CLAIMED')
   const later = new Date(Date.parse(T0) + 3 * HOUR).toISOString()
@@ -366,4 +367,12 @@ test('CLI coordinator mode: reads state.md from the state branch, not the checko
   })
   assert.equal(code, 0)
   assert.equal(stdout, 'QUIET')
+})
+
+test('CLI record released: frees a claimed head for the next run', () => {
+  const { reviewer } = stateRemote()
+  assert.equal(runWrite(['claim', '121', 'abc1234', reviewer]).stdout, 'CLAIMED')
+  assert.equal(runWrite(['claim', '121', 'abc1234', reviewer]).stdout, 'TAKEN')
+  assert.equal(runWrite(['record', '121', 'abc1234', 'released', reviewer]).stdout, 'RECORDED')
+  assert.equal(runWrite(['claim', '121', 'abc1234', reviewer]).stdout, 'CLAIMED')
 })
