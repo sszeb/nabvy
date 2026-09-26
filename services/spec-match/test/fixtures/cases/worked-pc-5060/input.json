@@ -1,0 +1,69 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "only": ["2264485254402498"],
+  "edits": [
+    {
+      "listingId": "2264485254402498",
+      "fields": {
+        "listingId": "29056633657273875",
+        "title": "Pc",
+        "description": "Gaming pc for sale\nRTX 5060 8GB\nRyzen 5 5500\n16GB RAM\n1TB SSD\nWindows 11\nCollection only"
+      }
+    }
+  ],
+  "points": {
+    "*": {
+      "lat": 50.8376,
+      "lng": -0.7749,
+      "basis": "field"
+    }
+  },
+  "wants": {
+    "rtx-5060": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 5060",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5060-and-32gb": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 5060",
+          "minAttr": null,
+          "orBetter": false
+        },
+        {
+          "partType": "ram",
+          "catalogueId": null,
+          "family": null,
+          "minAttr": {
+            "sizeGb": 32
+          },
+          "orBetter": false
+        }
+      ]
+    },
+    "16gb-ddr5": {
+      "criteria": [
+        {
+          "partType": "ram",
+          "catalogueId": null,
+          "family": null,
+          "minAttr": {
+            "sizeGb": 16,
+            "generation": "ddr5"
+          },
+          "orBetter": false
+        }
+      ]
+    }
+  }
+}
