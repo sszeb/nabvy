@@ -1,0 +1,58 @@
+{
+  "synthetic": true,
+  "day": "2026-09-26",
+  "start": {
+    "lat": 50.8365,
+    "lng": -0.7792
+  },
+  "end": {
+    "lat": 50.8365,
+    "lng": -0.7792
+  },
+  "startTime": "09:00",
+  "latestFinish": "18:00",
+  "pinFirst": "littlehampton",
+  "pinLast": "portsmouth",
+  "stops": [
+    {
+      "id": "bognor",
+      "point": {
+        "lat": 50.7825,
+        "lng": -0.6746
+      },
+      "window": {
+        "kind": "unagreed"
+      }
+    },
+    {
+      "id": "portsmouth",
+      "point": {
+        "lat": 50.7989,
+        "lng": -1.0912
+      },
+      "window": {
+        "kind": "unagreed"
+      }
+    },
+    {
+      "id": "littlehampton",
+      "point": {
+        "lat": 50.8095,
+        "lng": -0.5405
+      },
+      "window": {
+        "kind": "unagreed"
+      }
+    },
+    {
+      "id": "emsworth",
+      "point": {
+        "lat": 50.8801,
+        "lng": -0.9058
+      },
+      "window": {
+        "kind": "unagreed"
+      }
+    }
+  ]
+}

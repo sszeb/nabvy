@@ -1,0 +1,13 @@
+{
+  "written": 2,
+  "cells": [
+    { "centre": "A", "family": "rtx-3090", "wants": 11, "adverts": 10, "suppressed": false },
+    {
+      "centre": "A",
+      "family": "ryzen-7-5800x3d",
+      "wants": null,
+      "adverts": 10,
+      "suppressed": false
+    }
+  ]
+}
