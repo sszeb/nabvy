@@ -1,0 +1,12 @@
+{
+  "evidence": [
+    {
+      "listing": "copy",
+      "family": "payment",
+      "scope": "own",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    }
+  ]
+}
