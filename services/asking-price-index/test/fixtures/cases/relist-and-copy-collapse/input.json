@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "builtFrom": "the card's 'each listing counts once after relist and copy-cluster collapse' (PARTS_INTELLIGENCE.md:264-265)",
+  "listings": [
+    {
+      "id": "relist-a",
+      "priceMinor": 60000
+    },
+    {
+      "id": "relist-b",
+      "priceMinor": 58000,
+      "lastSeenAt": "2026-09-24T12:00:00Z"
+    },
+    {
+      "id": "copy-a",
+      "priceMinor": 61000
+    },
+    {
+      "id": "copy-b",
+      "priceMinor": 61000
+    },
+    {
+      "id": "solo",
+      "priceMinor": 59000
+    }
+  ],
+  "relist": [["relist-a", "relist-b"]],
+  "copy": [["copy-a", "copy-b"]],
+  "now": "2026-09-26T00:00:00Z"
+}
