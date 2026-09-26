@@ -56,6 +56,7 @@ Updated 00:15 UTC 2026-09-26 by coordinator run (#105 opened). Setup check 2 (21
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 2026-09-26 W1 Routines: step A done, PR #107 "routines: role files and pre-check" opened (docs/routines/{reviewer,fixer,builder}.md, scripts/precheck.mjs + test, docs/secrets.md rows for REVIEW_FIRE_TOKEN/FIX_FIRE_TOKEN, Reviewer 9-14 marked superseded in docs/session-conventions.md). No migrations. Next: fire the on-request reviewer once CI is green, then step C (update coordinator/reviewer Routine prompts) once #107 merges.
 - 2026-09-26 00:09 UTC L1 web: PR #105 opened (head 410853f, [cp 4], no migrations).
 - 23:30 UTC coordinator 18: both reviewer Routine prompts carry their rules inline (no read of docs/session-conventions.md; backstop order: base of a stack, then [cp N], then oldest); on-request reviews fired for #83, #85, #89; fleet and Routines plan in docs/routines/improvement-plan.md.
 - 22:52 UTC dispatcher run: nothing queued
