@@ -102,6 +102,7 @@ test('coordinatorQuiet: false when a queue is non-empty even if the fingerprint 
 test('CLI coordinator mode: prints QUIET when everything matches', () => {
   const dir = withState(QUIET_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'abc1234',
     'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
   })
@@ -112,6 +113,7 @@ test('CLI coordinator mode: prints QUIET when everything matches', () => {
 test('CLI coordinator mode: prints BUSY when a queue is non-empty', () => {
   const dir = withState(BUSY_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: BUSY_STATE,
     'main-sha': 'abc1234',
     'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
   })
@@ -122,6 +124,7 @@ test('CLI coordinator mode: prints BUSY when a queue is non-empty', () => {
 test('CLI coordinator mode: prints BUSY when the main sha has moved', () => {
   const dir = withState(QUIET_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'def5678',
     'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
   })
@@ -155,6 +158,7 @@ test('openPrNumbers keeps PRs with a merge ref, known PRs and newer heads; drops
 test('CLI coordinator mode: closed PRs in ls-remote output do not break QUIET', () => {
   const dir = withState(QUIET_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'abc1234',
     'pr-heads': LIVE_REFS,
   })
@@ -165,6 +169,7 @@ test('CLI coordinator mode: closed PRs in ls-remote output do not break QUIET', 
 test('CLI coordinator mode: a new PR with no merge ref yet makes the run BUSY', () => {
   const dir = withState(QUIET_STATE)
   const { stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'abc1234',
     'pr-heads': `${LIVE_REFS}\n7777777\trefs/pull/103/head`,
   })
@@ -350,4 +355,15 @@ test('CLI claim and record: bad arguments fail with a usage message', () => {
   assert.equal(runWrite(['claim', 'x', 'f0f27cf']).code, 1)
   assert.equal(runWrite(['record', '113', 'f0f27cf', 'lgtm']).code, 1)
   assert.match(runWrite(['record', '113', 'zz']).stderr, /usage: node scripts\/precheck\.mjs claim/)
+})
+
+test('CLI coordinator mode: reads state.md from the state branch, not the checkout', () => {
+  const { reviewer } = stateRemote()
+  // No state.md in the run's own checkout: the state branch's QUIET_STATE decides.
+  const { code, stdout } = runCli('coordinator', reviewer, {
+    'main-sha': 'abc1234',
+    'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
+  })
+  assert.equal(code, 0)
+  assert.equal(stdout, 'QUIET')
 })

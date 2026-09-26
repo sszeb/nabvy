@@ -2,12 +2,13 @@
 // Cheap pre-check for fired Routine runs (task 0.20a-routine-files): decide in one call whether
 // there is anything to do, before the run reads any docs.
 // Usage:
-//   node scripts/precheck.mjs coordinator [rootDir] [--main-sha=<sha>] [--pr-heads=<ls-remote output>]
+//   node scripts/precheck.mjs coordinator [rootDir] [--main-sha=<sha>] [--pr-heads=<ls-remote output>] [--state=<text>]
 //   node scripts/precheck.mjs reviewer [rootDir] [--open-heads=<ls-remote output>] [--reviewed=<text>] [--state=<text>] [--now=<iso>]
 //   node scripts/precheck.mjs claim <pr> <head> [rootDir]
 //   node scripts/precheck.mjs record <pr> <head> approved|merged|changes [rootDir]
 // (--pr-heads and --open-heads take `git ls-remote origin 'refs/pull/*/head' 'refs/pull/*/merge'` output;
-// --reviewed and --state take reviewed.txt and state.md from the state branch.)
+// --reviewed and --state stand in for reviewed.txt and state.md, which both modes otherwise read
+// from the state branch.)
 //
 // Real runs shell out to git; the flags let precheck.test.mjs exercise the modes end to end
 // without a network call. claim and record push to the state branch (tests use a local bare repo).
@@ -16,8 +17,6 @@
 // head list alone is not the open-PR list. It removes refs/pull/<n>/merge when a PR closes, so both
 // modes ask for heads and merge refs in one ls-remote and keep only open PRs (see openPrNumbers).
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
 
 const attempt = (fn, fallback) => {
   try {
@@ -115,7 +114,8 @@ export function coordinatorQuiet(stateText, mainSha, prHeadsSet) {
 }
 
 function coordinatorMain(rootDir, flags) {
-  const stateText = readFileSync(join(rootDir, 'state.md'), 'utf8')
+  if (flags.state === undefined) fetchState(rootDir)
+  const stateText = flags.state ?? showState(rootDir, STATE_REF, 'state.md')
   const mainSha = flags['main-sha'] ?? run('git', ['rev-parse', '--short', 'origin/main'], rootDir)
   const lsRemote =
     flags['pr-heads'] ??
@@ -123,10 +123,7 @@ function coordinatorMain(rootDir, flags) {
       () => run('git', ['ls-remote', 'origin', 'refs/pull/*/head', 'refs/pull/*/merge'], rootDir),
       '',
     )
-  const known = [...(parseFingerprint(stateText)?.prs ?? [])].map((p) =>
-    Number(/^#(\d+)@/.exec(p)?.[1]),
-  )
-  const heads = parsePrHeads(lsRemote, openPrNumbers(lsRemote, known))
+  const heads = parsePrHeads(lsRemote, openPrNumbers(lsRemote, fingerprintPrs(stateText)))
   console.log(coordinatorQuiet(stateText, mainSha, heads) ? 'QUIET' : 'BUSY')
 }
 
