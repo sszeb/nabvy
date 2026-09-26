@@ -14,6 +14,7 @@ Updated 00:15 UTC 2026-09-26 by coordinator run (#105 opened). Setup check 2 (21
 91 rows = plan 91 (checked 22:37). Nothing pending.
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
+- #107 routines: role files and pre-check [W1 step A], no migrations, head 87a4f1a — W1 Routines implementer (this session, Sonnet, `task/0.20a-routine-files`). Subscribed; fires the reviewer once CI is green.
 - #105 L1 web local run [cp 4], no migrations, head 410853f — `session_01ULyWCky4X9u2Dn35prXFPr` (Sonnet). Reads app.v_listing_card (needs #81's migration).
 - #102 router-gateway [cp 2], 2 migrations — `session_01ETdUVwpWrdfWdAPLvk8R8i` (Opus). On merge: start travel-time.
 - #100 L2 pipeline wiring [cp 5] — `session_01EdCvNpwGNoqFD77bC9LGJa` (Haiku); blocked on a permission prompt the owner must approve.
