@@ -40,8 +40,12 @@ export type ListingSummary = {
   ask: Money
   /** Town only, never a street, postcode or coordinates. */
   town: string
-  /** Distance from the user's hunt centre, whole kilometres. */
-  distanceKm: number
+  /**
+   * Distance from the user's own origin, whole kilometres, or null while no distance module is
+   * wired (task L1: neither `location`'s user-origin distance nor `travel-time`/`router-gateway`
+   * is called yet — docs/questions/L1-web.md). Never a straight-line guess presented as this.
+   */
+  distanceKm: number | null
   delivery: DeliveryMethod
   condition?: string
   keyFacts: ListingFact[]
@@ -98,7 +102,11 @@ export type Deal = {
   listing: ListingSummary
   /** Why this listing reached the user, in plain words. */
   matchReason: string
-  position: PricePosition
+  /**
+   * Null while `asking-price-index` is not wired (task L1: not in the atomic module catalogue's
+   * merged waves yet — docs/questions/L1-web.md). No percentile is ever invented in its place.
+   */
+  position: PricePosition | null
   suspicions: Suspicion[]
   warnings: WarningSign[]
   priceChanges: PriceChange[]
@@ -146,7 +154,12 @@ export type AlertDelivery = {
 export type Account = {
   email: string
   displayName: string
-  postcodeDistrict: string
+  /**
+   * Null: `@nabvy/account`'s profile has no location field (task L1: it stores displayName,
+   * analyticsConsent and designPartner only — services/account/README.md, "Tables"). Kept
+   * nullable rather than removed, in case a later task adds one. docs/questions/L1-web.md.
+   */
+  homeArea: string | null
   signInMethods: Array<'magic_link' | 'google'>
   createdAt: string
 }

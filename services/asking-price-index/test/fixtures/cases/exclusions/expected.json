@@ -1,0 +1,24 @@
+{
+  "groups": {
+    "gpu:rtx-3090|standalone|used_good|GB|GBP|30d": {
+      "n": 1,
+      "median": 60000,
+      "mad": 0,
+      "p25": 60000,
+      "p75": 60000,
+      "min": 60000,
+      "max": 60000,
+      "thin": false,
+      "copy_collapse": true
+    }
+  },
+  "members": {
+    "noise@standalone|used_good|GB": "noise",
+    "not-fixed@standalone|used_good|GB": "money_kind",
+    "ok@standalone|used_good|GB": "counted",
+    "sold@standalone|used_good|GB": "sold",
+    "stale@standalone|used_good|GB": "stale",
+    "unbound@standalone|used_good|GB": "unverified_binding",
+    "zero@standalone|used_good|GB": "zero_price"
+  }
+}

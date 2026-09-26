@@ -1,0 +1,40 @@
+{
+  "synthetic": true,
+  "builtFrom": "EVIDENCE_LEDGER.md:194-195 and the actor README.md:451 (noise hits, \u00a30, non-fixed money kinds, sold rows and unverified bindings are left out); the 30-day window of PARTS_INTELLIGENCE.md:262-263",
+  "listings": [
+    {
+      "id": "ok",
+      "priceMinor": 60000
+    },
+    {
+      "id": "noise",
+      "priceMinor": 61000,
+      "noise": true
+    },
+    {
+      "id": "sold",
+      "priceMinor": 62000,
+      "availability": "sold"
+    },
+    {
+      "id": "zero",
+      "priceMinor": 0
+    },
+    {
+      "id": "not-fixed",
+      "priceMinor": 63000,
+      "moneyKind": null
+    },
+    {
+      "id": "unbound",
+      "priceMinor": 64000,
+      "binding": "unverified"
+    },
+    {
+      "id": "stale",
+      "priceMinor": 65000,
+      "lastSeenAt": "2026-08-01T00:00:00Z"
+    }
+  ],
+  "now": "2026-09-26T00:00:00Z"
+}

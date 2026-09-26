@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "builtFrom": "copy-advert.md section 3 (while copy-advert is off each stats row records copy collapse unavailable)",
+  "listings": [
+    {
+      "id": "copy-a",
+      "priceMinor": 61000
+    },
+    {
+      "id": "copy-b",
+      "priceMinor": 61000
+    }
+  ],
+  "copy": [["copy-a", "copy-b"]],
+  "off": ["copy-advert"],
+  "now": "2026-09-26T00:00:00Z"
+}
