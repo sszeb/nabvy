@@ -1,0 +1,320 @@
+{
+  "id": "58ff792a-52eb-4237-96c0-54ff45e3f309",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "asking_price_position.positions": {
+      "name": "positions",
+      "schema": "asking_price_position",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "group_key": {
+          "name": "group_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ask_minor": {
+          "name": "ask_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rank": {
+          "name": "rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "n": {
+          "name": "n",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "percentile": {
+          "name": "percentile",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "robust_z": {
+          "name": "robust_z",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "median": {
+          "name": "median",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "range_low": {
+          "name": "range_low",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "range_high": {
+          "name": "range_high",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "new_median": {
+          "name": "new_median",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "new_n": {
+          "name": "new_n",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stats_as_of": {
+          "name": "stats_as_of",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "positioned_at": {
+          "name": "positioned_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "positions_group_idx": {
+          "name": "positions_group_idx",
+          "columns": [
+            {
+              "expression": "group_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "positions_listing_group_key": {
+          "name": "positions_listing_group_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "listing_id",
+            "group_key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "positions_ask_check": {
+          "name": "positions_ask_check",
+          "value": "\"asking_price_position\".\"positions\".\"ask_minor\" >= 0"
+        },
+        "positions_n_check": {
+          "name": "positions_n_check",
+          "value": "\"asking_price_position\".\"positions\".\"n\" >= 0"
+        },
+        "positions_rank_check": {
+          "name": "positions_rank_check",
+          "value": "\"asking_price_position\".\"positions\".\"rank\" is null or \"asking_price_position\".\"positions\".\"rank\" between 1 and \"asking_price_position\".\"positions\".\"n\" + 1"
+        },
+        "positions_percentile_check": {
+          "name": "positions_percentile_check",
+          "value": "\"asking_price_position\".\"positions\".\"percentile\" is null or \"asking_price_position\".\"positions\".\"percentile\" between 0 and 100"
+        },
+        "positions_currency_check": {
+          "name": "positions_currency_check",
+          "value": "\"asking_price_position\".\"positions\".\"currency\" in ('GBP', 'EUR')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "asking_price_position": "asking_price_position"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "asking_price_position.v_positions": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "group_key": {
+          "name": "group_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ask_minor": {
+          "name": "ask_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rank": {
+          "name": "rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "n": {
+          "name": "n",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "percentile": {
+          "name": "percentile",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "robust_z": {
+          "name": "robust_z",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "median": {
+          "name": "median",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "range_low": {
+          "name": "range_low",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "range_high": {
+          "name": "range_high",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "new_median": {
+          "name": "new_median",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "new_n": {
+          "name": "new_n",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stats_as_of": {
+          "name": "stats_as_of",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "positioned_at": {
+          "name": "positioned_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_positions",
+      "schema": "asking_price_position",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
