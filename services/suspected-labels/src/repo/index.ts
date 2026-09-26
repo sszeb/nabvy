@@ -3,7 +3,7 @@ import type {
   SuspectedLabelsType,
 } from '@nabvy/contracts/modules/suspected-labels'
 import * as schema from '@nabvy/db/schema/suspected-labels'
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, eq, isNull, sql } from 'drizzle-orm'
 
 type Queryable = import('@nabvy/db').Queryable
 
@@ -112,6 +112,10 @@ export async function approveCandidate(
   const candidate = candidates[0]
   if (!candidate) throw new Error(`Candidate not found: ${candidateId}`)
 
+  if (candidate.cleared_at) {
+    throw new Error(`Candidate already decided: ${candidateId}`)
+  }
+
   if (decision === 'approve') {
     // Create label from candidate
     await db.insert(schema.labels).values({
@@ -130,6 +134,12 @@ export async function approveCandidate(
     decision,
     by,
   })
+
+  // Mark candidate as cleared
+  await db
+    .update(schema.candidates)
+    .set({ cleared_at: sql`NOW()` })
+    .where(eq(schema.candidates.id, candidateId))
 }
 
 /**

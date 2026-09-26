@@ -14,5 +14,56 @@ beforeAll(async () => {
 afterAll(() => db.close())
 
 describe('suspected-labels idempotency', () => {
-  it.todo('a handler or write function run twice with the same key writes once')
+  it('upsertEvaluation run twice with the same key writes once', async () => {
+    const { upsertEvaluation } = await import('../src/repo/index')
+
+    const evaluation = {
+      source: 'test',
+      source_listing_id: 'list-123',
+      evidence_hash: 'hash-abc',
+      rule_version: 'r1.0',
+      signals: { test: true },
+      paths_met: ['A'],
+    }
+
+    // First run
+    await upsertEvaluation(db.client, evaluation)
+
+    // Verify it was inserted
+    const result1 = await db.client
+      .selectFrom('suspected_labels.evaluations')
+      .selectAll()
+      .where(
+        (eb) =>
+          eb.and([
+            eb('source', '=', evaluation.source),
+            eb('source_listing_id', '=', evaluation.source_listing_id),
+            eb('evidence_hash', '=', evaluation.evidence_hash),
+            eb('rule_version', '=', evaluation.rule_version),
+          ]),
+      )
+      .execute()
+
+    expect(result1).toHaveLength(1)
+
+    // Second run with same key
+    await upsertEvaluation(db.client, evaluation)
+
+    // Verify only one row exists (no duplicate)
+    const result2 = await db.client
+      .selectFrom('suspected_labels.evaluations')
+      .selectAll()
+      .where(
+        (eb) =>
+          eb.and([
+            eb('source', '=', evaluation.source),
+            eb('source_listing_id', '=', evaluation.source_listing_id),
+            eb('evidence_hash', '=', evaluation.evidence_hash),
+            eb('rule_version', '=', evaluation.rule_version),
+          ]),
+      )
+      .execute()
+
+    expect(result2).toHaveLength(1)
+  })
 })

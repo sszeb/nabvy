@@ -15,12 +15,12 @@ Off by default. While off: no labels are created or shown, and the review queue 
 ## Outputs
 
 - **Event:** `labels.changed` v1 `{ listing_ids: string[] }`, emitted when new labels become published
-- **Internal views:**
+- **Internal views (not yet implemented):**
   - `v_candidates` (pending candidates waiting for review approval)
   - `v_review_queue` (prioritized candidates for human review)
   - `v_calibration` (candidates with calibration reviews for precision measurement)
   - `v_shadow_metrics` (shadow mode metrics for precision and recall)
-- **User-facing view:** `app.v_suspected_labels` (listing_id, label_type, evidence, shown_at, report_mistake_path); shown labels only, filtered per-path mode and approval
+- **User-facing view (not yet implemented):** `app.v_suspected_labels` (listing_id, label_type, evidence, shown_at, report_mistake_path); shown labels only, filtered per-path mode and approval
 - **Functions:** `getLabelsForListing(db, source, source_listing_id)`, `getCandidatesForListing(db, source, source_listing_id)`, `approveCandidate(db, candidateId, decision, by)`, `evaluateTgtbtSignals(signals, reportCount)`, `hasSignal(signal, signals)`
 
 ## Tables
@@ -52,7 +52,7 @@ Domain logic tested in `test/domain.test.ts` with 9 synthetic cases covering pat
 
 ## Decisions
 
-- **2026-09-26:** Built core infrastructure for label system: seven tables (rules, evaluations, candidates, approvals, labels, correction_requests, reviews); contracts for all label types with discriminated unions by label_type; domain logic for too-good-to-be-true path evaluation with rules for combining listing signals and user reports; repo access functions for upsert, create, approve, query; placeholder event handlers for integration. Event name format `labels.changed`. Path evaluation order: C (multiple reports) → B-P (review-only) → B (shown) → A (two listing signals) → null. All tests passing, linter and typecheck clean.
+- **2026-09-26:** Built core infrastructure for label system: seven tables (rules, evaluations, candidates, approvals, labels, correction_requests, reviews); contracts for all label types with discriminated unions by label_type; domain logic for too-good-to-be-true path evaluation with rules for combining listing signals and user reports; repo access functions for upsert, create, approve, query; placeholder event handlers for integration. Event name format `labels.changed`. Path evaluation order: A (two listing signals) → C (multiple reports) → B-P (report + price, review-only) → B (report + listing signal, shown) → null. All tests passing, linter and typecheck clean.
 
 ## Open questions
 
