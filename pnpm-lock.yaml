@@ -2068,6 +2068,9 @@ importers:
       '@nabvy/config':
         specifier: workspace:*
         version: link:../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../packages/contracts
       '@nabvy/copy-advert':
         specifier: workspace:*
         version: link:../services/copy-advert
@@ -2080,6 +2083,9 @@ importers:
       '@nabvy/spend-governor':
         specifier: workspace:*
         version: link:../services/spend-governor
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../packages/transport
       '@trigger.dev/sdk':
         specifier: 4.6.4
         version: 4.6.4(react@19.3.0)(zod@4.6.5)
