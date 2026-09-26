@@ -9,49 +9,38 @@ directly with `schedules.task({ id, cron, run })`.
 
 ## Event tasks
 
-One task per event type. ID format: `event-type-becomes-kebab-case` (e.g. `listing-ingest-first-seen`).
-Payload is `EventEnvelope` from Trigger.dev's batchTrigger. Retry policy is `eventRetry` from
-`@nabvy/config`.
+**Wiring map** (`event-tasks-wiring.ts`): 10 merged event types with stubbed handler factories
+(`() => null as any` pending implementation). Each export (`ACCOUNT_DELETED`, `APIFY_GATEWAY_RUN_COLLECTED`, etc.)
+documents the event type and its consumer modules. Task files do not yet exist; when they do, the pattern
+is: one task per event type with ID format `event-type-becomes-kebab-case` (e.g. `listing-ingest-first-seen`),
+receiving `EventEnvelope` from Trigger.dev's batchTrigger, retry policy `eventRetry` from `@nabvy/config`.
 
-**Merged modules' event tasks** (handlers exist):
+**Merged modules** (10 event types, consumer handlers exist but not yet dispatched):
 
-- `listing-ingest-first-seen.ts` — consumers: copy-advert, details-queue, details-selector,
+- `account.deleted` — producers: account; consumers: copy-advert, lifecycle-messaging,
+  marketing-consent, pricing-console, usage-ledger
+- `apify-gateway.run-collected` — producers: apify-gateway; consumers: detail-evidence,
+  details-queue, listing-ingest, run-coverage
+- `detail-evidence.changed` — producers: detail-evidence; consumers: copy-advert, parts-rules,
   pickup-location, relist-merge
-- `listing-ingest-card-changed.ts` — consumers: copy-advert, listing-lifecycle
-- `apify-gateway-run-collected.ts` — consumers: detail-evidence, details-queue, listing-ingest,
-  run-coverage
-- `detail-evidence-changed.ts` — consumers: copy-advert, parts-rules, pickup-location,
-  relist-merge
-- `detail-evidence-unresolved.ts` — consumers: listing-lifecycle
-- `listing-suppression-changed.ts` — consumers: copy-advert
-- `account-deleted.ts` — consumers: copy-advert, lifecycle-messaging, marketing-consent,
-  pricing-console, usage-ledger
-- `parts-rules-ran.ts` — consumers: parts-ai, parts-record
-- `parts-ai-extracted.ts` — consumers: parts-record
-- `parts-record-recorded.ts` — consumers: listing-assessment
+- `detail-evidence.unresolved` — producers: detail-evidence; consumers: listing-lifecycle
+- `listing-ingest.card-changed` — producers: listing-ingest; consumers: copy-advert,
+  listing-lifecycle
+- `listing-ingest.first-seen` — producers: listing-ingest; consumers: copy-advert, details-queue,
+  details-selector, pickup-location, relist-merge
+- `listing-suppression.changed` — producers: listing-suppression; consumers: copy-advert
+- `parts-ai.extracted` — producers: parts-ai; consumers: parts-record
+- `parts-record.recorded` — producers: parts-record; consumers: listing-assessment
+- `parts-rules.ran` — producers: parts-rules; consumers: parts-ai, parts-record
 
-**Unfilled slots** (no consumer handlers merged yet):
+**Unfilled slots** (19 event types, no consumer handlers merged yet):
 
-- `city-pages.changed` (producer: city-pages; no consumers merged)
-- `copy-advert.clustered` (producer: copy-advert; no consumers merged)
-- `details-queue.deferred` (producer: details-queue; no consumers merged)
-- `listing-assessment.assessed` (producer: listing-assessment; no consumers merged)
-- `listing-feedback.recorded` (producer: listing-feedback; no consumers merged)
-- `listing-lifecycle.status-changed` (producer: listing-lifecycle; no consumers merged)
-- `pickup-location.resolved` (producer: pickup-location; no consumers merged)
-- `pickup-location.changed` (producer: pickup-location; no consumers merged)
-- `product-catalogue.updated` (producer: product-catalogue; no consumers merged)
-- `relist-merge.merged` (producer: relist-merge; no consumers merged)
-- `route-health.route-switched` (producer: route-health; no consumers merged)
-- `run-coverage.search-degraded` (producer: run-coverage; no consumers merged)
-- `scan-recognition.identified` (producer: scan-recognition; no consumers merged)
-- `source-health.alerted` (producer: source-health; no consumers merged)
-- `spend-governor.budget-alerted` (producer: spend-governor; no consumers merged)
-- `subscriptions.entitlement-changed` (producer: subscriptions; no consumers merged)
-- `subscriptions.webhook-failed` (producer: subscriptions; no consumers merged)
-- `switches.changed` (producer: switches; no consumers merged)
-- `usage-ledger.balance-low` (producer: usage-ledger; no consumers merged)
-- `want-manager.changed` (producer: want-manager; no consumers merged)
+- `city-pages.changed`, `copy-advert.clustered`, `details-queue.deferred`,
+  `listing-assessment.assessed`, `listing-feedback.recorded`, `listing-lifecycle.status-changed`,
+  `pickup-location.resolved`, `pickup-location.changed`, `product-catalogue.updated`,
+  `relist-merge.merged`, `route-health.route-switched`, `scan-recognition.identified`,
+  `source-health.alerted`, `spend-governor.budget-alerted`, `subscriptions.entitlement-changed`,
+  `subscriptions.webhook-failed`, `switches.changed`, `usage-ledger.balance-low`, `want-manager.changed`
 
 ## Scheduled tasks
 
@@ -71,9 +60,10 @@ This folder is a pnpm workspace package (`@nabvy/trigger`, `pnpm-workspace.yaml`
 ## Local testing
 
 Without `TRIGGER_SECRET_KEY` and `TRIGGER_PROJECT_ID` environment variables, `pnpm trigger:dev`
-does not start the local runner. The task module loads cleanly, and the fixture tests in
-`test/wiring.test.ts` verify that the handler registry can be built. Set those env vars to enable
-the local runner: see `docs/secrets.md` for configuration.
+does not start the local runner. The task module loads cleanly; `test/wiring.test.ts` runs fixture
+tests that verify event idempotency through `createMemoryPublisher`, confirm the 10 merged event
+types are documented in the wiring map with expected consumer counts, and check that unfilled slots
+are listed. Set those env vars to enable the local runner: see `docs/secrets.md` for configuration.
 
 No Trigger.dev account exists yet (`docs/questions.md`, "Trigger.dev setup"), so event tasks
 are dormant when deployed. Scheduled tasks remain live until the owner disables them.

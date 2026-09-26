@@ -69,7 +69,7 @@ export async function dispatchEvent(
         error: { code: string; message: string }
         attempts: number
         firstFailedAt: string
-      }): Promise<{ event: EventEnvelope }>
+      }): Promise<{ event?: EventEnvelope }>
     }
     now?: () => Date
   },
