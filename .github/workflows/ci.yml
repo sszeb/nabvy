@@ -18,8 +18,6 @@ on:
 
 permissions:
   contents: read
-  statuses: write
-  pull-requests: write
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -34,6 +32,7 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       non-docs-changed: ${{ steps.changed.outputs.non-docs-changed }}
+      full-run: ${{ steps.changed.outputs.full-run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,16 +40,27 @@ jobs:
       - id: changed
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
-            # On push to main, run all checks
+            # On push to main, run all checks, unscoped.
             echo "non-docs-changed=true" >> $GITHUB_OUTPUT
+            echo "full-run=true" >> $GITHUB_OUTPUT
           else
             # On PR, check if any non-docs files changed
             CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-            # Consider non-docs if there's any change outside docs/*, *.md, *.txt, *.yml, README*, CHANGELOG*
+            # Consider non-docs if there's any change outside docs/*, *.md, *.txt, README*, CHANGELOG*
             if echo "$CHANGED" | grep -qv '^\(docs/\|.*\.md$\|.*\.txt$\|README\|CHANGELOG\)'; then
               echo "non-docs-changed=true" >> $GITHUB_OUTPUT
             else
               echo "non-docs-changed=false" >> $GITHUB_OUTPUT
+            fi
+            # turbo's --filter=...[origin/main] scopes typecheck/test to packages whose own
+            # directory changed. An infra-only change (.github/, scripts/, or a root config file)
+            # touches no package directory, so the filter matches zero packages and the scoped
+            # run no-ops or errors instead of actually checking anything: fall back to an
+            # unscoped, full run whenever no package directory is among the changed files.
+            if echo "$CHANGED" | grep -q '^\(packages/\|services/\|apps/\|trigger/\)'; then
+              echo "full-run=false" >> $GITHUB_OUTPUT
+            else
+              echo "full-run=true" >> $GITHUB_OUTPUT
             fi
           fi
 
@@ -77,19 +87,19 @@ jobs:
           key: turbo-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: turbo-
       - run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm typecheck --filter=...[origin/main]
-          else
+          if [ "${{ needs.changed-files.outputs.full-run }}" = "true" ]; then
             pnpm typecheck
+          else
+            pnpm typecheck --filter=...[origin/main]
           fi
       - run: pnpm lint
       - run: pnpm check:conventions
       - run: node --test scripts/check-conventions.test.mjs
       - run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm test --filter=...[origin/main]
-          else
+          if [ "${{ needs.changed-files.outputs.full-run }}" = "true" ]; then
             pnpm test
+          else
+            pnpm test --filter=...[origin/main]
           fi
       # Fails when a module's stage falls below its recorded pass rate (fixtures/README.md).
       - run: pnpm test:fixtures
@@ -207,62 +217,9 @@ jobs:
           createdb scaffold_probe
           PGDATABASE=scaffold_probe bash scripts/db-dry-run.sh
 
-  notify-review:
-    name: Notify reviewer when all checks pass
-    needs: [changed-files, checks, audit, migrations, secrets]
-    if: >
-      always() &&
-      !failure() &&
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.draft == false &&
-      github.repository == 'sszeb/nabvy'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    continue-on-error: true
-    steps:
-      - name: Fire reviewer
-        run: |
-          TOKEN="${{ secrets.REVIEW_FIRE_TOKEN }}"
-          ROUTINE_ID="${{ vars.REVIEW_ROUTINE_ID }}"
-
-          if [ -z "$TOKEN" ] || [ -z "$ROUTINE_ID" ]; then
-            echo "Skipping: REVIEW_FIRE_TOKEN or REVIEW_ROUTINE_ID not configured"
-            exit 0
-          fi
-
-          curl -s -X POST \
-            "https://api.anthropic.com/v1/claude_code/routines/$ROUTINE_ID/fire" \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"text\": \"PR #${{ github.event.pull_request.number }} sha=${{ github.event.pull_request.head.sha }}\"}" \
-            || echo "Fire request failed (may be expected if secrets not yet configured)"
-
-  notify-fix:
-    name: Notify fixer when checks fail
-    needs: [changed-files, checks, audit, migrations, secrets]
-    if: >
-      always() &&
-      failure() &&
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.draft == false &&
-      github.repository == 'sszeb/nabvy'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    continue-on-error: true
-    steps:
-      - name: Fire fixer
-        run: |
-          TOKEN="${{ secrets.FIX_FIRE_TOKEN }}"
-          ROUTINE_ID="${{ vars.FIX_ROUTINE_ID }}"
-
-          if [ -z "$TOKEN" ] || [ -z "$ROUTINE_ID" ]; then
-            echo "Skipping: FIX_FIRE_TOKEN or FIX_ROUTINE_ID not configured"
-            exit 0
-          fi
-
-          curl -s -X POST \
-            "https://api.anthropic.com/v1/claude_code/routines/$ROUTINE_ID/fire" \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"text\": \"PR #${{ github.event.pull_request.number }} sha=${{ github.event.pull_request.head.sha }}\"}" \
-            || echo "Fire request failed (may be expected if secrets not yet configured)"
+# Reviewer/Fixer Routine firing does not live here: this workflow runs on `pull_request`, which
+# for a same-repo branch executes the PR's own copy of the workflow file, so a job here can never
+# safely hold REVIEW_FIRE_TOKEN/FIX_FIRE_TOKEN. That firing logic lives in
+# .github/workflows/dispatch.yml instead, which only triggers off the default branch
+# (workflow_run once this workflow finishes, push to main, and a 30-minute schedule) and reads
+# this run's check-runs through the API rather than trusting its own job outcomes.
