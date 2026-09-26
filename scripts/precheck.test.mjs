@@ -102,6 +102,7 @@ test('coordinatorQuiet: false when a queue is non-empty even if the fingerprint 
 test('CLI coordinator mode: prints QUIET when everything matches', () => {
   const dir = withState(QUIET_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'abc1234',
     'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
   })
@@ -112,6 +113,7 @@ test('CLI coordinator mode: prints QUIET when everything matches', () => {
 test('CLI coordinator mode: prints BUSY when a queue is non-empty', () => {
   const dir = withState(BUSY_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: BUSY_STATE,
     'main-sha': 'abc1234',
     'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
   })
@@ -122,6 +124,7 @@ test('CLI coordinator mode: prints BUSY when a queue is non-empty', () => {
 test('CLI coordinator mode: prints BUSY when the main sha has moved', () => {
   const dir = withState(QUIET_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'def5678',
     'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
   })
@@ -155,6 +158,7 @@ test('openPrNumbers keeps PRs with a merge ref, known PRs and newer heads; drops
 test('CLI coordinator mode: closed PRs in ls-remote output do not break QUIET', () => {
   const dir = withState(QUIET_STATE)
   const { code, stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'abc1234',
     'pr-heads': LIVE_REFS,
   })
@@ -165,6 +169,7 @@ test('CLI coordinator mode: closed PRs in ls-remote output do not break QUIET', 
 test('CLI coordinator mode: a new PR with no merge ref yet makes the run BUSY', () => {
   const dir = withState(QUIET_STATE)
   const { stdout } = runCli('coordinator', dir, {
+    state: QUIET_STATE,
     'main-sha': 'abc1234',
     'pr-heads': `${LIVE_REFS}\n7777777\trefs/pull/103/head`,
   })
@@ -203,12 +208,13 @@ test('parseReviewed keeps the last line per head and ignores unknown lines', () 
   )
 })
 
-test('claimable: no line or a stale or unreadable claim; never a verdict', () => {
+test('claimable: no line, a released or stale or unreadable claim; never a verdict', () => {
   const now = Date.parse(T0)
   assert.equal(claimable(undefined, now), true)
-  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T11:30Z' }, now), false)
-  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T09:59Z' }, now), true)
+  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T11:45Z' }, now), false)
+  assert.equal(claimable({ status: 'claimed', at: '2026-09-26T11:29Z' }, now), true)
   assert.equal(claimable({ status: 'claimed', at: '' }, now), true)
+  assert.equal(claimable({ status: 'released', at: '2026-09-26T11:59Z' }, now), true)
   for (const status of ['approved', 'merged', 'changes']) {
     assert.equal(claimable({ status, at: '2026-09-26T09:00Z' }, now), false)
   }
@@ -227,7 +233,7 @@ test('reviewerCandidates: unreviewed and stale-claimed heads to review, approved
   const heads = new Map([
     [10, 'aaaa111'], // approved while CI ran
     [11, 'bbbb222'], // head moved since its review
-    [12, 'cccc333'], // claimed an hour ago
+    [12, 'cccc333'], // claimed ten minutes ago
     [13, 'dddd444'], // claim from a run that died
     [14, 'eeee555'], // merged (ref not yet gone)
     [15, 'ffff666'], // changes needed on this head
@@ -236,7 +242,7 @@ test('reviewerCandidates: unreviewed and stale-claimed heads to review, approved
     [
       '#10 aaaa111 approved 2026-09-26T08:00Z',
       '#11 0000000 changes 2026-09-26T08:00Z',
-      '#12 cccc333 claimed 2026-09-26T11:00Z',
+      '#12 cccc333 claimed 2026-09-26T11:50Z',
       '#13 dddd444 claimed 2026-09-26T08:00Z',
       '#14 eeee555 merged 2026-09-26T08:00Z',
       '#15 ffff666 changes 2026-09-26T08:00Z',
@@ -330,7 +336,7 @@ test('CLI claim and record: one claim per head, verdicts appended, other files k
   )
   assert.equal(`${remoteFile(origin, 'state.md')}\n`, BUSY_STATE)
   assert.equal(remoteFile(origin, 'briefs/x.md'), 'brief')
-  // An approved head is never claimed again; a claim left by a dead run expires after 2 h.
+  // An approved head is never claimed again; a claim left by a dead run expires after 30 min.
   assert.equal(runWrite(['claim', '113', 'f0f27cf', reviewer]).stdout, 'TAKEN')
   assert.equal(runWrite(['claim', '114', 'abcdef1', reviewer]).stdout, 'CLAIMED')
   const later = new Date(Date.parse(T0) + 3 * HOUR).toISOString()
@@ -350,4 +356,23 @@ test('CLI claim and record: bad arguments fail with a usage message', () => {
   assert.equal(runWrite(['claim', 'x', 'f0f27cf']).code, 1)
   assert.equal(runWrite(['record', '113', 'f0f27cf', 'lgtm']).code, 1)
   assert.match(runWrite(['record', '113', 'zz']).stderr, /usage: node scripts\/precheck\.mjs claim/)
+})
+
+test('CLI coordinator mode: reads state.md from the state branch, not the checkout', () => {
+  const { reviewer } = stateRemote()
+  // No state.md in the run's own checkout: the state branch's QUIET_STATE decides.
+  const { code, stdout } = runCli('coordinator', reviewer, {
+    'main-sha': 'abc1234',
+    'pr-heads': '54dee1e\trefs/pull/102/head\n93bd4e7\trefs/pull/101/head',
+  })
+  assert.equal(code, 0)
+  assert.equal(stdout, 'QUIET')
+})
+
+test('CLI record released: frees a claimed head for the next run', () => {
+  const { reviewer } = stateRemote()
+  assert.equal(runWrite(['claim', '121', 'abc1234', reviewer]).stdout, 'CLAIMED')
+  assert.equal(runWrite(['claim', '121', 'abc1234', reviewer]).stdout, 'TAKEN')
+  assert.equal(runWrite(['record', '121', 'abc1234', 'released', reviewer]).stdout, 'RECORDED')
+  assert.equal(runWrite(['claim', '121', 'abc1234', reviewer]).stdout, 'CLAIMED')
 })

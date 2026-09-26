@@ -2,12 +2,13 @@
 // Cheap pre-check for fired Routine runs (task 0.20a-routine-files): decide in one call whether
 // there is anything to do, before the run reads any docs.
 // Usage:
-//   node scripts/precheck.mjs coordinator [rootDir] [--main-sha=<sha>] [--pr-heads=<ls-remote output>]
+//   node scripts/precheck.mjs coordinator [rootDir] [--main-sha=<sha>] [--pr-heads=<ls-remote output>] [--state=<text>]
 //   node scripts/precheck.mjs reviewer [rootDir] [--open-heads=<ls-remote output>] [--reviewed=<text>] [--state=<text>] [--now=<iso>]
 //   node scripts/precheck.mjs claim <pr> <head> [rootDir]
-//   node scripts/precheck.mjs record <pr> <head> approved|merged|changes [rootDir]
+//   node scripts/precheck.mjs record <pr> <head> approved|merged|changes|released [rootDir]
 // (--pr-heads and --open-heads take `git ls-remote origin 'refs/pull/*/head' 'refs/pull/*/merge'` output;
-// --reviewed and --state take reviewed.txt and state.md from the state branch.)
+// --reviewed and --state stand in for reviewed.txt and state.md, which both modes otherwise read
+// from the state branch.)
 //
 // Real runs shell out to git; the flags let precheck.test.mjs exercise the modes end to end
 // without a network call. claim and record push to the state branch (tests use a local bare repo).
@@ -16,8 +17,6 @@
 // head list alone is not the open-PR list. It removes refs/pull/<n>/merge when a PR closes, so both
 // modes ask for heads and merge refs in one ls-remote and keep only open PRs (see openPrNumbers).
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
 
 const attempt = (fn, fallback) => {
   try {
@@ -115,7 +114,8 @@ export function coordinatorQuiet(stateText, mainSha, prHeadsSet) {
 }
 
 function coordinatorMain(rootDir, flags) {
-  const stateText = readFileSync(join(rootDir, 'state.md'), 'utf8')
+  if (flags.state === undefined) fetchState(rootDir)
+  const stateText = flags.state ?? showState(rootDir, STATE_REF, 'state.md')
   const mainSha = flags['main-sha'] ?? run('git', ['rev-parse', '--short', 'origin/main'], rootDir)
   const lsRemote =
     flags['pr-heads'] ??
@@ -123,23 +123,21 @@ function coordinatorMain(rootDir, flags) {
       () => run('git', ['ls-remote', 'origin', 'refs/pull/*/head', 'refs/pull/*/merge'], rootDir),
       '',
     )
-  const known = [...(parseFingerprint(stateText)?.prs ?? [])].map((p) =>
-    Number(/^#(\d+)@/.exec(p)?.[1]),
-  )
-  const heads = parsePrHeads(lsRemote, openPrNumbers(lsRemote, known))
+  const heads = parsePrHeads(lsRemote, openPrNumbers(lsRemote, fingerprintPrs(stateText)))
   console.log(coordinatorQuiet(stateText, mainSha, heads) ? 'QUIET' : 'BUSY')
 }
 
 // --- reviewer: open PRs whose head has no line in reviewed.txt (to review), and approved heads
 // not yet merged (to merge). reviewed.txt and state.md live on the state branch; git refuses
 // pushes outside refs/heads here (HTTP 403 on refs/reviewed/*), so the reviewer's memory is a
-// file on a branch. Lines: "#<n> <sha7> claimed|approved|merged|changes <UTC time>". ---
+// file on a branch. Lines: "#<n> <sha7> claimed|approved|merged|changes|released <UTC time>". ---
 
 export const STATE_BRANCH = 'claude/coordinator-state'
 const STATE_REF = `refs/remotes/origin/${STATE_BRANCH}`
-const STATUSES = ['claimed', 'approved', 'merged', 'changes']
-// A claim with no later line for 2 h is from a run that died: the head is reviewable again.
-export const STALE_CLAIM_MS = 2 * 60 * 60 * 1000
+const STATUSES = ['claimed', 'approved', 'merged', 'changes', 'released']
+// A claim with no later line for 30 min is from a run that died (a review takes ~5 min): the head
+// is reviewable again. A run that stops before a verdict writes `released`, freeing it at once.
+export const STALE_CLAIM_MS = 30 * 60 * 1000
 
 // reviewed.txt -> Map<"<n>@<sha7>", {status, at}>, the last line per head winning.
 export function parseReviewed(text) {
@@ -153,9 +151,10 @@ export function parseReviewed(text) {
   return out
 }
 
-// A head can be claimed when it has no line, or only a stale claim (an unreadable time is stale).
+// A head can be claimed when it has no line, a `released` line, or only a stale claim (an
+// unreadable time is stale).
 export function claimable(entry, nowMs) {
-  if (!entry) return true
+  if (!entry || entry.status === 'released') return true
   return entry.status === 'claimed' && !(nowMs - Date.parse(entry.at) < STALE_CLAIM_MS)
 }
 
@@ -261,10 +260,11 @@ function writeMain(mode, positional, flags) {
   const [n, sha, ...rest] = positional
   const status = mode === 'claim' ? 'claimed' : rest.shift()
   const rootDir = rest[0] ?? process.cwd()
-  const okStatus = mode === 'claim' || ['approved', 'merged', 'changes'].includes(status)
+  const okStatus =
+    mode === 'claim' || ['approved', 'merged', 'changes', 'released'].includes(status)
   if (!/^\d+$/.test(n ?? '') || !/^[0-9a-f]{7,40}$/.test(sha ?? '') || !okStatus) {
     console.error(
-      'usage: node scripts/precheck.mjs claim <pr> <head> [rootDir] | record <pr> <head> approved|merged|changes [rootDir]',
+      'usage: node scripts/precheck.mjs claim <pr> <head> [rootDir] | record <pr> <head> approved|merged|changes|released [rootDir]',
     )
     process.exit(1)
   }
