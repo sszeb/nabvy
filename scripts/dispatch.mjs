@@ -122,7 +122,9 @@ async function findOpenPRForSha(owner, repo, sha) {
   }
 
   const prs = JSON.parse(response.body)
-  const open = prs.find((pr) => pr.state === 'open')
+  const open = prs.find(
+    (pr) => pr.state === 'open' && pr.head.repo.full_name === `${owner}/${repo}`
+  )
   return open ? open.number : null
 }
 
@@ -139,7 +141,9 @@ async function listOpenPRNumbers(owner, repo) {
     return []
   }
 
-  return JSON.parse(response.body).map((pr) => pr.number)
+  return JSON.parse(response.body)
+    .filter((pr) => pr.head.repo.full_name === `${owner}/${repo}`)
+    .map((pr) => pr.number)
 }
 
 // Check PR's commit status
