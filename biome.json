@@ -53,6 +53,16 @@
       }
     },
     {
+      "includes": ["scripts/dispatch.mjs"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noProcessEnv": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["supabase/functions/**"],
       "linter": {
         "rules": {
