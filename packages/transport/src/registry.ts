@@ -83,7 +83,11 @@ export async function dispatchEvent(
     return { handled: 0, deadLettered: 0, errors: [{ consumer: 'all', error: 'no handlers' }] }
   }
 
-  const results = { handled: 0, deadLettered: 0, errors: [] as { consumer: string; error: string }[] }
+  const results = {
+    handled: 0,
+    deadLettered: 0,
+    errors: [] as { consumer: string; error: string }[],
+  }
 
   for (const { module, handler } of entry.consumers) {
     try {
