@@ -1,0 +1,116 @@
+{
+  "note": "Synthetic cases (no recorded Facebook run needed: listing-card only projects columns other modules already compute). Each seeds listing-ingest, and optionally detail-evidence, listing-suppression and listing-lifecycle, then reads app.v_listing_card through cardsFor(). expected: null means the card must not appear at all.",
+  "cases": [
+    {
+      "id": "basic-card",
+      "listing": {
+        "source": "facebook",
+        "title": "Gaming PC RTX 3080",
+        "priceMinor": 45000,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "availability": "live"
+      },
+      "detail": {
+        "condition": "used_good",
+        "descriptionStatus": "full_verified",
+        "staleFallback": false
+      },
+      "expected": {
+        "title": "Gaming PC RTX 3080",
+        "priceMinor": 45000,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "condition": "used_good",
+        "availability": "live",
+        "descriptionStatus": "full_verified",
+        "possiblyOutdated": false
+      }
+    },
+    {
+      "id": "no-detail-fetch-yet",
+      "listing": {
+        "source": "facebook",
+        "title": "Office chair",
+        "priceMinor": 3000,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "availability": "live"
+      },
+      "detail": null,
+      "expected": {
+        "title": "Office chair",
+        "condition": null,
+        "descriptionStatus": null,
+        "possiblyOutdated": false
+      }
+    },
+    {
+      "id": "title-with-phone-number-is-masked",
+      "listing": {
+        "source": "facebook",
+        "title": "Sofa, message 07911 123456",
+        "priceMinor": 8000,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "availability": "live"
+      },
+      "detail": null,
+      "expected": { "title": "Sofa, message [phone redacted]" }
+    },
+    {
+      "id": "stale-fallback-flag",
+      "listing": {
+        "source": "facebook",
+        "title": "Desk",
+        "priceMinor": 5000,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "availability": "live"
+      },
+      "detail": { "condition": "new", "descriptionStatus": "partial", "staleFallback": true },
+      "expected": { "possiblyOutdated": true }
+    },
+    {
+      "id": "suppressed-listing-never-appears",
+      "listing": {
+        "source": "facebook",
+        "title": "Bike",
+        "priceMinor": 12000,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "availability": "live"
+      },
+      "detail": null,
+      "suppressed": true,
+      "expected": null
+    },
+    {
+      "id": "unresolved-status-never-appears",
+      "listing": {
+        "source": "facebook",
+        "title": "TV stand",
+        "priceMinor": 4000,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "availability": "live"
+      },
+      "detail": null,
+      "status": "unresolved",
+      "expected": null
+    },
+    {
+      "id": "non-facebook-source-has-no-link",
+      "listing": {
+        "source": "ebay",
+        "title": "Desk lamp",
+        "priceMinor": 1500,
+        "currency": "GBP",
+        "townLabel": "Chichester",
+        "availability": "live"
+      },
+      "detail": null,
+      "expected": { "link": null }
+    }
+  ]
+}

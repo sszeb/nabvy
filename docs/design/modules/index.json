@@ -654,7 +654,7 @@
     "round": 7,
     "scope": "MVP",
     "dependsOn": ["switches", "auth", "account", "location"],
-    "softDependsOn": ["router-gateway", "travel-cost"]
+    "softDependsOn": ["router-gateway"]
   },
   {
     "name": "listing-search",
@@ -682,7 +682,7 @@
     "job": "What a trip costs a user: dated rate tables and travel settings",
     "priority": "MVP; task 4.1g",
     "round": 3,
-    "scope": "MVP",
+    "scope": "Parked",
     "dependsOn": ["switches", "auth", "account"],
     "softDependsOn": []
   },
@@ -692,7 +692,7 @@
     "job": "The only HTTP client for the self-hosted router VM (OSRM)",
     "priority": "After MVP; router host not approved (owner question); task 4.1h",
     "round": 2,
-    "scope": "After MVP",
+    "scope": "MVP",
     "dependsOn": ["switches"],
     "softDependsOn": []
   },
@@ -702,7 +702,7 @@
     "job": "Road distance and time from an origin cell to places",
     "priority": "After MVP; task 4.1i",
     "round": 7,
-    "scope": "After MVP",
+    "scope": "MVP",
     "dependsOn": ["switches", "router-gateway", "location"],
     "softDependsOn": []
   },
@@ -718,7 +718,6 @@
       "listing-search",
       "asking-price-position",
       "suspected-labels",
-      "travel-cost",
       "location",
       "product-events"
     ],

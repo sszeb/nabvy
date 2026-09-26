@@ -1,0 +1,8 @@
+{
+  "messages": {
+    "28242423458759790": {
+      "asks": ["gpu"],
+      "checks": ["cpu:i5-12400f", "ram_size:Ram- ddr4 16gb", "storage_size:Storage 928GB"]
+    }
+  }
+}

@@ -12,6 +12,7 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
 
@@ -26,35 +27,101 @@ env:
   COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
 
 jobs:
-  checks:
-    name: Typecheck, lint and test
+  changed-files:
+    name: Check changed files
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    outputs:
+      non-docs-changed: ${{ steps.changed.outputs.non-docs-changed }}
+      full-run: ${{ steps.changed.outputs.full-run }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: changed
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # On push to main, run all checks, unscoped.
+            echo "non-docs-changed=true" >> $GITHUB_OUTPUT
+            echo "full-run=true" >> $GITHUB_OUTPUT
+          else
+            # On PR, check if any non-docs files changed
+            CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+            # Consider non-docs if there's any change outside docs/*, *.md, *.txt, README*, CHANGELOG*
+            if echo "$CHANGED" | grep -qv '^\(docs/\|.*\.md$\|.*\.txt$\|README\|CHANGELOG\)'; then
+              echo "non-docs-changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "non-docs-changed=false" >> $GITHUB_OUTPUT
+            fi
+            # turbo's --filter=...[origin/main] scopes typecheck/test to packages whose own
+            # directory changed. An infra-only change (.github/, scripts/, or a root config file)
+            # touches no package directory, so the filter matches zero packages and the scoped
+            # run no-ops or errors instead of actually checking anything: fall back to an
+            # unscoped, full run whenever no package directory is among the changed files.
+            if echo "$CHANGED" | grep -q '^\(packages/\|services/\|apps/\|trigger/\)'; then
+              echo "full-run=false" >> $GITHUB_OUTPUT
+            else
+              echo "full-run=true" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+  checks:
+    name: Typecheck, lint and test
+    needs: changed-files
+    if: needs.changed-files.outputs.non-docs-changed == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # corepack enable before setup-node's cache: pnpm, which shells out to `pnpm` itself to
+      # resolve the store directory - without a pnpm shim on PATH yet, that step fails with
+      # "Unable to locate executable file: pnpm" before any later step gets a chance to run.
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - run: corepack enable
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
+      - name: Restore .turbo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: turbo-
+      - run: |
+          if [ "${{ needs.changed-files.outputs.full-run }}" = "true" ]; then
+            pnpm typecheck
+          else
+            pnpm typecheck --filter=...[origin/main]
+          fi
       - run: pnpm lint
       - run: pnpm check:conventions
       - run: node --test scripts/check-conventions.test.mjs
-      - run: pnpm test
+      - run: |
+          if [ "${{ needs.changed-files.outputs.full-run }}" = "true" ]; then
+            pnpm test
+          else
+            pnpm test --filter=...[origin/main]
+          fi
       # Fails when a module's stage falls below its recorded pass rate (fixtures/README.md).
       - run: pnpm test:fixtures
 
   audit:
     name: Dependency audit
+    needs: changed-files
+    if: needs.changed-files.outputs.non-docs-changed == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - run: corepack enable
+      # No cache: 'pnpm' here: this job never runs `pnpm install` (audit reads the lockfile
+      # directly), so the pnpm store is never populated and setup-node's post-job cache-save
+      # step fails ("Path Validation Error: Path(s) specified ... do(es) not exist").
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - run: corepack enable
       - run: pnpm audit --audit-level=high
 
   secrets:
@@ -84,8 +151,10 @@ jobs:
 
   migrations:
     name: Migration dry-run
+    needs: changed-files
+    if: needs.changed-files.outputs.non-docs-changed == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:17
@@ -106,10 +175,13 @@ jobs:
       PGDATABASE: postgres
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - run: corepack enable
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - name: Ensure psql is available
         run: command -v psql || (sudo apt-get update && sudo apt-get install -y postgresql-client)
@@ -149,3 +221,10 @@ jobs:
           pnpm --filter @nabvy/scaffold-probe --filter @nabvy/contracts --filter @nabvy/db test
           createdb scaffold_probe
           PGDATABASE=scaffold_probe bash scripts/db-dry-run.sh
+
+# Reviewer/Fixer Routine firing does not live here: this workflow runs on `pull_request`, which
+# for a same-repo branch executes the PR's own copy of the workflow file, so a job here can never
+# safely hold REVIEW_FIRE_TOKEN/FIX_FIRE_TOKEN. That firing logic lives in
+# .github/workflows/dispatch.yml instead, which only triggers off the default branch
+# (workflow_run once this workflow finishes, push to main, and a 30-minute schedule) and reads
+# this run's check-runs through the API rather than trusting its own job outcomes.

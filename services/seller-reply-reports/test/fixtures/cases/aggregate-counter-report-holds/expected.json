@@ -1,0 +1,12 @@
+{
+  "evidence": [
+    {
+      "listing": "l",
+      "family": "link",
+      "scope": "own",
+      "level": "single",
+      "persons": 1,
+      "holdReason": "counter_report"
+    }
+  ]
+}

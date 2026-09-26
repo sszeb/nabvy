@@ -68,7 +68,7 @@ importers:
         version: 1.15.4(@opentelemetry/api@1.9.1)(ws@8.21.3)
       better-auth:
         specifier: 1.7.5
-        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
+        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -172,7 +172,7 @@ importers:
         version: 1.7.5(@better-fetch/fetch@1.3.2)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.6.5))(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.3)(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
       better-auth:
         specifier: 1.7.5
-        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
+        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
       drizzle-kit:
         specifier: 0.31.11
         version: 0.31.11
@@ -343,6 +343,37 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
 
+  services/asking-price-position:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+      '@nabvy/asking-price-index':
+        specifier: workspace:*
+        version: link:../asking-price-index
+
   services/attribution:
     dependencies:
       '@nabvy/account':
@@ -412,7 +443,50 @@ importers:
         version: link:../../packages/db
       better-auth:
         specifier: 1.7.5
-        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
+        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+
+  services/check-scheduler:
+    dependencies:
+      '@nabvy/apify-gateway':
+        specifier: workspace:*
+        version: link:../apify-gateway
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/listing-ingest':
+        specifier: workspace:*
+        version: link:../listing-ingest
+      '@nabvy/run-coverage':
+        specifier: workspace:*
+        version: link:../run-coverage
+      '@nabvy/search-planner':
+        specifier: workspace:*
+        version: link:../search-planner
+      '@nabvy/source-health':
+        specifier: workspace:*
+        version: link:../source-health
+      '@nabvy/spend-governor':
+        specifier: workspace:*
+        version: link:../spend-governor
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
       drizzle-orm:
         specifier: 0.45.3
         version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
@@ -505,6 +579,31 @@ importers:
         version: link:../listing-suppression
 
   services/cost-meter:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+
+  services/demand-signals:
     dependencies:
       '@nabvy/config':
         specifier: workspace:*
@@ -729,6 +828,28 @@ importers:
       '@nabvy/spend-governor':
         specifier: workspace:*
         version: link:../spend-governor
+
+  services/listing-card:
+    dependencies:
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
 
   services/listing-feedback:
     dependencies:
@@ -1134,6 +1255,65 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
 
+  services/pickup-routes:
+    dependencies:
+      '@nabvy/account':
+        specifier: workspace:*
+        version: link:../account
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/location':
+        specifier: workspace:*
+        version: link:../location
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+
+  services/prepared-message:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/quote-redaction':
+        specifier: workspace:*
+        version: link:../quote-redaction
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+
   services/pricing-console:
     dependencies:
       '@nabvy/audit-log':
@@ -1308,6 +1488,34 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
 
+  services/router-gateway:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+
   services/run-coverage:
     dependencies:
       '@nabvy/config':
@@ -1338,6 +1546,40 @@ importers:
       '@nabvy/listing-ingest':
         specifier: workspace:*
         version: link:../listing-ingest
+
+  services/scan-lookup:
+    dependencies:
+      '@nabvy/account':
+        specifier: workspace:*
+        version: link:../account
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
+      '@nabvy/usage-ledger':
+        specifier: workspace:*
+        version: link:../usage-ledger
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
 
   services/scan-recognition:
     dependencies:
@@ -1401,6 +1643,43 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
 
+  services/seller-reply-reports:
+    dependencies:
+      '@nabvy/account':
+        specifier: workspace:*
+        version: link:../account
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/location':
+        specifier: workspace:*
+        version: link:../location
+      '@nabvy/pickup-location':
+        specifier: workspace:*
+        version: link:../pickup-location
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+      '@nabvy/listing-suppression':
+        specifier: workspace:*
+        version: link:../listing-suppression
+
   services/source-adapters:
     dependencies:
       zod:
@@ -1434,6 +1713,73 @@ importers:
       '@electric-sql/pglite':
         specifier: 0.5.8
         version: 0.5.8
+
+  services/spec-match:
+    dependencies:
+      '@nabvy/account':
+        specifier: workspace:*
+        version: link:../account
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/listing-suppression':
+        specifier: workspace:*
+        version: link:../listing-suppression
+      '@nabvy/location':
+        specifier: workspace:*
+        version: link:../location
+      '@nabvy/quote-redaction':
+        specifier: workspace:*
+        version: link:../quote-redaction
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
+      '@nabvy/want-manager':
+        specifier: workspace:*
+        version: link:../want-manager
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+      '@nabvy/detail-evidence':
+        specifier: workspace:*
+        version: link:../detail-evidence
+      '@nabvy/listing-assessment':
+        specifier: workspace:*
+        version: link:../listing-assessment
+      '@nabvy/listing-ingest':
+        specifier: workspace:*
+        version: link:../listing-ingest
+      '@nabvy/noise-filter':
+        specifier: workspace:*
+        version: link:../noise-filter
+      '@nabvy/parts-ai':
+        specifier: workspace:*
+        version: link:../parts-ai
+      '@nabvy/parts-record':
+        specifier: workspace:*
+        version: link:../parts-record
+      '@nabvy/parts-rules':
+        specifier: workspace:*
+        version: link:../parts-rules
+      '@nabvy/spend-governor':
+        specifier: workspace:*
+        version: link:../spend-governor
 
   services/spend-governor:
     dependencies:
@@ -1494,7 +1840,7 @@ importers:
         version: link:../usage-ledger
       better-auth:
         specifier: 1.7.5
-        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
+        version: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
       drizzle-orm:
         specifier: 0.45.3
         version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
@@ -1613,6 +1959,37 @@ importers:
       '@nabvy/switches':
         specifier: workspace:*
         version: link:../switches
+      drizzle-orm:
+        specifier: 0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@electric-sql/pglite':
+        specifier: 0.5.8
+        version: 0.5.8
+
+  services/warning-signs:
+    dependencies:
+      '@nabvy/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@nabvy/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@nabvy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@nabvy/quote-redaction':
+        specifier: workspace:*
+        version: link:../quote-redaction
+      '@nabvy/switches':
+        specifier: workspace:*
+        version: link:../switches
+      '@nabvy/transport':
+        specifier: workspace:*
+        version: link:../../packages/transport
       drizzle-orm:
         specifier: 0.45.3
         version: 0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0)
@@ -5519,7 +5896,7 @@ snapshots:
   '@better-auth/stripe@1.7.5(@better-auth/core@1.7.5(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.2)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.6.5))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.3))(better-auth@1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))))(better-call@1.4.0(zod@4.6.5))(stripe@22.6.2(@types/node@22.20.4))':
     dependencies:
       '@better-auth/core': 1.7.5(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.2)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.6.5))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.3)
-      better-auth: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
+      better-auth: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
       better-call: 1.4.0(zod@4.6.5)
       defu: 6.1.7
       stripe: 22.6.2(@types/node@22.20.4)
@@ -7436,7 +7813,7 @@ snapshots:
       '@better-auth/utils': 0.4.2
       '@clack/prompts': 1.8.1
       '@mrleebo/prisma-ast': 0.16.0
-      better-auth: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
+      better-auth: 1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)))
       c12: 4.0.0-rc.2(dotenv@17.4.2)(jiti@2.7.0)
       chalk: 5.6.2
       commander: 15.0.0
@@ -7480,7 +7857,7 @@ snapshots:
 
   baseline-browser-mapping@2.11.25: {}
 
-  better-auth@1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))):
+  better-auth@1.7.5(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))(next@16.3.6(@opentelemetry/api@1.9.1)(@playwright/test@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(pg@8.23.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(vitest@5.0.1(@opentelemetry/api@1.9.1)(@types/node@22.20.4)(vite@8.3.0(@types/node@22.20.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))):
     dependencies:
       '@better-auth/core': 1.7.5(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.2)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.6.5))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.3)
       '@better-auth/drizzle-adapter': 1.7.5(@better-auth/core@1.7.5(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.2)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.6.5))(jose@6.2.12)(kysely@0.29.6)(nanostores@1.5.3))(@better-auth/utils@0.4.2)(drizzle-orm@0.45.3(@electric-sql/pglite@0.5.8)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.6)(pg@8.23.0))
