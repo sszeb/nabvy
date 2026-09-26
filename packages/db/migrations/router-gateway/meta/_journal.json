@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790369718336,
+      "tag": "20260925205518_router_gateway_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790369719971,
+      "tag": "20260925205519_router_gateway_access",
+      "breakpoints": true
+    }
+  ]
+}

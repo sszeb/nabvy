@@ -1,0 +1,21 @@
+{
+  "synthetic": true,
+  "listings": {
+    "iow": { "point": [50.69, -1.3] },
+    "chichester": { "point": [50.84, -0.78] },
+    "manchester": { "point": [53.48, -2.24] }
+  },
+  "places": { "manchester": [53.48, -2.24] },
+  "reporters": { "buyer": { "ageDays": 120 } },
+  "cluster": ["iow", "chichester", "manchester"],
+  "reports": [
+    {
+      "listing": "iow",
+      "reporter": "buyer",
+      "hoursAgo": 30,
+      "reasons": [
+        { "reason": "collection_elsewhere", "placeId": "manchester", "secondAnswer": "no" }
+      ]
+    }
+  ]
+}

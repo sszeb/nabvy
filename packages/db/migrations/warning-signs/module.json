@@ -1,0 +1,14 @@
+{
+  "module": "warning-signs",
+  "schema": "warning_signs",
+  "dependsOn": [
+    "core",
+    "switches",
+    "listing-ingest",
+    "detail-evidence",
+    "listing-assessment",
+    "asking-price-index",
+    "listing-suppression",
+    "quote-redaction"
+  ]
+}

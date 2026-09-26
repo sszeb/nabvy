@@ -1,0 +1,45 @@
+{
+  "synthetic": true,
+  "listings": {
+    "l": {
+      "point": [50.69, -1.3]
+    }
+  },
+  "places": {
+    "manchester": [53.48, -2.24]
+  },
+  "reporters": {
+    "r0": {
+      "ageDays": 90
+    },
+    "r1": {
+      "ageDays": 90
+    }
+  },
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "r0",
+      "hoursAgo": 1,
+      "reasons": [
+        {
+          "reason": "collection_elsewhere",
+          "placeId": "manchester",
+          "secondAnswer": "no"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r1",
+      "hoursAgo": 26,
+      "reasons": [
+        {
+          "reason": "collection_elsewhere",
+          "placeId": "manchester",
+          "secondAnswer": "no"
+        }
+      ]
+    }
+  ]
+}

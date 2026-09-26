@@ -1,0 +1,183 @@
+{
+  "synthetic": true,
+  "listings": {
+    "l": {
+      "point": [50.69, -1.3]
+    }
+  },
+  "places": {
+    "manchester": [53.48, -2.24]
+  },
+  "reporters": {
+    "r0": {
+      "ageDays": 90
+    },
+    "r1": {
+      "ageDays": 90
+    },
+    "r2": {
+      "ageDays": 90
+    },
+    "r3": {
+      "ageDays": 90
+    },
+    "r4": {
+      "ageDays": 90
+    },
+    "r5": {
+      "ageDays": 90
+    },
+    "r6": {
+      "ageDays": 90
+    },
+    "r7": {
+      "ageDays": 90
+    },
+    "r8": {
+      "ageDays": 90
+    },
+    "r9": {
+      "ageDays": 90
+    },
+    "r10": {
+      "ageDays": 90
+    },
+    "r11": {
+      "ageDays": 90
+    }
+  },
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "r0",
+      "hoursAgo": 1,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r1",
+      "hoursAgo": 26,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r2",
+      "hoursAgo": 51,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r3",
+      "hoursAgo": 76,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r4",
+      "hoursAgo": 101,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r5",
+      "hoursAgo": 126,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r6",
+      "hoursAgo": 151,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r7",
+      "hoursAgo": 176,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r8",
+      "hoursAgo": 201,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r9",
+      "hoursAgo": 226,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r10",
+      "hoursAgo": 251,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    },
+    {
+      "listing": "l",
+      "reporter": "r11",
+      "hoursAgo": 276,
+      "reasons": [
+        {
+          "reason": "payment_first",
+          "detail": "bank_transfer"
+        }
+      ]
+    }
+  ]
+}

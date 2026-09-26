@@ -127,7 +127,7 @@ describe('idempotency', () => {
     expect(after.map((r) => r.status)).toEqual(['done', 'done'])
   })
 
-  it('first-seen delivered twice queues once', async () => {
+  it('first-seen enqueues nothing itself; the selection delivered twice queues once', async () => {
     const listingId = '01930000-0000-7000-8000-000000000001'
     await t.listing({
       id: listingId,
@@ -146,10 +146,29 @@ describe('idempotency', () => {
       { key: 'listing-ingest.first-seen:5:0' },
     )
     expect((await handler.run(envelope, attempt, deps)).status).toBe('handled')
+    expect(await snapshot()).toEqual([])
+    // details-selector's own call for its selection, as its README documents it.
+    const selected = () =>
+      t.db.transaction((q) =>
+        enqueue(q, {
+          sourceListingIds: ['4000000000000001'],
+          priority: 'new-listing',
+          lane: 'text',
+          reason: 'first-seen',
+          requestedBy: 'details-selector',
+        }),
+      )
+    expect(await selected()).toEqual({ queued: 1, alreadyQueued: 0, skipped: 0 })
     const before = await snapshot()
     expect(before).toMatchObject([
       { source_listing_id: '4000000000000001', priority: 'new-listing', status: 'queued' },
     ])
+    // Placed by the search that found it: its region (and its shape's priority, above).
+    expect(await t.sql('select region_id from details_queue.items')).toEqual([
+      { region_id: 'york' },
+    ])
+    expect(await selected()).toEqual({ queued: 0, alreadyQueued: 1, skipped: 0 })
+    expect(await snapshot()).toEqual(before)
     expect((await handler.run(envelope, attempt, deps)).status).toBe('handled')
     expect(await snapshot()).toEqual(before)
   })

@@ -1,0 +1,21 @@
+{
+  "synthetic": true,
+  "listings": { "l": {} },
+  "reporters": { "a": { "ageDays": 45 }, "b": { "ageDays": 400 } },
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "a",
+      "hoursAgo": 40,
+      "shippingOffered": false,
+      "reasons": [{ "reason": "postage_only", "secondAnswer": "protected" }]
+    },
+    {
+      "listing": "l",
+      "reporter": "b",
+      "hoursAgo": 10,
+      "shippingOffered": false,
+      "reasons": [{ "reason": "postage_only", "secondAnswer": "protected" }]
+    }
+  ]
+}
