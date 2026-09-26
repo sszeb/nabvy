@@ -1,3 +1,4 @@
+import { call } from '@orpc/server'
 import { BarChart3Icon, UsersIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import { EmptyState } from '@/components/empty-state'
@@ -17,6 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getAdminOverview } from '@/data'
 import { requireAdmin } from '@/lib/admin-gate'
 import { formatMoment } from '@/lib/format'
+import { rpcCallOptions } from '@/rpc/call'
+import { router } from '@/rpc/router'
 
 export const metadata: Metadata = { title: 'Admin' }
 
@@ -38,7 +41,11 @@ const usd = (value: number) => `$${value.toFixed(value < 0.1 && value > 0 ? 4 : 
 
 export default async function AdminPage() {
   await requireAdmin() // before any read (docs/design/admin-hardening.md, H1)
-  const overview = await getAdminOverview()
+  const [overview, switches] = await Promise.all([
+    getAdminOverview(),
+    call(router.admin.switches.list, undefined, await rpcCallOptions()),
+  ])
+  const apifySwitch = switches.find((s) => s.name === 'apify')
   const tiles = [
     {
       label: 'Actor spend today',
@@ -73,7 +80,7 @@ export default async function AdminPage() {
                 <CardTitle>Facebook collection</CardTitle>
                 <CardDescription>Actor runs through the Apify gateway</CardDescription>
               </div>
-              <ProviderSwitch enabled={overview.providerEnabled} />
+              <ProviderSwitch enabled={apifySwitch?.state === 'on'} />
             </CardHeader>
             <CardContent className="grid grid-cols-1">
               <Table>
