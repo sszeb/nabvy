@@ -19,7 +19,6 @@
     "@nabvy/contracts": "workspace:*",
     "@nabvy/db": "workspace:*",
     "@nabvy/incidents": "workspace:*",
-    "@nabvy/pickup-location": "workspace:*",
     "@nabvy/spend-governor": "workspace:*",
     "@nabvy/switches": "workspace:*",
     "@nabvy/want-manager": "workspace:*",

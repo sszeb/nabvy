@@ -54,9 +54,6 @@ importers:
       '@nabvy/incidents':
         specifier: workspace:*
         version: link:../../services/incidents
-      '@nabvy/pickup-location':
-        specifier: workspace:*
-        version: link:../../services/pickup-location
       '@nabvy/spend-governor':
         specifier: workspace:*
         version: link:../../services/spend-governor
