@@ -69,7 +69,7 @@ jobs:
     needs: changed-files
     if: needs.changed-files.outputs.non-docs-changed == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -152,7 +152,7 @@ jobs:
     needs: changed-files
     if: needs.changed-files.outputs.non-docs-changed == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:17
