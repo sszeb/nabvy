@@ -57,6 +57,7 @@ Updated 07:28 UTC 2026-09-26 by coordinator (PR #70 round-2 fix queued; sweep 06
 - price-drop-watch-fix2: model claude-haiku-4-5-20251001; branch task/w1-price-drop-watch; base task/w1-price-drop-watch; brief briefs/price-drop-watch-fix2.md
 
 ## Messages to send
+- Fire reviewer on-request `trig_01FPLnjfTATPb7YQivWvA7FX` with "PR #110: ci: raise the 15-minute job timeouts to 25" (priority: every PR's CI is cancelled until it merges).
 
 ## Docs to record (the sweep writes these into docs/progress.md)
 
