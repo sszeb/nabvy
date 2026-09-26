@@ -123,6 +123,12 @@ Rows 23–83 below come from the five 2026-09-24 design-draft integrations (`doc
 | --- | --- | --- | --- |
 | 84 | Wording | `fb-scrap-engine/docs/design/COPY_ADVERT_SPAM.md`'s new "Suspected trade seller" and shadow-only "Suspected scam" labels, their fact templates, and criminal-offence-data treatment for scam labels under UK GDPR Art 10 | `docs/design/actor-app-guide.md`, "What changes" 11; extends item 13 |
 
+### web L1
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 85 | Data | The local run's magic-link sign-in URL (a live, single-use auth token) is printed to the server's own console/log output rather than emailed, for the owner's own machine only | `docs/decisions.md`, "Local single-user run first"; `apps/web/src/app/api/auth/[...all]/route.ts` |
+
 ## Points in the policy drafts
 
 The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable use, fair use) carry `TODO-LEGAL (LR-nn)` markers. They are modelled on big tech's UK-facing terms and on Apify's and Supabase's, in Nabvy's own words (`docs/policies/SOURCES.md`). These lines extend item 7 above; no review has been run.
@@ -168,5 +174,7 @@ The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable u
 - Erasing a user's credit ledger (grants, charges, reversals) within 24 hours of account deletion, while Stripe keeps the payment records (`usage-ledger`, 2026-09-24).
 - 2026-09-24, abuse threat model (4.3t): keeping hashed trial keys (canonical email, card fingerprint, device) after account deletion, to stop rejoining for a fresh free tier.
 - 2026-09-24, Stripe (4.10c): a legally required refund of a VAT-inclusive payment issued with a credit note, and what the invoice and credit note must show; keeping `billing_events` (the Checkout consent and payment signals) after account deletion for chargebacks and tax records; enabling a Stripe Connect platform, which changes the account's obligations, before any payee exists.
+- 2026-09-25, router-gateway (4.1i): openrouteservice's (HeiGIT) terms of service and attribution requirement for the free Standard plan, and what sending origin cells and place centroids to it means for the privacy notice.
 - 2026-09-25, pickup-location (w2): storing full postcodes and street text found in descriptions internally (`pickup_location.candidates.value`); showing users a pickup area derived from the description rather than the seller's chosen field; using a location conflict between field and text as an input to a "too good to be true" mark.
 - 2026-09-25, prepared-message (w2): offering users a pre-written message to send to private sellers, and showing redacted quotes from the listing in its checklist.
+- 2026-09-25, seller-reply-reports (w2): collecting users' reports of what a seller said and using them towards a public "suspected" mark on a listing; keeping reporter links and accuracy records; linking reporters by shared device or network to count them once; signposting reporters to Report Fraud and their bank.

@@ -1,0 +1,29 @@
+{
+  "wants": {
+    "rtx-5060": {
+      "29056633657273875": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description", "distance:match:within_radius"]
+      }
+    },
+    "rtx-5060-and-32gb": {
+      "29056633657273875": {
+        "verdict": "no_match",
+        "insidePc": true,
+        "criteria": [
+          "gpu:match:named:description",
+          "ram:no_match:different:description",
+          "distance:match:within_radius"
+        ]
+      }
+    },
+    "16gb-ddr5": {
+      "29056633657273875": {
+        "verdict": "not_stated",
+        "insidePc": true,
+        "criteria": ["ram:not_stated:partly_named:description", "distance:match:within_radius"]
+      }
+    }
+  }
+}

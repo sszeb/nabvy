@@ -1,0 +1,64 @@
+{
+  "synthetic": true,
+  "kind": "table",
+  "input": {
+    "sources": [
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      },
+      {
+        "lon": -1.0873,
+        "lat": 50.8198
+      }
+    ],
+    "destinations": [
+      {
+        "lon": -0.1372,
+        "lat": 50.8225
+      },
+      {
+        "lon": -0.3714,
+        "lat": 50.8179
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "durations": [[448.82, 553.01], [142.68, 246.88]],
+      "distances": [[5012.3, 6123.9], [1800.2, 2911.4]],
+      "destinations": [
+        {
+          "location": [-0.1372, 50.8225],
+          "snapped_distance": 3.1
+        },
+        {
+          "location": [-0.3714, 50.8179]
+        }
+      ],
+      "sources": [
+        {
+          "location": [-0.7792, 50.8365]
+        },
+        {
+          "location": [-1.0873, 50.8198]
+        }
+      ],
+      "metadata": {
+        "attribution": "openrouteservice.org | OpenStreetMap contributors",
+        "service": "matrix",
+        "timestamp": 1790370000000,
+        "query": {
+          "profile": "driving-car"
+        },
+        "engine": {
+          "version": "9.3.0",
+          "build_date": "2025-06-01T10:00:00Z",
+          "graph_date": "2026-09-20T02:00:00Z",
+          "osm_date": "2026-09-15T20:21:03Z"
+        }
+      }
+    }
+  }
+}

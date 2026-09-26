@@ -1,0 +1,23 @@
+{
+  "listings": {
+    "00000000-0000-4000-8002-000000000001": ["low_ask_explained:named_fault"],
+    "00000000-0000-4000-8002-000000000002": [
+      "ask_far_below_similar",
+      "low_ask_explained:swap_or_trade"
+    ],
+    "00000000-0000-4000-8002-000000000003": ["ask_far_below_similar"],
+    "00000000-0000-4000-8002-000000000004": [],
+    "00000000-0000-4000-8002-000000000005": [],
+    "00000000-0000-4000-8002-000000000006": ["ask_far_below_similar"],
+    "00000000-0000-4000-8002-000000000007": [],
+    "00000000-0000-4000-8002-000000000008": ["box_only", "low_ask_explained:box_only"],
+    "00000000-0000-4000-8002-000000000009": ["low_ask_explained:core_part_missing"],
+    "00000000-0000-4000-8002-00000000000a": ["ask_far_below_similar", "stock_phrasing_text"],
+    "00000000-0000-4000-8002-00000000000b": ["low_ask_explained:for_parts", "not_working_text"],
+    "00000000-0000-4000-8002-00000000000c": [
+      "ask_far_below_similar",
+      "low_ask_explained:cosmetic",
+      "low_ask_explained:offers"
+    ]
+  }
+}

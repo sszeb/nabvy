@@ -1,0 +1,5 @@
+{
+  "module": "router-gateway",
+  "schema": "router_gateway",
+  "dependsOn": ["core", "switches"]
+}

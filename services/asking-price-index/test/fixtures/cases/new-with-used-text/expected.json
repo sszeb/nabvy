@@ -1,0 +1,30 @@
+{
+  "groups": {
+    "gpu:rtx-3090|standalone|new|GB|GBP|30d": {
+      "n": 1,
+      "median": 70000,
+      "mad": 0,
+      "p25": 70000,
+      "p75": 70000,
+      "min": 70000,
+      "max": 70000,
+      "thin": false,
+      "copy_collapse": true
+    },
+    "gpu:rtx-3090|standalone|used_good|GB|GBP|30d": {
+      "n": 1,
+      "median": 50000,
+      "mad": 0,
+      "p25": 50000,
+      "p75": 50000,
+      "min": 50000,
+      "max": 50000,
+      "thin": false,
+      "copy_collapse": true
+    }
+  },
+  "members": {
+    "new-sealed@standalone|new|GB": "counted",
+    "new-used@standalone|used_good|GB": "counted"
+  }
+}

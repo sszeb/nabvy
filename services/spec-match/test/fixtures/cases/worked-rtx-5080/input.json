@@ -1,0 +1,131 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "synthetic": true,
+  "only": ["1783301919382894"],
+  "edits": [
+    {
+      "listingId": "1783301919382894",
+      "fields": {
+        "listingId": "2756686961383848",
+        "title": "Gaming PC",
+        "description": "Selling my gaming PC, only used for a few months, in perfect condition.\n\nSpecs:\nMSI GeForce RTX 5080 16GB\nAMD Ryzen 7 7800X3D\n32GB DDR5 RAM\n2TB NVMe SSD\n850W PSU\nWindows 11\n\nCollection only, no offers."
+      }
+    }
+  ],
+  "wants": {
+    "rtx-5080": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": "gpu:nvidia:rtx-5080",
+          "family": null,
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5080-family": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": null,
+          "family": "RTX 5080",
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5080-under-3000-gbp": {
+      "priceCapMinor": 300000,
+      "currency": "GBP",
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": "gpu:nvidia:rtx-5080",
+          "family": null,
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5080-under-2000-gbp": {
+      "priceCapMinor": 200000,
+      "currency": "GBP",
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": "gpu:nvidia:rtx-5080",
+          "family": null,
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5080-under-3000-eur": {
+      "priceCapMinor": 300000,
+      "currency": "EUR",
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": "gpu:nvidia:rtx-5080",
+          "family": null,
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-5080-10km-from-london": {
+      "lat": 51.5074,
+      "lng": -0.1278,
+      "radiusKm": 10,
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": "gpu:nvidia:rtx-5080",
+          "family": null,
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "32gb-ddr5-and-rtx-4080": {
+      "criteria": [
+        {
+          "partType": "ram",
+          "catalogueId": null,
+          "family": null,
+          "minAttr": {
+            "sizeGb": 32,
+            "generation": "ddr5"
+          },
+          "orBetter": false
+        },
+        {
+          "partType": "gpu",
+          "catalogueId": "gpu:nvidia:rtx-4080",
+          "family": null,
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    },
+    "rtx-3090": {
+      "criteria": [
+        {
+          "partType": "gpu",
+          "catalogueId": "gpu:nvidia:rtx-3090",
+          "family": null,
+          "minAttr": null,
+          "orBetter": false
+        }
+      ]
+    }
+  },
+  "points": {
+    "*": {
+      "lat": 50.8376,
+      "lng": -0.7749,
+      "basis": "field"
+    }
+  }
+}

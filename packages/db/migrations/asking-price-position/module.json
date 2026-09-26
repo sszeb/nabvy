@@ -1,0 +1,14 @@
+{
+  "module": "asking-price-position",
+  "schema": "asking_price_position",
+  "dependsOn": [
+    "core",
+    "switches",
+    "asking-price-index",
+    "listing-assessment",
+    "parts-record",
+    "detail-evidence",
+    "listing-ingest",
+    "listing-suppression"
+  ]
+}

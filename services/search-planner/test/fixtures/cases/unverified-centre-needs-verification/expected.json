@@ -1,0 +1,5 @@
+{
+  "running": [],
+  "plans": [{ "centreId": "3003", "active": false }],
+  "verifications": [{ "centreId": "3003", "term": "rtx 3080" }]
+}

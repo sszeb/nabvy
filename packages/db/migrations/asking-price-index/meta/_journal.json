@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790384621339,
+      "tag": "20260926010341_asking_price_index_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790384622983,
+      "tag": "20260926010342_asking_price_index_access",
+      "breakpoints": true
+    }
+  ]
+}

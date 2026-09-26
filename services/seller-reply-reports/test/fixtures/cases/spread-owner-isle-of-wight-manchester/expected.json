@@ -1,0 +1,28 @@
+{
+  "evidence": [
+    {
+      "listing": "chichester",
+      "family": "location",
+      "scope": "copy",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    },
+    {
+      "listing": "iow",
+      "family": "location",
+      "scope": "own",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    },
+    {
+      "listing": "manchester",
+      "family": "location",
+      "scope": "copy",
+      "level": "none",
+      "persons": 0,
+      "holdReason": null
+    }
+  ]
+}
