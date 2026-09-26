@@ -211,7 +211,8 @@ jobs:
     name: Notify reviewer when all checks pass
     needs: [changed-files, checks, audit, migrations, secrets]
     if: >
-      success() &&
+      always() &&
+      !failure() &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false &&
       github.repository == 'sszeb/nabvy'
@@ -247,6 +248,7 @@ jobs:
     name: Notify fixer when checks fail
     needs: [changed-files, checks, audit, migrations, secrets]
     if: >
+      always() &&
       failure() &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.draft == false &&
