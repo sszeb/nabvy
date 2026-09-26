@@ -1,8 +1,11 @@
 # apps/web
 
 The Next.js 16 PWA (nabvy.app) and the marketing pages (nabvy.com), in one app. Task 4.1a built
-the design system, the app shell and every screen against typed fixtures. Auth (4.0), the oRPC
-router (4.1) and the waitlist storage (0.5a) come later and do not change the screens.
+the design system, the app shell and every screen against typed fixtures. Task L1
+(`docs/backlog.md`, "Milestone L") wired sign-in, wants, the results feed, a listing page,
+account/preferences and part of admin to real modules through `src/rpc/`, following the same
+screen signatures the fixtures used. The waitlist storage (0.5a) and the rest of admin (spend
+caps writer, an incidents queue) still come later.
 
 ## Structure
 
@@ -18,21 +21,42 @@ src/
     manifest.ts      PWA manifest; icons in public/icons (placeholder wordmark)
   components/        Nabvy components (ListingCard, DealCard, PricePosition, SuspectedLabel, …)
   components/ui/     shadcn-style primitives on Radix (button, dialog, popover, tabs, …)
-  data/              data-access layer: types.ts, fixtures/, index.ts
-  lib/               pure logic: formatting, freshness stamp, price position, labels, nav, flags
+  data/              data-access layer: types.ts, fixtures/, index.ts (task L1: real for wants,
+                     the feed, a listing and account; the rest still fixtures)
+  rpc/               oRPC procedures (task L1): context.ts, call.ts, router.ts, procedures/*
+  lib/               pure logic: formatting, freshness stamp, price position, labels, nav, flags;
+                     session.ts and admin-gate.ts are the two request-time gates
 test/                Vitest: token contrast, price position, formatting, data rules, copy rules
-e2e/                 Playwright: every key screen in 4 projects, keyboard and mobile checks
+e2e/                 Playwright: every key screen in 4 projects, keyboard and mobile checks;
+                     l1.spec.ts (task L1) needs a migrated Postgres and skips without one
 ```
 
 ## Data access, and how procedures replace the fixtures
 
 Screens import only from `@/data`. Every function there is `async` and returns a screen-facing
-type from `src/data/types.ts`; today the body returns fixtures. Task 4.1 replaces each body with a
-call to the matching oRPC procedure (server components call the router directly; client reads go
-through TanStack Query), keeping the name and signature, so no screen changes. At the same time
-the types in `types.ts` become `z.infer` of the procedure output schemas in `@nabvy/contracts`.
-Forms (waitlist, sign-in, hunts, preferences, report a mistake, mark as bought) are UI only and
-each names the task that wires it.
+type from `src/data/types.ts`. Task L1 replaced `listDeals`, `getDeal`, `listHunts`, `getHunt` and
+`getAccount` with calls to `src/rpc/`'s procedures (`call()` from `@orpc/server`, in-process, no
+HTTP round trip; the same procedures are also mounted at `/api/rpc/*` for the outside-world
+contract), keeping each function's name and signature, so the screens that call them did not need
+to change shape, only to accept the real gaps below. `listChannels`, `listAlertDeliveries`,
+`getPreferences` (the marketing one), `getDashboardSummary`, the admin overview and review queue
+are still fixtures; `getAdminOverview`/`listReviewQueue` refuse outside development
+(`refuseAdminFixturesInProduction`).
+
+Every real function calls `requireUser()` (`lib/session.ts`) or `requireAdmin()`
+(`lib/admin-gate.ts`) first, which redirects to `/sign-in` (or shows the restricted notice) rather
+than throw, and the oRPC procedures behind them check the session again on their own (defence in
+depth, the same pattern `@nabvy/auth`'s admin functions use).
+
+Three gaps task L1 could not close, all recorded in `docs/questions/L1-web.md`: `listing-card`
+(PR #81) and `prepared-message`/`price-drop-watch` (PR #70) had not merged, so the results feed
+and the listing page read `app.v_listing_card` directly (it has no migration yet either, so that
+read fails closed to an empty result rather than error) and the prepared message/price-drop watch
+are stubs; and there is no `spec-match` module yet, so the feed shows every current listing card,
+newest first, not a per-want match.
+
+Forms (waitlist, "Report a mistake", "Mark as bought") are still UI only and name the task that
+wires them.
 
 `test/fixtures.test.ts` checks what the data layer returns: no seller fields at any depth, nothing
 finer than a town or postcode district, no listing free text, price history only within one
@@ -79,15 +103,27 @@ this is the start of the CI check on user-facing output that `docs/decisions.md`
   (no jsdom in this project).
 - **`sharp` is removed** from the tree (`pnpm-workspace.yaml` override): it is Next's optional
   image optimiser and brings LGPL binaries; the app serves no optimised images.
+- **Sign-in locally has no email provider (task L1).** `app/api/auth/[...all]/route.ts` builds its
+  own `Auth` instance (via `createAuth`, not `@nabvy/auth`'s `createAuthFromEnv`) so it can pass a
+  magic-link sender that prints the link to the server terminal when `RESEND_API_KEY`/
+  `RESEND_WEBHOOK_SECRET` are unset (`docs/decisions.md`, "Local single-user run first"), and
+  Resend's sender otherwise. Turnstile stays required either way (`services/auth`'s captcha
+  plugin always applies); the local run's declared `.env.local` list does not name
+  `TURNSTILE_SITE_KEY`/`TURNSTILE_SECRET_KEY`, recorded as a gap in `docs/questions/L1-web.md`.
+- **A want has no name, category or stored postcode.** `HuntForm` (task L1) collects "what to look
+  for" as comma-separated terms, each becoming a GPU criterion by family, and asks for the
+  postcode again on every save — `want-manager` never stores it. `components/hunt-card.tsx`'s
+  location line shows the resolved centre ID instead of a postcode district.
 
 ## Not deployable yet
 
-This is design scaffolding. The waitlist, sign-in, "Report a mistake", "Mark as bought", hunt and
-preference forms report success without doing anything; `/app` has no auth guard (`/admin` has one
-since task 4.3af, below);
-there are no CSP or HSTS headers. Do not deploy the app before tasks 0.5a (waitlist storage), 4.0
-(auth and the admin role) and 4.3b (security headers and rate limits) land. Fixture listing links
-point at `.invalid` hosts so none can resolve to a real listing.
+This is design scaffolding for the screens task L1 did not reach. The waitlist, "Report a
+mistake" and "Mark as bought" forms still report success without doing anything; there are no CSP
+or HSTS headers. `/app` now has an auth guard (`lib/session.ts`, task L1) and `/admin` has one
+since task 4.3af (below). Do not deploy the app before task 0.5a (waitlist storage) and 4.3b
+(security headers and rate limits) land. Fixture listing links point at `.invalid` hosts so none
+can resolve to a real listing; the deals feed and listing pages now read the real database instead
+(task L1), so this no longer applies to them once listing-card ships real rows.
 
 ## Admin gate (task 4.3af)
 
