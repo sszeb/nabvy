@@ -117,4 +117,21 @@ describe('idempotency', () => {
     expect(ports.enqueued).toEqual([])
     expect(await count(`status = 'failed' and outcome = 'fetch-failed'`)).toBe(1)
   })
+
+  it('resubmit an existing link while at the daily cap returns the existing row', async () => {
+    const first = await db.as('nabvy_app', (q) => submit(q, { userId: U1, url: LINK }), U1)
+    if (!first.ok) throw new Error('submit failed')
+    const requestId = first.value.requestId
+
+    for (let i = 1; i < 20; i += 1) {
+      const link = `https://www.facebook.com/marketplace/item/${String(i).padStart(17, '0')}/`
+      await db.as('nabvy_app', (q) => submit(q, { userId: U1, url: link }), U1)
+    }
+
+    const retry = await db.as('nabvy_app', (q) => submit(q, { userId: U1, url: LINK }), U1)
+    if (!retry.ok) throw new Error('resubmit should succeed')
+    expect(retry.value.requestId).toBe(requestId)
+    expect(retry.value.created).toBe(false)
+    expect(await count()).toBe(20)
+  })
 })

@@ -32,6 +32,7 @@ import { state } from '@nabvy/switches'
 import { canonicalLink, chunk, parseMarketplaceLink, readyKey } from './domain'
 import {
   countRecent,
+  findByKey,
   findCardsByLink,
   insertRequest,
   markFailed,
@@ -90,6 +91,10 @@ export async function submit(
       code: 'pasted-link-lookup.invalid_link',
       message: 'Only a Facebook Marketplace item link can be looked up.',
     })
+  }
+  const existing = await findByKey(q, input.userId, link.source, link.sourceListingId)
+  if (existing) {
+    return ok(outcomeOf(existing, false))
   }
   if ((await countRecent(q, input.userId)) >= PASTED_LINK_LOOKUP_DAILY_LIMIT) {
     return err({

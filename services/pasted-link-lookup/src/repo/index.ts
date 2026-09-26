@@ -66,6 +66,22 @@ export async function countRecent(q: Queryable, userId: string): Promise<number>
   return row?.n ?? 0
 }
 
+/** Finds an existing request by idempotency key, or null if none exists. */
+export async function findByKey(
+  q: Queryable,
+  userId: string,
+  source: 'facebook',
+  sourceListingId: string,
+): Promise<RequestRow | null> {
+  const rows = rowsOf<RequestRow>(
+    await q.execute(sql`
+      select ${RETURNING} from pasted_link_lookup.requests
+      where user_id = ${userId} and source = ${source} and source_listing_id = ${sourceListingId}
+    `),
+  )
+  return rows[0] ?? null
+}
+
 export interface VisibleCard {
   listingId: string
   link: string
