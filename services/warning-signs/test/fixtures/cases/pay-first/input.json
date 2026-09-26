@@ -1,0 +1,78 @@
+{
+  "synthetic": true,
+  "source": "the too-good-to-be-true design §2.2, L2 notes (deposit, negation, obfuscation, BT, exclusions) and row 1 (dataset.json:139)",
+  "listings": [
+    {
+      "id": "00000000-0000-4000-8001-000000000001",
+      "title": "RTX 3090",
+      "description": "£100 deposit by bank transfer to hold, rest on collection. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000002",
+      "title": "RTX 3090",
+      "description": "Can't do in person, bank transfer before I post. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000003",
+      "title": "RTX 3090",
+      "description": "Bank transfer only. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000004",
+      "title": "RTX 3090",
+      "description": "Collection in person (cash or bank transfer on pickup). Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000005",
+      "title": "RTX 3090",
+      "description": "Payment by PayPal friends and family please. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000006",
+      "title": "RTX 3090",
+      "description": "No deposit needed, cash on collection. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000007",
+      "title": "RTX 3090",
+      "description": "Bank transf3r upfr0nt please. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000008",
+      "title": "RTX 3090",
+      "description": "Collection from Belfast, BT postcode area. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-000000000009",
+      "title": "RTX 3090",
+      "description": "Cash on collection, first come first served. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-00000000000a",
+      "title": "RTX 3090",
+      "description": "Cash on collection with a £50 deposit. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-00000000000b",
+      "title": "RTX 3090",
+      "description": "Payment first then I post it. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    },
+    {
+      "id": "00000000-0000-4000-8001-00000000000c",
+      "title": "RTX 3090",
+      "description": "Steam gift cards accepted. Kept in a smoke-free home, thanks for looking.",
+      "cautions": []
+    }
+  ]
+}
