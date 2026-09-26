@@ -65,7 +65,8 @@ export function ListingCard({
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-muted-foreground text-xs">
           <span className="inline-flex items-center gap-1">
             <MapPinIcon className="size-3.5" aria-hidden />
-            {listing.town}, {formatDistance(listing.distanceKm)}
+            {listing.town}
+            {formatDistance(listing.distanceKm) ? `, ${formatDistance(listing.distanceKm)}` : ''}
           </span>
           <span className="tabular">
             Listed{' '}

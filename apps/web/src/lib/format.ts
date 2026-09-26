@@ -49,7 +49,9 @@ export function formatMoment(iso: string, asOf: string): string {
 }
 
 /** "3 km away"; distances are rounded to whole kilometres so they never pinpoint a place. */
-export function formatDistance(distanceKm: number): string {
+/** Null while no distance module is wired (task L1, docs/questions/L1-web.md): never a guess. */
+export function formatDistance(distanceKm: number | null): string | null {
+  if (distanceKm === null) return null
   const km = Math.max(1, Math.round(distanceKm))
   return `${km} km away`
 }

@@ -1,0 +1,11 @@
+{
+  "synthetic": true,
+  "source": "card test: a pair leaves the plan when its last want goes; docs/decisions.md \"Nothing runs unless a user asks\"",
+  "wantTerms": [{ "centreId": "1001", "family": "RTX 3090", "wantCount": 1, "paidWantCount": 0 }],
+  "adminPairs": [],
+  "centres": [
+    { "cityPageId": "1001", "active": true, "verified": true },
+    { "cityPageId": "2002", "active": true, "verified": true }
+  ],
+  "dropAdminTest": false
+}

@@ -82,6 +82,7 @@ Updated by the agent at the end of every task. A new session reads this first.
 | 5.4a | Public API (Business tier) | not started | 2026-09-24 | The resale gate was lifted by the owner (`docs/decisions.md`, "Legal gates lifted") |
 | 5.5 | Legal gate checklist | not started | 2026-09-24 | The gates were lifted by the owner; legal points are listed in `docs/legal-review.md` and reviewed only on the owner's request |
 | 5.6 | Load check and launch checklist | not started | | |
+| L1 | Web app for the local run | PR open, [cp 4] | 2026-09-26 | Branch `task/L1-web-local-run`: oRPC layer (`apps/web/src/rpc/`) wired to `want-manager`, `pickup-location`, `switches`, `account`, `spend-governor` (read-only) and `incidents` (retry only); sign-in by magic link with a terminal-printing fallback sender when no email provider is configured; admin `/admin/switches` (switches, spend caps read-only, incidents retry). `listing-card` and `prepared-message`/`price-drop-watch` had not merged, so the feed and listing page read `app.v_listing_card` directly (with a fail-closed catch for its missing migration) and the other two are stubs — recorded in `docs/questions/L1-web.md`. `pnpm typecheck`/`lint`/`test` clean across the touched packages; `pnpm build` succeeds with no secrets; `e2e/l1.spec.ts` written and confirmed to load and skip correctly with no migrated Postgres in this sandbox, same as `admin-gate.spec.ts` |
 
 Status values: not started, in progress, blocked (see `docs/questions.md`), done, superseded.
 
