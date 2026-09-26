@@ -13,45 +13,48 @@ One task per event type. ID format: `event-type-becomes-kebab-case` (e.g. `listi
 Payload is `EventEnvelope` from Trigger.dev's batchTrigger. Retry policy is `eventRetry` from
 `@nabvy/config`.
 
-**Merged modules' event tasks** (handlers exist):
+**Event type wiring** (handler stubs exist; task files created on demand):
 
-- `listing-ingest-first-seen.ts` — consumers: copy-advert, details-queue, details-selector,
+Stub handler factories are defined in `event-tasks-wiring.ts` for these 10 event types.
+Individual task files (`event-type.ts`) will be created as needed. Each task receives an
+EventEnvelope and calls `runAllHandlers()` with the registered handlers for its event type.
+
+- `listing-ingest.first-seen` — handlers: copy-advert, details-queue, details-selector,
   pickup-location, relist-merge
-- `listing-ingest-card-changed.ts` — consumers: copy-advert, listing-lifecycle
-- `apify-gateway-run-collected.ts` — consumers: detail-evidence, details-queue, listing-ingest,
+- `listing-ingest.card-changed` — handlers: copy-advert, listing-lifecycle
+- `apify-gateway.run-collected` — handlers: detail-evidence, details-queue, listing-ingest,
   run-coverage
-- `detail-evidence-changed.ts` — consumers: copy-advert, parts-rules, pickup-location,
+- `detail-evidence.changed` — handlers: copy-advert, parts-rules, pickup-location,
   relist-merge
-- `detail-evidence-unresolved.ts` — consumers: listing-lifecycle
-- `listing-suppression-changed.ts` — consumers: copy-advert
-- `account-deleted.ts` — consumers: copy-advert, lifecycle-messaging, marketing-consent,
+- `detail-evidence.unresolved` — handlers: listing-lifecycle
+- `listing-suppression.changed` — handlers: copy-advert
+- `account.deleted` — handlers: copy-advert, lifecycle-messaging, marketing-consent,
   pricing-console, usage-ledger
-- `parts-rules-ran.ts` — consumers: parts-ai, parts-record
-- `parts-ai-extracted.ts` — consumers: parts-record
-- `parts-record-recorded.ts` — consumers: listing-assessment
+- `parts-rules.ran` — handlers: parts-ai, parts-record
+- `parts-ai.extracted` — handlers: parts-record
+- `parts-record.recorded` — handlers: listing-assessment
 
-**Unfilled slots** (no consumer handlers merged yet):
+**Unfilled slots** (events from not-yet-merged modules with no consumer handlers yet):
 
-- `city-pages.changed` (producer: city-pages; no consumers merged)
-- `copy-advert.clustered` (producer: copy-advert; no consumers merged)
-- `details-queue.deferred` (producer: details-queue; no consumers merged)
-- `listing-assessment.assessed` (producer: listing-assessment; no consumers merged)
-- `listing-feedback.recorded` (producer: listing-feedback; no consumers merged)
-- `listing-lifecycle.status-changed` (producer: listing-lifecycle; no consumers merged)
-- `pickup-location.resolved` (producer: pickup-location; no consumers merged)
-- `pickup-location.changed` (producer: pickup-location; no consumers merged)
-- `product-catalogue.updated` (producer: product-catalogue; no consumers merged)
-- `relist-merge.merged` (producer: relist-merge; no consumers merged)
-- `route-health.route-switched` (producer: route-health; no consumers merged)
-- `run-coverage.search-degraded` (producer: run-coverage; no consumers merged)
-- `scan-recognition.identified` (producer: scan-recognition; no consumers merged)
-- `source-health.alerted` (producer: source-health; no consumers merged)
-- `spend-governor.budget-alerted` (producer: spend-governor; no consumers merged)
-- `subscriptions.entitlement-changed` (producer: subscriptions; no consumers merged)
-- `subscriptions.webhook-failed` (producer: subscriptions; no consumers merged)
-- `switches.changed` (producer: switches; no consumers merged)
-- `usage-ledger.balance-low` (producer: usage-ledger; no consumers merged)
-- `want-manager.changed` (producer: want-manager; no consumers merged)
+- `city-pages.changed` (from city-pages)
+- `copy-advert.clustered` (from copy-advert)
+- `details-queue.deferred` (from details-queue)
+- `listing-assessment.assessed` (from listing-assessment)
+- `listing-feedback.recorded` (from listing-feedback)
+- `listing-lifecycle.status-changed` (from listing-lifecycle)
+- `pickup-location.resolved` (from pickup-location)
+- `pickup-location.changed` (from pickup-location)
+- `product-catalogue.updated` (from product-catalogue)
+- `relist-merge.merged` (from relist-merge)
+- `route-health.route-switched` (from route-health)
+- `scan-recognition.identified` (from scan-recognition)
+- `source-health.alerted` (from source-health)
+- `spend-governor.budget-alerted` (from spend-governor)
+- `subscriptions.entitlement-changed` (from subscriptions)
+- `subscriptions.webhook-failed` (from subscriptions)
+- `switches.changed` (from switches)
+- `usage-ledger.balance-low` (from usage-ledger)
+- `want-manager.changed` (from want-manager)
 
 ## Scheduled tasks
 
@@ -72,8 +75,9 @@ This folder is a pnpm workspace package (`@nabvy/trigger`, `pnpm-workspace.yaml`
 
 Without `TRIGGER_SECRET_KEY` and `TRIGGER_PROJECT_ID` environment variables, `pnpm trigger:dev`
 does not start the local runner. The task module loads cleanly, and the fixture tests in
-`test/wiring.test.ts` verify that the handler registry can be built. Set those env vars to enable
-the local runner: see `docs/secrets.md` for configuration.
+`test/wiring.test.ts` verify the event publisher's idempotency and the structure of exported
+handler registries from `event-tasks-wiring.ts`. Set those env vars to enable the local runner:
+see `docs/secrets.md` for configuration.
 
 No Trigger.dev account exists yet (`docs/questions.md`, "Trigger.dev setup"), so event tasks
 are dormant when deployed. Scheduled tasks remain live until the owner disables them.

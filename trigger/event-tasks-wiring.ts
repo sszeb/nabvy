@@ -6,7 +6,6 @@
  *
  * This file documents the wiring and provides helper functions. Individual task files import from here.
  */
-// biome-ignore lint/suspicious/noExplicitAny: Pending full type definition in wiring phase
 
 import type { EventEnvelope } from '@nabvy/contracts'
 import type { EventHandler } from '@nabvy/transport'
@@ -15,6 +14,7 @@ import type { EventHandler } from '@nabvy/transport'
  * Handler factory: takes database transaction capability and returns an EventHandler ready to run.
  * Each module exports handler factories like `firstSeenHandler(deps)` from src/handlers/index.ts.
  */
+// biome-ignore lint/suspicious/noExplicitAny: Transaction and handler shapes pending full definition
 export type HandlerFactory = (deps: { transaction: (fn: any) => Promise<any> }) => EventHandler
 
 /**
@@ -30,6 +30,7 @@ export interface EventHandlers {
  * Helper to run all handlers for an event.
  * Called by each trigger task after setting up database and publisher deps.
  */
+// biome-ignore lint/suspicious/noExplicitAny: Publisher and dead-letter shapes pending full definition
 export async function runAllHandlers(
   handlers: EventHandler[],
   envelope: EventEnvelope,
