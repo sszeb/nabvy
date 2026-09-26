@@ -1,0 +1,27 @@
+{
+  "synthetic": true,
+  "builtFrom": "PARTS_INTELLIGENCE.md:287-288 (EUR is never converted into GBP)",
+  "listings": [
+    {
+      "id": "gb-1",
+      "priceMinor": 60000
+    },
+    {
+      "id": "gb-2",
+      "priceMinor": 62000
+    },
+    {
+      "id": "ie-1",
+      "priceMinor": 70000,
+      "currency": "EUR",
+      "cityPageId": "ie-town"
+    },
+    {
+      "id": "ie-2",
+      "priceMinor": 72000,
+      "currency": "EUR",
+      "cityPageId": "ie-town"
+    }
+  ],
+  "now": "2026-09-26T00:00:00Z"
+}

@@ -347,6 +347,80 @@ The owner asked to get started on Stripe for Billing, Invoicing, Tax, Connect an
 
 The owner, to coordinator 9: "For next session run everything on fable, the ultracode for coordinator everything else effort on low." From coordinator 10 on: every new session (coordinator, reviewer, build and fix sessions, workflow agents) runs on Fable, the top model; the coordinator session runs with ultracode (multi-agent workflows opted in for the session); every other session runs at low effort, stated in its brief. This replaces "Sonnet by default" under "Faster build" and the model tiers in the module cards; `CLAUDE.md` "Model and effort by job" reads through this decision until the owner changes it. Model tiers in docs stay "top" or "Sonnet" by name, never model IDs.
 
+## Context economy (owner, 2026-09-25, 14:05)
+
+The owner, to coordinator 11, from the usage report: 79% of usage came from calls at over 150k context and 22% from workflow subagents; "Longer sessions are more expensive even when cached. /compact mid-task, /clear when switching to new tasks. If this runs frequently, consider configuring its subagents with a cheaper model or tightening their prompts." Applied at once, and the rules are in `docs/session-conventions.md`, "Context economy": every session hands off at 150k tokens (was 300k in `CLAUDE.md`, "Short sessions"); a session far past the line is not woken for new work, a fresh session is briefed instead; the coordinator runs its own work in-line and uses a workflow only where fan-out pays, with Sonnet or Haiku and low effort for readers and mechanical steps; briefs name slices to read; the owner may `/compact` an idle long-lived session between wakes. The unused connectors attached to the Nabvy environment add their tool listings to every call of every session; detaching them is the owner's setting.
+
+## Local single-user run first (owner, 2026-09-25, 20:15)
+
+The owner, to coordinator 15: "I want the app fully working locally on my pc just for me. At later stage we will make it for end users available." So the next milestone is **L, the owner's local run**: the whole product running on the owner's own machine for one user, against the production Supabase project and the Apify gateway, with the pipeline executed by Trigger.dev's dev runner on the same machine. Public availability (**milestone P**: Vercel, Resend, Turnstile, Google sign-in, live Stripe, Dub, the marketing surface) comes after. Consequences:
+
+- Build order after the module chain: `L1` the web app for the local run and `L2` the pipeline wiring and local runner start now, in parallel with the remaining modules (`docs/backlog.md`, "Milestone L"). Public-only tasks in phases 4 and 5 wait.
+- Nothing is bypassed for the local run: the same switches, RLS, spend caps and admin gate apply; the owner is the admin through `ADMIN_EMAILS` and, where a paid feature is needed, buys a plan in Stripe test mode.
+- Sign-in locally is the magic link printed to the terminal when no email provider is configured (Better Auth's `sendMagicLink` callback), so no Resend account is needed for the local run.
+- The pipeline runtime stays Trigger.dev (owner's earlier choice, `docs/questions.md`); its dev CLI runs the tasks on the owner's PC, which needs a free Trigger.dev project. A Postgres-outbox local runner was considered and not chosen: new infrastructure for a stage that is meant to be temporary.
+- The secrets for the local run live in the owner's `.env.local`, never in the repository: `DATABASE_URL`, `DATABASE_URL_PIPELINE`, `DATABASE_URL_AUTH`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=http://localhost:3000`, `ADMIN_EMAILS`, `SELLER_HASH_SALT`, `TOKEN_ENCRYPTION_KEY`, `ANTHROPIC_API_KEY`, `TRIGGER_SECRET_KEY`, `TRIGGER_PROJECT_ID`, `ROUTER_API_KEY`, the Stripe test keys, and optionally `TELEGRAM_BOT_TOKEN` with `FOUNDER_TELEGRAM_CHAT_ID`. `docs/local-run.md` (task L3) is the runbook.
+
+## Card location line and the map view (owner, 2026-09-25, 20:25)
+
+The owner, with a screenshot of a Facebook card ("Coleford, Gloucestershire · Location is approximate"), decided the wording that coordinator 14 had left open (`docs/questions.md`, "labels for distance and rough time"):
+
+- **One location line per card and on the listing page**, in this order: the town and county as the source shows them ("Coleford, Gloucestershire"), the distance in whole miles from the user's origin ("32 miles"), the rough travel time in hours and minutes ("1h 25min away"), and the suffix "data approximate". Example: `Coleford, Gloucestershire · 32 miles · 1h 25min away · data approximate`. The distance is measured from the town or area centroid (`search-map-routes.md` §2.4), never from the listing's own point. Until router data exists for a listing, the line shows the distance with no time; a straight-line figure is never presented as a driving figure, and the list header states the basis once as §2.4 says. The county comes from the gazetteer the location module holds; when it has none, the town alone.
+- **The origin** is the user's device location when they allow the browser to share it (never stored, as §2.7 already says), else the location field in their account dashboard (a postcode or town the user saves in account preferences). The origin chip in the filter row (§2.3) stays for a one-off override.
+- **No map on or under a card.** The feed has two layouts behind a toggle (owner, 20:35): the plain list, as in the earlier web designs, and the Airbnb-style split view already decided ("Search, map and pickup features", 2026-09-24; `search-map-routes.md` §3) with the list on the left and approximate dots at town centroids on the right, clustered where dense. The toggle sits in the feed header; the choice is remembered per user; the list is the default and the full alternative for accessibility.
+- Applies to listing-card's user-facing view (numbers), pickup-location (town and area), travel-time and router-gateway (the time), and the web app (the wording, task L1). "data approximate" replaces the draft's "town approximate".
+
+## Stateless coordinator (owner, 2026-09-25, 21:40)
+
+The owner asked how to cut coordinator token use and said "you do it all now". Measured: coordinator 16 reached 167k tokens five minutes after starting, 140k of it the 17 PR-subscription notices (about 8 KB each). Coordinator 17 reached 155k within 15 minutes. Each hand-off also meant repointing the relay, the watchdog and a chain of forwarding inboxes.
+
+- The coordinator is one Routine, `trig_01SpUT9nZPtAH1FBGiQaCiwu`, that starts a fresh session per fire. A fire with appended text is one inbox message; its cron (every two hours) is the sweep. No hand-offs and no successor sessions, and its ID never changes.
+- State lives in `state.md` on the orphan branch `claude/coordinator-state` (operational, never merged, not reviewed). Run rules live in `docs/routines/coordinator.md`. History moved to `docs/handoff-archive.md`.
+- The coordinator never subscribes to pull requests. Merges and new PRs arrive as messages, and the sweep lists open PRs.
+- Docs changes are batched: only the sweep pushes to the one rolling docs PR (#101, `claude/coordinator-16` into `main`). The stacked docs PRs #84, #86, #91, #95 and #103 are folded into it and closed.
+- The owner sets this Routine's model (Opus, per "Model by job, revised") and attaches the Supabase connector in the app. A session cannot do either.
+- 22:00, after two setup checks: a fired Routine session can read and push the repository and use GitHub and Supabase (when attached in the app, and loaded with ToolSearch), but it has no session tools. So the relay and the watchdog could never reach a reviewer, and no reviewer ran from 19:37 to 22:00. The relay ID became "Nabvy reviewer (on request)" and the watchdog ID "Nabvy reviewer (hourly)": stateless reviewer runs, one PR each, that record merged migrations in `state.md`. Session starts and messages are queued in `state.md` for a small dispatcher session (`session_01LDvAXYfdUJv4TS7aT1ph7r`, Haiku) woken every two hours by its bound Routine.
+
+## Model by job, revised: Opus for coordinators, Sonnet for medium tasks, Haiku for code and code reviews (owner, 2026-09-25, 19:58)
+
+The owner, to coordinator 15: "From now on for each new session use opus for coordinating sessions and use sonnet for medium tasks and haiku for code and code reviews." Applied to every session created from 19:58 on; running sessions finish on the model they started with.
+
+- **Coordinating sessions run on `claude-opus-5-5`**: the coordinator and its successors.
+- **Medium tasks run on `claude-sonnet-5`**: docs, CRUD, UI, design readers and critics, and any session that is neither coordination nor a code build or review.
+- **Code runs on `claude-haiku-4-5-20251001`**: build sessions and fix sessions. The "Fable after two failed reviews" escalation from 14:55 is withdrawn unless the owner restores it.
+- **Code reviews run on `claude-sonnet-5`** (owner, 20:02, on coordinator 15's note that the reviewer checks RLS, grants and migrations bound for production: "in that case use sonnet"): the reviewer from reviewer 15 on; reviewer 14 finishes its queue on Fable.
+- Effort stays `medium`, set in the app; briefs keep stating it. The relay and watchdog Routines stay on Haiku 4.5 (set by the owner in the app).
+
+## Model by job: Opus 5.5 for build sessions, Fable for reviewer and coordinator, Haiku for Routines (owner, 2026-09-25, 14:55)
+
+The owner sent the "Choosing the right model" and "Optimizing for cost and intelligence" pages and said "implement all recommendations". Measured on the attribution build session (Fable 5.1, $4.83): cache writes at the 1-hour price were 55% of the bill, cache reads 24%, output 21%; the same token profile on Opus 5.5 costs about $2.40, and the page's SWE-bench Pro measurement has Opus 5.5 at its default effort matching Fable 5.1 at default for about a fifth of the cost per solved task. From 14:55 on:
+
+- **Build and fix sessions run on `claude-opus-5-5` at its default effort (`medium`).** CI and the reviewer are the failure signal, so this is the page's "run cheap, re-run failures higher" case. A PR that fails review twice gets its next fix session on Fable. The six wave-2 sessions started at 14:30 stay on Fable.
+- **Reviewer and coordinator stay on Fable at `medium`** (was `xhigh` on the coordinator): security, money and adversarial verification, per `CLAUDE.md` "Model and effort by job"; `medium` matched `high` on every knowledge-work benchmark the page lists.
+- **The relay and watchdog Routines move to `claude-haiku-4-5`**: hourly, no judgment, a fifth of Opus 5.5 per call. The platform refused the coordinator's `update_trigger` model change (permission classifier), so the owner sets it in the app on `trig_01FPLnjfTATPb7YQivWvA7FX` and `trig_011fjd2grZBEWR3FqfDzTWJR`.
+- **Effort is an app setting.** `create_session` has no effort field; "low effort" in a brief is an instruction to the model, not the API parameter. The owner sets effort per session in the app; briefs keep stating it.
+
+This narrows "Fable everywhere" above to the reviewer and the coordinator; the 150k line, slices, batches and events from "Context economy" stay.
+
+## Trip cost dropped: map, distance in miles and rough time only (owner, 2026-09-25, 16:25)
+
+The owner dropped the trip-cost feature: "user only need to see the map with calculated distance in miles and rough time". So:
+
+- `travel-cost` (PR #50, dated HMRC rates, per-user travel settings, `tripCost()`) is closed unmerged and parked in the catalogue; backlog 4.1h is dropped; no migration was applied. The branch stays for reference.
+- What users see near a listing is the map (4.1g), the distance in miles from `location`, and a rough travel time (`travel-time` over `router-gateway` when the owner approves the router host; until then a rough estimate from the distance, stated as rough).
+- `deal-hints` weighs the price gap against distance and rough time, never a trip cost; `pickup-routes` keeps no trip-cost input (the injected stub in PR #89 is a no-op to remove in a later clean-up).
+- The "Lowest price + trip" sort (search-map-routes draft §4.2) has no trip cost to sort on; the coordinator has listed the wording of the distance and time labels as an owner question rather than choosing it.
+
+## Routing: openrouteservice first, a paid provider or self-hosting when there is turnover (owner, 2026-09-25, 16:45)
+
+The owner, shown the openrouteservice (HeiGIT) free Standard plan: "Can we use that for a start and when we have turnover to allow move to google maps or something else?" Decision: yes.
+
+- `router-gateway` and `travel-time` move into the MVP. Road distance and rough time come from openrouteservice's hosted API on the free plan (as read on 2026-09-25: Directions V2 2000 a day and 40 a minute, Matrix V2 500 a day and 40 a minute), behind the `RouterProvider` adapter in `router-gateway`. The self-hosted OSRM router (Hetzner CX43, `docs/questions.md` 2026-09-24 "4.1h: router host") is no longer needed now; it, or Google's routing API, is a later provider behind the same adapter, chosen when there is turnover.
+- Quotas are enforced in the gateway (`router_calls` counts per provider per day and per minute; over the cap the call is refused and `travel-time` falls back to straight line × 1.3, labelled an estimate). `travel-time`'s cache per origin cell and place keeps daily calls far below the cap.
+- Privacy: only origin cells (about 1 km) and place centroids reach the provider for cached times; a pickup point reaches it only for that user's own route request, uncached. The gateway logs no coordinate. This replaces the "addresses never leave Nabvy" reason for self-hosting; the owner accepted the trade-off for the start.
+- The openrouteservice key is the owner's account's, stored as the environment secret `ROUTER_API_KEY`, read only by `router-gateway` server-side, never in a client bundle, never in chat. HeiGIT's terms of service and attribution requirement are listed in `docs/legal-review.md`.
+- Labels: a listing shows the distance in miles and a rough time (`docs/questions.md`, coordinator 14, "labels for distance and rough time" still open for the wording).
+
 ## Open questions a human must answer
 
 - Model escalation thresholds, after the first week of measured extraction quality and cost.

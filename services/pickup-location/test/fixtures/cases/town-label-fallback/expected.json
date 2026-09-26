@@ -1,0 +1,14 @@
+{
+  "listings": {
+    "7000000000000003": {
+      "status": "field_only",
+      "townOrArea": "Chichester",
+      "approximate": false,
+      "conflict": false,
+      "basis": "field",
+      "appRows": 1,
+      "lat": 50.8365,
+      "lng": -0.7792
+    }
+  }
+}

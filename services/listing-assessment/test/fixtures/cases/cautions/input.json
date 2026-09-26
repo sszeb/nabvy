@@ -1,0 +1,17 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1716871313386322", "1154042653756525"],
+  "edits": [
+    {
+      "listingId": "1716871313386322",
+      "fields": { "detailCacheStatus": "stale-fallback" }
+    },
+    {
+      "listingId": "1154042653756525",
+      "fields": {
+        "title": "RTX 3080 box only",
+        "description": "Empty box for an RTX 3080 with the manuals. No card."
+      }
+    }
+  ]
+}

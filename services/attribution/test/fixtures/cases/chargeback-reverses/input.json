@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "source": "docs/affiliates.md Tests: a chargeback reverses",
+  "steps": [
+    { "capture": { "affiliateClickId": "click_2" } },
+    { "sale": { "invoiceId": "in_2", "kind": "subscription", "amountMinor": 900 } },
+    { "reverse": { "stripeEventId": "dp_1", "reason": "chargeback" } },
+    { "reverse": { "stripeEventId": "dp_1", "reason": "chargeback" } }
+  ]
+}

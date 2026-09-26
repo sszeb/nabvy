@@ -1,0 +1,374 @@
+{
+  "id": "557f4ac3-9047-4604-8586-e817b00fc3cc",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "listing_assessment.assessments": {
+      "name": "assessments",
+      "schema": "listing_assessment",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "record_hash": {
+          "name": "record_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "form": {
+          "name": "form",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "container": {
+          "name": "container",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "container_reason": {
+          "name": "container_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gpu_state": {
+          "name": "gpu_state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cautions": {
+          "name": "cautions",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "coverage": {
+          "name": "coverage",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confirmed_parts": {
+          "name": "confirmed_parts",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "exclusions": {
+          "name": "exclusions",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "extras": {
+          "name": "extras",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "unknowns": {
+          "name": "unknowns",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "assessed_at": {
+          "name": "assessed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "correction": {
+          "name": "correction",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "assessments_listing_assessed_idx": {
+          "name": "assessments_listing_assessed_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "evidence_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "assessed_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "assessments_version_key": {
+          "name": "assessments_version_key",
+          "nullsNotDistinct": true,
+          "columns": [
+            "listing_id",
+            "evidence_hash",
+            "card_hash",
+            "record_hash",
+            "rule_version"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "assessments_hash_check": {
+          "name": "assessments_hash_check",
+          "value": "evidence_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "assessments_card_hash_check": {
+          "name": "assessments_card_hash_check",
+          "value": "card_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "assessments_record_hash_check": {
+          "name": "assessments_record_hash_check",
+          "value": "record_hash ~ '^[0-9a-f]{64}$'"
+        },
+        "assessments_rule_version_check": {
+          "name": "assessments_rule_version_check",
+          "value": "rule_version ~ '^a[0-9]+\\.[0-9a-f]{8}$'"
+        },
+        "assessments_form_check": {
+          "name": "assessments_form_check",
+          "value": "form in ('system', 'bundle', 'part', 'box_only', 'unknown')"
+        },
+        "assessments_container_reason_check": {
+          "name": "assessments_container_reason_check",
+          "value": "container_reason in ('parts', 'attributes', 'title_words', 'kind', 'unplaced', 'placed', 'box_only')"
+        },
+        "assessments_container_check": {
+          "name": "assessments_container_check",
+          "value": "(\"listing_assessment\".\"assessments\".\"container_reason\" in ('placed', 'box_only')) = (not \"listing_assessment\".\"assessments\".\"container\")"
+        },
+        "assessments_gpu_state_check": {
+          "name": "assessments_gpu_state_check",
+          "value": "gpu_state in ('named', 'none', 'integrated', 'in_photos', 'not_stated', 'conflicting')"
+        },
+        "assessments_arrays_check": {
+          "name": "assessments_arrays_check",
+          "value": "jsonb_typeof(\"listing_assessment\".\"assessments\".\"cautions\") = 'array' and jsonb_typeof(\"listing_assessment\".\"assessments\".\"confirmed_parts\") = 'array' and jsonb_typeof(\"listing_assessment\".\"assessments\".\"exclusions\") = 'array' and jsonb_typeof(\"listing_assessment\".\"assessments\".\"extras\") = 'array' and jsonb_typeof(\"listing_assessment\".\"assessments\".\"unknowns\") = 'array'"
+        },
+        "assessments_coverage_check": {
+          "name": "assessments_coverage_check",
+          "value": "jsonb_typeof(\"listing_assessment\".\"assessments\".\"coverage\") = 'object'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "listing_assessment": "listing_assessment"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "listing_assessment.v_assessments": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "form": {
+          "name": "form",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "container": {
+          "name": "container",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "container_reason": {
+          "name": "container_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gpu_state": {
+          "name": "gpu_state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cautions": {
+          "name": "cautions",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "coverage": {
+          "name": "coverage",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "confirmed_parts": {
+          "name": "confirmed_parts",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exclusions": {
+          "name": "exclusions",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "extras": {
+          "name": "extras",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assessed_at": {
+          "name": "assessed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "correction": {
+          "name": "correction",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "name": "v_assessments",
+      "schema": "listing_assessment",
+      "isExisting": true,
+      "materialized": false
+    },
+    "listing_assessment.v_unknowns": {
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "part_type": {
+          "name": "part_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_unknowns",
+      "schema": "listing_assessment",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
