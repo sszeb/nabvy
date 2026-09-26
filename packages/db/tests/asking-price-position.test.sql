@@ -65,14 +65,35 @@ end;
 $$;
 reset role;
 
--- A suppressed listing never shows (rule 5); an ID listing-ingest does not hold is suppressed
--- only through its hash, so the check uses the function the view calls.
+-- A suppressed listing never shows (rule 5), through the view or a direct read of the table
+-- (row-level security repeats the check). The shown listing is ingested and then suppressed by
+-- its hash.
+insert into listing_ingest.listings (id, source, source_listing_id, card_hash, title,
+  first_fetched_at, last_seen_at, availability, item_job_id, item_seq, price_minor, currency,
+  money_kind, binding, city_page_id, found_by_terms)
+values ('01900000-0000-7000-8000-000000000001', 'facebook', 'fb-app-1', repeat('a', 64), 'Listing',
+  now(), now(), 'live', 1, 1, 60000, 'GBP', 'fixed', 'verified', null, '{}');
+insert into listing_suppression.entries (kind, value, request_id)
+values ('listing_hash', listing_suppression.listing_hash('facebook', 'fb-app-1'),
+  '01900000-0000-7000-8000-0000000000ff');
 set local role nabvy_app;
 do $$
 begin
-  if exists (select 1 from app.v_asking_price_position p
-             where listing_suppression.is_suppressed(p.listing_id)) then
-    raise exception 'a suppressed listing must not show';
+  if exists (select 1 from app.v_asking_price_position) then
+    raise exception 'a suppressed listing must not show in the view';
+  end if;
+  if exists (select 1 from asking_price_position.positions) then
+    raise exception 'a suppressed listing must not show in a direct read of the table';
+  end if;
+end;
+$$;
+reset role;
+delete from listing_suppression.entries where request_id = '01900000-0000-7000-8000-0000000000ff';
+set local role nabvy_app;
+do $$
+begin
+  if (select count(*) from asking_price_position.positions) <> 1 then
+    raise exception 'the unsuppressed n>=10 position must be readable again';
   end if;
 end;
 $$;

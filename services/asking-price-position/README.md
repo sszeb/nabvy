@@ -44,7 +44,8 @@ the groups, and a member of a group is by construction an assessed, parts-record
 | `positions` | unique (`listing_id`, `group_key`) | ask_minor, rank, n, percentile, robust_z, label, median, range_low, range_high, currency, new_median, new_n, card_hash, evidence_hash, stats_as_of, rule_version, positioned_at |
 
 No seller field or seller key. `nabvy_app` can read only the shown columns, under RLS that repeats
-n ≥ 10 and the switches.
+n ≥ 10, the switches and
+the suppression check.
 
 ## Rules and thresholds
 

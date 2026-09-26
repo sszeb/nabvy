@@ -89,6 +89,14 @@ describe('asking-price-position switch', () => {
     const shown = await shownRows(db)
     expect(shown.map((r) => r.listing_id)).not.toContain(ids[0])
     expect(shown).toHaveLength(9)
+    // Row-level security hides it from a direct read of the table too.
+    const direct = await db.as('nabvy_app', async (q) => {
+      const result = await q.execute(
+        `select listing_id from asking_price_position.positions where listing_id = '${ids[0]}'`,
+      )
+      return (result as unknown as { rows: unknown[] }).rows
+    })
+    expect(direct).toEqual([])
   })
 
   it('on, with listing-suppression or asking-price-index off: no row', async () => {

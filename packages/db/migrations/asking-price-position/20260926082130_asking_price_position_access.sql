@@ -51,7 +51,8 @@ revoke all on app.v_asking_price_position from public, anon, authenticated;
 grant select on app.v_asking_price_position to nabvy_app;
 
 -- The view is security_invoker, so nabvy_app needs the shown columns and nothing else; row-level
--- security repeats the n>=10 and switch conditions on the table itself.
+-- security repeats the n>=10, switch and suppression conditions on the table itself, so a direct
+-- read of the table never shows what the view hides.
 grant usage on schema asking_price_position to nabvy_app;
 grant select (listing_id, label, rank, n, median, range_low, range_high, currency)
   on asking_price_position.positions to nabvy_app;
@@ -62,4 +63,5 @@ create policy pipeline_all on asking_price_position.positions for all to nabvy_p
 create policy app_shown on asking_price_position.positions for select to nabvy_app
   using (n >= 10 and switches.is_on('asking-price-position')
          and switches.is_on('asking-price-index')
-         and switches.is_on('listing-suppression'));
+         and switches.is_on('listing-suppression')
+         and not listing_suppression.is_suppressed(listing_id));
