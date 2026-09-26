@@ -1,0 +1,5 @@
+{
+  "running": ["1:115935195086622:rtx3090:narrow:admin-test"],
+  "plans": [{ "centreId": "115935195086622", "active": true }],
+  "verifications": []
+}

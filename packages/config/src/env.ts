@@ -123,6 +123,9 @@ export const envGroups = {
     POSTHOG_HOST: httpsUrl().default('https://eu.i.posthog.com'),
   }),
   tokenEncryption: z.object({ TOKEN_ENCRYPTION_KEY: required() }),
+  // pickup-routes: encrypts pickup addresses, notes and points at rest (AES-256-GCM); 32 bytes as
+  // 64 hex characters or base64 (docs/design/modules/pickup-routes.md; docs/secrets.md).
+  pickupsData: z.object({ PICKUPS_DATA_KEY: z.string().min(32, 'must encode 32 bytes') }),
   testing: z.object({ LIVE_PROVIDERS: flag().default(false) }),
   // Set by Node and Next.js (`next build` and `next start` set `production`). The web app refuses
   // admin fixtures under it (task 4.3af, H13); nothing else reads it.

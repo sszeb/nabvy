@@ -1,0 +1,13 @@
+{
+  "outcomes": [
+    "ok:created:chichester",
+    "ok:unchanged:chichester",
+    "ok:changed:redhill",
+    "want-manager.not_found"
+  ],
+  "wants": ["redhill:active"],
+  "terms": ["redhill/Ryzen 7=1/0"],
+  "areas": ["redhill@51.25,-0.15:25"],
+  "parts": 1,
+  "pipelineWants": 1
+}

@@ -1,0 +1,13 @@
+{
+  "evidence": [
+    {
+      "listing": "l",
+      "family": "location",
+      "scope": "own",
+      "personsBand": "several",
+      "personsExact": null,
+      "placeId": "manchester",
+      "distanceBand": "100_plus"
+    }
+  ]
+}

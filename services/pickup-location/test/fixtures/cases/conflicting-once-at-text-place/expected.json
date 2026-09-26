@@ -1,0 +1,16 @@
+{
+  "listings": {
+    "7000000000000005": {
+      "status": "conflicting",
+      "townOrArea": "Leeds",
+      "approximate": true,
+      "conflict": true,
+      "appRows": 1,
+      "lat": 53.7259,
+      "lng": -1.3678,
+      "noteCode": "listed_in",
+      "listedInLabel": "Chichester",
+      "postageOnlyText": false
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "outcomes": [
+    "ok:created:chichester",
+    "ok:created:redhill",
+    "ok:created:chichester",
+    "want-manager.limit_reached",
+    "ok:created:chichester",
+    "want-manager.limit_reached",
+    "ok:deleted",
+    "ok:changed"
+  ],
+  "wants": ["redhill:active", "chichester:active", "chichester:active"],
+  "terms": ["chichester/RTX 40=2/2", "redhill/RTX 40=1/1"],
+  "areas": ["chichester@50.85,-0.8:25", "redhill@51.25,-0.15:25"],
+  "parts": 4,
+  "pipelineWants": 3
+}

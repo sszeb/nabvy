@@ -28,7 +28,9 @@ export function DealCard({ deal, className }: { deal: Deal; className?: string }
       <div className="grid min-w-0 gap-3">
         <div className="flex items-start justify-between gap-3">
           <div className="grid min-w-0 gap-1">
-            <p className="text-muted-foreground text-xs">{deal.huntName}</p>
+            {deal.huntName ? (
+              <p className="text-muted-foreground text-xs">{deal.huntName}</p>
+            ) : null}
             <h3 className="font-medium leading-snug">
               <Link
                 href={`/app/deal/${deal.id}`}
@@ -39,7 +41,8 @@ export function DealCard({ deal, className }: { deal: Deal; className?: string }
             </h3>
             <p className="inline-flex items-center gap-1 text-muted-foreground text-xs">
               <MapPinIcon className="size-3.5" aria-hidden />
-              {listing.town}, {formatDistance(listing.distanceKm)}
+              {listing.town}
+              {formatDistance(listing.distanceKm) ? `, ${formatDistance(listing.distanceKm)}` : ''}
             </p>
           </div>
           <div className="grid shrink-0 justify-items-end gap-1 text-right">
@@ -54,7 +57,7 @@ export function DealCard({ deal, className }: { deal: Deal; className?: string }
             ) : null}
           </div>
         </div>
-        <PricePosition position={deal.position} variant="compact" />
+        {deal.position ? <PricePosition position={deal.position} variant="compact" /> : null}
         {deal.suspicions.length > 0 || deal.warnings.length > 0 ? (
           <ul className="flex flex-wrap gap-1.5">
             {deal.suspicions.map((suspicion) => (

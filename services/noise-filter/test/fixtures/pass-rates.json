@@ -1,0 +1,8 @@
+{
+  "stages": {
+    "classify": {
+      "passed": 4,
+      "total": 4
+    }
+  }
+}

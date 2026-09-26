@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "source": "docs/design/modules/asking-price-index.md, 'Context': part with one item -> standalone; system -> in_pc",
+  "catalogueId": "gpu:rtx3090",
+  "credits": 5,
+  "groups": [
+    {
+      "groupKey": "gpu:rtx3090@standalone@used_good@GB@GBP@30",
+      "context": "standalone",
+      "condition": "used_good",
+      "country": "GB",
+      "currency": "GBP",
+      "n": 15,
+      "median": 25000,
+      "p25": 23000,
+      "p75": 27000
+    },
+    {
+      "groupKey": "gpu:rtx3090@in_pc@used_good@GB@GBP@30",
+      "context": "in_pc",
+      "condition": "used_good",
+      "country": "GB",
+      "currency": "GBP",
+      "n": 20,
+      "median": 90000,
+      "p25": 85000,
+      "p75": 95000
+    }
+  ]
+}

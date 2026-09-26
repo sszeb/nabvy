@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "listings": { "l": {} },
+  "reporters": { "a": { "ageDays": 90 } },
+  "faults": ["l"],
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "a",
+      "hoursAgo": 20,
+      "reasons": [{ "reason": "not_as_described", "detail": "faulty_or_missing_parts" }]
+    }
+  ]
+}

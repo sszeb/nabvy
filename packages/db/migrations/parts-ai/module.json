@@ -1,0 +1,15 @@
+{
+  "module": "parts-ai",
+  "schema": "parts_ai",
+  "dependsOn": [
+    "core",
+    "switches",
+    "detail-evidence",
+    "parts-rules",
+    "product-catalogue",
+    "cost-meter",
+    "spend-governor",
+    "details-queue",
+    "quote-redaction"
+  ]
+}

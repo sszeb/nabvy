@@ -1,0 +1,23 @@
+{
+  "listings": {
+    "1380502417485603": {
+      "parts": [
+        "rules:description:gpu:RTX 3070 → gpu:nvidia:rtx-3070:8gb [not_included]",
+        "rules:description:cpu:Ryzen 5 3600 → cpu:amd:ryzen-5-3000 [offered]",
+        "rules:description:ram_size:16GB DDR4 [offered]",
+        "rules:description:ram_generation:DDR4 [offered]",
+        "rules:description:storage_size:1TB [offered]",
+        "rules:description:storage_type:SSD [offered]",
+        "ai:description:gpu:RTX 3070 not included → gpu:nvidia:rtx-3070:8gb [not_included]"
+      ],
+      "kind": "rules:pc:title:Gaming pc",
+      "versions": {
+        "rules": true,
+        "ai": true,
+        "photo": null
+      },
+      "conflict": false,
+      "count": 7
+    }
+  }
+}

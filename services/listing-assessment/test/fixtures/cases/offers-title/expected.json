@@ -1,0 +1,26 @@
+{
+  "listings": {
+    "1816901372840238": {
+      "kind": null,
+      "container": "true:parts",
+      "form": "system",
+      "gpu": "named",
+      "cautions": [],
+      "coverage": ["title", "fullDescription"],
+      "confirmed": [
+        "cpu:description:i7-4790",
+        "gpu:description:GTX 970",
+        "ram_size:description:RAM: 8GB",
+        "ram_size:description:1x8GB",
+        "ram_generation:description:DDR3",
+        "storage_size:description:Storage: 250GB",
+        "storage_type:description:SSD",
+        "chipset:description:Z97",
+        "psu_wattage:description:550W"
+      ],
+      "exclusions": [],
+      "extras": [],
+      "unknowns": []
+    }
+  }
+}

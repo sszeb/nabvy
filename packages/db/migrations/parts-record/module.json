@@ -1,0 +1,12 @@
+{
+  "module": "parts-record",
+  "schema": "parts_record",
+  "dependsOn": [
+    "core",
+    "switches",
+    "detail-evidence",
+    "parts-rules",
+    "parts-ai",
+    "product-catalogue"
+  ]
+}

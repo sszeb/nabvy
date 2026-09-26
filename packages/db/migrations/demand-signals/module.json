@@ -1,0 +1,14 @@
+{
+  "module": "demand-signals",
+  "schema": "demand_signals",
+  "dependsOn": [
+    "core",
+    "switches",
+    "want-manager",
+    "listing-assessment",
+    "listing-ingest",
+    "city-pages",
+    "copy-advert",
+    "product-catalogue"
+  ]
+}

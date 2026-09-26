@@ -1,0 +1,106 @@
+{
+  "synthetic": true,
+  "builtFrom": "fb-scrap-engine/docs/HANDOFF.md:189-190 (context where a new build asks the same); asks are synthetic",
+  "listings": [
+    {
+      "id": "used-0",
+      "priceMinor": 60000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-1",
+      "priceMinor": 61000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-2",
+      "priceMinor": 62000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-3",
+      "priceMinor": 63000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-4",
+      "priceMinor": 64000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-5",
+      "priceMinor": 65000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-6",
+      "priceMinor": 66000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-7",
+      "priceMinor": 67000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-8",
+      "priceMinor": 68000,
+      "condition": "used_good"
+    },
+    {
+      "id": "used-9",
+      "priceMinor": 69000,
+      "condition": "used_good"
+    },
+    {
+      "id": "new-0",
+      "priceMinor": 80000,
+      "condition": "new"
+    },
+    {
+      "id": "new-1",
+      "priceMinor": 81000,
+      "condition": "new"
+    },
+    {
+      "id": "new-2",
+      "priceMinor": 82000,
+      "condition": "new"
+    },
+    {
+      "id": "new-3",
+      "priceMinor": 83000,
+      "condition": "new"
+    },
+    {
+      "id": "new-4",
+      "priceMinor": 84000,
+      "condition": "new"
+    },
+    {
+      "id": "new-5",
+      "priceMinor": 85000,
+      "condition": "new"
+    },
+    {
+      "id": "new-6",
+      "priceMinor": 86000,
+      "condition": "new"
+    },
+    {
+      "id": "new-7",
+      "priceMinor": 87000,
+      "condition": "new"
+    },
+    {
+      "id": "new-8",
+      "priceMinor": 88000,
+      "condition": "new"
+    },
+    {
+      "id": "new-9",
+      "priceMinor": 89000,
+      "condition": "new"
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { ArrowLeftIcon, ExternalLinkIcon, MapPinIcon, TruckIcon } from 'lucide-r
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Checklist, CopyMessage, DealFeedback, MarkBought } from '@/components/deal-actions'
+import { Checklist, CopyMessage } from '@/components/deal-actions'
 import { FactList } from '@/components/fact-list'
 import { FreshnessStamp } from '@/components/freshness-stamp'
 import { deliveryLabel } from '@/components/listing-card'
@@ -27,7 +27,6 @@ export default async function DealPage({ params }: { params: Params }) {
   const [deal, asOf] = await Promise.all([getDeal(id), getAsOf()])
   if (!deal) notFound()
   const { listing } = deal
-  const currencySymbol = listing.ask.currency === 'GBP' ? '£' : '€'
   return (
     <div className="grid gap-6">
       <Button variant="ghost" size="sm" className="w-fit -ml-2" asChild>
@@ -45,7 +44,10 @@ export default async function DealPage({ params }: { params: Params }) {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground text-sm">
               <span className="inline-flex items-center gap-1">
                 <MapPinIcon className="size-4" aria-hidden />
-                {listing.town}, {formatDistance(listing.distanceKm)}
+                {listing.town}
+                {formatDistance(listing.distanceKm)
+                  ? `, ${formatDistance(listing.distanceKm)}`
+                  : ''}
               </span>
               <span className="inline-flex items-center gap-1">
                 <TruckIcon className="size-4" aria-hidden />
@@ -59,19 +61,20 @@ export default async function DealPage({ params }: { params: Params }) {
 
           <div className="grid gap-3 lg:hidden">
             <OpenListing url={listing.listingUrl} />
-            <MarkBought currencySymbol={currencySymbol} />
           </div>
 
           <ListingPhoto photoCount={listing.photoCount} variant="strip" />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Asking-price position</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PricePosition position={deal.position} />
-            </CardContent>
-          </Card>
+          {deal.position ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Asking-price position</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <PricePosition position={deal.position} />
+              </CardContent>
+            </Card>
+          ) : null}
 
           {deal.suspicions.length > 0 || deal.warnings.length > 0 ? (
             <Card>
@@ -130,7 +133,6 @@ export default async function DealPage({ params }: { params: Params }) {
           <Card className="hidden lg:block">
             <CardContent className="grid gap-3">
               <OpenListing url={listing.listingUrl} />
-              <MarkBought currencySymbol={currencySymbol} />
             </CardContent>
           </Card>
           <Card>
@@ -143,20 +145,25 @@ export default async function DealPage({ params }: { params: Params }) {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Before you buy</CardTitle>
+              <CardTitle>Price drops</CardTitle>
             </CardHeader>
             <CardContent>
-              <Checklist items={deal.checklist} />
+              <p className="text-muted-foreground text-sm">
+                Not available yet: price-drop-watch (PR #70) has not merged
+                (docs/questions/L1-web.md).
+              </p>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Was this a deal</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DealFeedback initial={deal.feedback} />
-            </CardContent>
-          </Card>
+          {deal.checklist.length > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Before you buy</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Checklist items={deal.checklist} />
+              </CardContent>
+            </Card>
+          ) : null}
         </aside>
       </div>
     </div>

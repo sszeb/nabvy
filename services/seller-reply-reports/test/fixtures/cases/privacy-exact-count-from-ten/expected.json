@@ -1,0 +1,13 @@
+{
+  "evidence": [
+    {
+      "listing": "l",
+      "family": "payment",
+      "scope": "own",
+      "personsBand": "exact",
+      "personsExact": 12,
+      "placeId": null,
+      "distanceBand": null
+    }
+  ]
+}

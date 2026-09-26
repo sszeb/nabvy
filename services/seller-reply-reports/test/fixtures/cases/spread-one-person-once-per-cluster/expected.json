@@ -1,0 +1,44 @@
+{
+  "evidence": [
+    {
+      "listing": "a",
+      "family": "payment",
+      "scope": "copy",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    },
+    {
+      "listing": "a",
+      "family": "payment",
+      "scope": "own",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    },
+    {
+      "listing": "b",
+      "family": "payment",
+      "scope": "copy",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    },
+    {
+      "listing": "b",
+      "family": "payment",
+      "scope": "own",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    },
+    {
+      "listing": "c",
+      "family": "payment",
+      "scope": "copy",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    }
+  ]
+}

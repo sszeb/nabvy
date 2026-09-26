@@ -1,0 +1,13 @@
+{
+  "running": [
+    "1:1001:rtx 3090:narrow:wants",
+    "2:1001:gaming pc:broad:wants",
+    "3:1001:pc:broad:wants",
+    "4:1001:rtx 4090:narrow:wants",
+    "5:2002:ryzen 7 5800x3d:narrow:wants",
+    "6:2002:gaming pc:broad:wants",
+    "7:2002:pc:broad:wants"
+  ],
+  "plans": [{ "centreId": "1001", "active": true }, { "centreId": "2002", "active": true }],
+  "verifications": []
+}

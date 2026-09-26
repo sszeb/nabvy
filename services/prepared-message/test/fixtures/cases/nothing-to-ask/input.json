@@ -1,0 +1,42 @@
+{
+  "synthetic": true,
+  "source": "recorded-run placed headset and gpu-not-stated (synthetic variants)",
+  "assessments": [
+    {
+      "key": "1111111111111111",
+      "form": "part",
+      "container": false,
+      "containerReason": "placed",
+      "gpuState": "not_stated",
+      "confirmed": [],
+      "unknowns": ["gpu"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    },
+    {
+      "key": "28242423458759792",
+      "form": "system",
+      "container": true,
+      "containerReason": "parts",
+      "gpuState": "named",
+      "confirmed": ["gpu:description:RTX 3060", "cpu:description:i5-12400f"],
+      "unknowns": [],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    },
+    {
+      "key": "28242423458759793",
+      "form": "system",
+      "container": true,
+      "containerReason": "parts",
+      "gpuState": "not_stated",
+      "confirmed": ["cpu:description:i5-12400f"],
+      "unknowns": ["gpu"],
+      "assessedAt": "2026-09-25T02:00:00Z",
+      "correction": {
+        "gpuState": "named",
+        "by": "0192f0a0-0000-7000-8000-000000000001",
+        "reason": "GPU in the video",
+        "at": "2026-09-25T03:00:00Z"
+      }
+    }
+  ]
+}
