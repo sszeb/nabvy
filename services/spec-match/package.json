@@ -1,0 +1,38 @@
+{
+  "name": "@nabvy/spec-match",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nabvy/account": "workspace:*",
+    "@nabvy/config": "workspace:*",
+    "@nabvy/contracts": "workspace:*",
+    "@nabvy/db": "workspace:*",
+    "@nabvy/listing-suppression": "workspace:*",
+    "@nabvy/location": "workspace:*",
+    "@nabvy/quote-redaction": "workspace:*",
+    "@nabvy/switches": "workspace:*",
+    "@nabvy/transport": "workspace:*",
+    "@nabvy/want-manager": "workspace:*",
+    "drizzle-orm": "0.45.3",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@nabvy/detail-evidence": "workspace:*",
+    "@nabvy/listing-assessment": "workspace:*",
+    "@nabvy/listing-ingest": "workspace:*",
+    "@nabvy/noise-filter": "workspace:*",
+    "@nabvy/parts-ai": "workspace:*",
+    "@nabvy/parts-record": "workspace:*",
+    "@nabvy/parts-rules": "workspace:*",
+    "@nabvy/spend-governor": "workspace:*"
+  }
+}
