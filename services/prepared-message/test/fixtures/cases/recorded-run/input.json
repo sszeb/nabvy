@@ -1,0 +1,70 @@
+{
+  "synthetic": true,
+  "source": "services/listing-assessment/test/fixtures/cases/recorded-run/expected.json (run facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k): every listing with unknowns, as listing-assessment assessed it",
+  "assessments": [
+    {
+      "key": "1756692548940192",
+      "form": "system",
+      "container": true,
+      "containerReason": "kind",
+      "gpuState": "named",
+      "confirmed": ["gpu:title:GTX+1660", "cpu:title:Ryzen+7+2700X"],
+      "unknowns": ["ram_size", "storage_size"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    },
+    {
+      "key": "1123980543398026",
+      "form": "system",
+      "container": true,
+      "containerReason": "kind",
+      "gpuState": "named",
+      "confirmed": ["gpu:description:GTX 1080", "psu_wattage:description:750 watt"],
+      "unknowns": ["cpu", "ram_size", "storage_size"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    },
+    {
+      "key": "1639721697586478",
+      "form": "bundle",
+      "container": true,
+      "containerReason": "kind",
+      "gpuState": "not_stated",
+      "confirmed": [],
+      "unknowns": ["cpu", "gpu", "ram_size", "storage_size"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    },
+    {
+      "key": "1083674317719227",
+      "form": "bundle",
+      "container": true,
+      "containerReason": "parts",
+      "gpuState": "named",
+      "confirmed": [
+        "ram_size:description:16GB RAM",
+        "cpu:description:~3900Mhz AMD64 processor",
+        "gpu:description:Geforce RTX graphics card"
+      ],
+      "unknowns": ["storage_size"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    },
+    {
+      "key": "2537899006714740",
+      "form": "system",
+      "container": true,
+      "containerReason": "kind",
+      "gpuState": "not_stated",
+      "confirmed": [],
+      "unknowns": ["cpu", "gpu", "ram_size", "storage_size"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    },
+    {
+      "key": "1380502417485603",
+      "form": "bundle",
+      "container": true,
+      "containerReason": "kind",
+      "gpuState": "not_stated",
+      "confirmed": [],
+      "unknowns": ["cpu", "gpu", "ram_size", "storage_size"],
+      "assessedAt": "2026-09-25T02:00:00Z"
+    }
+  ]
+}

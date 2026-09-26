@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "source": "docs/affiliates.md Tests: a user with no click ID and no code produces no calls",
+  "steps": [
+    { "capture": {} },
+    { "sale": { "invoiceId": "in_3", "kind": "subscription", "amountMinor": 900 } }
+  ]
+}

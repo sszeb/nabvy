@@ -369,6 +369,52 @@ export async function selectFirstSeen(
   })
 }
 
+/** Where a search first found a listing: its job's run shape and region (`enqueue`'s placement). */
+export interface SearchPlacement {
+  shape: string | undefined
+  regionId: string | undefined
+}
+
+/**
+ * The earliest search sighting of each source listing ID, with that job's tags. IDs first seen
+ * only through a details run, or not shown by listing-ingest, are absent.
+ */
+export async function selectSearchPlacement(
+  q: Queryable,
+  source: DetailsQueueSource,
+  sourceListingIds: string[],
+): Promise<Map<string, SearchPlacement>> {
+  if (sourceListingIds.length === 0) return new Map()
+  const rows = await q
+    .selectDistinctOn([vListings.sourceListingId], {
+      sourceListingId: vListings.sourceListingId,
+      tags: vJobs.tags,
+    })
+    .from(vListings)
+    .innerJoin(vSightings, eq(vSightings.listingId, vListings.id))
+    .leftJoin(vJobs, eq(vJobs.id, vSightings.jobId))
+    .where(
+      and(
+        eq(vListings.source, source),
+        eq(vSightings.kind, 'search'),
+        inArray(vListings.sourceListingId, sourceListingIds),
+      ),
+    )
+    .orderBy(vListings.sourceListingId, asc(vSightings.seenAt), asc(vSightings.jobId))
+  return new Map(
+    rows.map((row) => {
+      const tags = (row.tags ?? {}) as Record<string, unknown>
+      return [
+        row.sourceListingId,
+        {
+          shape: typeof tags.shape === 'string' ? tags.shape : undefined,
+          regionId: typeof tags.region === 'string' ? tags.region : undefined,
+        },
+      ]
+    }),
+  )
+}
+
 /** `v_queue` rows, for readers of this module's state (switch-filtered). */
 export async function selectQueue(q: Queryable, sourceListingIds?: string[]) {
   const query = q.select().from(vQueue)

@@ -1,0 +1,9 @@
+{
+  "running": [
+    "1:1001:rtx 3090:narrow:wants",
+    "2:1001:gaming pc:broad:wants",
+    "3:1001:pc:broad:wants"
+  ],
+  "plans": [{ "centreId": "1001", "active": true }],
+  "verifications": []
+}

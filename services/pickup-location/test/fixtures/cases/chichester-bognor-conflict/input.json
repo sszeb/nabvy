@@ -1,0 +1,21 @@
+{
+  "synthetic": true,
+  "builtFrom": "synthetic rows in the shape of listing_ingest.listings and detail_evidence.evidence (test/support/database.ts, detailed()); the city pages are the seed's (city-pages.seed.json), with points added where the case needs one",
+  "pages": [
+    {
+      "cityPageId": "115935195086622",
+      "name": "Chichester, West Sussex",
+      "towns": ["Chichester"]
+    }
+  ],
+  "listings": [
+    {
+      "listingId": "7000000000000001",
+      "title": "RTX 3090 gaming PC",
+      "description": "Full spec in photos. Collection from Bognor, cash on collection.",
+      "location": "Chichester",
+      "cityPageId": "115935195086622",
+      "coordinates": null
+    }
+  ]
+}

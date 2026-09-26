@@ -1,0 +1,33 @@
+{
+  "synthetic": true,
+  "kind": "table",
+  "input": {
+    "sources": [
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      },
+      {
+        "lon": -1.0873,
+        "lat": 50.8198
+      }
+    ],
+    "destinations": [
+      {
+        "lon": -0.1372,
+        "lat": 50.8225
+      },
+      {
+        "lon": -0.3714,
+        "lat": 50.8179
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "durations": [[1, 2]],
+      "distances": [[1, 2]]
+    }
+  }
+}

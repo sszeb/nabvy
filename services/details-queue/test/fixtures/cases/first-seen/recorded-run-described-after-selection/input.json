@@ -1,0 +1,21 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "source": "the recorded newest check, which ran with includeDetails: true",
+  "jobTags": {
+    "module": "check-scheduler",
+    "region": "chichester",
+    "purpose": "newest",
+    "shape": "newest-check"
+  },
+  "steps": [
+    {
+      "selected": "all"
+    },
+    {
+      "firstSeen": "all"
+    },
+    {
+      "submit": true
+    }
+  ]
+}

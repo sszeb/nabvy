@@ -1,0 +1,14 @@
+{
+  "module": "noise-filter",
+  "schema": "noise_filter",
+  "dependsOn": [
+    "core",
+    "switches",
+    "listing-assessment",
+    "parts-record",
+    "parts-rules",
+    "listing-ingest",
+    "detail-evidence",
+    "listing-suppression"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790365165421,
+      "tag": "20260925193925_demand_signals_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790365166714,
+      "tag": "20260925193926_demand_signals_access",
+      "breakpoints": true
+    }
+  ]
+}

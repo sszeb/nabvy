@@ -66,8 +66,8 @@ Agents append here when a spec is unclear or a secret is missing. Format: date, 
 - **2026-09-24, w1 switches: seeded states.** Seeds: `switches`, `audit-log`, `incidents` on (they cannot be switched off); `auth` on (it is live, and "if auth is off, nobody signs in"); `cost-meter` and `quote-redaction` off, the rule-11 default for a new module; providers `apify`, `anthropic`, `ebay`, `cex` off; the `facebook-alerts` gate on with no allow-list (open to all, question 25); the `listing-photos` flag off; the global `pipeline` on (not paused). Nothing reads the provider switches yet. For the coordinator: once a paying module checks its provider switch, an admin must turn the provider on first, or the pipeline pauses. Conservative because paid work stays stopped until someone turns it on, and the pause can only be applied by an admin.
 - **2026-09-24, analytics and growth: price floor basis for watching.** Standalone or shared cost per want (`docs/design/analytics-growth.md` §2 worked example, §8 point 1). Option taken (conservative): standalone; launch prices are checked against the floor before it is switched on and every refusal goes to the owner; revisit after four weeks of `ops-metrics` data.
 - **2026-09-24, analytics and growth: Stripe and database connections to PostHog.** Option taken (conservative): neither at launch; revenue goes as server events by `userId`, margin is computed in `ops-metrics` (§8 points 2 and 3).
-- **2026-09-24, 4.1h: self-hosted routing or a hosted provider.** Options: self-hosted OSRM (fixed VM cost, addresses never leave Nabvy) vs. openrouteservice hosted (free with quotas, sends points to HeiGIT) vs. Google Route Optimization (about $50/mo at 10,000 visits; map-terms restriction). Option taken: self-hosted OSRM. Conservative because pickup points never reach a third party.
-- **2026-09-24, 4.1h: router host.** Options: Hetzner CX43 (~€16/mo, EU) or AWS Lightsail London 16GB (~$84/mo, UK). Option taken: Hetzner CX43, matching the Supabase database's EU region. Conservative because it is the cheaper default and reversible.
+- **2026-09-24, 4.1h: self-hosted routing or a hosted provider.** **Superseded by the owner (2026-09-25, 16:45): openrouteservice's hosted free plan first, a paid provider or self-hosting when there is turnover (`docs/decisions.md` "Routing: openrouteservice first").** Options: self-hosted OSRM (fixed VM cost, addresses never leave Nabvy) vs. openrouteservice hosted (free with quotas, sends points to HeiGIT) vs. Google Route Optimization (about $50/mo at 10,000 visits; map-terms restriction). Option taken: self-hosted OSRM. Conservative because pickup points never reach a third party.
+- **2026-09-24, 4.1h: router host.** **Superseded (2026-09-25): no router host for now, see the entry above.** Options: Hetzner CX43 (~€16/mo, EU) or AWS Lightsail London 16GB (~$84/mo, UK). Option taken: Hetzner CX43, matching the Supabase database's EU region. Conservative because it is the cheaper default and reversible.
 - **2026-09-24, 4.1f: tile provider.** Options: Protomaps on Nabvy's Cloudflare account (£0 to ~$7/mo at scale) vs. OpenFreeMap (free, no SLA) vs. paid hosted tile APIs. Option taken: Protomaps as primary, OpenFreeMap as fallback. Conservative because it reuses infrastructure already planned for DNS/Turnstile.
 - **2026-09-24, 4.1f: sponsoring OpenFreeMap.** No option recorded; left to the owner's discretion.
 - **2026-09-24, 4.1e: default search distance.** Option taken: 25 miles, matching the existing hunt default. Conservative because it changes nothing for current users.
@@ -381,3 +381,640 @@ Catalogue question 33 (`docs/design/modules/city-pages.md`, "Open questions") is
 - **2026-09-25, 0.18: cadences faster than hourly.** The actor brief's T2 result (guide commits `23da75a`, `f323632`) sets the per-centre cadence at newest-first hourly in active hours plus a daily sweep, and says lag cannot beat the check interval and recall is about 90% even with both; T2 ran nothing faster than hourly, so there is no cost, recall or block-rate evidence for the 1-, 5-, 15- and 30-minute per-want cadences that the paid ladder, the cadence slider, the free burst shape and the credit maths sell (`docs/decisions.md:227,256,271,311-331`; `docs/design/cadence-slider.md:5`; `docs/design/pricing-model.md:10-12`). Under Precedence "Cadence and tiers" the brief wins. Questions: (a) keep selling sub-hour cadences as the same newest-first run more often, priced from measured cost (about $0.0022 a single-term check settled, so a lone 1-minute want is roughly $63–95 a month per term-centre before the 60% rule)? (b) or move the ladder to hourly as the fastest sold interval, differentiating plans on areas, wants, sweep frequency and credits (this changes the starting prices' promises, the slider steps and 1.2r's burst shape)? (c) may Nabvy promise "found within minutes" (check-scheduler acceptance, `docs/design/modules/check-scheduler.md:15`) or only "within the check interval"? Option taken: build 4.10b as policy rows, keep "up to" wording, market no fixed value below hourly as guaranteed, sell no boosts, and run the 1.2i probe before any sub-hour cadence is sold; conservative because it promises nothing T2 has not measured.
 - **2026-09-25, 0.18: moving the build pin without an approved recorded run.** `docs/design/drafts/actor-integration.md:467` says 1.0.82 stays until a recorded run on a new build passes the fixtures and the owner approves; the platform now holds only 1.0.83 (guide commit `7640fd8`), so that rule cannot be met. Option taken: pin 1.0.83 (the brief says so and the guide says the v3 output contract is unchanged), keep the 1.0.82 fixture run as the fixtures' source, and record the first gateway run on 1.0.83 as a new fixture run before any pipeline stage is switched on; conservative because the alternative is no run at all.
 - **2026-09-25, 0.18: inferred currency for `ambiguous` rows.** Guide commit `1c9fd3b` lets the app fall back to the searched region's currency when Facebook gives a bare amount, flagged `currency_inferred`. Option taken: not adopted — such rows keep `priceMinor` and `currency` null with `moneyKind` `ambiguous` (`services/listing-ingest/src/domain/index.ts:38-50`); conservative because an inferred currency would enter the card hash and price-change detection and Precedence "Region and currency" never mixes currencies. Adopting it later needs a `currencyInferred` flag on the listing-ingest card contract.
+
+## Open with the owner (coordinator 11, 2026-09-25)
+
+- **Sign-up without a card, and regions** (owner, 13:50 chat, to coordinator 10). The owner proposed a Langfuse-style sign-up: no card at sign-up; a card-less account can sign in and view, and any action that costs money asks for a card first. The owner also asked about splitting by region (US, EU, Asia) and paying by country. Coordinator 10's recommendation: sign-in by email 6-digit code plus Google (no passwords; no GitHub or Azure); no data-region split now (UK beta on one EU deployment; later markets are data, a regional deployment only if a market requires local storage; local-currency prices per market later); card-less accounts browse the shared pool, price graphs, saved hunts and the digest, and the card check moves before the first free burst except where a paying watcher already funds the area. This changes the free-tier decision of 2026-09-24 16:50 (card check before windows two and three), so it waits for the owner's yes. **Option taken (conservative):** the existing free-tier decision stands until the owner answers; nothing is built on the new shape.
+- **Cadences faster than hourly.** Still open ("Actor guide changes" above).
+- **Usage instruction recorded, not a question** (owner, 14:05): `docs/decisions.md`, "Context economy".
+
+## Folded from the per-module question files (coordinator 13, 2026-09-25, 15:05 UTC)
+
+Each file's entries as its session wrote them; the files are deleted (`docs/session-conventions.md`, "Questions from a build session").
+
+### Questions — 0.9d convention checks (`docs/questions/0.9d.md`)
+
+- **Task:** 0.9d, `function-search-path` rule scope. **Ambiguity:** the brief says a `create
+  function`'s header needs "a matching `revoke all on function ... from public`", without saying
+  where to look for the match. A per-file search would flag `usage-ledger`'s
+  `on_allocation_insert()` (recreated in `20260924175242_usage_ledger_allocation_guards.sql`
+  without a new revoke) and `quote-redaction`'s `switch_on()` (recreated in
+  `20260924180000_quote_redaction_switch.sql`) as violations, but Postgres grants persist across
+  `create or replace function`, so both already got their revoke on first creation — and
+  `packages/db/README.md` ("Migrations") says a merged migration file is never edited, so there
+  would be no way to fix or allowlist those in place. **Option taken (conservative):** the checker
+  searches the whole migration history (`packages/db/migrations/**` and `supabase/migrations/**`,
+  the latter for `apify-gateway`, whose schema predates the module) for a revoke matching the exact
+  `schema.function`, or a schema-wide `revoke all on all functions in schema ... from public`, not
+  only the same file. Against `main` this leaves zero real violations; the self-test's
+  `function-search-path` fixture still proves a function with no revoke anywhere is caught.
+- **Task:** 0.9d, `backlog-ids`. **Ambiguity:** none — noted here only because it is the one rule
+  that reports as a warning and never fails CI, per the brief ("IDs are renumbered on the
+  coordinator's branch"). Existing warnings against `main` (in `docs/design/drafts/*.md` and
+  `docs/fb-actor-reference.md`) are left as-is; a build session should not renumber them.
+- **Task:** 0.9d, a `main`-moved violation found while this PR was open. **Not an ambiguity, a
+  note for the reviewer/coordinator:** `main` gained `services/run-coverage` and
+  `packages/db/migrations/details-queue` after this branch started; merging `main` in made the
+  checker (correctly) fail on `run-coverage`'s `vitest.config.ts` (missing `testTimeout`, fixed the
+  same one-line way as the other nine) and on `details_queue.batches_close_once()` (no matching
+  revoke anywhere in the module's migrations). Fixed the second with a new, one-statement,
+  forward-only migration (`pnpm db:generate details-queue --custom --name
+  details_queue_function_revoke`), mirroring `core_hardening.sql` and
+  `usage_ledger_allocation_guards.sql`'s pattern — the trigger function is unreachable directly
+  (Postgres refuses to call a trigger-returning function outside trigger context) so this closes a
+  convention gap, not an exploitable one. In generating it, `pnpm db:generate` also had to create
+  `packages/db/migrations/details-queue/meta/`, which was missing from `main` entirely (unlike
+  every other module, including `run-coverage`, which has one) — a separate, pre-existing gap in
+  that module's own migrations, worth a look by whoever owns `details-queue`, but out of this
+  task's scope to fix further.
+
+### Questions from task 4.3af (web: admin gate before any deploy) (`docs/questions/4.3af.md`)
+
+Same format as `docs/questions.md`; the coordinator folds these in.
+
+- **2026-09-24, 4.3af: the kill switch stays read-only.** The backlog wants it "read-only until it calls an audited procedure". There is no oRPC router in the repo yet (task 4.1), and `switches.set()` takes the actor from its input with no admin check (audit A3, task 4.3ag), so a procedure built now would either bypass the audit or duplicate 4.3ag. Option taken: the switch shows the server state and is disabled (`apps/web/src/components/provider-switch.tsx`); the audited procedure and the control come with 4.3ag on the router from 4.1. Conservative because nothing can flip a switch from the web app.
+- **2026-09-24, 4.3af: "production" for the admin fixtures is `NODE_ENV=production`.** H13 wants fixture data never to reach production admin pages. Option taken: a `runtime` group in `@nabvy/config` reads `NODE_ENV` (default `development`), and the two admin reads throw under `production`, which every `next build` and `next start` sets. So an admin at any deployed build, preview included, gets a 500 on `/admin` until task 4.1 puts the procedures behind those reads; only `next dev` and the tests show the fixtures. Conservative because it can never show placeholder spend and runs as real. A `VERCEL_ENV`-based distinction would let previews show fixtures, which is the owner's call.
+- **2026-09-24, 4.3af: a restricted account on an admin page gets the plain 403.** The auth module refuses a suspended or banned admin with `AccountRestrictedError` (403). Option taken: `forbidden()`, the generic page, not a redirect to `/errors/restricted`. Conservative because the admin surface never explains itself, and the user's own app pages still show the notice.
+- **2026-09-24, 4.3af: `/app` has no gate.** Out of scope here (the backlog row names `/admin`), and the app pages show fixtures for everyone until task 4.1 replaces them. Noted so 4.1 adds `requireActiveUser` to every `/app` page and procedure with the same pattern (`apps/web/src/lib/admin-gate.ts`).
+- **2026-09-24, 4.3af, for 4.3ae, 4.3ag and 4.3ah (not done here):** (a) a refused request still resolves the route's static metadata, so the 401 page's RSC payload carries the admin page title ("Review console"); no data, but 4.3ae may want admin titles generic. (b) The admin layout renders the app shell with `deals={[]}`; when 4.1 loads data in the shell, it must load it after the gate, not in parallel. (c) The e2e signs in with the auth module's own handler; once `/api/auth/*` is mounted in apps/web (4.1 or 0.5a) the spec can go through the mounted route instead. (d) Step-up (H2) and device binding (H3) have no hook in the gate yet: `requireAdmin()` returns the session, so 4.3ae can add the checks there in one place.
+
+### Questions: apify-gateway (`docs/questions/apify-gateway.md`)
+
+- **2026-09-25, 1.1i: the `catch-up` string in details-queue.** Removing the `catch-up` run shape from `ApifyGatewayRunShape` leaves `priorityOfSearchShape` in `services/details-queue/src/domain/index.ts:167` (and its test at `test/domain.test.ts:29`) comparing against a plain `'catch-up'` string that no gateway job can now carry. Option taken: leave details-queue untouched, because a gateway session edits only its own files (`services/apify-gateway/README.md`); the comparison is dead but harmless (an unknown shape maps to `sweep`). The details-queue session can drop the branch in its next change.
+
+### Open questions — cadence-slider (task 4.1q) (`docs/questions/cadence-slider.md`)
+
+Same format as `docs/questions.md`. The coordinator folds this file in at its batched pushes and
+deletes it.
+
+- **2026-09-24, cadence-slider: `pnpm test` fails outside this task's scope because there is no local Postgres.** The room-wide `pnpm test` (`turbo run test`) fails in `services/waitlist` and several other DB-backed packages with `Hook timed out in 30000ms` from `createTestDatabase()`; `pg_isready` reports no server on `/var/run/postgresql:5432` in this container. This branch touches only `apps/web` and `packages/contracts` (nothing under `services/` or `packages/db`), and `pnpm --filter @nabvy/web test` (125 tests) and the contracts package's own suite (130 tests, including the new `want-manager` fixtures) both pass cleanly, as do `pnpm lint` and `pnpm typecheck` at the repo root. Option taken: treat the DB-backed failures as a pre-existing environment gap, not a regression from this task, and not spend this task's scope standing up a local Postgres. Flagging for a check-in in case the coordinator's environment is expected to have one.
+- **2026-09-24, cadence-slider: `want-manager` contracts are a minimal stub, not the module's real shape.** `docs/design/modules/want-manager.md` lists `WantManagerWant`/`WantManagerCriterion`/`WantManagerPreferences` and the `want-manager.changed` event as that module's contracts (backlog task 1.8e, not yet built). This task only needed the check-interval estimate the design spec asks for, so `packages/contracts/src/modules/want-manager.ts` defines just `WantManagerCadenceSeconds` (with `WANT_MANAGER_CADENCE_STEP_SECONDS`), `WantManagerCadenceEstimate` and `WantManagerCadenceBurstStatus`, with an empty event registry and a comment marking it a partial stub. Option taken: the conservative, smallest-footprint file that satisfies the module-discovery tests without guessing at 1.8e's real table or event shapes; 1.8e should feel free to reshape or move these types when it lands.
+- **2026-09-24, cadence-slider: pin-price CTA and the help-popover copy are unresolved product wording.** The seven mode names are settled (coordinator, on the owner's delegation, 17:37; `docs/design/cadence-slider.md`): Ultracheck, Rapid, Brisk, Steady (30 min), Regular, Relaxed, Slow Watch, centralised in `apps/web/src/lib/cadence.ts` (`CADENCE_STEPS`) so a later change is a one-file edit. Still provisional: the "Fastest / Slowest" captions, the help-popover sentence (a placeholder was written), and the `Pin this pace — from £X/mo` CTA, which needs a per-user price the estimate procedure doesn't yet return (`WantManagerCadenceEstimate` has no price field) and so was left out of `cadence-slider.tsx` entirely rather than invent a figure — add a priced field to the estimate contract and the CTA together once the owner confirms the copy.
+- **2026-09-24, cadence-slider: no credit estimate is shown until want-manager (1.8e) ships.** The review of PR #49 found the client-side placeholder estimate (`(max - index + 1) * 15` credits) wired live into `HuntForm` with nothing marking it as unreal, against the design's "never computed in the client". Option taken (the review's second option, the conservative one): `HuntForm` passes `estimate={null}`, the slider then renders no cost or cadence line and locks no step (the plan ceiling comes from the same procedure), and the placeholder function is deleted. 1.8e swaps `null` for the procedure's debounced answer.
+- **2026-09-24, cadence-slider: the locked-row "Requires Pro" hint is always shown, not hover/focus-only.** The spec's anatomy section says a locked row's hint appears "on focus/hover/tap"; this build shows it for every locked row unconditionally instead, which satisfies the spec's stronger "never hidden" requirement and avoids putting a mouse-only `onMouseEnter`/`onMouseLeave` handler on a non-interactive row (Biome's `noStaticElementInteractions`). Option taken as the simpler, still-compliant reading; revisit if the owner wants the quieter hover-only behaviour specifically.
+- **2026-09-24, cadence-slider: fixture render tests use `react-dom/server`, not a DOM testing library.** `apps/web` has no jsdom/happy-dom or `@testing-library/react` dependency, and "no new dependencies" ruled those out. `apps/web/vitest.config.ts` now includes `test/**/*.test.tsx` and sets `oxc.jsx` (the tsconfig's `jsx: "preserve"`, needed for Next's own compiler, otherwise leaves Vite's oxc transform unable to parse JSX in test files) and `apps/web/test/cadence-slider.test.tsx` renders each state with `renderToStaticMarkup` and asserts on the resulting HTML string. This is the same technique the task's "fixture render tests per state" asked for, just without a DOM.
+
+### Open questions — copy-advert (`docs/questions/copy-advert.md`)
+
+Folded into `docs/questions.md` by the coordinator (`docs/session-conventions.md`). The design's
+own open questions (wording, display threshold, legal review, targets before leaving shadow, the
+control run, and the rest) are `docs/design/drafts/copy-advert.md` section 10, questions 1-12;
+they are not repeated here. This file records questions that came up while building task 1.7a.
+
+- **2026-09-24, 1.7a: `listing-suppression.changed` carries entry IDs, not listing IDs, so this
+  module cannot target only the listings a change touches.** The handler
+  (`services/copy-advert/src/handlers/index.ts`, `suppressionChangedHandler`) recomputes every
+  currently active cluster's member instead, reading every row of `copy_advert.members` where
+  `left_at is null`. Option taken: recompute everything on this event. Conservative because it
+  never under-reacts to a suppression change, and correct because copy clusters are expected to be
+  rare (design 4.13: "almost absent" for PC and GPU listings), so the set recomputed stays small in
+  practice. Needed from the owner or a later session: whether this still holds at production scale,
+  or whether `listing-suppression` should be asked to publish the listing IDs an entry resolves to.
+- **2026-09-24, 1.7a: candidate detail requests (S4) have no priority below `sweep`.**
+  `details-queue`'s four priorities (`new-listing`, `shortlisted`, `photo-capture`, `sweep`) do not
+  include one for copy-advert's collision candidates, which the design calls "after sweep
+  follow-ups (lowest)" (`docs/design/drafts/copy-advert.md` 4.12). Option taken: use `sweep`, the
+  lowest available. Conservative because it never outranks a real acquisition need; it just cannot
+  rank below sweep follow-ups as the design intends. Needed: either accept `sweep` or add a fifth
+  priority to `details-queue`.
+- **2026-09-24, 1.7a: the load test (100,000 synthetic prints, per-batch lookup p95 under 500 ms)
+  from `docs/design/drafts/copy-advert.md` section 8 was not run in this task.** This session's
+  environment has no long-running Postgres instance to load-test against beyond the throwaway
+  database `pnpm db:dry-run` tears down immediately, and generating and loading 100,000 synthetic
+  rows was out of scope for one build session's time. Option taken: ship without it, recorded here
+  rather than skipped silently. Needed: a follow-up task (or the reviewer, if it has the means) runs
+  the load test on a longer-lived database before the module leaves shadow.
+- **2026-09-24, 1.7a: `flags` gets a row for every active clustered listing, not only members of a
+  mass-posted cluster.** The schema sketch's own comment reads "one per listing in a mass-posted
+  cluster" (`docs/design/drafts/copy-advert.md` 5.1), but `v_listing_copy_facts` (needed by every
+  internal reader in section 7, for clusters that are not mass-posted too, for example a same-town
+  relist collapse) has no other backing table. Option taken: `flags` backs `v_listing_copy_facts`
+  for every active member of every active cluster; `would_show` alone (mass-posted and
+  `towns >= flagMinTowns`) still decides what a user could ever be shown. Conservative because it
+  changes no user-facing behaviour, only which listings appear in the internal view. Needed: the
+  design confirms or adjusts this reading, since it is a scaffold-figure interpretation and not the
+  actual open question.
+
+### Open questions: details-selector (`docs/questions/details-selector.md`)
+
+- **2026-09-24, w1 details-selector: `details-queue` already enqueues every `first-seen` search listing unconditionally.** `details-queue`'s own `firstSeenHandler` (merged before this module existed) consumes `listing-ingest.first-seen` directly and calls `enqueue()` for every listing whose sighting came from a search card, with no area or category gate. If both handlers are wired to the event (this module's `firstSeenHandler` and details-queue's), details-queue's own handler will enqueue out-of-area and wrong-category listings regardless of what this module selects — `details_selector.selections` still records an accurate audit trail, but the cost gate the card describes ("choose which newly seen listings get a detail fetch") is not actually enforced. Option taken: build this module exactly to its card (it is not this module's file set to edit `services/details-queue/`, rule 2), record the row here, and leave the wiring decision — most likely, details-queue's `firstSeenHandler` should stop being registered against `listing-ingest.first-seen` once this module exists, so only this module's handler gates the queue — to the coordinator or a follow-up task against `details-queue`. Conservative because it changes no other module's files and loses no data: every selection is still recorded, whatever details-queue's own handler does in parallel.
+- **2026-09-24, w1 details-selector: an unknown area does not select.** The card states the category default explicitly ("unknown counts as in") but says nothing about an unknown *area* — city-pages off, or a city page with no coordinate to measure from (`v_area_membership` returns `inArea: false, centreId: null, distanceKm: null`, never a missing row). Option taken: treat unknown area as "not selected", the opposite of the category default. Conservative because selection directly causes a paid Apify detail fetch (`details-queue`); silently selecting listings whose area is merely unknown risks unbounded spend the moment `city-pages` is off or lagging, where silently *not* selecting only delays automatic detail fetches until the area is known (pasted links and rechecks are unaffected).
+- **2026-09-24, w1 details-selector: no shipping `deliveryTypes` value is recorded.** The card selects a listing that "offers shipping", but the one recorded run (`fixtures/listings/facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k`) shows only `IN_PERSON`, `PUBLIC_MEETUP`, `DOOR_PICKUP` and `DOOR_DROPOFF` — no listing in it offers shipping. Option taken: `DETAILS_SELECTOR_SHIPPING_DELIVERY_TYPES` starts as an empty list, so the `shipped` reason is coded and unit-tested (`test/domain.test.ts`) but never fires on real data until a recorded run shows the actor's actual value. Conservative because guessing a plausible string (e.g. `"SHIPPING"`) risks either matching nothing (silently) or matching something else Facebook uses for that field, and CLAUDE.md asks not to invent values (No invented numbers).
+- **2026-09-24, w1 details-selector: no GPU-specific category ID is recorded.** The card says category is "electronics, a container, a GPU, or unknown". The one recorded run's 4 distinct category IDs (all desktop-PC or PC-case listings, despite mismatched category names) cover electronics and container; none is a standalone GPU listing's category. Option taken: `DETAILS_SELECTOR_IN_CATEGORY_IDS` lists only the 4 cited IDs; a GPU listed under a category not yet seen would rely on the "unknown counts as in" fallback if Facebook has not categorised it, or be excluded if it has a known, different category ID. Conservative because it adds no invented ID, at the cost of possibly under-selecting a categorised standalone GPU listing until one is recorded.
+- **2026-09-24, w1 details-selector: want-manager's soft edge is a single injected port, not real geometry.** The card's full rule needs a want's own point (not just its centre) to measure "measured from the want's point"; want-manager does not exist to provide one. Option taken: `DetailsSelectorEvidence.deliveryCentres(q, centreIds)` answers only "does an active want at this centre accept delivery" (used for the `shipped` reason), defaulting to none — area membership falls back entirely to city-pages' 100 km starting value, exactly the card's documented fallback while want-manager is not built. Conservative because it invents no want-level geometry ahead of want-manager's own schema; the session that builds want-manager replaces this one port rather than this module's selection logic.
+
+Card's own open questions ("33"; `actor-integration.md` questions 6 and 17) are the general placeholders this file answers parts of; the rest, if any, is for the coordinator to identify against the fuller draft.
+
+### Open questions — lifecycle-messaging (`docs/questions/lifecycle-messaging.md`)
+
+Same format as `docs/questions.md` (date, task, question, option taken and why), kept in its own
+file per module so parallel build sessions never conflict appending to the shared one (coordinator
+4, "Questions convention"). The coordinator folds these into `docs/questions.md` at a check-in.
+
+- **2026-09-24, w4 lifecycle-messaging: "abandoned checkout", "failed payment" and "affiliate onboarding" need events that do not exist yet.** The module card's "Sources" line cites `docs/marketing.md:18-35`, the full 12-row "Lifecycle programmes" table, but three of those rows' trigger, exit or goal events are not in `ProductEventsName` (`packages/contracts/src/modules/product-events.ts`): "Abandoned checkout" needs `checkout_started`; "Failed payment" needs a Stripe `invoice.payment_failed`/`invoice.paid` event (the table's own words, not a name already on the list); "Affiliate onboarding" needs a Dub webhook event. Rule 2 of `docs/design/modules/_rules.md` ("a module session touches only its own files") means this session cannot add those events to `product-events`'s own contract file. Option taken: build the other seven programmes (`abandoned-onboarding`, `channel-not-linked`, `activation`, `cap-reached`, `trial`, `win-back`, `re-engagement`) against the events that already exist; skip these three rather than inventing events in a file this module does not own. Conservative because it adds no surface to another module's contract without that module's own session reviewing it. Needed from a human or the `product-events` module's own future session: add `checkout_started`, an `invoice.payment_failed`/`invoice.paid` pair and a Dub-approval event to `ProductEventsEvent`, at which point this module's `PROGRAMMES` catalogue (`src/domain/programmes.ts`) can add the matching three programmes without touching anything else.
+- **2026-09-24, w4 lifecycle-messaging: email resolution has no source.** This module needs a user's email address both to call `canMarket()` and to actually send (`ResendClient.send()`), but none of the modules this card depends on (`switches`, `product-events`, `marketing-consent`, `account`) exposes one — `account.v_profiles` carries `display_name` only, and `services/marketing-consent/README.md` already records the identical gap for its own `canMarket()` signature. Option taken: `EmailResolver` (`src/send-clients.ts`) is the seam a real implementation fills once one exists (an `auth`-backed lookup, most likely); `InMemoryEmailResolver` is the only implementation today, and a user it cannot resolve is skipped (no `programme_runs` row written, so the step is retried on the next run) rather than guessed at. Conservative because it never invents an email or bypasses `canMarket()`'s suppression check. Needed from a human or a later module session: expose a `userId → email` read (most naturally from `auth`, which already owns `better_auth.user.email`) that `EmailResolver`'s real implementation can call.
+- **2026-09-24, w4 lifecycle-messaging: a real deal card needs `alerts`/`valuations`, outside this module's declared inputs.** `docs/marketing.md`'s own wording for "Activation" ("the three best deals found, with margins") and "Abandoned onboarding" ("a real deal card from your area") describes content this module cannot build from `v_events`, `v_profiles` and `canMarket()` alone — those numbers live in `alerts` and `valuations` (CLAUDE.md: "No invented numbers... Prices, margins and days-to-sell come from services/valuation"). Option taken: those two steps' placeholder copy (`src/domain/copy.ts`) uses the real numbers this module can read (counts of the user's own `alert_delivered`/`alert_opened` events) and names what a real deal card would show, rather than fabricating one. Needed from a human: confirm whether `lifecycle-messaging` should depend on `alerts`/`valuations` directly for these two steps, or whether a future card revision should read them through a different module's view instead (the module card's own "Depends on" line does not list either today).
+
+### Open questions: listing-lifecycle (`docs/questions/listing-lifecycle.md`)
+
+- **2026-09-24, w1 listing-lifecycle: `hidden` availability.** listing-ingest folds the actor's flags to `live`, `pending`, `sold`, `hidden` or `unknown`; the card's statuses have no "hidden". Option taken: `hidden` reads as `unknown`. Conservative because it claims nothing about whether the listing can be bought.
+- **2026-09-24, w1 listing-lifecycle: watched rechecks that never fill a batch.** The actor's cost figure assumes daily batches of 20 or more (`PARTS_INTELLIGENCE.md:190-191`). Option taken: due watched rechecks wait for 20, and a batch that never fills is sent 24 hours after its due time (`LISTING_LIFECYCLE_WATCHED_MAX_WAIT_HOURS`), so a lone watched listing is still refreshed, at most about every two days. Conservative on spend while never starving a user's watch.
+- **2026-09-24, w1 listing-lifecycle: recurring watched rechecks.** The card has `requestRecheck(listingIds, reason)` and daily batches, but no owner of "still watched". Option taken: each request schedules one watched recheck; the watching module asks again each day for the listings still watched. Conservative because no listing is refreshed (and paid for) after its watch ends.
+- **2026-09-24, w1 listing-lifecycle: sweeps that return nothing.** A missed sweep is counted from listing-ingest's sightings: a later search job with a shared term and centre that returned other listings. A job that returned no listing at all leaves no sighting and is not counted (run-coverage judges it degraded anyway). Option taken: count only visible sweeps. Conservative because it undercounts misses, so a listing is called `not-seen-recently` later, never sooner.
+- **2026-09-24, w1 listing-lifecycle: the cost of the missed-sweeps query.** It gathers each listing's sweep jobs from `run_coverage.v_search_coverage` (one row per search, matched to the listing's terms and centres), then checks `listing_ingest.v_sightings` per job, for at most 500 listings per pass. Option taken: no index request to listing-ingest yet; measure on the first weeks of live sweeps. Conservative because it changes no other module.
+- **2026-09-25, w1 listing-lifecycle: the dependency on run-coverage.** The card's "Depends on" lists listing-ingest and detail-evidence only, but only run-coverage knows whether a search was a complete, full-depth sweep; counting every later search as a sweep made a degraded or capped read, or a newest-first page-1 check, a miss (review of PR #57). Option taken: count only jobs judged `complete` with kind `sweep`, and no misses at all while run-coverage is off; the dependency is recorded in the module's README and `module.json`. Conservative because a listing is called `not-seen-recently` later, never sooner, and no recheck is paid for on a partial read.
+- **2026-09-24, w1 listing-lifecycle: rechecks for unresolved and marked-sold listings.** Option taken: due rechecks of an `unresolved` listing (a removed ID) are recorded as skipped; `marked-sold` listings are still rechecked when asked, because a seller can unmark a sale. Conservative on spend for removed IDs only.
+
+### Open questions — location (`docs/questions/location.md`)
+
+Same format as `docs/questions.md`: date, task, question, option taken and why. Build sessions
+append here, never to `docs/questions.md` itself (`docs/session-conventions.md`, "Questions from a
+build session"); the coordinator folds this file in at a batched push.
+
+- **2026-09-24, w1 location: does a future point-resolution helper need `v_centres`?** The card
+  lists location's inputs as "calls; `v_city_pages`, `v_centres`", but none of the three exported
+  functions (`pointForPostcode`, `distanceKm`, `townLabel`) needs a centre row: `townLabel()` only
+  needs a city page's name, and the "city page's point" fallback the card describes is resolved by
+  the *caller* of `distanceKm()`, never by this module. Option taken: this module reads only
+  `listCityPages()` (`@nabvy/city-pages`) and does not read centres. Conservative because it adds
+  no function beyond the card's three named outputs; if a caller later needs location itself to
+  resolve a city page's coordinate (rather than doing so from `@nabvy/city-pages` directly), that
+  is a new, explicit function to design, not a guess made here.
+- **2026-09-24, w1 location: `city-pages` has no `packages/db`, `packages/contracts` or
+  `packages/config` files on `main` yet, only `services/city-pages`.** Its README describes
+  `v_city_pages`/`v_centres` and the `CityPagesCityPage`/`CityPagesCentre` row types as if they
+  exist; at the point this branch was cut they did not (only the module's own package). Option
+  taken: depend on the published `@nabvy/city-pages` package function (`listCityPages`) and its
+  contracts import for types; list only `core` in `packages/db/migrations/location/module.json`'s
+  `dependsOn` (no SQL here references `city_pages.*`). If those files still do not exist by the
+  time this module's dependency graph is checked, that is a gap in an earlier wave's merge, not
+  something to fix from this branch.
+- **2026-09-24, w1 location: `docs/secrets.md` attributes `POSTCODES_IO_BASE` to "hunt-manager".**
+  That module name predates the atomic-module split (`docs/decisions.md`, "Atomic modules");
+  `location` is the module that now owns postcode resolution. Option taken: use the variable as
+  documented (its default and validation in `packages/config/src/env.ts` already work), and note
+  here that `docs/secrets.md`'s "Used by" column should be updated to `location` — a
+  `docs/secrets.md` edit is outside the files this module session may touch.
+
+### Open questions: parts-ai (`docs/questions/parts-ai.md`)
+
+- **2026-09-24, w1 parts-ai: no retry on invalid output.** The card says "one retry, then quarantine" (`docs/contracts.md`, "Model call rules"); the build brief says "no retry on invalid output". Option taken: the brief's. An output that fails the schema, or quotes text the listing does not hold, is quarantined at once under (listing, evidence hash, prompt version) and never called again at that version; a new prompt version or a new text version calls again. A call that throws (transport or provider error) writes nothing and the sweep tries it again. Conservative because at temperature 0 a retry mostly repeats the same output at the same cost, and a listing that makes the model misbehave is the one to look at, not to re-send.
+- **2026-09-24, w1 parts-ai: tables beyond the card.** The card lists `ai_parts`, `calls` and `quarantine`. Option taken: `calls` also carries how the call ended (`status`) and the listing kind the model read with its quote and position (the card gives the kind decision no column), published in a third internal view `v_runs` (no cost, no model); a fourth table `refreshes` records each partial version sent to details-queue, so it is sent once, not on every event. `ai_parts` adds `family` (the catalogue's, when it names a family but no single item) and `correction` (the reviewer's, beside the part). Conservative because nothing the model said is lost or overwritten and no paid refresh repeats.
+- **2026-09-24, w1 parts-ai: the refresh request's priority.** Partial or missing text is sent to details-queue with reason `partial-text`, lane `text`, `refresh: true` and priority `sweep`, the lowest. details-queue itself already requeues a partial fetch once. Option taken: `sweep`. Conservative because each ID sent forces a paid fetch, and the lowest priority waits behind new listings when the throttle slows sweeps.
+- **2026-09-24, w1 parts-ai: real-time and batch lanes.** The card sends in-area, in-budget containers in real time and the rest through the provider's batch API (`CONTAINER_LISTINGS.md:168-169`). No hunt or area module is built, and no Anthropic key exists. Option taken: every call is made by the batch task, one listing per request, through one injected client; the batch-API lane is a later client behind the same interface. Conservative because it spends no more than the real-time price and adds no unreviewed provider path.
+- **2026-09-24, w1 parts-ai: the spend limits.** spend-governor has no model budget (its seeded budgets are Apify's). Option taken: calls run only while the throttle reads `none` or `slow-free`, and a rolling 24-hour cap of £5 (`PARTS_AI_DAILY_SPEND_CAP_GBP_MICROS`, server time) stops a batch before a call whose worst-case price would pass it; the rest wait for the sweep. The owner may want an `anthropic` budget in spend-governor instead. Conservative because both limits stop paid work early and nothing is dropped.
+- **2026-09-24, w1 parts-ai: quotes of masked text.** The model sees a copy masked by quote-redaction; the stored text is never changed. Option taken: every quote must be found in the stored text, so a quote that includes a masked phone number or email is not found and the output is quarantined. Conservative because nothing unverified is stored; parts are rarely stated next to contact details.
+- **2026-09-24, w1 parts-ai: the cache key and the model.** The card caches by evidence hash and prompt version. Option taken: the model is not in the key, so moving to another model with the same prompt reuses stored results until the prompt changes (the prompt version is derived from the prompt text and the output schema). The model is the caller's (the client carries it); the build pack's default is Haiku 4.5, to be confirmed by fixture accuracy once a key exists. Conservative because it never pays twice for one version.
+- **2026-09-24, w1 parts-ai: the sweep's schedule.** `sweep()` picks up deferred, failed and never-announced versions (up to 500). No Trigger.dev account exists, so no task file calls it yet. Option taken: exported and tested; the thin scheduled task is added with the Trigger.dev tasks. Conservative because deferred work stays visible (no call row) and is never dropped.
+
+### Questions: schedules (`docs/questions/schedules.md`)
+
+Entries in the format of `docs/questions.md`; the coordinator folds them in at a batched push. The 1.2m entries were folded on 2026-09-24 (PR #58); only the 4.3r entry below is new.
+
+- **2026-09-24, 4.3r schedules: same two decisions, for the account purge sweep.** `docs/backlog.md`
+  0.12 (added after 1.2m merged) enables `pg_cron` for partition rotation and notes it as "also the
+  natural home for the schedules in 1.2m and 4.3r if those sessions choose `pg_cron` over
+  Trigger.dev" — but 0.12 had not merged when this session started, so no `cron.schedule` precedent
+  existed yet, and 1.2m had already picked Trigger.dev. Option taken: `account-purge-schedule.ts`
+  follows the same shape as `spend-governor-recompute.ts` for consistency — `schedules.task` calling
+  `purgeDueDeletions` directly every 15 minutes, added to the now-existing `@nabvy/trigger` package
+  (no further workspace changes needed) — and does not publish the `account.deleted` events the
+  function returns, for the same reason (no consumer task, no `TriggerClient` adapter yet).
+  Follow-up, if 0.12 lands: moving either schedule to `pg_cron` is a migration plus deleting the
+  task file, not a redesign.
+
+### Open questions: source-health (`docs/questions/source-health.md`)
+
+- **2026-09-24, w1 source-health: ramp hold time.** The card gives a range, "steps of 24-48 hours", not a fixed value. Option taken: 48 hours (the slower end) at every stage, a starting value in `packages/config/src/modules/source-health.ts`. Conservative because a slower ramp risks less against a Facebook block than a faster one; nothing in the cited sources argues for the shorter end.
+- **2026-09-24, w1 source-health: ramp stage volume caps.** The cited sources (`fb-scrap-engine/docs/design/SCALE_PLAN.md:90-93,111-115`) describe the ramp mechanism but give no per-stage volume figures. Option taken: five stages (50, 100, 200, 400, 800 checks/day), each a starting value pending calibration against real runs (rule 14 of `docs/design/modules/_rules.md`).
+- **2026-09-24, w1 source-health: what counts as a "seller block" page.** Apify-gateway's `v_seller_presence` reports only whether a row has a seller object, with no page field (`fb-scrap-engine/docs/design/SELLER_DATA.md:38-41`). Option taken: rows are grouped into fixed-size pages of `SOURCE_HEALTH_PAGE_SIZE` (20, the recorded run's own page size) in collection order, and a page counts as a block page when any of its rows lack a seller object. Conservative because it flags a page on the weaker evidence (one missing seller) rather than requiring every row on the page to be missing one.
+- **2026-09-24, w1 source-health: counting "breaker trips".** Route-health's `v_decisions` (`docs/design/modules/route-health.md`) holds only each region's current decision, not a history of transitions, and source-health consumes no route-health event. Option taken: source-health counts one trip per distinct `apify-gateway.run-collected` job (deduped by job ID in `health_daily.processed_job_ids`) whose region decision reads `circuit-open` at the time this module processes that job, which can count a circuit that stays open across several runs more than once. Conservative because it never undercounts evidence of trouble, and the card's own alert basis is a threshold on degraded searches, not on this count, so overcounting here does not itself trigger an alert.
+- **2026-09-24, PR #63 round 2: new operation IDs come from route-health's current decision, not a table of IDs already seen.** The review (finding 5, non-blocking) noted that `v_decisions.new_query_ids` is route-health's last per-region decision, so the same IDs can alert again on a later day, a second new ID on the same day never alerts (the reason fires once per day), and the read can race route-health's own write since both consume `run-collected`. Option taken: left as in round 1 and recorded here, because the fix the review sketches (a `seen_operation_ids` table and a per-ID event) is a new table and a widened contract beyond the card's "Owns" and "Outputs" lines, which this fix round does not change on its own. Conservative because the current rule over-alerts (an ID can alert twice) rather than under-alerts, and an alert never switches anything off (the card: "never switches a provider off itself").
+- **2026-09-24, PR #63 round 2: `SourceHealthDay` and `SourceHealthRampStage` are hand-written Zod in contracts, not derived from the views.** Rule 3 of the catalogue derives view row types with `drizzle-zod`; it is not a dependency yet, and route-health and run-coverage hand-write theirs the same way (review finding 7). `pct_degraded` is `numeric(5,4)` in the view and `number` in the contract: the repo converts with `Number()` on read, and the contract's `min(0).max(1)` is the bound that matters to a reader. Option taken: leave the two hand-written types until `drizzle-zod` is adopted for every module at once (a coordinator decision, not one module's), so no module derives while its neighbours hand-write.
+
+### Open questions — subscriptions module (`docs/questions/subscriptions.md`)
+
+Same format as `docs/questions.md` (date, task, question, option taken and why), kept in its own
+file per module so parallel build sessions never conflict. The coordinator folds these into
+`docs/questions.md` at a check-in.
+
+- **2026-09-24, subscriptions: Stripe test-mode keys missing.** `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and the `STRIPE_PRICE_*` variables (`docs/secrets.md`) have not been supplied. Option taken: built and tested against synthetic webhook events in Stripe's documented shapes (`services/subscriptions/test/fixtures/stripe/`) and signatures made with the Stripe SDK's test helper, with no network call. Conservative because nothing reaches Stripe; the owner supplies test keys, and the fixtures are replaced with `stripe listen` captures.
+- **2026-09-24, subscriptions: plan price variables are the old ladder's.** `docs/secrets.md` and the `stripe` env group list `STRIPE_PRICE_STANDARD_*`, `_PRO_*`, `_BUSINESS_*`, while the paid ladder of 17:35 is Starter, Pro, Max and Business with every value a pricing-console policy row. Option taken: plan price IDs come from the ladder policy rows (`SubscriptionsLadderPlan.stripePriceId`, `stripeAnnualPriceId`), never from env or code; only the top-up packs (`STRIPE_PRICE_TOPUP_5/10/25`) and the extra area (`STRIPE_PRICE_EXTRA_AREA`) are read from config. `subscriptionsStripeFromEnv` still loads the whole `stripe` group, so the obsolete plan variables must be set (to anything) until `docs/secrets.md` and `packages/config` drop them. Conservative because no price is fixed in code or env ahead of the owner's confirmation.
+- **2026-09-24, subscriptions: nothing on sale until pricing-console merges.** The ladder policy's stub has no rows. Option taken: Checkout is refused (`subscriptions.no_policy`), Free uses a documented fallback (1 area, 1 want, Telegram or email) in `packages/config/src/modules/subscriptions.ts`, and a Stripe subscription naming a plan fails as `unknown_plan` for ops. Conservative because nothing is sold at a guessed value.
+- **2026-09-24, subscriptions: mounting the Stripe plugin.** `createAuth` (`services/auth`) takes no extra plugins, and auth mounting a subscriptions export would make auth depend on subscriptions, which depends on auth. Option taken: this module exports `stripePluginOptions(deps)` and `createStripeWebhookRoute(...)`; a follow-up in `auth` lets `createAuth` accept extra plugins, and apps/web passes `stripe(stripePluginOptions(...))` and mounts the webhook route at `/api/auth/stripe/webhook`. Conservative because no file outside the module changes; until then no Checkout can open.
+- **2026-09-24, subscriptions: webhooks while the module is off.** Rule 11 says an off module writes nothing, but dropping Stripe events while off would lose renewals and cancellations Stripe will not resend after its retry window. Option taken: webhooks keep recording and applying while off; only Checkout and the allowance sweep stop (the card: "no Checkout starts; entitlements already granted stay"). Conservative because no payment or cancellation is lost; the same call usage-ledger made for grants.
+- **2026-09-24, subscriptions: the "Start my plan now" wording.** User-facing wording is not the session's to set; `docs/policies/refunds-and-cancellation.md` describes the tick but gives no label. Option taken: the owner's own words, "Start my plan now" and "Payments are non-refundable, except where required by law.", in `SUBSCRIPTIONS_CHECKOUT_WORDING`, shown as Stripe Checkout's required terms tick (`consent_collection.terms_of_service = required`). Stripe needs a terms of service URL set in the dashboard for that tick (human task). The refusal messages in `SUBSCRIPTIONS_MESSAGES` are placeholders too.
+- **2026-09-24, subscriptions: consent kept after account deletion.** Rule 12 says user rows are purged within 24 hours of `account.deleted`, but the owner wants chargebacks answered with the stored consent, and payment records are usually kept for tax. Option taken: the entitlement is purged; `billing_events` (consent, signals) and the Stripe customer link are kept. Needs the owner's call and possibly a line in `docs/legal-review.md` (not added from a module branch).
+- **2026-09-24, subscriptions: allowance on upgrade and during a trial.** The ladder does not say whether an upgrade mid-period grants the new plan's bundle at once, or whether a trial gets a bundle. Option taken: only first and renewal invoices that took money grant a bundle; an upgrade's proration invoice and a £0 trial invoice grant nothing (the new bundle starts at the next renewal). Conservative because no credit is granted that no payment funded. The trial's £3 bonus (`taste`) is not granted here yet.
+- **2026-09-24, subscriptions: no Free monthly grant.** The card says the Free included grant is written here too, but "Free tier: bursts under a lifetime cap" (16:50) replaced the Free £0.50 monthly allowance with bursts. Option taken: no Free grant. Conservative because it grants no credit the later decision removed; easy to add as a sweep over account's users if the owner wants it.
+- **2026-09-24, subscriptions: entitlements copy the policy.** Limits are copied from the ladder row (with its version) when a Stripe event arrives, so a later policy change reaches existing subscribers at their next event. Option taken: copy with version. A `rederive` sweep on a `pricing-console` change event can follow once that module defines its event.
+- **2026-09-24, subscriptions: trial check through Stripe.** The card's `accountIntegrity.checkTrialKeys(userId)` ends a matching trial with `trial_end: 'now'`. Option taken: an injected `TrialEligibility`, allowed when account-integrity is absent or off (`trialEligibilityWithSwitch`), called on `customer.subscription.created` in trial; a refusal calls Stripe through the injected port. Stripe keeps its own one-trial-per-customer check through the plugin.
+- **2026-09-24, subscriptions: lifetime design partners.** `docs/billing.md` treats design partners as lifetime Pro set by an admin with an audit row. Option taken: not built (no brief item); it would be an audited admin function writing an entitlement without a Stripe event, the only such path.
+- **2026-09-24, subscriptions: plan changes skip the Checkout gate.** Better Auth's `upgradeSubscription` updates an existing paid subscription in place (proration, no Checkout), so the plugin's `getCheckoutSessionParams`, where this module enforces the switch and the tick, is not called. Option taken: procedures call `startCheckout` (switch, standing, tick) before `upgradeSubscription` in every case; standing is also enforced by auth's session revocation. A `hooks.before` guard on `/subscription/upgrade` in the auth instance would close the direct path; that is auth's configuration, listed with the mounting follow-up.
+- **2026-09-24, subscriptions: noisy failure events (review of PR #54, findings 5 and 6).** Every unverified body publishes `webhook-failed` (`signature`), and an invoice that beats its subscription event fails as `out_of_order` until Stripe retries, which also alerts. Option taken: kept as built (every failure is visible); `ops-alerts` should alert on counts and on repeats of one event ID rather than on each event. Rate limiting the webhook route belongs to the edge (Cloudflare rules).
+- **2026-09-24, subscriptions: Stripe customer at sign-up (review of PR #54, finding 8).** `createCustomerOnSignUp: true` (from `docs/billing.md`) sends every Free user's email to Stripe. Option taken: kept, as `docs/billing.md` specifies it; creating the customer at the first Checkout would send less. Owner's call (data minimisation).
+- **2026-09-24, subscriptions: `customers` table not on the card (review of PR #54, finding 9).** The module owns a third table (Stripe customer → user). The card's "Owns" line should list it at the next catalogue edit (coordinator).
+- **2026-09-24, subscriptions: webhook endpoint events and delayed payment methods (review of PR #54, round 2).** The Stripe webhook endpoint must be subscribed, in the Stripe dashboard, to every event type the README's "Inputs" lists, including `checkout.session.async_payment_succeeded`; without it a top-up paid by a delayed method (Bacs Direct Debit, bank transfer) completes `unpaid` and is never credited. Option taken: the list is in the README and this is recorded as an owner's dashboard step (with the terms of service URL). `startTopup` does not pin `payment_method_types: ['card']`, because which methods are offered is a product decision; the code credits a delayed payment only when `async_payment_succeeded` arrives. Conservative because no credit is granted before payment either way.
+
+## Open with the owner (coordinator 14, 2026-09-25)
+
+- **2026-09-25, coordinator 14: photo-review is READY on the graph but gated.** `scripts/sweep.mjs` shows `photo-review` [cp 2] ready once want-manager #88 is open, but its card says the phase is gated on actor photo capture, a photo model provider and an AI processor agreement (`docs/design/modules/photo-review.md`, "Priority and phase"), none of which exist yet; parts-record already carries the injected seam. Option taken: not started; the next coordinator starts it when the owner names the photo model provider, or says to build it against injected seams now. Conservative because a session for a module that cannot run spends tokens the owner asked to save.
+
+- **2026-09-25, coordinator 14: labels for distance and rough time.** With trip cost dropped, a listing shows the map, the distance in miles and a rough time. Option taken: the wording of those two labels (for example "12 mi" and "about 25 min") and whether the time is straight-line-derived until the router host is approved are for the owner; until then modules record the numbers and no label text. Conservative because wording shown to users is the owner's. **Answered by the owner at 20:25 on 2026-09-25:** `docs/decisions.md`, "Card location line and the map view".
+
+## Folded from the per-module question files (coordinator 14, 2026-09-25, 16:10 UTC)
+
+### parts-record (PR #87, merged)
+
+- **2026-09-25, w2 parts-record: the photo-review seam (soft edge).** The card's inputs include
+  `photo-review.reviewed` and `v_verdicts`; photo-review does not exist yet
+  (`docs/design/modules/soft-edges.json`). Option taken: `record()` takes an injected
+  `photoVerdicts` function over the batch's listing versions, typed by `PartsRecordPhotoVerdict`
+  (part type, catalogue ID or brand-only, the photo ID as the quote, a photo-review version); the
+  default returns none, so `photo_version` stays null and no photo part exists. When photo-review
+  ships it supplies the function over its `v_verdicts` and its `reviewed` event calls `record()`.
+  Conservative because a photo never read is "not stated", never "no", and nothing is invented.
+- **2026-09-25, w2 parts-record: the kind's values.** The card names the kinds as a standalone
+  part, a desktop PC, a laptop, or a wanted or swap advert; parts-rules and parts-ai settle
+  `wanted_or_swap`, `laptop`, `pc` or `not_a_pc`, and the brief says derive, never retype. Option
+  taken: `PartsRecordKind` is `PartsRulesKind`; a standalone part (a card sold alone) is not
+  told apart from `not_a_pc` until an input states it. Conservative because inventing a fifth
+  value with no extractor behind it would leave it always empty.
+- **2026-09-25, w2 parts-record: parts the inputs do not extract.** The card lists cooler, case
+  and extras among the parts; no input names them (parts-rules' eight part types are GPU, CPU,
+  RAM size and generation, storage size and type, PSU wattage and chipset). Option taken: the
+  record's part types are the rules' (`PartsRecordPartType` is `PartsRulesPartType`); extras
+  that "come with" the PC and accessories "not included" leave no row (the `inclusion-cases`
+  fixture shows it). Conservative because a row for a part nobody extracted would be a guess.
+- **2026-09-25, w2 parts-record: `v_items` is read for families only.** The card lists `v_items`
+  as an input without saying what for. Option taken: the family of each resolved catalogue ID,
+  used to tell "RTX 3080" (unresolved, family only) from "RTX 3080 10GB" (resolved) as one card
+  and "RTX 3080 Ti" as another; nothing else is read from it, and with product-catalogue off no
+  conflict is flagged. Conservative because the record never drops or alters a catalogue ID on
+  the catalogue's account.
+- **2026-09-25, w2 parts-record: what conflicts.** The card records a conflict "when rules and AI
+  disagree". Option taken: among offered parts of one type, different catalogue families or IDs,
+  or different RAM, PSU or chipset values, from any pair of extractors (the rules against
+  themselves too); storage never conflicts, since a PC holds several drives; mentions,
+  not-included and brand-only rows never conflict. The recorded run has 0 conflicts. Conservative
+  because a flag is a fact for readers, never a decision.
+- **2026-09-25, w2 parts-record: no deduplication.** A part named twice (by the rules in title
+  and description, or by the rules and the model) is two rows. Option taken: keep every row with
+  its own quote and position; readers group by part type and catalogue ID. Conservative because
+  the record is the evidence; merging rows would hide which extractor said what.
+
+- **2026-09-25, w2 listing-assessment: the form's values.** The card lists `form` among the
+  assessment's columns without values, and the listing kind (PC, laptop, wanted or swap, not a
+  PC) is parts-record's. Option taken: `ListingAssessmentForm` is `system`, `bundle` (a system
+  with extras, or a bundle title word), `part` (not a container, with an offered part),
+  `box_only` and `unknown`; nothing about laptops or wanted adverts is repeated here. Conservative
+  because it adds no second owner of the kind and every value rests on a stated rule.
+- **2026-09-25, w2 listing-assessment: a PC kind with fewer than two parts.** R1 makes a listing a
+  container when two of CPU, RAM and storage are named "or when the rules cannot place it". A
+  listing parts-record calls a `pc` with fewer named parts (5 in the recorded run, for example
+  "Gaming pc and curved Samsung monitor" with its specs "in video") is neither. Option taken:
+  such a listing is a container (`container_reason = 'kind'`), and one with an open kind is too
+  (`unplaced`). Conservative because treating a PC as a container keeps its GPU "not stated" and
+  its parts askable, where "not a container" would drop it from part searches.
+- **2026-09-25, w2 listing-assessment: bundle extras and the bundle-price caution.** R1c names
+  bundle extras and a "bundle price" caution without a list. Option taken: monitor, keyboard,
+  mouse, mouse pad, headset, speakers, desk, chair, webcam and microphone, read in the title and
+  the full description of containers only, and left out when optional, extra-cost or not
+  included (config `extras`, `extraDemoters`); any included extra sets `bundle_price` and form
+  `bundle`. The caution's wording shown to users is the owner's (question for `spec-match`).
+  Conservative because an optional extra never marks the ask as covering it.
+- **2026-09-25, w2 listing-assessment: stated integrated graphics only.** `gpu_state` has an
+  `integrated` value; a CPU with integrated graphics (a "G" Ryzen) could imply it. Option taken:
+  `integrated` only when the text says so ("integrated graphics", "onboard graphics", "Intel UHD
+  Graphics" and the like); a CPU model never implies it. Conservative because no fact is inferred
+  that the listing does not state.
+- **2026-09-25, w2 listing-assessment: when a photo-only GPU is `in_photos`.** parts-record's
+  photo seam may give a brand-only GPU verdict (no catalogue ID). Option taken: any offered photo
+  GPU with no text GPU gives `in_photos` and the `photo_only` caution; a photo part is never
+  confirmed (R5 needs a verbatim text quote). Conservative because photo evidence is shown as
+  such and never as a confirmed part.
+
+- **Task w2 pickup-location, gazetteer.** The card's "When off" and the listing-location draft rest on `location.nearestDisplayPlace()`, `pointForCityPage()`, `landmassFor()` and a UK gazetteer (postcode districts, OS Open Names), none of which `location` has. Option taken: the gazetteer is `city_pages.v_city_pages` (page names before the comma, and towns, all at the page's point), with a first-word alias for two-word names; `area_landmass` and `uncertainty_km` stay null; a page without a point (Chichester in the seed) gives an approximate `field_only` row that the user-facing view leaves out for want of a point. Conservative: nothing finer than a city page is ever shown, and no listing is placed without a gazetteer point. When `location` gains the gazetteer, this module swaps `buildGazetteer()`'s source and keeps its views.
+- **Task w2 pickup-location, "conflict" versus `conflicting`.** The card's Bognor case wants a conflict; the draft's row 4 gives a place 10–25 km away no flag. Option taken: `conflict` is true for any recorded disagreement (beyond `agreeKm`, or another page when no distance can be measured), while the `conflicting` status needs a strong place beyond `conflictKm`. Conservative for "too good to be true": the flag is available; the status that marks a listing approximate and moves it on the map needs the stronger evidence.
+- **Task w2 pickup-location, tables not built.** `page_stats` (for `search-planner`, soft), `ai_calls` and `quarantine` (the AI lane) are left out; `ai_queue` records what the lane would process. Option taken because the lane is off with `parts-ai` (question 12) and `search-planner` is later; adding them empty would fix columns nobody reads yet.
+- **Task w2 pickup-location, soft inputs not read.** `parts_rules.v_tag_blocks` and product-catalogue's alias view (for a generated stop-list) are not read: this module skips hashtag lines with its own rule and carries a fixed 23-word stop-list. Conservative: a keyword-stuffed line never yields a place; a common word never yields one without a cue. The seam: `STOP_LIST` and `tagBlockRanges()` in `src/domain/index.ts`.
+- **Task w2 pickup-location, distance rounding.** Every distance comes from `location.distanceKm()`, which rounds to 5 km, so `agreeKm` 10 means a raw distance under 12.5 km and `conflictKm` 25 means 27.5 km or more. Option taken rather than computing a distance here (the card: "computes no distance"). If the owner wants exact thresholds, `location` would export an unrounded distance.
+- **Task w2 pickup-location, owner wording.** Every `note_code` (`description_says_collection_from`, `listed_in`, `description_names_other_pickup`, `description_delivers_elsewhere`, `pickup_place_not_stated`), the "approximate" mark and the status names need the owner's wording before the switch goes `on` (draft §10). Only codes cross the boundary.
+- **Task w2 pickup-location, the town-label fallback while off.** Option taken: `pointsFor()` snaps listing-ingest's town label to its city page's point (the page name's place, or the page itself) and marks it approximate; a listing whose page has no point is missing from the result (distance unknown), never placed at the listing's own coordinates. The card's "snapped to its gazetteer centroid" is the same rule with the gazetteer above.
+- **Task w2 pickup-location, row 5a (outdated description).** Not built: it needs the earlier field point of the same listing across versions, and `detail-evidence.location-moved` (draft §7.8) does not exist. A moved field with unchanged text resolves like any other version.
+- **Legal points listed, not reviewed** (`docs/legal-review.md`): storing full postcodes from descriptions in `candidates.value` (internal only); showing a description-derived area to users; a location conflict as a "too good to be true" input.
+
+- **2026-09-25, want-manager (w2): `FeedFilter` is `listing-search`'s, not built.** The card
+  stores `filter: FeedFilter`, "the saved search-map-routes filter that 'Save as hunt' writes",
+  and `listing-search` owns that contract; the edge is soft (`docs/design/modules/soft-edges.json`).
+  Option taken: `WantManagerFeedFilter` in this module's contracts file is a bounded placeholder
+  (query, sort, price band, handover, condition; every field optional, every size capped), stored
+  as JSONB in `wants.filter`. When `listing-search` lands, its `FeedFilter` replaces the placeholder
+  without a column change. Conservative because nothing computes from the filter yet, and an
+  unbounded JSON column would fail the "every input is bounded" self-check.
+- **2026-09-25, want-manager (w2): the search preview is a stub.** The card wants the want
+  screen to say how many current deals a want would match; that is `listing-search`'s query. Option
+  taken: `previewWant()` takes an injected `searchPreview` port whose documented stub
+  (`noSearchPreview`) answers `null`, and `WantManagerPreview.matchingDeals` is nullable so the
+  screen shows no count rather than an invented one. The estimate procedure the cadence slider
+  expects (`WantManagerCadenceEstimate`, credits per month, run-out date) is not built either: its
+  numbers come from spend-governor's credit prices, which are the owner's, so the web app keeps
+  passing `null` as it does today. Conservative because it shows nothing rather than a guess
+  (CLAUDE.md, "No invented numbers").
+- **2026-09-25, want-manager (w2): the Free want limit is 3 in the card but 1 in
+  `subscriptions`' fallback.** The card and `docs/decisions.md` ("Free-tier limits: 3 active
+  hunts") say 3 while `subscriptions` is off; `subscriptions`' own Free fallback
+  (`SUBSCRIPTIONS_FREE_FALLBACK.wants`, used while pricing-console has no `free` row) is 1. Option
+  taken: with `subscriptions` off, the card's 3 (`WANT_MANAGER_FREE_ACTIVE_WANT_LIMIT`); with it on
+  or in shadow, whatever `getEntitlement()` returns, so today a free user gets 1 until the
+  pricing-console ladder carries a `free` row. Conservative because the live number always comes
+  from the module that owns entitlements, never retyped here, and the smaller limit applies while
+  billing runs.
+- **2026-09-25, want-manager (w2): per-want alternative controls live on `wants`.** The card
+  flags the conflict: the alternative controls are drafted per hunt, but `preferences` is keyed by
+  user. Option taken: `wants` carries `alternatives`, `pc_containment`,
+  `alternatives_max_price_minor`, `instant_alternatives` and `instant_top_picks` with the card's
+  defaults; `preferences` keeps only the per-user hide flags, channels and quiet hours. Conservative
+  because it is the shape the card's own text describes and adds no second per-want table.
+- **2026-09-25, want-manager (w2): defaults shown to users.** Product choices this module had to
+  pick a value for, all recorded as starting values: the want form's starting cadence is 15 minutes
+  (`WANT_MANAGER_DEFAULT_CADENCE_SECONDS`, the middle of the ladder and cheaper than the card's
+  5-minute example; the module never sets it, the form does); a user with no preferences row hides
+  noise and likely spam and shows multi-quantity listings, with no channels chosen; the radius input
+  is bounded at 1 000 km (the user "sets it freely", but every input is bounded) and shown in miles
+  by the web app; the error messages in `services/want-manager/src/index.ts` are placeholders for
+  the owner's wording. Conservative because each hides or costs less.
+- **2026-09-25, want-manager (w2): who reads a want's owner.** No internal view carries a user ID
+  (card, "Views"), yet `alert-router` and `notifier` must deliver a match to its owner. Option
+  taken: an exported pipeline function `wantOwners(q, wantIds)` (at most 500 IDs, inside
+  `withPipeline`) rather than a view. Conservative because the read is explicit, batched and
+  auditable in code, and the views stay free of user IDs.
+- **2026-09-25, want-manager (w2): the user-facing view lives in `want_manager`, not `app`.**
+  No `app` schema exists on `main` yet (the gap `services/listing-feedback/README.md` records).
+  Option taken: `want_manager.v_want_manager_wants`, moved to `app.v_want_manager_wants` once the
+  web app's oRPC layer creates `app`.
+
+### Folded from docs/questions/L1-web.md (sweep 04:38, 2026-09-26)
+
+Same format as `docs/questions.md` (date, task, question, option taken and why), kept in its own
+file per the L1 web build session so it never conflicts with a parallel session. The coordinator
+folds these into `docs/questions.md` at a check-in.
+
+- **2026-09-25, L1 web: `listing-card` (PR #81) and `prepared-message`/`price-drop-watch`
+  (PR #70) had not merged.** The task text says to build against the documented view/shape and
+  note it if they are not merged by the time this session ran; none had. Option taken:
+  `apps/web/src/rpc/procedures/feed.ts` and `listing.ts` read `app.v_listing_card` directly by its
+  documented column list (`services/listing-card/README.md`, "Outputs") rather than call
+  `cardsFor()`, which does not exist as an importable package yet; `getPreparedMessage`,
+  `getWatch`, `watchListing` and `unwatchListing` are stubs behind the same procedure shapes
+  `build()`/`watch()`/`unwatch()` will have, returning `null`/`available: false` rather than a
+  fabricated message or a watch this session cannot honestly keep. Conservative because nothing
+  is invented in the modules' place; each stub is commented with what to swap in once the real
+  package merges.
+- **2026-09-25, L1 web: `app.v_listing_card` has no migration on this branch either.** Not just
+  the module package — the view itself does not exist in the database, since listing-card's own
+  migration has not merged. A bare `select` from it would throw `relation ... does not exist`
+  (Postgres `42P01`) on every real request once this ships against the production database. The
+  task text says not to write a migration from this task, and to say why and stop that part if
+  one seems needed. Option taken: `feed.ts`'s `selectListingCards()` catches exactly that error
+  code and returns an empty result, so the feed and the listing page degrade to "nothing yet"
+  rather than a 500. This is not a migration — it is why one is not written here. Once
+  listing-card's migration lands, this catch becomes dead code and can be removed along with the
+  raw query.
+- **2026-09-25, L1 web: no `spec-match` module exists.** The results feed is supposed to be "the
+  listings that match a user's wants"; nothing in the merged waves computes that match
+  (`spec-match` is catalogue wave 9, depending on several modules this push did merge, but is not
+  itself built). Option taken: the feed shows every listing card currently visible, newest first,
+  capped at 50 (CLAUDE.md, "Batches, not items"), with no per-want filtering and no "why this
+  reached you" reason (`Deal.matchReason` reads the honest "New listing", never a fabricated
+  match). The `DealQuery.huntId` and `.lowAsksOnly` filters were removed from the deals page for
+  the same reason: neither hunt-matching nor asking-price position exists to filter on. Search
+  by title text is the only filter kept. Conservative because it shows real listings with no
+  invented relevance.
+- **2026-09-25, L1 web: no distance or rough time.** The task text says the feed shows
+  pickup-location's "area, distance and rough time as numbers only". `pickup-location` gives the
+  area; neither `location`'s user-origin distance nor `travel-time`/`router-gateway` (both
+  separate, unbuilt modules) gives a distance or a time from the signed-in user's own position.
+  Option taken: `ListingSummary.distanceKm` is `number | null`, and every screen that showed it
+  now shows nothing when it is null, rather than a straight-line guess presented as a real
+  distance (CLAUDE.md, "No invented numbers"). `formatDistance()` returns `null` for a null input.
+- **2026-09-25, L1 web: no `asking-price-index`, `warning-signs` or `suspected-labels`.** The
+  existing `DealPage`/`DealCard` fixtures rendered an asking-price position, suspected labels and
+  warning signs unconditionally; none of those three modules is built. Option taken: `Deal.position`
+  is `PricePosition | null`; the "Asking-price position" card and its compact equivalent on
+  `DealCard` render only when it is not null. `suspicions`/`warnings` are real empty arrays (their
+  own cards already hid when empty, so no code change was needed there) — read as "not evaluated
+  yet", never as "checked and found clean", since no rule ran. `priceChanges` similarly comes only
+  from price-drop-watch's own single-listing history (currently always empty, from the stub
+  above), never a fabricated multi-point series.
+- **2026-09-25, L1 web: no bought/sold capture module.** `MarkBought` and `DealFeedback` on the
+  deal page had no backing writer (a later, unbuilt module) and are not named in the L1 task text.
+  Option taken: removed from `DealPage` for this task rather than left as working-looking UI that
+  saves nothing; `deal-actions.tsx`'s components are untouched for whichever task wires them.
+- **2026-09-25, L1 web: no writer for a spend-governor budget's limit.** The task text names
+  "spend caps (services/spend-governor policy rows)" under admin. `@nabvy/spend-governor` exports
+  `readBudgets`/`readAdvice` (read-only) and `recompute()` (pipeline-driven); there is no exported
+  function to change a budget's `limitMicros` from an admin action. Option taken: `/admin/switches`
+  shows budgets and advice read-only, with a line saying why there is no editor, rather than write
+  to the module's tables directly (a module boundary this task does not cross) or invent a setter
+  the module does not offer. A real admin editor needs a task on `spend-governor` itself.
+- **2026-09-25, L1 web: no list function on `incidents`.** The task text names "incidents
+  (services/incidents)" under admin. `@nabvy/incidents` exports `record()` (pipeline-only) and
+  `retry(db, incidentId)`; there is no function to list open incidents. Option taken: the admin
+  incidents card is a "retry by ID" form (an admin who has the ID from logs), not a queue table.
+  A real incidents console needs a list export from `incidents` first.
+- **2026-09-25, L1 web: Turnstile is required even for the local run.** `docs/decisions.md`
+  ("Local single-user run first") lists the `.env.local` variables the local run needs and does
+  not include `TURNSTILE_SITE_KEY`/`TURNSTILE_SECRET_KEY`; `services/auth`'s captcha plugin
+  refuses `/sign-in/magic-link` with no `x-captcha-response` token regardless. Option taken: kept
+  Turnstile required (never weakened the captcha check to make the local run easier), and the
+  sign-in page shows a plain message instead of the widget when the keys are absent
+  (`safeLoadEnv`, never a crash). The owner needs to add both keys to `.env.local` for sign-in to
+  work locally; Cloudflare publishes fixed "always passes" test keys
+  (`1x00000000000000000000AA` / `1x0000000000000000000000000000000AA`) for exactly this kind of
+  local, non-production use, if real keys are not wanted yet. `docs/local-run.md` (task L3) should
+  list whichever the owner chooses.
+- **2026-09-25, L1 web: the local run's magic-link sender.** The task text says the link is
+  printed to the server terminal when no email provider is configured, but `@nabvy/auth`'s own
+  `createAuthFromEnv()` always sends through Resend and requires `RESEND_API_KEY`. Option taken:
+  `apps/web/src/app/api/auth/[...all]/route.ts` builds its own `Auth` instance with `createAuth()`
+  (exported by `@nabvy/auth` for exactly this), passing a terminal-printing sender when
+  `RESEND_API_KEY`/`RESEND_WEBHOOK_SECRET` are unset and `createResendMagicLinkSender` otherwise —
+  entirely inside apps/web's own file, never inside `services/auth` (a module session edits only
+  its own folder).
+- **2026-09-25, L1 web: a want has no name, category or stored postcode.** `HuntForm`'s existing
+  fields (name, category, postcode district) do not exist on `WantManagerWant`/
+  `WantManagerUpsertWantInput`; the postcode is deliberately never stored
+  (`services/want-manager/README.md`). Option taken: dropped the name and category inputs (a
+  want's display name is derived from its criteria); the postcode input stays but is asked for
+  again on every save, including edits, since there is nothing to prefill; `HuntCard`'s location
+  line shows the resolved `centreId` instead of a postcode district. Whether a want should carry
+  its own display name, and whether prefilling the postcode on edit is worth storing something
+  for, are product decisions, not this session's to make.
+- **2026-09-25, L1 web: per-hunt alert channels don't exist; alert preferences are account-wide.**
+  `HuntForm`'s "Send alerts to" checkboxes had no matching field on a want (`want-manager`'s
+  channels live on `preferences`, one row per user, not per want). Option taken: removed the
+  per-hunt checkboxes, added a note linking to Preferences, and added a new "Alerts" section on
+  the Preferences page wired to `want-manager`'s real `getPreferences`/`setPreferences` (channels,
+  hide-noise, hide-spam, hide-multi-quantity). The marketing preferences section on that page
+  (`marketing-consent`'s digest day and list) is untouched, out of this task's scope.
+- **2026-09-25, L1 web: `Account.postcodeDistrict` has no backing field.** `@nabvy/account`'s
+  profile stores `displayName`, `analyticsConsent` and `designPartner` only — no location.
+  Option taken: renamed to `homeArea: string | null` and the account page hides that row when
+  null, rather than show a postcode this module never asked for or stored.
+- **2026-09-25, L1 web: `deliverySpeed`, `alternatives`, `pcContainment`, `instantAlternatives`
+  and `instantTopPicks` have no UI control yet.** `HuntForm` collects a subset of a want's fields;
+  these five have no screen designed for them. Option taken: fixed, conservative defaults on every
+  save (`batched_15`, `off`, `false`, `null`, `false`, `false`) until a screen exists for them.
+- **2026-09-25, L1 web: the pre-existing screenshot suite (`e2e/screens.spec.ts`,
+  `interaction.spec.ts`) is now silently testing the sign-in redirect, not the screen.** Those
+  specs navigate to `/app`, `/app/deals`, `/app/deal/d-1002`, `/app/hunts`, `/app/hunts/h-1`,
+  `/app/account` and `/app/account/preferences` with no session; task L1 added a real signed-in
+  gate to those pages (`lib/session.ts`), so an unauthenticated run now redirects to `/sign-in`
+  before the intended screen renders. The tests still pass (a 200 response, a visible `<h1>`, and
+  the copy rules hold trivially on the sign-in page's own text), so this is not a CI failure, but
+  the named screens' screenshots and copy checks are not actually exercised any more. Fixing this
+  needs those specs to sign in for real (this task's own `e2e/l1.spec.ts` shows one way to), which
+  is a larger, separate change to test infrastructure the L1 task did not ask for. Flagged here
+  rather than silently left for someone to notice later.
+- **2026-09-25, L1 web: `e2e/l1.spec.ts` needs a migrated Postgres to run for real.** Written and
+  confirmed to load and plan correctly (`playwright test --project=desktop-light` lists all five
+  tests), following `e2e/admin-gate.spec.ts`'s own convention of skipping its signed-in cases with
+  no `DATABASE_URL`/`DATABASE_URL_PIPELINE` pointing at a migrated database. This sandbox has
+  neither a Postgres server nor Docker, so the signed-in cases could not be run end to end here;
+  CI's migration dry-run job (the same one `admin-gate.spec.ts` already depends on) is where they
+  run for real.
+
+### Folded from docs/questions/asking-price-index.md (sweep 04:38, 2026-09-26)
+
+- **Task:** asking-price-index, condition when the attribute and the text disagree. **Ambiguity:**
+  the card says "the lower condition" but the text only says "used", not which used grade.
+  **Option taken:** a "new" or "used, like new" attribute whose title or description says used
+  (not "never used" or "unused") is grouped as `used_good`, Facebook's generic used grade; text
+  never raises a condition. **Why conservative:** it keeps a used item out of the new group, where
+  it would pull the new median down, and the lowest grade (`used_fair`) would overstate the damage.
+- **Task:** asking-price-index, seller-key and seller-boosts (soft edges). **Ambiguity:** neither
+  module exists, so there are no seller keys and no "Promoted" marks. **Option taken:** injected
+  `IndexEvidence` with defaults that return none: every listing counts on its own account, no group
+  is marked thin, nothing is left out as promoted. The thin share is set to one third as a starting
+  value, since the brief says the share is not measured yet (SELLER_DATA.md:163-165).
+  **Why conservative:** a missing key never hides an ask; the seam is ready for the modules.
+- **Task:** asking-price-index, the worked example (PARTS_INTELLIGENCE.md:74-79). **Ambiguity:**
+  the actor repository is not in this session, so the case could not copy the brief's figures.
+  **Option taken:** a synthetic case with the example's shape (one card standalone, in PCs and in a
+  bundle) that checks grouping and `v_implied`. **Why conservative:** it tests the rule without
+  inventing the brief's numbers; the owner can swap in the real figures.
+- **Task:** asking-price-index, the band label shown to users ("RTX 3090, on its own, used, good").
+  **Ambiguity:** wording shown to users is a product decision. **Option taken:** item name, context
+  and condition only, with no "worth", "fair" or position. **Why conservative:** it states facts of
+  the group and nothing else (nabvy/docs/decisions.md:15).
+- **Task:** asking-price-index, the country of a listing. **Ambiguity:** the card names `v_centres`
+  but a listing's city page is not always a centre. **Option taken:** the country of the centre
+  whose city page the listing is on, else of the centre whose search last found it; a listing with
+  neither joins no group. **Why conservative:** no country is guessed from the currency.
+- **Task:** asking-price-index, split-half stability tolerance. **Ambiguity:** the brief asks for
+  the check (PARTS_INTELLIGENCE.md:386-388) but states no tolerance. **Option taken:** halves'
+  medians within 25% of the group median, a starting value in the config. **Why conservative:** it
+  is a test-time check only; nothing shown to users depends on it yet.
+
+### Folded from docs/questions/attribution.md (sweep 04:38, 2026-09-26)
+
+Same format as `docs/questions.md` (date, task, question, option taken and why), kept in its own
+file per module so parallel build sessions never conflict. The coordinator folds these into
+`docs/questions.md` at a check-in.
+
+- **2026-09-24, w1 attribution: wiring `trackSale`/`reverseSale` into a real Stripe caller.** The
+  card lists "Stripe invoice, chargeback and legally required refund events" as inputs, but there
+  is one Stripe webhook secret in the whole system (`docs/secrets.md`), owned by `subscriptions`,
+  and a module session may only touch its own files. Option taken: `trackSale`/`reverseSale` take
+  clean, already-resolved parameters (invoice ID, amount, dispute or refund event ID) rather than
+  parsing a raw webhook, the same way `usage-ledger.grant()` never parses Stripe either. Who calls
+  them with real data — `subscriptions`' own webhook handler once revisited, or an app-layer
+  orchestrator once `apps/web`'s oRPC layer exists — is not decided; until then these functions are
+  unreachable from a real payment. Conservative because it keeps this module decoupled and adds no
+  Stripe SDK dependency here; the alternative (a second Stripe webhook endpoint and secret) was
+  rejected as undocumented surface a module session should not invent.
+- **2026-09-24, w1 attribution: the affiliate programme's two-sided customer discount.**
+  `docs/affiliates.md`'s Terms table gives every referred user (creator-driven or peer-driven) a
+  £5 credit, plus an optional extra discount "the creator chooses to pass on". The card's own line
+  names only "referral pairs" for the £5 credit through `usage-ledger.grant()`. Option taken: this
+  module's £5 give-£5-get-£5 credit fires only for a peer's own referral code
+  (`referral_codes`/`referrals`); a Dub-driven, creator-attributed sign-up earns the creator a
+  cash commission through Dub but grants no additional credit from this module's own code (that
+  reward, if wanted, is Dub-side reward configuration). Conservative because it follows the card's
+  literal scope and never double-grants; a product decision may want the Dub-driven path to credit
+  too.
+- **2026-09-24, w1 attribution: referral credit's credits-per-£5 conversion.** No pricing-console
+  policy exists yet to convert cash to credits, the same gap `usage-ledger`'s own bundle and
+  top-up grants have. Option taken: `ATTRIBUTION_REFERRAL_CREDIT_CREDITS` (500) in
+  `packages/config/src/modules/attribution.ts`, from Starter's own net rate in
+  `docs/design/pricing-model.md` (£12 ÷ 1,200 cr ≈ 1p/credit; £5 ≈ 500 cr), a starting value
+  pending a real policy.
+- **2026-09-24, w1 attribution: an unknown referral code is dropped, not refused.** The card gives
+  no rule for a mistyped or stale referral code at sign-up. Option taken: `captureAttribution`
+  drops it silently and still captures the rest of sign-up, rather than refusing the whole call.
+  Conservative because a bad marketing parameter should never block account creation; the
+  alternative (refuse the whole capture) was rejected as too strict for a one-off marketing input.
+
+### Folded from docs/questions/details-queue.md (sweep 04:38, 2026-09-26)
+
+- **2026-09-25, 1.4h details-queue: `enqueue` places `first-seen` work by the search that found it, not by the priority the caller asks.** `details-selector` calls `enqueue()` with `priority: 'new-listing'` for every selection and no `regionId` (its README's interface), but the card's priority order puts frequent-check follow-ups before sweep follow-ups (`CONTAINER_LISTINGS.md:194-196`) and batches are one region each, and only the queue reads the sighting's job. Option taken: for `reason: 'first-seen'` with no `regionId`, each ID takes the region of its first search sighting and `new-listing` for a newest check or catch-up, `sweep` for a sweep; a caller's asked priority applies only to IDs with no search sighting, and a caller that names a region is placed as it asks. Conservative because it keeps the ordering and per-region batching PR #46 reviewed (the `newest-before-sweep` fixture) and changes no contract; the alternative, every selection at `new-listing` in the default `uk` region, would send sweep follow-ups ahead of older newest-check ones and stop `route-health` seeing per-region routes. If the selector should instead pass the shape's priority itself, that is a one-line change on its side and this placement becomes a no-op.
+
+### Folded from docs/questions/noise-filter.md (sweep 04:38, 2026-09-26)
+
+- **2026-09-25, w2 noise-filter: the reason codes.** The card names the kinds of noise (wanted,
+  swap and "I buy" adverts, service adverts, keyword stuffing, laptops, box-only listings,
+  mention-only hits) without codes. Option taken: `wanted`, `buy_in`, `swap`, `laptop`,
+  `box_only`, `mention_only`, `keyword_stuffing`, `service` (`NoiseFilterReason`). The wording
+  each code shows to users, and whether each hides a listing or only marks it, is the owner's and
+  `spec-match`'s (catalogue question 17). Conservative because the module stores codes only and
+  shows no text.
+- **2026-09-25, w2 noise-filter: which wanted words count.** parts-rules records the actor's broad
+  `wantedTitle` (swap, trade, px, part ex, need a, want, £££) as `wanted_or_swap` signals, and
+  parts-record's kind follows them. Option taken: a signal is a reason only when its quote is one
+  of the narrow words of `docs/questions.md` (2026-09-24, 0.4: wanted, WTB, looking for, want to
+  buy, I buy, we buy, I'm buying, buying your/all/any/broken, plus cash for your, sell me your);
+  "buying", "cash for" and "cash paid" only when they open the title; a swap only when it opens
+  the title or is followed by "for", and never beside a sale word (or, sale, sell, welcome,
+  considered, ono...); any signal right after "no" or "not" is dropped. The kind
+  `wanted_or_swap` alone is never a reason. Conservative because the broad words would hide
+  "no swaps" and "part exchange welcome" sales, which the card and the pack forbid (`docs/packs/gpu-pc.md:63`).
+- **2026-09-25, w2 noise-filter: description buy-in adverts.** The card counts the first 400
+  characters of the description, but also says trader boilerplate inside a priced sale is not a
+  buy-in advert, and every Facebook listing carries a price. Option taken: a description signal
+  counts only in the description's first sentence (before any `.`, `!`, `?` or line break) and
+  only when the title offers no part. Conservative because a trader's "We buy..." paragraph under
+  a product title (recorded row 11) never counts.
+- **2026-09-25, w2 noise-filter: mention-only with several search terms.** A listing found by
+  "5080" and by "gaming pc" may only mention the 5080 but still be a real PC for the second
+  search. The card's user-facing view carries reasons per listing, not per search. Option taken:
+  `mention_only` (and `keyword_stuffing`) only when every found-by term names a model the listing
+  only mentions (or finds only inside a tag block); a generic term, an offered part, or a term the
+  rules cannot place keeps the listing. The per-term statuses are in `v_classifications.terms`
+  for `spec-match` to use per want later. Conservative because it never hides a listing that one
+  of its searches may still want.
+- **2026-09-25, w2 noise-filter: not-a-PC is not a reason.** Recorded rows 11 and 12 are headsets
+  found by "gaming pc". Option taken: noise-filter leaves the kind `not_a_pc` to `spec-match`
+  (parts-record's kind is in `listing_assessment.v_assessments`), since a headset sale is a real
+  offer, only not of a PC. Conservative because no listing is marked noise for what it is.
+- **2026-09-25, w2 noise-filter: `v_suppressed` is not read by the handler.** The card lists
+  `v_suppressed` among the inputs. Option taken: the handler classifies every listing, and the
+  user-facing view leaves suppressed listings out through `listing_suppression.is_suppressed()`,
+  as `docs/security.md` requires (`nabvy_app` has no grant on `v_suppressed`). Conservative
+  because a suppression that expires or is lifted shows the listing with its reasons at once.
+- **2026-09-25, w2 noise-filter: new found-by terms without a new assessment.** A later search
+  can add a term to a listing without a new version, and no event reaches this module then.
+  Option taken: the terms are read at classification time and are part of the input hash, so the
+  next `listing-assessment.assessed` for the listing (or a sweep calling `classify`) records them;
+  no listing-ingest event is consumed in this push. Conservative because nothing is marked on a
+  term that was not read.
+
+### Folded from docs/questions/search-planner.md (sweep 04:38, 2026-09-26)
+
+- **2026-09-25, w2 search-planner: the test hunt's terms and their spelling.** The card says each want adds its family term plus "gaming pc" and "pc"; `actor-integration.md` question 2 meanwhile names "3090" and "gaming pc" (the pair actor test T2 measures), and the owner's own word is "rtx3090". A catalogue family "RTX 3090" becomes the term "rtx 3090". Option taken: the card's three terms for every want (it is the later, approved text, and the brief says to read the terms from the card), the family lower-cased with spaces kept, and the admin-test pair's term exactly as the admin enters it. Conservative on spelling because nothing is rewritten; not the fewest terms, so the owner may want to cut "pc".
+- **2026-09-25, w2 search-planner: the per-pair cost behind the budget bound.** `docs/decisions.md` gives $150 a month and "about $3.20 a month per term per centre" (a newest-first check every 30 minutes), which bounds the plan at 46 pairs. The Precedence row "Cadence and tiers" now reports T2's hourly checks at about $2 a month per two-term centre, which would allow far more pairs. Option taken: the owner's $3.20 until the owner changes it. Conservative because it runs fewer pairs.
+- **2026-09-25, w2 search-planner: container-term counts.** want-manager's `v_want_terms_by_centre` counts wants per centre and family; a want naming two families is counted under both. Option taken: a container pair counts the most-wanted family's wants at its centre (a lower bound). Conservative because it never over-states demand; a `v_wants_by_centre` count from want-manager would make it exact.
+- **2026-09-25, w2 search-planner: wants with no family.** A want whose criteria are only sized parts (RAM, storage) names no family in want-manager's view. Option taken: it activates no pair, not even the container terms. Conservative because it spends nothing; the card's rule ("its family term plus the container terms") presumes a family.
+- **2026-09-25, w2 search-planner: when the admin-test pair ends.** `actor-integration.md` task 1.2b says it is removed "once want-manager is on and the team's rtx3090 want exists"; the plan cannot see whose want is whose (no user IDs). Option taken: once want-manager's switch is `on`, a new admin pair is refused and the next replan drops any left, without an audit row (a replan has no actor). The team should create its want before switching want-manager on.
+- **2026-09-25, w2 search-planner: pivot suggestions.** `side-discovery` is a soft edge; its related-search terms are "suggestions only". Option taken: an injected port (`SearchPlannerDeps.pivotSuggestions`, stub `noPivotSuggestions` answering none) whose output is returned and never written; origin `pivot` exists in the schema but nothing writes it until the owner says how a suggestion is accepted (for example an audited admin action like the test pair).
+- **2026-09-25, w2 search-planner: rank ties.** "Favouring paying subscribers" orders pairs by paid wants, then all wants; the tie-break (narrow before broad, then centre and term) is this module's. Option taken as stated; it only matters once the 46-pair bound binds.

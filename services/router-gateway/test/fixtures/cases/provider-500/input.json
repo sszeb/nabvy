@@ -1,0 +1,25 @@
+{
+  "synthetic": true,
+  "kind": "route",
+  "input": {
+    "points": [
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      },
+      {
+        "lon": -1.0873,
+        "lat": 50.8198
+      }
+    ]
+  },
+  "response": {
+    "status": 500,
+    "body": {
+      "error": {
+        "code": 2099,
+        "message": "Unknown internal error"
+      }
+    }
+  }
+}

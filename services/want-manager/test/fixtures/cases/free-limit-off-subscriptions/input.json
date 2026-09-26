@@ -1,0 +1,16 @@
+{
+  "synthetic": true,
+  "userId": "0190f1d2-0000-7000-8000-0000000000f1",
+  "switches": { "subscriptions": "off" },
+  "entitlement": { "status": "active", "wants": 10 },
+  "steps": [
+    { "kind": "upsert" },
+    { "kind": "upsert", "input": { "postcode": "RH1 1AA" } },
+    { "kind": "upsert" },
+    { "kind": "upsert" },
+    { "kind": "upsert", "input": { "active": false } },
+    { "kind": "active", "ref": "#4", "active": true },
+    { "kind": "delete", "ref": "#0" },
+    { "kind": "active", "ref": "#4", "active": true }
+  ]
+}

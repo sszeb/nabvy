@@ -7,13 +7,12 @@ import { events as apifyGatewayEvents } from '@nabvy/contracts/modules/apify-gat
 import type {
   DetailsQueueEnqueued,
   DetailsQueueErrorCode,
-  DetailsQueuePriority,
 } from '@nabvy/contracts/modules/details-queue'
 import { events as listingIngestEvents } from '@nabvy/contracts/modules/listing-ingest'
 import type { Queryable } from '@nabvy/db'
 import { defineHandler, type EventHandler } from '@nabvy/transport'
 import { priorityOfSearchShape } from '../domain'
-import { closeBatch, enqueue } from '../index'
+import { closeBatch } from '../index'
 import { insertItems, markDescribed, selectFirstSeen } from '../repo'
 
 export interface FirstSeenDeps {
@@ -22,15 +21,13 @@ export interface FirstSeenDeps {
 }
 
 /**
- * `listing-ingest.first-seen` → the new listings a hunt's search found, queued for a detail fetch.
- * Only listings first seen on a search card are queued: search runs exist only for users' active
- * hunts (and the owner's rtx3090 test hunt), so nothing is fetched that no hunt asked for. A
- * listing first seen through a details run was fetched by it; one whose own search run already
- * returned a verified description is recorded as done, not fetched again.
- *
- * Out-of-order job replay can announce `first-seen` again for listings already queued or fetched
- * (review of PR #35): `enqueue` deduplicates on the listing ID and never re-sends a fetched listing
- * without a refresh, so a replay queues nothing and pays for nothing.
+ * `listing-ingest.first-seen` → bookkeeping only; it enqueues nothing. Which new listings get a
+ * paid detail fetch is `details-selector`'s decision (its area and category gate); it calls
+ * `enqueue()` for its selections (task 1.4h). What this handler does: a listing whose first run
+ * already returned a verified full description (a newest check with `includeDetails`, or a details
+ * run) is recorded as done, so a later `enqueue()` for it, whichever handler runs first, skips it
+ * instead of paying for a fetch it does not need. One a replay finds already waiting is marked
+ * done too (review of PR #46).
  */
 export async function handleFirstSeen(
   q: Queryable,
@@ -45,11 +42,7 @@ export async function handleFirstSeen(
     })
   }
   const total: DetailsQueueEnqueued = { queued: 0, alreadyQueued: 0, skipped: 0 }
-  const facebook = found.filter((l) => l.source === 'facebook' && l.fromSearch)
-
-  // Already described by its own run: recorded as done, so later callers need a refresh to pay.
-  // One a replay finds already waiting is marked done too, so it never gets a paid fetch.
-  const described = facebook.filter((l) => l.described)
+  const described = found.filter((l) => l.source === 'facebook' && l.described)
   const now = new Date()
   total.skipped += await insertItems(
     q,
@@ -72,31 +65,6 @@ export async function handleFirstSeen(
     described.map((l) => l.sourceListingId),
     now,
   )
-
-  const groups = new Map<
-    string,
-    { priority: DetailsQueuePriority; regionId?: string; ids: string[] }
-  >()
-  for (const l of facebook.filter((l) => !l.described)) {
-    const priority = priorityOfSearchShape(l.shape)
-    const key = `${priority}\n${l.regionId ?? ''}`
-    const group = groups.get(key) ?? { priority, regionId: l.regionId, ids: [] }
-    group.ids.push(l.sourceListingId)
-    groups.set(key, group)
-  }
-  for (const group of groups.values()) {
-    const done = await enqueue(q, {
-      sourceListingIds: group.ids,
-      priority: group.priority,
-      lane: 'text',
-      reason: 'first-seen',
-      requestedBy: 'details-queue',
-      regionId: group.regionId,
-    })
-    total.queued += done.queued
-    total.alreadyQueued += done.alreadyQueued
-    total.skipped += done.skipped
-  }
   return ok(total)
 }
 

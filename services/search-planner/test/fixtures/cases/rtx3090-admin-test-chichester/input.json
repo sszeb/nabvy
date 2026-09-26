@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md \"The one exception: our own test hunt\" (rtx3090 at Chichester); city-pages.seed.json (Chichester 115935195086622, verified)",
+  "wantTerms": [],
+  "adminPairs": [{ "centreId": "115935195086622", "term": "rtx3090" }],
+  "centres": [{ "cityPageId": "115935195086622", "active": true, "verified": true }],
+  "dropAdminTest": false
+}

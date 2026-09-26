@@ -1,0 +1,9 @@
+{
+  "order": ["portsmouth"],
+  "unassigned": [
+    {
+      "id": "pulborough",
+      "reason": "window"
+    }
+  ]
+}

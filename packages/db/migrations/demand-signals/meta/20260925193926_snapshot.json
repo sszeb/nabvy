@@ -1,0 +1,224 @@
+{
+  "id": "2aeb801b-e4d6-4aec-b6e8-bfa0fbb43d5d",
+  "prevId": "81649587-f62f-4b2c-a4d7-e982a5048b97",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "demand_signals.cells": {
+      "name": "cells",
+      "schema": "demand_signals",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "week_start": {
+          "name": "week_start",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wants": {
+          "name": "wants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "adverts": {
+          "name": "adverts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "suppressed": {
+          "name": "suppressed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "cells_week_centre_family_version_key": {
+          "name": "cells_week_centre_family_version_key",
+          "columns": [
+            {
+              "expression": "week_start",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "centre_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "family",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "rule_version",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "cells_week_start_monday_check": {
+          "name": "cells_week_start_monday_check",
+          "value": "extract(isodow from \"demand_signals\".\"cells\".\"week_start\") = 1"
+        },
+        "cells_wants_check": {
+          "name": "cells_wants_check",
+          "value": "\"demand_signals\".\"cells\".\"wants\" is null or \"demand_signals\".\"cells\".\"wants\" >= 10"
+        },
+        "cells_adverts_check": {
+          "name": "cells_adverts_check",
+          "value": "\"demand_signals\".\"cells\".\"adverts\" is null or \"demand_signals\".\"cells\".\"adverts\" >= 10"
+        },
+        "cells_suppressed_check": {
+          "name": "cells_suppressed_check",
+          "value": "\"demand_signals\".\"cells\".\"suppressed\" = (\"demand_signals\".\"cells\".\"wants\" is null and \"demand_signals\".\"cells\".\"adverts\" is null)"
+        },
+        "cells_centre_id_check": {
+          "name": "cells_centre_id_check",
+          "value": "length(\"demand_signals\".\"cells\".\"centre_id\") between 1 and 64"
+        },
+        "cells_family_check": {
+          "name": "cells_family_check",
+          "value": "length(\"demand_signals\".\"cells\".\"family\") between 1 and 200"
+        },
+        "cells_rule_version_check": {
+          "name": "cells_rule_version_check",
+          "value": "\"demand_signals\".\"cells\".\"rule_version\" ~ '^ds-[0-9]+$'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "demand_signals": "demand_signals"
+  },
+  "views": {
+    "demand_signals.v_cells": {
+      "name": "v_cells",
+      "schema": "demand_signals",
+      "columns": {
+        "week_start": {
+          "name": "week_start",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wants": {
+          "name": "wants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "adverts": {
+          "name": "adverts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "suppressed": {
+          "name": "suppressed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

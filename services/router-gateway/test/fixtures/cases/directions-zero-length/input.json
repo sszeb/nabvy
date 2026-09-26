@@ -1,0 +1,29 @@
+{
+  "synthetic": true,
+  "kind": "route",
+  "input": {
+    "points": [
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      },
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "routes": [
+        {
+          "summary": {}
+        }
+      ],
+      "metadata": {
+        "engine": {}
+      }
+    }
+  }
+}

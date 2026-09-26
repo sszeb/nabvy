@@ -1,0 +1,1 @@
+The same recorded run, the two handlers in the other order: details-selector's `enqueue()` arrives first and queues the 20 listings, then this module's first-seen handler sees their own run already described them and marks the waiting items done (review of PR #46). Nothing is submitted either way round.

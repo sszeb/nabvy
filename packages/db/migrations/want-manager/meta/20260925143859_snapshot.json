@@ -1,0 +1,878 @@
+{
+  "id": "fd4f21a8-c89f-42c7-9175-6e1fae57906d",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "want_manager.criteria": {
+      "name": "criteria",
+      "schema": "want_manager",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "want_id": {
+          "name": "want_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "part_type": {
+          "name": "part_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "min_attr": {
+          "name": "min_attr",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "or_better": {
+          "name": "or_better",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "criteria_user_id_idx": {
+          "name": "criteria_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "criteria_catalogue_id_idx": {
+          "name": "criteria_catalogue_id_idx",
+          "columns": [
+            {
+              "expression": "catalogue_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "criteria_want_position_idx": {
+          "name": "criteria_want_position_idx",
+          "columns": [
+            {
+              "expression": "want_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "position",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "criteria_want_id_wants_id_fk": {
+          "name": "criteria_want_id_wants_id_fk",
+          "tableFrom": "criteria",
+          "tableTo": "wants",
+          "schemaTo": "want_manager",
+          "columnsFrom": [
+            "want_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "criteria_position": {
+          "name": "criteria_position",
+          "value": "\"want_manager\".\"criteria\".\"position\" between 0 and 9"
+        },
+        "criteria_part_type": {
+          "name": "criteria_part_type",
+          "value": "\"want_manager\".\"criteria\".\"part_type\" in ('gpu', 'cpu', 'ram', 'storage')"
+        },
+        "criteria_shape": {
+          "name": "criteria_shape",
+          "value": "case when \"want_manager\".\"criteria\".\"part_type\" in ('ram', 'storage') then \"want_manager\".\"criteria\".\"min_attr\" is not null else (\"want_manager\".\"criteria\".\"catalogue_id\" is not null or \"want_manager\".\"criteria\".\"family\" is not null) end"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "want_manager.preferences": {
+      "name": "preferences",
+      "schema": "want_manager",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hide_noise": {
+          "name": "hide_noise",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "hide_spam": {
+          "name": "hide_spam",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "hide_multi_quantity": {
+          "name": "hide_multi_quantity",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "channels": {
+          "name": "channels",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "quiet_hours": {
+          "name": "quiet_hours",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "preferences_user_id_idx": {
+          "name": "preferences_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "preferences_channels": {
+          "name": "preferences_channels",
+          "value": "cardinality(\"want_manager\".\"preferences\".\"channels\") <= 3 and \"want_manager\".\"preferences\".\"channels\" <@ array['push', 'telegram', 'email']::text[]"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "want_manager.wants": {
+      "name": "wants",
+      "schema": "want_manager",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "radius_km": {
+          "name": "radius_km",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "centre_verified": {
+          "name": "centre_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "price_cap_minor": {
+          "name": "price_cap_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "cadence_seconds": {
+          "name": "cadence_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_speed": {
+          "name": "delivery_speed",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'instant'"
+        },
+        "delivery_methods": {
+          "name": "delivery_methods",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alternatives": {
+          "name": "alternatives",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'variants_plus_tier'"
+        },
+        "pc_containment": {
+          "name": "pc_containment",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "alternatives_max_price_minor": {
+          "name": "alternatives_max_price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instant_alternatives": {
+          "name": "instant_alternatives",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "instant_top_picks": {
+          "name": "instant_top_picks",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "filter": {
+          "name": "filter",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_hash": {
+          "name": "version_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "wants_user_id_idx": {
+          "name": "wants_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "wants_centre_id_idx": {
+          "name": "wants_centre_id_idx",
+          "columns": [
+            {
+              "expression": "centre_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "wants_active_idx": {
+          "name": "wants_active_idx",
+          "columns": [
+            {
+              "expression": "active",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "wants_lat": {
+          "name": "wants_lat",
+          "value": "\"want_manager\".\"wants\".\"lat\" between -90 and 90"
+        },
+        "wants_lng": {
+          "name": "wants_lng",
+          "value": "\"want_manager\".\"wants\".\"lng\" between -180 and 180"
+        },
+        "wants_radius_km": {
+          "name": "wants_radius_km",
+          "value": "\"want_manager\".\"wants\".\"radius_km\" between 1 and 1000"
+        },
+        "wants_currency": {
+          "name": "wants_currency",
+          "value": "\"want_manager\".\"wants\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "wants_price_cap_minor": {
+          "name": "wants_price_cap_minor",
+          "value": "\"want_manager\".\"wants\".\"price_cap_minor\" > 0"
+        },
+        "wants_alternatives_max_price_minor": {
+          "name": "wants_alternatives_max_price_minor",
+          "value": "\"want_manager\".\"wants\".\"alternatives_max_price_minor\" > 0"
+        },
+        "wants_cadence_seconds": {
+          "name": "wants_cadence_seconds",
+          "value": "\"want_manager\".\"wants\".\"cadence_seconds\" in (14400, 7200, 3600, 1800, 900, 300, 60)"
+        },
+        "wants_delivery_speed": {
+          "name": "wants_delivery_speed",
+          "value": "\"want_manager\".\"wants\".\"delivery_speed\" in ('instant', 'batched_15', 'batched_60', 'daily')"
+        },
+        "wants_delivery_methods": {
+          "name": "wants_delivery_methods",
+          "value": "cardinality(\"want_manager\".\"wants\".\"delivery_methods\") between 1 and 2 and \"want_manager\".\"wants\".\"delivery_methods\" <@ array['collection', 'posted']::text[]"
+        },
+        "wants_alternatives": {
+          "name": "wants_alternatives",
+          "value": "\"want_manager\".\"wants\".\"alternatives\" in ('off', 'variants', 'variants_plus_tier')"
+        },
+        "wants_version_hash": {
+          "name": "wants_version_hash",
+          "value": "\"want_manager\".\"wants\".\"version_hash\" ~ '^[0-9a-f]{64}$'"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "want_manager": "want_manager"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "want_manager.v_want_areas": {
+      "columns": {
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "radius_km": {
+          "name": "radius_km",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "accepts_delivery": {
+          "name": "accepts_delivery",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_want_areas",
+      "schema": "want_manager",
+      "isExisting": true,
+      "materialized": false
+    },
+    "want_manager.v_want_manager_wants": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "radius_km": {
+          "name": "radius_km",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_cap_minor": {
+          "name": "price_cap_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cadence_seconds": {
+          "name": "cadence_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_speed": {
+          "name": "delivery_speed",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_methods": {
+          "name": "delivery_methods",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alternatives": {
+          "name": "alternatives",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pc_containment": {
+          "name": "pc_containment",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alternatives_max_price_minor": {
+          "name": "alternatives_max_price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instant_alternatives": {
+          "name": "instant_alternatives",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instant_top_picks": {
+          "name": "instant_top_picks",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "filter": {
+          "name": "filter",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criteria": {
+          "name": "criteria",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_verified": {
+          "name": "centre_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_want_manager_wants",
+      "schema": "want_manager",
+      "isExisting": true,
+      "materialized": false
+    },
+    "want_manager.v_want_parts": {
+      "columns": {
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "part_type": {
+          "name": "part_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "name": "v_want_parts",
+      "schema": "want_manager",
+      "isExisting": true,
+      "materialized": false
+    },
+    "want_manager.v_want_terms_by_centre": {
+      "columns": {
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "want_count": {
+          "name": "want_count",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paid_want_count": {
+          "name": "paid_want_count",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_want_terms_by_centre",
+      "schema": "want_manager",
+      "isExisting": true,
+      "materialized": false
+    },
+    "want_manager.v_wants": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "radius_km": {
+          "name": "radius_km",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_cap_minor": {
+          "name": "price_cap_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cadence_seconds": {
+          "name": "cadence_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_speed": {
+          "name": "delivery_speed",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_methods": {
+          "name": "delivery_methods",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alternatives": {
+          "name": "alternatives",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pc_containment": {
+          "name": "pc_containment",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alternatives_max_price_minor": {
+          "name": "alternatives_max_price_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instant_alternatives": {
+          "name": "instant_alternatives",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instant_top_picks": {
+          "name": "instant_top_picks",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "filter": {
+          "name": "filter",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criteria": {
+          "name": "criteria",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lat": {
+          "name": "lat",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lng": {
+          "name": "lng",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paid": {
+          "name": "paid",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_wants",
+      "schema": "want_manager",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

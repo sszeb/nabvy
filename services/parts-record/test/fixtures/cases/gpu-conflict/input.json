@@ -1,0 +1,37 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1380502417485603"],
+  "edits": [
+    {
+      "listingId": "1380502417485603",
+      "fields": {
+        "title": "Gaming pc RTX 3080 Ti and curved Samsung monitor",
+        "description": "RTX 3080 graphics card\nRyzen 7 5800X\n32GB DDR4\n1TB SSD\n\nCollection only."
+      }
+    }
+  ],
+  "responses": {
+    "1380502417485603": {
+      "responseId": "msg_syn_gpu_conflict",
+      "output": {
+        "kind": null,
+        "parts": [
+          {
+            "partType": "gpu",
+            "name": "RTX 3080 Ti",
+            "quote": "RTX 3080 Ti",
+            "inclusion": "offered"
+          }
+        ]
+      },
+      "usage": {
+        "inputTokens": 700,
+        "outputTokens": 60,
+        "cacheWrite5mTokens": 0,
+        "cacheWrite1hTokens": 0,
+        "cacheReadTokens": 0
+      },
+      "latencyMs": 800
+    }
+  }
+}

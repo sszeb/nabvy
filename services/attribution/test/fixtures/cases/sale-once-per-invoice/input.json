@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "source": "docs/affiliates.md Tests: sale tracked once per invoice (idempotent by invoice ID)",
+  "steps": [
+    { "capture": { "affiliateClickId": "click_1" } },
+    { "sale": { "invoiceId": "in_1", "kind": "subscription", "amountMinor": 900 } },
+    { "sale": { "invoiceId": "in_1", "kind": "subscription", "amountMinor": 900 } }
+  ]
+}

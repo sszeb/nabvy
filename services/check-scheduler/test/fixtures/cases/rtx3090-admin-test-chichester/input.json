@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "source": "search-planner v_plan rows (services/search-planner README, 'Rules and thresholds'); centre IDs from city-pages' seed",
+  "now": "2026-09-25T12:00:00Z",
+  "level": "none",
+  "remainingChecks": 50,
+  "plan": [
+    {
+      "centreId": "115935195086622",
+      "term": "rtx3090",
+      "class": "narrow",
+      "paidWantCount": 0,
+      "rank": 1
+    }
+  ],
+  "schedule": [],
+  "reruns": [],
+  "oneOffs": [],
+  "yields": {}
+}
