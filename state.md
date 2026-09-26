@@ -63,7 +63,7 @@ Updated 08:38 UTC 2026-09-26 by coordinator (sweep 08:37: no merges, ledger 99 =
 - Fire reviewer on-request `trig_01FPLnjfTATPb7YQivWvA7FX` with "PR #110: ci: raise the 15-minute job timeouts to 25" (priority: every PR's CI is cancelled until it merges).
 
 ## Docs to record (the sweep writes these into docs/progress.md)
-- W3 docs slimming: PR #112 (`task/0.20c-docs-slim`, base `claude/coordinator-16`, rides on #101) opened — CLAUDE.md 11,965→3,967 B, docs/decisions.md 76,420→21,195 B (history: docs/decisions-history.md), docs/questions.md 229,162→67,931 B (archive: docs/questions-archive.md); docs/rules.md new.
+- W3 docs slimming: PR #112 (`task/0.20c-docs-slim`, base `claude/coordinator-16`, rides on #101) opened, then merged with the advanced base (729ecff) — CLAUDE.md 11,965→3,967 B, docs/decisions.md 76,420→21,195 B (history: docs/decisions-history.md), docs/questions.md 229,162→70,771 B (archive: docs/questions-archive.md, 185,089 B); docs/rules.md new. Note for the coordinator: README.md was independently emptied by the owner directly on GitHub (755115b, outside any session) while this PR was open; W3 kept that edit rather than reverting it, so README.md's pointers are not updated. CI running on 729ecff as of 09:02.
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
