@@ -1,0 +1,44 @@
+name: Dispatch
+
+# Zero-token reconciler: fires Routines only for real gaps (daisy-chain.md §2)
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+  push:
+    branches: [main]
+  schedule:
+    # Backstop: runs every 30 minutes to catch any missed events
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  dispatch:
+    name: Reconcile state and fire Routines
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: corepack enable
+      - name: Run dispatcher
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEW_FIRE_TOKEN: ${{ secrets.REVIEW_FIRE_TOKEN }}
+          FIX_FIRE_TOKEN: ${{ secrets.FIX_FIRE_TOKEN }}
+          REVIEW_ROUTINE_ID: ${{ vars.REVIEW_ROUTINE_ID }}
+          FIX_ROUTINE_ID: ${{ vars.FIX_ROUTINE_ID }}
+          CHAIN_LIVE: ${{ vars.CHAIN_LIVE }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: node scripts/dispatch.mjs
