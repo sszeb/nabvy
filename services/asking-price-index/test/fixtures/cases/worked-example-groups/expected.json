@@ -1,0 +1,59 @@
+{
+  "groups": {
+    "gpu:rtx-3080|bundle|used_good|GB|GBP|30d": {
+      "n": 1,
+      "median": 90000,
+      "mad": 0,
+      "p25": 90000,
+      "p75": 90000,
+      "min": 90000,
+      "max": 90000,
+      "thin": false,
+      "copy_collapse": true
+    },
+    "gpu:rtx-3090|bundle|used_good|GB|GBP|30d": {
+      "n": 1,
+      "median": 90000,
+      "mad": 0,
+      "p25": 90000,
+      "p75": 90000,
+      "min": 90000,
+      "max": 90000,
+      "thin": false,
+      "copy_collapse": true
+    },
+    "gpu:rtx-3090|in_pc|used_good|GB|GBP|30d": {
+      "n": 2,
+      "median": 125000,
+      "mad": 5000,
+      "p25": 122500,
+      "p75": 127500,
+      "min": 120000,
+      "max": 130000,
+      "thin": false,
+      "copy_collapse": true
+    },
+    "gpu:rtx-3090|standalone|used_good|GB|GBP|30d": {
+      "n": 3,
+      "median": 60000,
+      "mad": 5000,
+      "p25": 57500,
+      "p75": 62500,
+      "min": 55000,
+      "max": 65000,
+      "thin": false,
+      "copy_collapse": true
+    }
+  },
+  "members": {
+    "bundle-1@bundle|used_good|GB": "counted",
+    "part-1@standalone|used_good|GB": "counted",
+    "part-2@standalone|used_good|GB": "counted",
+    "part-3@standalone|used_good|GB": "counted",
+    "pc-1@in_pc|used_good|GB": "counted",
+    "pc-2@in_pc|used_good|GB": "counted"
+  },
+  "implied": {
+    "gpu:rtx-3090|in_pc|used_good|GB|GBP|30d": 65000
+  }
+}

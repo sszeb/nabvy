@@ -1,0 +1,32 @@
+{
+  "groups": {
+    "gpu:rtx-3090|standalone|used_good|GB|GBP|30d": {
+      "n": 2,
+      "median": 61000,
+      "mad": 1000,
+      "p25": 60500,
+      "p75": 61500,
+      "min": 60000,
+      "max": 62000,
+      "thin": false,
+      "copy_collapse": true
+    },
+    "gpu:rtx-3090|standalone|used_good|IE|EUR|30d": {
+      "n": 2,
+      "median": 71000,
+      "mad": 1000,
+      "p25": 70500,
+      "p75": 71500,
+      "min": 70000,
+      "max": 72000,
+      "thin": false,
+      "copy_collapse": true
+    }
+  },
+  "members": {
+    "gb-1@standalone|used_good|GB": "counted",
+    "gb-2@standalone|used_good|GB": "counted",
+    "ie-1@standalone|used_good|IE": "counted",
+    "ie-2@standalone|used_good|IE": "counted"
+  }
+}
