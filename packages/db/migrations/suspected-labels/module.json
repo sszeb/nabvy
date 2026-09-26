@@ -1,0 +1,20 @@
+{
+  "module": "suspected-labels",
+  "schema": "suspected_labels",
+  "dependsOn": [
+    "core",
+    "switches",
+    "warning-signs",
+    "copy-advert",
+    "noise-filter",
+    "detail-evidence",
+    "listing-suppression",
+    "audit-log",
+    "pickup-location",
+    "seller-reply-reports",
+    "asking-price-index",
+    "asking-price-position",
+    "listing-assessment",
+    "parts-record"
+  ]
+}
