@@ -32,10 +32,3 @@ select nabvy_core.track_updated_at('suspected_labels.reviews');
 grant select, insert, update, delete on suspected_labels.rules to nabvy_pipeline;
 select nabvy_core.allow_pipeline('suspected_labels.rules', 'all');
 select nabvy_core.track_updated_at('suspected_labels.rules');
-
--- Grant read access to app (for displaying labels, candidates, etc.)
-grant select on suspected_labels.labels to nabvy_app;
-grant select on suspected_labels.candidates to nabvy_app;
-grant select on suspected_labels.approvals to nabvy_app;
-grant select on suspected_labels.reviews to nabvy_app;
-grant select on suspected_labels.rules to nabvy_app;
