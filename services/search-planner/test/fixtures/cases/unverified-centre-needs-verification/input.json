@@ -1,0 +1,11 @@
+{
+  "synthetic": true,
+  "source": "docs/decisions.md \"The grid\": a centre is confirmed by a cheap verification run the first time a hunt needs it; actor-integration.md 2.1 step 4 (one narrow term)",
+  "wantTerms": [
+    { "centreId": "3003", "family": "RTX 3080", "wantCount": 2, "paidWantCount": 0 },
+    { "centreId": "3003", "family": "RTX 3090", "wantCount": 1, "paidWantCount": 1 }
+  ],
+  "adminPairs": [],
+  "centres": [{ "cityPageId": "3003", "active": true, "verified": false }],
+  "dropAdminTest": false
+}

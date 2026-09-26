@@ -23,9 +23,15 @@ while `cost-meter` is off and holds the $150 monthly cap.
 
 - `enqueue(q, DetailsQueueEnqueueInput)` from `details-selector`, `listing-lifecycle`,
   `copy-advert`, `photo-review`, `parts-ai` and `pasted-link-lookup` (none built yet).
-- Event `listing-ingest.first-seen` (`listing-ingest`), handled by `firstSeenHandler`: reads
-  `listing_ingest.v_listings` and `v_sightings`, and the first sighting's job in
-  `apify_gateway.v_jobs` (region, shape) and `v_rows` (already described?).
+- Event `listing-ingest.first-seen` (`listing-ingest`), handled by `firstSeenHandler`: bookkeeping
+  only, it enqueues nothing (task 1.4h; see "Decisions"). Reads `listing_ingest.v_listings` and
+  `v_sightings`, and the first sighting's job in `apify_gateway.v_jobs` (region, shape) and
+  `v_rows`, to record listings that run already described as done.
+- `details-selector`'s selections arrive through its `enqueue()` call (its README's published
+  interface: `new-listing`, `text`, `first-seen`, `requestedBy: 'details-selector'`, no region).
+  For `reason: 'first-seen'` with no `regionId`, `enqueue` places each ID by the search job that
+  first found it: `listing_ingest.v_listings` and `v_sightings`, `apify_gateway.v_jobs` (region,
+  shape).
 - Event `apify-gateway.run-collected` (`apify-gateway`), kind `details`, handled by
   `runCollectedHandler`: reads the job's listing rows from `apify_gateway.v_rows`.
 - `readJobs` (`apify-gateway`) for batches whose lease ran out; `recommendRoute` (`route-health`)
@@ -83,10 +89,16 @@ Schema `details_queue`:
   `VkryjpwS6U2GBDh3k`'s 20 listing rows as a details batch (all done), and synthetic rows built from
   the actor's outcome vocabulary for each 2.10 row (not attempted, partial/missing once, no row
   twice, removed, error and unknown outcomes). Pass rate 6/6.
-- Stage `first-seen` (`test/fixtures/first-seen.fixtures.ts`), 3 cases: the recorded run's 20
-  first-seen listings, already described by that run (nothing sent); an out-of-order replay of
-  `first-seen` before submit, during the lease and after the close (each ID sent once — the risk
-  from PR #35's review); newest-check follow-ups before sweep follow-ups. Pass rate 3/3.
+- Stage `first-seen` (`test/fixtures/first-seen.fixtures.ts`), 5 cases, each a sequence of
+  `first-seen` deliveries (this module's handler), `selected` batches (details-selector's
+  `enqueue()` call, exactly as its README documents it), ticks and closes: an out-of-area,
+  unshipped listing (details-selector's `out-of-area-not-shipped` case) is never enqueued while the
+  selected one is, however often `first-seen` is replayed around it; the recorded run's 20
+  first-seen listings, already described by that run, in both handler orders (nothing sent, the
+  selection skipped or marked done); an out-of-order replay of `first-seen` and of the selection
+  before submit, during the lease and after the close (each ID sent once — the risk from PR #35's
+  review); newest-check follow-ups before sweep follow-ups although the selector asks `new-listing`
+  for all. Pass rate 5/5.
 
 Other tests: `domain.test.ts` (verdicts, counter boundaries, throttle mapping, London days across
 BST, run input), `queue.test.ts` (deduplication, priority, batch size and region, one run at a
@@ -104,8 +116,25 @@ waits for `details-selector`.
   rows only, never `listingIds`, and the private build's contract refuses unknown keys with a
   charged failed run. The queue's own deduplication is the saving for detail fetches
   (`docs/questions/details-queue.md`).
+- **2026-09-25 (task 1.4h): the queue no longer enqueues first-seen listings itself; it enqueues
+  only what `details-selector` selects.** The selector's gate (every new ID in area or shipped, in
+  an allowed category; `docs/decisions.md`, "Precedence", "Detail selection") never bound while this
+  module's own handler enqueued every search listing (docs/questions/details-selector.md). The
+  selector's README publishes no event: its interface is its direct `enqueue()` call, so nothing
+  reads `v_selections` here. `firstSeenHandler` keeps only its bookkeeping: a listing whose first
+  run already returned a verified description is recorded as done (a queued one is marked done),
+  so the selector's `enqueue()` for it skips a paid fetch whichever handler runs first (two fixture
+  cases, one per order). It runs on `first-seen` for every source, not only search sightings, so a
+  pasted link's listing is covered too. Placement stays the queue's: `details-selector` asks
+  `new-listing` for everything and names no region, so for `reason: 'first-seen'` with no
+  `regionId` `enqueue` takes each ID's region and priority from the search that first found it
+  (`newest-check`/`catch-up` → `new-listing`, sweeps → `sweep`), keeping the card's priority order
+  and one region per batch. An ID with no search sighting keeps the caller's priority and the
+  default region; a caller that names a region is placed as it asks (docs/questions/details-queue.md).
+  Pasted links and rechecks are unchanged. Contracts, schema and migrations are unchanged.
 - **2026-09-24: the queue consumes `listing-ingest.first-seen`** (the build brief) and queues
-  listings first seen on a hunt's search card only. A replayed `first-seen` (out-of-order jobs,
+  listings first seen on a hunt's search card only. *(Superseded on 2026-09-25 by task 1.4h,
+  above.)* A replayed `first-seen` (out-of-order jobs,
   review of PR #35) is deduplicated on the listing ID before anything is paid for: waiting and
   leased items are kept once, fetched ones are skipped. Listings the same run already described are
   recorded as done.
@@ -133,9 +162,10 @@ waits for `details-selector`.
 
 ## Open questions
 
-`docs/questions/details-queue.md`: `excludeListingIds`; consuming `first-seen` before
-`details-selector`; the daily cap; throttle levels; the photo lane; `submitRun`'s request key; the
-default region. Catalogue questions 5 and 6.
+`docs/questions/details-queue.md` (folded into `docs/questions.md` by the coordinator):
+`excludeListingIds`; the daily cap; throttle levels; the photo lane; `submitRun`'s request key; the
+default region; whether `enqueue` should place `first-seen` work by the search shape rather than
+the selector's asked priority (task 1.4h). Catalogue questions 5 and 6.
 
 ## Incidents
 

@@ -1,0 +1,5 @@
+{
+  "module": "attribution",
+  "schema": "attribution",
+  "dependsOn": ["core", "switches"]
+}

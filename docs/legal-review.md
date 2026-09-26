@@ -123,6 +123,12 @@ Rows 23–83 below come from the five 2026-09-24 design-draft integrations (`doc
 | --- | --- | --- | --- |
 | 84 | Wording | `fb-scrap-engine/docs/design/COPY_ADVERT_SPAM.md`'s new "Suspected trade seller" and shadow-only "Suspected scam" labels, their fact templates, and criminal-offence-data treatment for scam labels under UK GDPR Art 10 | `docs/design/actor-app-guide.md`, "What changes" 11; extends item 13 |
 
+### web L1
+
+| # | Area | Point to review | Where it is decided |
+| --- | --- | --- | --- |
+| 85 | Data | The local run's magic-link sign-in URL (a live, single-use auth token) is printed to the server's own console/log output rather than emailed, for the owner's own machine only | `docs/decisions.md`, "Local single-user run first"; `apps/web/src/app/api/auth/[...all]/route.ts` |
+
 ## Points in the policy drafts
 
 The drafts in `docs/policies/` (terms, no-refunds and cancellation, acceptable use, fair use) carry `TODO-LEGAL (LR-nn)` markers. They are modelled on big tech's UK-facing terms and on Apify's and Supabase's, in Nabvy's own words (`docs/policies/SOURCES.md`). These lines extend item 7 above; no review has been run.

@@ -1,0 +1,585 @@
+{
+  "id": "d844348e-3673-4b60-8af4-0f529c5f2ee7",
+  "prevId": "ce8f8745-30ee-4bc6-adbb-a2becee3a68e",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "asking_price_index.groups": {
+      "name": "groups",
+      "schema": "asking_price_index",
+      "columns": {
+        "group_key": {
+          "name": "group_key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "context": {
+          "name": "context",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "condition": {
+          "name": "condition",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_days": {
+          "name": "window_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "groups_catalogue_idx": {
+          "name": "groups_catalogue_idx",
+          "columns": [
+            {
+              "expression": "catalogue_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "groups_context_check": {
+          "name": "groups_context_check",
+          "value": "\"asking_price_index\".\"groups\".\"context\" in ('standalone', 'in_pc', 'bundle')"
+        },
+        "groups_condition_check": {
+          "name": "groups_condition_check",
+          "value": "\"asking_price_index\".\"groups\".\"condition\" in ('new', 'used_like_new', 'used_good', 'used_fair')"
+        },
+        "groups_country_check": {
+          "name": "groups_country_check",
+          "value": "\"asking_price_index\".\"groups\".\"country\" ~ '^[A-Z]{2}$'"
+        },
+        "groups_currency_check": {
+          "name": "groups_currency_check",
+          "value": "\"asking_price_index\".\"groups\".\"currency\" in ('GBP', 'EUR')"
+        },
+        "groups_window_check": {
+          "name": "groups_window_check",
+          "value": "\"asking_price_index\".\"groups\".\"window_days\" between 1 and 90"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "asking_price_index.members": {
+      "name": "members",
+      "schema": "asking_price_index",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "group_key": {
+          "name": "group_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ask_minor": {
+          "name": "ask_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "counted": {
+          "name": "counted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "excluded": {
+          "name": "excluded",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sample_origin": {
+          "name": "sample_origin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "collapse_key": {
+          "name": "collapse_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city_page_id": {
+          "name": "city_page_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "seen_at": {
+          "name": "seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "members_listing_idx": {
+          "name": "members_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "members_group_idx": {
+          "name": "members_group_idx",
+          "columns": [
+            {
+              "expression": "group_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "members_group_key_groups_group_key_fk": {
+          "name": "members_group_key_groups_group_key_fk",
+          "tableFrom": "members",
+          "columnsFrom": [
+            "group_key"
+          ],
+          "tableTo": "groups",
+          "schemaTo": "asking_price_index",
+          "columnsTo": [
+            "group_key"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "members_group_listing_key": {
+          "name": "members_group_listing_key",
+          "columns": [
+            "group_key",
+            "listing_id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "members_ask_check": {
+          "name": "members_ask_check",
+          "value": "\"asking_price_index\".\"members\".\"ask_minor\" >= 0"
+        },
+        "members_origin_check": {
+          "name": "members_origin_check",
+          "value": "\"asking_price_index\".\"members\".\"sample_origin\" in ('on_target', 'by_catch')"
+        },
+        "members_counted_check": {
+          "name": "members_counted_check",
+          "value": "not (\"asking_price_index\".\"members\".\"counted\" and \"asking_price_index\".\"members\".\"excluded\" is not null)"
+        },
+        "members_excluded_check": {
+          "name": "members_excluded_check",
+          "value": "\"asking_price_index\".\"members\".\"excluded\" in ('noise', 'zero_price', 'money_kind', 'sold', 'unverified_binding', 'promoted', 'suppressed', 'stale', 'relist', 'copy', 'seller', 'outlier')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "asking_price_index.stats": {
+      "name": "stats",
+      "schema": "asking_price_index",
+      "columns": {
+        "group_key": {
+          "name": "group_key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "n": {
+          "name": "n",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "median": {
+          "name": "median",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mad": {
+          "name": "mad",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "p25": {
+          "name": "p25",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "p75": {
+          "name": "p75",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "min": {
+          "name": "min",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "max": {
+          "name": "max",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "thin": {
+          "name": "thin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "copy_collapse": {
+          "name": "copy_collapse",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "as_of": {
+          "name": "as_of",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "stats_group_key_groups_group_key_fk": {
+          "name": "stats_group_key_groups_group_key_fk",
+          "tableFrom": "stats",
+          "columnsFrom": [
+            "group_key"
+          ],
+          "tableTo": "groups",
+          "schemaTo": "asking_price_index",
+          "columnsTo": [
+            "group_key"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "stats_n_check": {
+          "name": "stats_n_check",
+          "value": "\"asking_price_index\".\"stats\".\"n\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "asking_price_index": "asking_price_index"
+  },
+  "views": {
+    "asking_price_index.v_groups": {
+      "name": "v_groups",
+      "schema": "asking_price_index",
+      "columns": {
+        "group_key": {
+          "name": "group_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catalogue_id": {
+          "name": "catalogue_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "context": {
+          "name": "context",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "condition": {
+          "name": "condition",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_days": {
+          "name": "window_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "n": {
+          "name": "n",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "median": {
+          "name": "median",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mad": {
+          "name": "mad",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "p25": {
+          "name": "p25",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "p75": {
+          "name": "p75",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "min": {
+          "name": "min",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "max": {
+          "name": "max",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "thin": {
+          "name": "thin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "copy_collapse": {
+          "name": "copy_collapse",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "as_of": {
+          "name": "as_of",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "asking_price_index.v_members": {
+      "name": "v_members",
+      "schema": "asking_price_index",
+      "columns": {
+        "group_key": {
+          "name": "group_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ask_minor": {
+          "name": "ask_minor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "counted": {
+          "name": "counted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "excluded": {
+          "name": "excluded",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sample_origin": {
+          "name": "sample_origin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "seen_at": {
+          "name": "seen_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
