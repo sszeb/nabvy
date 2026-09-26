@@ -1,0 +1,132 @@
+{
+  "synthetic": true,
+  "builtFrom": "PARTS_INTELLIGENCE.md:74-79 (9800X3D + RTX 5080 PCs: n=12, about the 29th percentile; 'Used - like new' only, n=6, hidden); asks are synthetic",
+  "listings": [
+    {
+      "id": "good-00",
+      "priceMinor": 150000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-01",
+      "priceMinor": 155000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-02",
+      "priceMinor": 160000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "target",
+      "priceMinor": 165000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-04",
+      "priceMinor": 170000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-05",
+      "priceMinor": 175000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-06",
+      "priceMinor": 180000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-07",
+      "priceMinor": 185000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-08",
+      "priceMinor": 190000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-09",
+      "priceMinor": 195000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-10",
+      "priceMinor": 200000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "good-11",
+      "priceMinor": 205000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_good"
+    },
+    {
+      "id": "like-new-00",
+      "priceMinor": 170000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_like_new"
+    },
+    {
+      "id": "like-new-target",
+      "priceMinor": 175000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_like_new"
+    },
+    {
+      "id": "like-new-02",
+      "priceMinor": 180000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_like_new"
+    },
+    {
+      "id": "like-new-03",
+      "priceMinor": 185000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_like_new"
+    },
+    {
+      "id": "like-new-04",
+      "priceMinor": 190000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_like_new"
+    },
+    {
+      "id": "like-new-05",
+      "priceMinor": 195000,
+      "form": "system",
+      "offered": ["gpu:rtx-5080", "cpu:9800x3d"],
+      "condition": "used_like_new"
+    }
+  ]
+}

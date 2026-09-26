@@ -1,0 +1,23 @@
+{
+  "synthetic": true,
+  "builtFrom": "docs/design/modules/demand-signals.md (cells under 10 suppressed; a wanted advert posted in many towns counts once per cell and week) and the input views as want-manager, listing-assessment, city-pages and copy-advert publish them",
+  "now": "2026-09-25T00:00:00Z",
+  "weekStart": "2026-09-14",
+  "switches": { "copy-advert": "off" },
+  "wants": [],
+  "adverts": [
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-15T10:00:00Z",
+      "repeat": 7
+    },
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-17T10:00:00Z",
+      "clusterKey": "cluster-one",
+      "repeat": 3
+    }
+  ]
+}

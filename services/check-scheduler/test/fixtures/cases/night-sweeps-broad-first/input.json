@@ -1,0 +1,47 @@
+{
+  "synthetic": true,
+  "source": "search-planner v_plan rows (services/search-planner README, 'Rules and thresholds'); centre IDs from city-pages' seed",
+  "now": "2026-09-25T02:00:00Z",
+  "level": "none",
+  "remainingChecks": 50,
+  "plan": [
+    {
+      "centreId": "115935195086622",
+      "term": "rtx 3090",
+      "class": "narrow",
+      "paidWantCount": 0,
+      "rank": 1
+    },
+    {
+      "centreId": "115935195086622",
+      "term": "gaming pc",
+      "class": "broad",
+      "paidWantCount": 0,
+      "rank": 2
+    },
+    {
+      "centreId": "115935195086622",
+      "term": "pc",
+      "class": "broad",
+      "paidWantCount": 0,
+      "rank": 3
+    }
+  ],
+  "schedule": [
+    {
+      "centreId": "115935195086622",
+      "termClass": "narrow",
+      "kind": "newest",
+      "lastRunAt": "2026-09-24T20:00:00Z"
+    },
+    {
+      "centreId": "115935195086622",
+      "termClass": "broad",
+      "kind": "newest",
+      "lastRunAt": "2026-09-24T20:00:00Z"
+    }
+  ],
+  "reruns": [],
+  "oneOffs": [],
+  "yields": {}
+}

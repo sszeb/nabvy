@@ -1,0 +1,63 @@
+{
+  "synthetic": true,
+  "builtFrom": "asking-price-index's IQR fences and noise exclusion; asks are synthetic",
+  "listings": [
+    {
+      "id": "ask-00",
+      "priceMinor": 60000
+    },
+    {
+      "id": "ask-01",
+      "priceMinor": 61000
+    },
+    {
+      "id": "ask-02",
+      "priceMinor": 62000
+    },
+    {
+      "id": "ask-03",
+      "priceMinor": 63000
+    },
+    {
+      "id": "ask-04",
+      "priceMinor": 64000
+    },
+    {
+      "id": "ask-05",
+      "priceMinor": 65000
+    },
+    {
+      "id": "ask-06",
+      "priceMinor": 66000
+    },
+    {
+      "id": "ask-07",
+      "priceMinor": 67000
+    },
+    {
+      "id": "ask-08",
+      "priceMinor": 68000
+    },
+    {
+      "id": "ask-09",
+      "priceMinor": 69000
+    },
+    {
+      "id": "ask-10",
+      "priceMinor": 70000
+    },
+    {
+      "id": "ask-11",
+      "priceMinor": 71000
+    },
+    {
+      "id": "outlier",
+      "priceMinor": 200000
+    },
+    {
+      "id": "noise",
+      "priceMinor": 61000,
+      "noise": true
+    }
+  ]
+}

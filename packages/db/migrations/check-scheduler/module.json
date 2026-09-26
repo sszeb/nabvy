@@ -1,0 +1,14 @@
+{
+  "module": "check-scheduler",
+  "schema": "check_scheduler",
+  "dependsOn": [
+    "core",
+    "switches",
+    "search-planner",
+    "run-coverage",
+    "spend-governor",
+    "source-health",
+    "apify-gateway",
+    "listing-ingest"
+  ]
+}

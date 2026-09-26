@@ -1,0 +1,30 @@
+{
+  "name": "@nabvy/check-scheduler",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nabvy/apify-gateway": "workspace:*",
+    "@nabvy/config": "workspace:*",
+    "@nabvy/contracts": "workspace:*",
+    "@nabvy/db": "workspace:*",
+    "@nabvy/listing-ingest": "workspace:*",
+    "@nabvy/run-coverage": "workspace:*",
+    "@nabvy/search-planner": "workspace:*",
+    "@nabvy/source-health": "workspace:*",
+    "@nabvy/spend-governor": "workspace:*",
+    "@nabvy/switches": "workspace:*",
+    "drizzle-orm": "0.45.3",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8"
+  }
+}

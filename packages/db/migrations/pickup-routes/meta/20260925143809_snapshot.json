@@ -1,0 +1,799 @@
+{
+  "id": "61f880b2-4ac8-4aca-b51b-9edca3c879cb",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "pickup_routes.pickup_days": {
+      "name": "pickup_days",
+      "schema": "pickup_routes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "day": {
+          "name": "day",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_kind": {
+          "name": "start_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'home'"
+        },
+        "end_kind": {
+          "name": "end_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'home'"
+        },
+        "private_enc": {
+          "name": "private_enc",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start_time": {
+          "name": "start_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latest_finish": {
+          "name": "latest_finish",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "max_drive_minutes": {
+          "name": "max_drive_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "pickup_days_user_id_idx": {
+          "name": "pickup_days_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pickup_days_identity_idx": {
+          "name": "pickup_days_identity_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "day",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pickup_days_start_kind": {
+          "name": "pickup_days_start_kind",
+          "value": "\"pickup_routes\".\"pickup_days\".\"start_kind\" in ('home', 'current', 'custom')"
+        },
+        "pickup_days_end_kind": {
+          "name": "pickup_days_end_kind",
+          "value": "\"pickup_routes\".\"pickup_days\".\"end_kind\" in ('home', 'open', 'custom')"
+        },
+        "pickup_days_max_drive": {
+          "name": "pickup_days_max_drive",
+          "value": "\"pickup_routes\".\"pickup_days\".\"max_drive_minutes\" is null or \"pickup_routes\".\"pickup_days\".\"max_drive_minutes\" between 10 and 720"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_routes.pickup_reminders": {
+      "name": "pickup_reminders",
+      "schema": "pickup_routes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pickup_id": {
+          "name": "pickup_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "due_at": {
+          "name": "due_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sent_at": {
+          "name": "sent_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "pickup_reminders_user_id_idx": {
+          "name": "pickup_reminders_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pickup_reminders_due_idx": {
+          "name": "pickup_reminders_due_idx",
+          "columns": [
+            {
+              "expression": "due_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pickup_reminders_identity_idx": {
+          "name": "pickup_reminders_identity_idx",
+          "columns": [
+            {
+              "expression": "pickup_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "due_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pickup_reminders_pickup_id_pickups_id_fk": {
+          "name": "pickup_reminders_pickup_id_pickups_id_fk",
+          "tableFrom": "pickup_reminders",
+          "tableTo": "pickups",
+          "schemaTo": "pickup_routes",
+          "columnsFrom": [
+            "pickup_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pickup_reminders_kind": {
+          "name": "pickup_reminders_kind",
+          "value": "\"pickup_routes\".\"pickup_reminders\".\"kind\" in ('evening_before', 'leave_by', 'unagreed')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_routes.pickups": {
+      "name": "pickups",
+      "schema": "pickup_routes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "private_enc": {
+          "name": "private_enc",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "has_point": {
+          "name": "has_point",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "stop_type": {
+          "name": "stop_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'collection'"
+        },
+        "day": {
+          "name": "day",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_kind": {
+          "name": "window_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "window_start": {
+          "name": "window_start",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "window_end": {
+          "name": "window_end",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "service_minutes": {
+          "name": "service_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 10
+        },
+        "price_minor": {
+          "name": "price_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bring_cash": {
+          "name": "bring_cash",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "size": {
+          "name": "size",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'small'"
+        },
+        "must_get": {
+          "name": "must_get",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'arranged'"
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "pickups_user_id_idx": {
+          "name": "pickups_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pickups_user_day_idx": {
+          "name": "pickups_user_day_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "day",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pickups_day_idx": {
+          "name": "pickups_day_idx",
+          "columns": [
+            {
+              "expression": "day",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pickups_stop_type": {
+          "name": "pickups_stop_type",
+          "value": "\"pickup_routes\".\"pickups\".\"stop_type\" in ('collection', 'meetup')"
+        },
+        "pickups_window_kind": {
+          "name": "pickups_window_kind",
+          "value": "\"pickup_routes\".\"pickups\".\"window_kind\" in ('at', 'between', 'after', 'before', 'unagreed')"
+        },
+        "pickups_size": {
+          "name": "pickups_size",
+          "value": "\"pickup_routes\".\"pickups\".\"size\" in ('small', 'boot', 'large')"
+        },
+        "pickups_status": {
+          "name": "pickups_status",
+          "value": "\"pickup_routes\".\"pickups\".\"status\" in ('arranged', 'tentative', 'collected', 'cancelled', 'no_show')"
+        },
+        "pickups_service_minutes": {
+          "name": "pickups_service_minutes",
+          "value": "\"pickup_routes\".\"pickups\".\"service_minutes\" between 1 and 240"
+        },
+        "pickups_price_minor": {
+          "name": "pickups_price_minor",
+          "value": "\"pickup_routes\".\"pickups\".\"price_minor\" is null or \"pickup_routes\".\"pickups\".\"price_minor\" between 0 and 100000000"
+        },
+        "pickups_label_length": {
+          "name": "pickups_label_length",
+          "value": "length(\"pickup_routes\".\"pickups\".\"label\") between 1 and 80"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_routes.planner_defaults": {
+      "name": "planner_defaults",
+      "schema": "pickup_routes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "private_enc": {
+          "name": "private_enc",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "day_start": {
+          "name": "day_start",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'09:00'"
+        },
+        "latest_finish": {
+          "name": "latest_finish",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'18:00'"
+        },
+        "end_at_home": {
+          "name": "end_at_home",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "service_minutes": {
+          "name": "service_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 10
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "planner_defaults_user_id_idx": {
+          "name": "planner_defaults_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "planner_defaults_service_minutes": {
+          "name": "planner_defaults_service_minutes",
+          "value": "\"pickup_routes\".\"planner_defaults\".\"service_minutes\" between 1 and 240"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "pickup_routes.route_plans": {
+      "name": "route_plans",
+      "schema": "pickup_routes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "day_id": {
+          "name": "day_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mode": {
+          "name": "mode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "basis": {
+          "name": "basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "osm_build": {
+          "name": "osm_build",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start_at": {
+          "name": "start_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "finish_at": {
+          "name": "finish_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drive_seconds": {
+          "name": "drive_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "distance_metres": {
+          "name": "distance_metres",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cost_minor": {
+          "name": "cost_minor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cost_basis": {
+          "name": "cost_basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stops": {
+          "name": "stops",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unassigned": {
+          "name": "unassigned",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "superseded_at": {
+          "name": "superseded_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "route_plans_user_id_idx": {
+          "name": "route_plans_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "route_plans_identity_idx": {
+          "name": "route_plans_identity_idx",
+          "columns": [
+            {
+              "expression": "day_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "version",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "route_plans_day_id_pickup_days_id_fk": {
+          "name": "route_plans_day_id_pickup_days_id_fk",
+          "tableFrom": "route_plans",
+          "tableTo": "pickup_days",
+          "schemaTo": "pickup_routes",
+          "columnsFrom": [
+            "day_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "route_plans_mode": {
+          "name": "route_plans_mode",
+          "value": "\"pickup_routes\".\"route_plans\".\"mode\" in ('optimised', 'my_order')"
+        },
+        "route_plans_basis": {
+          "name": "route_plans_basis",
+          "value": "\"pickup_routes\".\"route_plans\".\"basis\" in ('router', 'estimate')"
+        },
+        "route_plans_version": {
+          "name": "route_plans_version",
+          "value": "\"pickup_routes\".\"route_plans\".\"version\" >= 1"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "pickup_routes": "pickup_routes"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
