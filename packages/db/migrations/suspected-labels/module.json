@@ -2,6 +2,7 @@
   "module": "suspected-labels",
   "schema": "suspected_labels",
   "dependsOn": [
+    "core",
     "switches",
     "warning-signs",
     "copy-advert",
