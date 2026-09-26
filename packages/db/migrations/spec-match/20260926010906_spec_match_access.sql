@@ -1,5 +1,5 @@
 -- Access and views for the spec_match schema (packages/db/README.md, "Adding tables to a module";
--- services/spec-match/README.md). Depends on core (track_updated_at, enable_user_rls,
+-- services/spec-match/README.md). Depends on core (track_updated_at,
 -- allow_pipeline, current_user_id), switches (switches.state, switches.is_on), listing-suppression
 -- (is_suppressed, for the user-facing view) and quote-redaction (quote, for the user-facing view).
 -- The module reads want-manager's, parts-record's, listing-assessment's, noise-filter's,
@@ -9,9 +9,8 @@
 -- Only the pipeline role writes matches, with the least it needs: a new input is a new row, and a
 -- row is never rewritten except its matched_at, when a pair's inputs return to an earlier state
 -- and that row becomes the latest again; delete for erase() (rule 12: seller-rights erasure), for
--- a deleted want and for the account.deleted purge. nabvy_app reads only its own rows (user_id),
--- through app.v_spec_match_results, with column-level select on the columns that view reads and
--- a restrictive policy that shows exactly the rows the view may show.
+-- a deleted want and for the account.deleted purge. nabvy_app has no grant on the table: it reads
+-- its own results only through app.v_spec_match_results and spec_match.user_results() below.
 
 comment on schema spec_match is
   'Spec match: wants matched against listings by the parts they contain. Owner: the spec-match module.';
@@ -21,7 +20,6 @@ grant select, insert, delete on spec_match.matches to nabvy_pipeline;
 grant update (matched_at) on spec_match.matches to nabvy_pipeline;
 
 select nabvy_core.track_updated_at('spec_match.matches');
-select nabvy_core.enable_user_rls('spec_match.matches');
 select nabvy_core.allow_pipeline('spec_match.matches', 'all');
 
 -- Internal view: security_invoker, explicit columns, no user ID and never a seller field (no
@@ -46,58 +44,71 @@ revoke all on spec_match.v_matches from public, anon, authenticated;
 grant select on spec_match.v_matches to nabvy_pipeline;
 
 -- The user-facing view (rule 5; docs/security.md, "Cross-module reads behind a user-facing
--- view"). It reads only this module's own table; the cross-module calls are the SECURITY DEFINER
--- predicate listing_suppression.is_suppressed(), the switches functions and
--- quote_redaction.quote(), all granted to nabvy_app. security_invoker, so the table's row-level
--- security limits it to the caller's own rows (withUser). One row per want and listing: its
--- latest verdict, only when that is not no_match. Every evidence quote passes
--- quote_redaction.quote(): masked while that module is on, null while it is off (fail closed).
+-- view"). nabvy_app has no grant on spec_match.matches at all: the stored criteria hold verbatim
+-- quotes, and the table keeps superseded and no_match rows, none of which a user may see. The
+-- caller's rows come only through spec_match.user_results(), a SECURITY DEFINER function in the
+-- shape docs/security.md fixes: language sql, stable, pinned search_path, every name
+-- schema-qualified, an explicit returns table, reading only this module's own table, filtered in
+-- its body on nabvy_core.current_user_id() (outside withUser it returns nothing). It returns one
+-- row per want and listing, its latest verdict, only when that is not no_match, and every evidence
+-- quote through quote_redaction.quote(): masked while that module is on, null while it is off
+-- (fail closed). No hash, no user ID, no seller field, no full description. Executable by
+-- nabvy_app only (never nabvy_pipeline: it is row-returning).
+create function spec_match.user_results()
+returns table (
+  match_id uuid, want_id uuid, listing_id uuid, verdict text, inside_pc boolean, origin text,
+  backfill boolean, criteria jsonb, matched_at timestamptz
+)
+language sql
+stable
+security definer
+set search_path = pg_catalog
+as $$
+  select
+    m.id, m.want_id, m.listing_id, m.verdict, m.inside_pc, m.origin, m.backfill,
+    (
+      select coalesce(jsonb_agg(
+        jsonb_set(c.value, '{evidence}', (
+          select coalesce(jsonb_agg(
+            jsonb_set(e.value, '{quote}',
+              coalesce(to_jsonb(quote_redaction.quote(e.value ->> 'quote')), 'null'::jsonb))
+            order by e.ordinality), '[]'::jsonb)
+          from jsonb_array_elements(coalesce(c.value -> 'evidence', '[]'::jsonb))
+            with ordinality as e (value, ordinality)
+        ))
+        order by c.ordinality), '[]'::jsonb)
+      from jsonb_array_elements(m.criteria) with ordinality as c (value, ordinality)
+    ),
+    m.matched_at
+  from (
+    select distinct on (x.want_id, x.listing_id)
+      x.id, x.want_id, x.listing_id, x.verdict, x.inside_pc, x.origin, x.backfill, x.criteria,
+      x.matched_at
+    from spec_match.matches x
+    where x.user_id = nabvy_core.current_user_id()
+    order by x.want_id, x.listing_id, x.matched_at desc, x.id desc
+  ) m
+  where m.verdict <> 'no_match'
+$$;
+revoke all on function spec_match.user_results() from public;
+grant usage on schema spec_match to nabvy_app;
+grant execute on function spec_match.user_results() to nabvy_app;
+
+-- The view itself: security_invoker over that function, with the switch and suppression filters.
 -- Rows only while this module is on (off or shadow: no rows), only while listing-suppression is
--- on, never a suppressed listing. No hash, no user ID, no seller field, no full description.
+-- on, never a suppressed listing.
 create schema if not exists app;
 revoke all on schema app from public;
 grant usage on schema app to nabvy_app;
 
 create view app.v_spec_match_results with (security_invoker = true) as
 select
-  m.id as match_id, m.want_id, m.listing_id, m.verdict, m.inside_pc, m.origin, m.backfill,
-  (
-    select coalesce(jsonb_agg(
-      jsonb_set(c.value, '{evidence}', (
-        select coalesce(jsonb_agg(
-          jsonb_set(e.value, '{quote}',
-            coalesce(to_jsonb(quote_redaction.quote(e.value ->> 'quote')), 'null'::jsonb))
-          order by e.ordinality), '[]'::jsonb)
-        from jsonb_array_elements(coalesce(c.value -> 'evidence', '[]'::jsonb))
-          with ordinality as e (value, ordinality)
-      ))
-      order by c.ordinality), '[]'::jsonb)
-    from jsonb_array_elements(m.criteria) with ordinality as c (value, ordinality)
-  ) as criteria,
-  m.matched_at
-from (
-  select distinct on (x.want_id, x.listing_id)
-    x.id, x.want_id, x.listing_id, x.verdict, x.inside_pc, x.origin, x.backfill, x.criteria,
-    x.matched_at
-  from spec_match.matches x
-  order by x.want_id, x.listing_id, x.matched_at desc, x.id desc
-) m
+  r.match_id, r.want_id, r.listing_id, r.verdict, r.inside_pc, r.origin, r.backfill, r.criteria,
+  r.matched_at
+from spec_match.user_results() r
 where switches.is_on('spec-match')
   and switches.is_on('listing-suppression')
-  and m.verdict <> 'no_match'
-  and not listing_suppression.is_suppressed(m.listing_id);
+  and not listing_suppression.is_suppressed(r.listing_id);
 
 revoke all on app.v_spec_match_results from public, anon, authenticated;
 grant select on app.v_spec_match_results to nabvy_app;
-
--- The table behind a security_invoker view must be readable by the view's reader: nabvy_app gets
--- column-level select on exactly the columns the view and its policies read (never the hashes or
--- the rule version), user_isolation (enable_user_rls above) gives it only its own rows, and a
--- restrictive policy adds the view's own conditions, so a direct read of the table by the app
--- role sees no more than the view. The pipeline role keeps every row through allow_pipeline.
-grant usage on schema spec_match to nabvy_app;
-grant select (id, want_id, user_id, listing_id, verdict, criteria, inside_pc, origin, backfill,
-  matched_at) on spec_match.matches to nabvy_app;
-create policy app_user_facing on spec_match.matches as restrictive for select to nabvy_app
-  using (switches.is_on('spec-match') and switches.is_on('listing-suppression')
-         and not listing_suppression.is_suppressed(listing_id));

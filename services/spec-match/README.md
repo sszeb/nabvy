@@ -48,8 +48,10 @@ says. Priority: first (the card); critical-path priority [cp 6].
   match_id, want_id, listing_id, evidence_hash, card_hash, input_hash, rule_version, verdict,
   criteria, inside_pc, origin, backfill, matched_at (T5). The latest row of each want and listing;
   no user ID; quotes verbatim (readers that show them redact them). Row type `SpecMatchMatch`.
-- User-facing view `app.v_spec_match_results` (`nabvy_app` only; `security_invoker`, so row-level
-  security gives each user their own rows): exactly `match_id, want_id, listing_id, verdict,
+- User-facing view `app.v_spec_match_results` (`nabvy_app` only; `security_invoker` over the
+  SECURITY DEFINER `spec_match.user_results()`, which returns only the withUser user's rows and
+  nothing outside withUser; `nabvy_app` has no grant on the table, whose quotes are verbatim):
+  exactly `match_id, want_id, listing_id, verdict,
   inside_pc, origin, backfill, criteria, matched_at`. The latest verdict of each of the user's
   wants and listing, never `no_match`; every quote through `quote_redaction.quote()` (null while
   quote-redaction is off); rows only while this module and listing-suppression are `on`, never a
@@ -74,7 +76,7 @@ Postgres schema `spec_match`.
   `(want_id, listing_id, input_hash, rule_version)`; `input_hash` is the SHA-256 of the want's
   criteria, cap, point, radius, handover and centre, the listing's evidence and card hashes, and
   the verdict, criteria, `inside_pc` and origin computed from them. Also `user_id` (the want's
-  owner, for row-level security only), `evidence_hash`, `card_hash`, `verdict`, `criteria` (jsonb
+  owner, read only by `spec_match.user_results()`), `evidence_hash`, `card_hash`, `verdict`, `criteria` (jsonb
   `SpecMatchCriterionResult[]`), `inside_pc`, `origin` (`own_search | other_search`), `backfill`,
   `matched_at` (T5). Written by `nabvy_pipeline` only; `matched_at` is its one updatable column
   (an earlier row made the latest again).
@@ -132,6 +134,11 @@ Latest pass rate: 4/4. Unit tests cover each threshold's boundary (`test/domain.
 - 2026-09-26: quotes are stored verbatim and redacted when read: in the user-facing view by
   `quote_redaction.quote()`, in `search()` by `redact()` while quote-redaction is on; null while
   it is off.
+- 2026-09-26 (review of PR #109): `nabvy_app` gets no grant on `matches`, because the stored
+  criteria hold verbatim quotes and the table keeps superseded and `no_match` rows. The user's
+  rows reach the view only through `spec_match.user_results()` (SECURITY DEFINER, redacting,
+  latest verdict per pair, never `no_match`), per `docs/security.md`, "Cross-module reads behind a
+  user-facing view".
 - 2026-09-26: worth-the-trip hints are not computed yet: no travel cost is set.
 - 2026-09-26: `search()` runs inside withPipeline after the procedure's session check, and checks
   the account's standing; `results()` runs inside withUser.

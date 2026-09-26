@@ -20,8 +20,8 @@ values ('spec-match', 'module', 'on'), ('listing-suppression', 'module', 'on'),
        ('quote-redaction', 'module', 'on'), ('listing-ingest', 'module', 'on')
 on conflict (name) do update set state = excluded.state;
 
--- Only the pipeline role writes; anon and authenticated cannot use the schema; nabvy_app reads
--- only the columns the user-facing view reads, and writes nothing.
+-- Only the pipeline role writes; anon and authenticated cannot use the schema; nabvy_app has no
+-- privilege on the table at all (the stored quotes are verbatim) and reads only through the view.
 select pg_temp.check(has_table_privilege('nabvy_pipeline', 'spec_match.matches', p),
   'pipeline may ' || p)
 from unnest(array['select', 'insert', 'delete']) as p;
@@ -33,13 +33,20 @@ select pg_temp.check(not has_schema_privilege(r, 'spec_match', 'usage'),
   r || ' has no usage on spec_match')
 from unnest(array['anon', 'authenticated']) as r;
 select pg_temp.check(not has_any_column_privilege('nabvy_app', 'spec_match.matches', p),
-  'nabvy_app cannot ' || p)
-from unnest(array['insert', 'update']) as p;
+  'nabvy_app has no ' || p || ' on any column of matches')
+from unnest(array['select', 'insert', 'update']) as p;
 select pg_temp.check(not has_table_privilege('nabvy_app', 'spec_match.matches', 'delete'),
   'nabvy_app cannot delete');
-select pg_temp.check(not has_column_privilege('nabvy_app', 'spec_match.matches', c, 'select'),
-  'nabvy_app cannot read matches.' || c)
-from unnest(array['evidence_hash', 'card_hash', 'input_hash', 'rule_version']) as c;
+-- The function behind the user-facing view: SECURITY DEFINER, pinned search_path, executable by
+-- nabvy_app only (never public or the pipeline: it returns rows).
+select pg_temp.check(p.prosecdef and p.proconfig @> array['search_path=pg_catalog'],
+  'user_results is security definer with a pinned search_path')
+from pg_proc p where p.oid = 'spec_match.user_results()'::regprocedure;
+select pg_temp.check(has_function_privilege('nabvy_app', 'spec_match.user_results()', 'execute'),
+  'nabvy_app may call user_results');
+select pg_temp.check(not has_function_privilege(r, 'spec_match.user_results()', 'execute'),
+  r || ' cannot call user_results')
+from unnest(array['nabvy_pipeline', 'anon', 'authenticated']) as r;
 select pg_temp.check(not has_table_privilege(r, 'spec_match.v_matches', 'select'),
   r || ' cannot read v_matches')
 from unnest(array['nabvy_app', 'anon', 'authenticated']) as r;
@@ -154,8 +161,13 @@ select pg_temp.check((select criteria -> 0 -> 'evidence' -> 0 ->> 'quote'
 select set_config('app.user_id', '01920000-0000-7000-8000-0000000000e2', true);
 select pg_temp.check((select count(*) from app.v_spec_match_results) = 0,
   'user B sees no result and none of user A''s');
-select pg_temp.check((select count(*) from spec_match.matches) = 1,
-  'a direct read of the table by user B sees only B''s own row');
+do $$
+begin
+  perform count(*) from spec_match.matches;
+  raise exception 'FAILED: nabvy_app read spec_match.matches directly';
+exception when insufficient_privilege then null;
+end;
+$$;
 -- Outside withUser: nothing.
 select set_config('app.user_id', '', true);
 select pg_temp.check((select count(*) from app.v_spec_match_results) = 0,

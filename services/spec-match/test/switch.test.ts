@@ -133,7 +133,7 @@ describe('switch', () => {
     expect(await app()).toHaveLength(0)
   })
 
-  it('nabvy_app reads no internal view and only the view-shaped columns of the table', async () => {
+  it('nabvy_app reads no internal view and nothing of the table: raw quotes stay out of reach', async () => {
     await match()
     await expect(t.asUser(owner.userId, 'select * from spec_match.v_matches')).rejects.toThrow()
     await expect(
@@ -142,8 +142,17 @@ describe('switch', () => {
     await expect(
       t.asUser(owner.userId, `delete from spec_match.matches where user_id = '${owner.userId}'`),
     ).rejects.toThrow()
-    const own = await t.asUser(owner.userId, 'select listing_id from spec_match.matches')
+    await expect(
+      t.asUser(owner.userId, 'select criteria from spec_match.matches'),
+    ).rejects.toThrow()
+    await expect(
+      t.asUser(owner.userId, 'select listing_id from spec_match.matches'),
+    ).rejects.toThrow()
+    // The function behind the view returns only the caller's rows, and nothing outside withUser.
+    const own = await t.asUser(owner.userId, 'select listing_id from spec_match.user_results()')
     expect(own).toHaveLength(2)
+    expect(await t.asApp('select listing_id from spec_match.user_results()')).toHaveLength(0)
+    await expect(t.asPipeline('select * from spec_match.user_results()')).rejects.toThrow()
   })
 
   it('listing-assessment off: matching carries on, and nothing is no_match on its parts', async () => {

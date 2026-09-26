@@ -28,8 +28,8 @@ const RULE_VERSION = `'^s[0-9]+\\.[0-9a-f]{8}$'`
  * SHA-256 of everything the verdict read (the want's criteria, cap, area and handover, the
  * listing's card, parts, assessment and point), so any new input gives a new row and a replay
  * does not. The views show the latest row of each want and listing. `user_id` is the want's owner
- * (want-manager's `wantOwners`), for row-level security on the user-facing view only; no internal
- * view carries it. `matched_at` is T5 (rule 10), written once. Want, user and listing IDs are
+ * (want-manager's `wantOwners`), read only by `spec_match.user_results()` for the user-facing
+ * view; no internal view carries it. `matched_at` is T5 (rule 10), written once. Want, user and listing IDs are
  * other modules' IDs held as plain values (rule 4).
  */
 export const matches = schema.table(
@@ -89,8 +89,9 @@ export const vMatches = schema
   .existing()
 
 /**
- * User-facing: `app.v_spec_match_results`, the caller's own results (row-level security on
- * `user_id`): the latest verdict of each of their wants and listing when it is not `no_match`,
+ * User-facing: `app.v_spec_match_results`, the caller's own results (through the SECURITY
+ * DEFINER `spec_match.user_results()`, filtered on the withUser user; nabvy_app has no grant on
+ * the table): the latest verdict of each of their wants and listing when it is not `no_match`,
  * quotes redacted by `quote_redaction.quote()` (null while that module is off). Rows only while
  * this module and listing-suppression are `on`, never a suppressed listing.
  */
