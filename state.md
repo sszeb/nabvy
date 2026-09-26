@@ -67,11 +67,11 @@ Notes: #107 was merged by a session (not a reviewer run) with its test job cance
 ## Merged, migrations pending
 
 ## Sessions to start
-- price-drop-watch-fix2: model claude-haiku-4-5-20251001; branch task/w1-price-drop-watch; base task/w1-price-drop-watch; brief briefs/price-drop-watch-fix2.md
 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- 12:25 UTC dispatcher started price-drop-watch-fix2 as session_01Sw7J2MCK4DVGz2Wg5Z9tdd
 - 11:39 UTC dispatcher started asking-price-position as session_01H1uNBCmVwu3CQKJcozi74Y
 - 11:39 UTC dispatcher started warning-signs as session_011Zj6qGMEBWqYF6Vr8fYKnJ
 - 11:43 UTC dispatcher started scan-lookup as session_01NrX4WGkyZ76JoBoK6inbsY
