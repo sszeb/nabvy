@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 13:30 UTC 2026-09-26 by coordinator (merge event: #111 asking-price-position merged as 8ab3149, 2 migrations applied as `asking_price_position_pr111`, md5 verified; ledger 107, plan 109: #93 seller-reply-reports merged as bda52c5 but not yet applied). Before that: 13:20 UTC 2026-09-26 by coordinator (merge event: #109 spec-match merged as eb55376, 2 migrations applied as `spec_match_pr109`, md5 verified; ledger 105 incl. #102's router-gateway). Before that: 13:10 by coordinator 20 (owner steps done, #115 merged, handoff to coordinator 21). Before that: 13:08 UTC 2026-09-26 by coordinator (merge event: #115 reviewer memory merged by the owner as 0366edc, no migrations). Earlier: 12:55 by coordinator 20 (control session: #115, #114 merged, PR unsticking; see "Workflow check"). Before that: 12:40 by coordinator (merge event: #114 warning-signs merged as bfd3813, 2 migrations applied as `warning_signs_pr114`, ledger 101 = plan 101, md5 verified). Earlier: (sweep 12:37: no merges, ledger 99 = plan 99; #114 warning-signs opened; docs batch 4fd62ac). Earlier: merge event 10:50 (#101 as 2fbe3b8). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 12:37. Fingerprint: 0366edc; #113@f0f27cf,#112@0e837a1,#111@1881b8c,#110@2d2d13e,#106@367a86d,#104@027acc2,#102@54dee1e,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@f7f3e11; ledger 103.
+Updated 13:32 UTC 2026-09-26 by coordinator (merge event: #93 seller-reply-reports merged as bda52c5, 2 migrations applied as `seller_reply_reports_pr93`, md5 verified; ledger 109 = plan 109; suspected-labels [cp 5] newly READY, queued). Before that: 13:30 UTC 2026-09-26 by coordinator (merge event: #111 asking-price-position merged as 8ab3149, 2 migrations applied as `asking_price_position_pr111`, md5 verified; ledger 107, plan 109: #93 seller-reply-reports merged as bda52c5 but not yet applied). Before that: 13:20 UTC 2026-09-26 by coordinator (merge event: #109 spec-match merged as eb55376, 2 migrations applied as `spec_match_pr109`, md5 verified; ledger 105 incl. #102's router-gateway). Before that: 13:10 by coordinator 20 (owner steps done, #115 merged, handoff to coordinator 21). Before that: 13:08 UTC 2026-09-26 by coordinator (merge event: #115 reviewer memory merged by the owner as 0366edc, no migrations). Earlier: 12:55 by coordinator 20 (control session: #115, #114 merged, PR unsticking; see "Workflow check"). Before that: 12:40 by coordinator (merge event: #114 warning-signs merged as bfd3813, 2 migrations applied as `warning_signs_pr114`, ledger 101 = plan 101, md5 verified). Earlier: (sweep 12:37: no merges, ledger 99 = plan 99; #114 warning-signs opened; docs batch 4fd62ac). Earlier: merge event 10:50 (#101 as 2fbe3b8). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 12:37. Fingerprint: 0366edc; #113@f0f27cf,#112@0e837a1,#111@1881b8c,#110@2d2d13e,#106@367a86d,#104@027acc2,#102@54dee1e,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@f7f3e11; ledger 103.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -11,7 +11,7 @@ Updated 13:30 UTC 2026-09-26 by coordinator (merge event: #111 asking-price-posi
 - Supabase project `rlgufxmsrkhyeiabdeic`. Trigger.dev project `proj_aazrktvhdfmimvxwxsnq` (secret key on the owner's PC only).
 
 ## Ledger
-103 rows, plan 105 (13:25: #102 router-gateway applied as `router_gateway_pr102`, checksums and transcription md5 verified; spec-match's 2 from #109 pending). Earlier: 105 rows (13:20: #109 spec-match applied as `spec_match_pr109`, checksums and transcription md5 verified; the other 2 new rows are #102 router-gateway, applied by its own merge run). Earlier: 101 rows = plan 101 (13:10: #114 warning-signs applied as `warning_signs_pr114`, checksums and transcription md5 verified). Earlier: 99 rows = plan 99 (03:10: #108 asking-price-index applied as `asking_price_index_pr108`, checksums and transcription md5 verified). Earlier: 97 rows = plan 97 (checked 00:40: #85 attribution, #99 noise-filter, #92 search-planner applied 00:39, transcriptions verified). Nothing pending.
+109 rows = plan 109 (13:32: #93 seller-reply-reports applied as `seller_reply_reports_pr93`, checksums and transcription md5 verified). Earlier: 103 rows, plan 105 (13:25: #102 router-gateway applied as `router_gateway_pr102`, checksums and transcription md5 verified; spec-match's 2 from #109 pending). Earlier: 105 rows (13:20: #109 spec-match applied as `spec_match_pr109`, checksums and transcription md5 verified; the other 2 new rows are #102 router-gateway, applied by its own merge run). Earlier: 101 rows = plan 101 (13:10: #114 warning-signs applied as `warning_signs_pr114`, checksums and transcription md5 verified). Earlier: 99 rows = plan 99 (03:10: #108 asking-price-index applied as `asking_price_index_pr108`, checksums and transcription md5 verified). Earlier: 97 rows = plan 97 (checked 00:40: #85 attribution, #99 noise-filter, #92 search-planner applied 00:39, transcriptions verified). Nothing pending.
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
 - #116 scan-lookup (fix-r1): `session_01NrX4WGkyZ76JoBoK6inbsY` (Sonnet, 390k).
@@ -21,7 +21,6 @@ Updated 13:30 UTC 2026-09-26 by coordinator (merge event: #111 asking-price-posi
 - #98 check-scheduler (base #92 merged) — `session_018dmgrMJShzu2Mt83YDpxMx`.
 - #97 demand-signals — `session_01Lq2CgBrjy6kZ6b7qTLWCM3`.
 - #96 prepared-message [cp 5] — `session_011twSaUcxY8Ga8dmJHH3nHx`.
-- #93 seller-reply-reports — `session_01U3VJw1mfZ6n1syQaHj7v3K`.
 - #89 pickup-routes [cp 1], #81 listing-card [cp 5]: sessions in docs/progress.md.
 - #70 price-drop-watch [cp 6] (changes-needed, review 5324943052: cross-pass relist under-announce + CI timeout) — round-1 session `session_013TTwsCCZGwSmh4kpgXT2pr` could not fire the fixer; round-2 fix session `session_01Sw7J2MCK4DVGz2Wg5Z9tdd` pushed f7f3e11 (12:35).
 
@@ -59,14 +58,15 @@ Fix list, in order:
 Notes: #107 was merged by a session (not a reviewer run) with its test job cancelled; post-merge approval 01:15. The merge-event coordinator run wrote "Updated 10:50" at 11:37.
 
 ## Merged, migrations pending
-- #93 seller-reply-reports (main bda52c5): seller-reply-reports/ both files (plan 109 vs ledger 107 at 13:30) — skip if its own merge-event run already applied them (guard raises on re-apply).
 
 ## Sessions to start
+- suspected-labels: model claude-haiku-4-5-20251001; branch task/w2-suspected-labels; base main; brief briefs/suspected-labels.md
 - travel-time: model claude-haiku-4-5-20251001; branch task/w2-travel-time; base main; brief briefs/travel-time.md
 
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- | Merge #93 seller-reply-reports | done | 2026-09-26 | 13:32 UTC: merged (main bda52c5); 2 migrations applied as `seller_reply_reports_pr93`, ledger 109 = plan 109, md5 verified. Newly READY: suspected-labels [cp 5] (queued). |
 - | Merge #111 asking-price-position | done | 2026-09-26 | 13:30 UTC: merged (main 8ab3149); 2 migrations applied as `asking_price_position_pr111`, ledger 107, md5 verified. No newly READY module. |
 - | Merge #102 router-gateway | done | 2026-09-26 | 13:25 UTC: merged (main 310d36b); 2 migrations applied as `router_gateway_pr102`, ledger 103, md5 verified. travel-time newly READY, queued. |
 - | Merge #109 spec-match | done | 2026-09-26 | 13:17 UTC: merged (main eb55376); 2 migrations applied as `spec_match_pr109`, md5 verified. No newly READY module from it; fold questions file spec-match.md. Idle session `session_01EXXNdf8VXEm7qaHEbiBWaU` can be archived. |
