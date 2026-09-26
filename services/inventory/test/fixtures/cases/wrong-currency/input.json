@@ -1,0 +1,19 @@
+{
+  "userId": "0190f1d2-0000-7000-8000-000000000001",
+  "today": "2026-09-25",
+  "actions": [
+    {
+      "kind": "add",
+      "itemId": "0190f1d2-0000-7000-8000-0000000000a1",
+      "productKey": "gpu:nvidia:rtx-3090",
+      "cost": { "amountMinor": 42000, "currency": "GBP" },
+      "boughtAt": "2026-09-20"
+    },
+    {
+      "kind": "sell",
+      "itemId": "0190f1d2-0000-7000-8000-0000000000a1",
+      "sold": { "amountMinor": 55000, "currency": "EUR" },
+      "soldAt": "2026-09-24"
+    }
+  ]
+}

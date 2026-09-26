@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790346971001,
+      "tag": "20260925143611_inventory_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790346988695,
+      "tag": "20260925143628_inventory_access",
+      "breakpoints": true
+    }
+  ]
+}
