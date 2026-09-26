@@ -1,0 +1,5 @@
+{
+  "module": "search-planner",
+  "schema": "search_planner",
+  "dependsOn": ["core", "audit-log", "switches", "city-pages", "want-manager"]
+}

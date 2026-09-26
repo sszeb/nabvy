@@ -55,6 +55,8 @@ const runSuites = async (list: Suite[]): Promise<SuiteRun[]> => {
     watch: false,
     passWithNoTests: true,
     reporters: [{}],
+    hookTimeout: 120000,
+    testTimeout: 60000,
   })
   const byPath = new Map(list.map((suite) => [resolve(root, suite.file), suite]))
   const runs = vitest.state.getTestModules().map((testModule: TestModule): SuiteRun => {

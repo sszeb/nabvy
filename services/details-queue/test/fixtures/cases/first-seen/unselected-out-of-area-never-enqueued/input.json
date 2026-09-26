@@ -1,0 +1,43 @@
+{
+  "synthetic": true,
+  "source": "task 1.4h; details-selector's fixture case out-of-area-not-shipped; docs/decisions.md Precedence, Detail selection",
+  "jobTags": {
+    "21": {
+      "module": "check-scheduler",
+      "region": "belfast",
+      "purpose": "newest",
+      "shape": "newest-check"
+    }
+  },
+  "listings": [
+    {
+      "id": "01930000-0000-7000-8000-000000000031",
+      "sourceListingId": "5000000000000001",
+      "jobId": 21,
+      "kind": "search"
+    },
+    {
+      "id": "01930000-0000-7000-8000-000000000032",
+      "sourceListingId": "5000000000000002",
+      "jobId": 21,
+      "kind": "search"
+    }
+  ],
+  "steps": [
+    {
+      "firstSeen": "all"
+    },
+    {
+      "selected": ["01930000-0000-7000-8000-000000000031"]
+    },
+    {
+      "firstSeen": "all"
+    },
+    {
+      "submit": true
+    },
+    {
+      "firstSeen": "all"
+    }
+  ]
+}

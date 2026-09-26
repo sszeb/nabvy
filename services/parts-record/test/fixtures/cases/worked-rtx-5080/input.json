@@ -1,0 +1,26 @@
+{
+  "run": "facebook/runs/2026-09-24-VkryjpwS6U2GBDh3k",
+  "only": ["1783301919382894"],
+  "edits": [
+    {
+      "listingId": "1783301919382894",
+      "fields": {
+        "listingId": "2756686961383848",
+        "title": "Gaming PC",
+        "description": "Selling my gaming PC, only used for a few months, in perfect condition.\n\nSpecs:\nMSI GeForce RTX 5080 16GB\nAMD Ryzen 7 7800X3D\n32GB DDR5 RAM\n2TB NVMe SSD\n850W PSU\nWindows 11\n\nCollection only, no offers."
+      }
+    }
+  ],
+  "photo": {
+    "version": "v1.00000000",
+    "verdicts": [
+      {
+        "listingId": "2756686961383848",
+        "partType": "gpu",
+        "catalogueId": null,
+        "family": null,
+        "photoId": "photo-synthetic-1"
+      }
+    ]
+  }
+}

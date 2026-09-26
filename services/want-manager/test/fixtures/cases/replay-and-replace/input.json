@@ -1,0 +1,25 @@
+{
+  "synthetic": true,
+  "userId": "0190f1d2-0000-7000-8000-0000000000f1",
+  "steps": [
+    { "kind": "upsert" },
+    { "kind": "upsert", "input": { "wantId": "#0", "postcode": "po19 1aa" } },
+    {
+      "kind": "upsert",
+      "input": {
+        "wantId": "#0",
+        "postcode": "RH1 1AA",
+        "criteria": [
+          {
+            "partType": "cpu",
+            "catalogueId": null,
+            "family": "Ryzen 7",
+            "minAttr": null,
+            "orBetter": true
+          }
+        ]
+      }
+    },
+    { "kind": "upsert", "input": { "wantId": "00000000-0000-4000-8000-000000000000" } }
+  ]
+}

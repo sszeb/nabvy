@@ -1,0 +1,28 @@
+{
+  "listings": {
+    "1716871313386322": {
+      "kind": "pc",
+      "container": "true:parts",
+      "form": "system",
+      "gpu": "named",
+      "cautions": ["stale_text"],
+      "coverage": ["title", "fullDescription"],
+      "confirmed": [],
+      "exclusions": [],
+      "extras": [],
+      "unknowns": []
+    },
+    "1154042653756525": {
+      "kind": null,
+      "container": "false:box_only",
+      "form": "box_only",
+      "gpu": "none",
+      "cautions": ["box_only"],
+      "coverage": ["title", "fullDescription"],
+      "confirmed": [],
+      "exclusions": ["gpu:title:RTX 3080"],
+      "extras": [],
+      "unknowns": []
+    }
+  }
+}

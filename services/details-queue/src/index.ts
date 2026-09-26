@@ -35,6 +35,7 @@ import {
   DetailsQueueEnqueueInput,
   type DetailsQueueItem,
   type DetailsQueueLane,
+  type DetailsQueuePriority,
   type DetailsQueueSource,
   events,
 } from '@nabvy/contracts/modules/details-queue'
@@ -43,6 +44,7 @@ import type { Queryable } from '@nabvy/db'
 import { recommendRoute } from '@nabvy/route-health'
 import { readThrottle } from '@nabvy/spend-governor'
 import { isOn, state } from '@nabvy/switches'
+import type { z } from 'zod'
 import {
   chunk,
   deferredKey,
@@ -50,6 +52,7 @@ import {
   londonDay,
   nextState,
   prioritiesAllowed,
+  priorityOfSearchShape,
   priorityRank,
   routeFor,
   verdictFor,
@@ -73,6 +76,7 @@ import {
   selectNextBatch,
   selectOpenBatches,
   selectQueue,
+  selectSearchPlacement,
   updateItem,
 } from './repo'
 
@@ -104,6 +108,12 @@ const MODULE = 'details-queue'
  * already fetched is skipped unless the caller asks for a refresh, because every ID sent forces a
  * paid fetch (`EVIDENCE_LEDGER.md:250-253`). Records whatever the switch says (rule 11): queued
  * work waits, visible, and is never dropped. Safe to run twice.
+ *
+ * Placement of `first-seen` work: `details-selector` chooses which new listings are fetched; this
+ * queue decides when (the card's priority order, `CONTAINER_LISTINGS.md:194-196`) and, per batch,
+ * where. So for `reason: 'first-seen'` with no `regionId`, each ID is placed by the search job
+ * that first found it: its region, and `new-listing` for a newest check or catch-up, `sweep` for
+ * a sweep. An ID with no search sighting keeps the caller's priority and the default region.
  */
 export async function enqueue(
   q: Queryable,
@@ -111,6 +121,44 @@ export async function enqueue(
 ): Promise<DetailsQueueEnqueued> {
   const input = DetailsQueueEnqueueInput.parse(request)
   const ids = [...new Set(input.sourceListingIds)]
+  if (input.reason !== 'first-seen' || input.regionId !== undefined) {
+    return enqueuePlaced(q, { ...input, sourceListingIds: ids })
+  }
+  const placement = await selectSearchPlacement(q, input.source, ids)
+  const groups = new Map<
+    string,
+    { priority: DetailsQueuePriority; regionId?: string; ids: string[] }
+  >()
+  for (const id of ids) {
+    const found = placement.get(id)
+    const priority = found ? priorityOfSearchShape(found.shape) : input.priority
+    const regionId = found?.regionId
+    const key = `${priority}\n${regionId ?? ''}`
+    const group = groups.get(key) ?? { priority, regionId, ids: [] }
+    group.ids.push(id)
+    groups.set(key, group)
+  }
+  const total: DetailsQueueEnqueued = { queued: 0, alreadyQueued: 0, skipped: 0 }
+  for (const group of groups.values()) {
+    const done = await enqueuePlaced(q, {
+      ...input,
+      sourceListingIds: group.ids,
+      priority: group.priority,
+      regionId: group.regionId,
+    })
+    total.queued += done.queued
+    total.alreadyQueued += done.alreadyQueued
+    total.skipped += done.skipped
+  }
+  return total
+}
+
+/** `enqueue` for IDs that share one priority and region; `sourceListingIds` already distinct. */
+async function enqueuePlaced(
+  q: Queryable,
+  input: z.output<typeof DetailsQueueEnqueueInput>,
+): Promise<DetailsQueueEnqueued> {
+  const ids = input.sourceListingIds
   const existing = new Map(
     (await selectItems(q, input.source, input.lane, ids)).map((row) => [row.sourceListingId, row]),
   )

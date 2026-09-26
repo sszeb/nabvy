@@ -1,0 +1,8 @@
+{
+  "outcomes": [
+    { "ok": true },
+    { "ok": true, "trackedSale": true, "creditedReferral": false },
+    { "ok": true, "trackedSale": true, "creditedReferral": false }
+  ],
+  "partnerEventsCount": 2
+}

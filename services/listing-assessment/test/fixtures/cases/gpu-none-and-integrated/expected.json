@@ -1,0 +1,38 @@
+{
+  "listings": {
+    "2005582460147017": {
+      "kind": "pc",
+      "container": "true:parts",
+      "form": "system",
+      "gpu": "integrated",
+      "cautions": [],
+      "coverage": ["title", "fullDescription"],
+      "confirmed": [
+        "cpu:description:Ryzen 7 5700G",
+        "ram_size:description:16gb Corsair rgb ram",
+        "storage_size:description:2tb",
+        "storage_type:description:hard drive"
+      ],
+      "exclusions": [],
+      "extras": [],
+      "unknowns": []
+    },
+    "28242423458759790": {
+      "kind": "pc",
+      "container": "true:parts",
+      "form": "system",
+      "gpu": "none",
+      "cautions": [],
+      "coverage": ["title", "fullDescription"],
+      "confirmed": [
+        "cpu:description:i5-12400f",
+        "storage_size:description:Storage 928GB",
+        "ram_size:description:Ram- ddr4 16gb",
+        "ram_generation:description:ddr4"
+      ],
+      "exclusions": ["gpu:description:no GPU"],
+      "extras": [],
+      "unknowns": []
+    }
+  }
+}

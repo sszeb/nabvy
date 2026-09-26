@@ -1,0 +1,11 @@
+{
+  "listings": {
+    "7000000000000004": {
+      "status": "confirmed",
+      "townOrArea": "Selsey",
+      "appRows": 1,
+      "lat": 50.8365,
+      "lng": -0.7792
+    }
+  }
+}
