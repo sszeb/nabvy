@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 10:40 UTC 2026-09-26 by coordinator (sweep 10:37: no merges, ledger 99 = plan 99; new PRs #111 asking-price-position, #112 W3 docs; W3 docs recorded in progress.md). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 10:37. Fingerprint: d1f1ffa; #112@0e837a1,#111@1881b8c,#110@2d2d13e,#109@ba09f25,#106@2049a03,#104@2ad368d,#102@54dee1e,#101@a2de132,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 99.
+Updated 10:50 UTC 2026-09-26 by coordinator (merge event: #101 coordinator docs merged as 2fbe3b8, no migrations, ledger 99 = plan 99; it carried the 15→25 min CI timeouts, so #110 is superseded). Earlier: sweep 10:37. Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 10:37. Fingerprint: 2fbe3b8; #112@0e837a1,#111@1881b8c,#110@2d2d13e,#109@ba09f25,#106@2049a03,#104@2ad368d,#102@54dee1e,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 99.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -15,7 +15,7 @@ Updated 10:40 UTC 2026-09-26 by coordinator (sweep 10:37: no merges, ledger 99 =
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
 - #111 asking-price-position [cp 6]: opened 08:53 by its queued session; unreviewed.
-- #112 W3 docs slimming (base claude/coordinator-16, rides on #101): `session_01B5g9DjscTSFaP122ZnWuDn`.
+- #112 W3 docs slimming (base claude/coordinator-16; #101 merged 10:4x, so retarget #112 to main): `session_01B5g9DjscTSFaP122ZnWuDn`.
 - #109 spec-match [cp 6]: last review (04:39, head 4944a85) approves; waits on CI (#110); head ba09f25 (timeout bump) since then unreviewed.
 - #106 dispatch: zero-token reconciler (W2), #104 ci: faster scoped CI (W2) — `session_01WsDVema6i3QcYMjPNZK17M`.
 - #102 router-gateway [cp 2], 2 migrations — `session_01ETdUVwpWrdfWdAPLvk8R8i` (Opus). On merge: start travel-time.
@@ -26,8 +26,7 @@ Updated 10:40 UTC 2026-09-26 by coordinator (sweep 10:37: no merges, ledger 99 =
 - #93 seller-reply-reports — `session_01U3VJw1mfZ6n1syQaHj7v3K`.
 - #89 pickup-routes [cp 1], #81 listing-card [cp 5]: sessions in docs/progress.md.
 - #70 price-drop-watch [cp 6] (changes-needed, review 5324943052: cross-pass relist under-announce + CI timeout) — round-1 session `session_013TTwsCCZGwSmh4kpgXT2pr` could not fire the fixer; round-2 fix session queued.
-- #110 ci: raise the 15-minute job timeouts to 25 (coordinator, branch claude/funny-ptolemy-rdpsq9): every main CI run since #83 is cancelled at 15 min; unblocks all PRs incl. #70. Merge first; #104 supersedes it later.
-- #101 coordinator docs (rolling, `claude/coordinator-16` into main; carries the old stack #84, #86, #91, #95, #103).
+- #110 ci timeouts 15→25: superseded, main has the same change since #101 merged (48e70cd); close it unreviewed. PRs whose CI was cancelled need main merged in to pick up the timeouts.
 
 ## Sessions without a PR
 - W2b `session_0184s4vadhBCiHcAW7ZNZRRW` (Sonnet, 08:21, owner-approved): finishes #104 (CI speed, Routine hooks, folds #110's timeouts) and #106 (reconciler, vars for Routine IDs, Builder fire path). Replaces W2 `session_01WsDVema6i3QcYMjPNZK17M` (context full; do not wake). W3 waits for the owner's confirmation in its own session.
@@ -61,7 +60,6 @@ Updated 10:40 UTC 2026-09-26 by coordinator (sweep 10:37: no merges, ledger 99 =
 - price-drop-watch-fix2: model claude-haiku-4-5-20251001; branch task/w1-price-drop-watch; base task/w1-price-drop-watch; brief briefs/price-drop-watch-fix2.md
 
 ## Messages to send
-- Fire reviewer on-request `trig_01FPLnjfTATPb7YQivWvA7FX` with "PR #110: ci: raise the 15-minute job timeouts to 25" (priority: every PR's CI is cancelled until it merges).
 
 ## Docs to record (the sweep writes these into docs/progress.md)
 
