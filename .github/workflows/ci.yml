@@ -116,10 +116,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
+      # No cache: 'pnpm' here: this job never runs `pnpm install` (audit reads the lockfile
+      # directly), so the pnpm store is never populated and setup-node's post-job cache-save
+      # step fails ("Path Validation Error: Path(s) specified ... do(es) not exist").
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: 'pnpm'
       - run: pnpm audit --audit-level=high
 
   secrets:
