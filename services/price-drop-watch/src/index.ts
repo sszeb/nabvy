@@ -166,11 +166,13 @@ export async function applyEvent(
   if (candidates.length === 0) {
     return { open: true, evaluated: watches.length, candidates: 0, events: [] }
   }
-  // The relist-merge dedupe runs over every candidate, so a group's earlier watch whose drop an
-  // earlier pass already announced still stops a later member alerting on the same price.
+  // Dedupe only the newly inserted drops: within a relist group, each watch's own new drop is
+  // announced unless the same (relistGroupId, toMinor) was already announced in this pass. A
+  // watch whose drop was already on record (a replay or a later card change) has already notified
+  // its user and is not announced again.
   const inserted = await insertDrops(q, candidates)
-  const announced = dedupeAnnouncements(candidates)
-    .filter((d) => d.announce && inserted.has(d.watchId))
+  const announced = dedupeAnnouncements(candidates.filter((c) => inserted.has(c.watchId)))
+    .filter((d) => d.announce)
     .map((d) => d.watchId)
   return {
     open: true,

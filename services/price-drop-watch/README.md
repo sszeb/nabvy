@@ -85,7 +85,7 @@ Postgres schema `price_drop_watch`.
 | A drop | `toMinor < fromMinor`, both observed, same currency | The card | Fixed |
 | History source | `listing_ingest.v_price_changes` (plus the listing's first fetched price as the anchor); never `displayedPreviousMinor` | The card: "the seller's displayed previous price appears only as the seller's own figure, never as history" | Fixed |
 | Idempotency key | `(watch_id, card_hash)`; `card_hash` is listing-ingest's own sighting hash | Rule 8 (card-stage `cardHash`); this module has no `detail-evidence` dependency, so only `cardHash`, not `cardHash`+`evidenceHash` | Deviation from rule 8's generic "price stages" row, recorded in `docs/questions/price-drop-watch.md` |
-| Group announcement dedupe | One announcement per `(relistGroupId, toMinor)` per batch, earliest watch (`watchCreatedAt`, then `watchId`) wins; every candidate is still written | README "Decisions"; catalogue question 21 ("relist-merge only stops the same item alerting twice") | Starting value; the card leaves the exact mechanics to this module (question 21) |
+| Group announcement dedupe | One announcement per `(relistGroupId, toMinor)` per batch (within newly inserted drops only), earliest watch (`watchCreatedAt`, then `watchId`) wins; every candidate is still written | README "Decisions" (2026-09-26); catalogue question 21 ("relist-merge only stops the same item alerting twice") | Adjusted 2026-09-26 to dedupe only new drops within the pass, not across passes |
 | Announced once | A drop is announced only by the pass whose insert wrote its `drops` row; only changes observed at or after the watch's `created_at` are candidates | README "Decisions"; review of PR #70 | Fixed |
 | Watched recheck cadence | `tick()` asks once per active watch, at least daily (the caller's schedule); listing-lifecycle itself batches (≥ 20, or a day's wait) | `PARTS_INTELLIGENCE.md:190-191`; `listing-lifecycle`'s own "watched" reason | Starting value |
 | Batch | 500 listing IDs and watch IDs per handler pass, recheck request and event | Rule 7; `CLAUDE.md`, "Batches, not items" | Fixed |
@@ -207,6 +207,13 @@ the watcher, another user, an unwatched listing and no `app.user_id` at all).
   accepted as the simpler rule. A replay now announces nothing (the transport would drop its
   unchanged key anyway), so a pass whose writes committed but whose event was never published
   loses that announcement; recorded in `docs/questions/price-drop-watch.md`.
+- **2026-09-26: the relist-merge group dedupe covers new drops within one pass only** (review of
+  PR #70, round 2). A watch's own newly inserted drop is announced unless the same
+  `(relistGroupId, toMinor)` was already announced in this pass. Earlier passes' announcements
+  (which may have marked a different watch as the "announce" representative in the group) do not
+  gate a later-added watch's new drop: when watch A announced in pass 1 and watch B later joined
+  the group, pass 2 announces B's own new drop without requiring A's row to be re-inserted.
+  `dedupeAnnouncements` now runs only over newly inserted drops, not all candidates.
 - **2026-09-24: no RLS on `drops`.** It carries no `user_id` and is never read by `nabvy_app`
   directly, only through the history view, which reads listing-ingest's own observations instead
   (see "Owned tables"); the pipeline role alone has grants.
