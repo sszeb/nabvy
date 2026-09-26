@@ -1,5 +1,11 @@
 # Implementation brief: fleet and Routines improvements (from coordinator 18, 2026-09-26)
 
+**Owner decision, 2026-09-26: implement every recommendation now, with no pilots.** The relay split is the default for builds: a Builder run plans and writes a job note of at most 2 KB to the PR body, then works in slices; at 100k context (or at the end of a slice) it pushes, updates the note and hands on to the next run. Step F is in scope, and so are the docs slimming items. The work runs as three parallel workstreams, one session each, with no file overlap:
+
+- **W1, Routines** (this brief's steps A, C, D and E, plus `builder.md` with the relay split): files `docs/routines/*.md`, `scripts/precheck.mjs` and its test, `docs/secrets.md`, and the superseded marks in `docs/session-conventions.md`. W1 also owns every Routine prompt change and the one owner list.
+- **W2, CI and reconciler** (step B, then step F's `.github/workflows/dispatch.yml` + `scripts/dispatch.mjs` with a fixture test, per daisy-chain.md §2 and §5): files `.github/workflows/*`, `turbo.json`, `scripts/dispatch*`. The reconciler fires the Builder for READY modules (a Builder run whose note says "continue" is re-fired, at most 3 times), the reviewer for green unreviewed heads, the Fixer for `changes-needed` or red CI (at most 3 fix rounds, then `needs-human`), and the coordinator for merges with migrations. It honours the repository variable `CHAIN_LIVE`, logs every fire's HTTP status, and backs off on refusals. Tokens come from repository secrets only.
+- **W3, docs slimming**: `CLAUDE.md` down to at most 3 KB (non-negotiables plus pointers; "How to work" and "Working economy" move to `docs/rules.md` unchanged in meaning, with a line that fired runs and build runs read only their role file and brief). `docs/questions.md` keeps open questions only (target under 10 KB; the rest goes to `docs/questions-archive.md`). `docs/decisions.md` keeps the rules in force (target under 20 KB; history goes to `docs/decisions-history.md`, and each superseded rule is replaced rather than footnoted). Update the pointers in `README.md` and in the briefs. Nothing in meaning may be lost: list every moved section in the PR body.
+
 You implement the plan in `docs/routines/improvement-plan.md` (read it all, 9 KB), using `docs/routines/routines-design.md` and `docs/routines/daisy-chain.md` only as reference: read them by section with `sed -n`, never whole. Read `docs/security.md` before anything that touches tokens, webhooks, CI secrets or migrations. Work at medium effort, with no workflows. Use subagents only for reading, on Haiku. Follow CLAUDE.md: one PR per step, on a branch `task/<id>-<slug>`; fixture tests; lint and typecheck clean; no model identifiers in commits or PRs; no secrets in the repo or chat. Owner's standing rule: accept, confirm and go ahead. Ask the owner only for accounts, secrets, payments and prices.
 
 ## Order (never point a Routine at a file or secret that does not exist yet)
@@ -47,7 +53,7 @@ Then:
 - remove "record migrations" from the reviewer;
 - delete the stale poke Routines `trig_01KmJ4pPZXoRKmXRTUhtMgMF` and `trig_01VD8NBTFhNtAp2SnxZTVuqw` once the L1 and L2 sessions are done.
 
-**Step F (later; the owner decides).** The zero-token reconciler (`dispatch.yml` + `dispatch.mjs`, per daisy-chain.md §2) and the Builder pilot on prepared-message and demand-signals, measured against today's $20 average build. The k-way relay split is decided only after that pilot.
+**Step F (now, owner 2026-09-26; W2 and W1).** The zero-token reconciler (`dispatch.yml` + `dispatch.mjs`, per daisy-chain.md §2) and the Builder with the relay split as the default. Measure the first two builds (get_session cost per run) and record them; no pilot gate.
 
 ## Report
 After each step, add one line to state.md "Docs to record" on `claude/coordinator-state`, as a fast-forward push only. Give the owner one short message per merged step. Hand off at 150k used tokens: write the successor prompt into state.md "Waiting on the owner" and ask the owner to start it from the app.
