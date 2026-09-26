@@ -6,6 +6,7 @@ import {
   anyChecksFailing,
   decideActions,
   parseFixAttempts,
+  requestOptions,
   reviewedBlocksReview,
 } from './dispatch.mjs'
 
@@ -154,4 +155,12 @@ test('reviewedBlocksReview', () => {
     false,
     'no entry for the head does not block',
   )
+})
+
+test('requestOptions keeps the User-Agent when the caller passes its own headers', () => {
+  const opts = requestOptions({ method: 'POST', headers: { Authorization: 'token x' } })
+  assert.equal(opts.method, 'POST')
+  assert.equal(opts.headers['User-Agent'], 'Nabvy Dispatcher')
+  assert.equal(opts.headers.Authorization, 'token x')
+  assert.equal(requestOptions().headers['User-Agent'], 'Nabvy Dispatcher')
 })
