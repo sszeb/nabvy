@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 04:40 UTC 2026-09-26 by coordinator (sweep 04:38). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 04:38. Fingerprint: d1f1ffa; #109@4944a85,#106@cbb3ecc,#104@190c16c,#102@54dee1e,#101@1a4f508,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 99.
+Updated 06:38 UTC 2026-09-26 by coordinator (sweep 06:38). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 06:38. Fingerprint: d1f1ffa; #109@ba09f25,#106@cbb3ecc,#104@190c16c,#102@54dee1e,#101@1a4f508,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@cc6f36d,#89@61cc5d9,#81@b08ee6b,#70@7e42044; ledger 99.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
