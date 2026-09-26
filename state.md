@@ -1,6 +1,6 @@
 # Coordinator state
 
-Updated 12:40 UTC 2026-09-26 by coordinator (sweep 12:37: no merges, ledger 99 = plan 99; #114 warning-signs opened; docs batch 4fd62ac). Earlier: merge event 10:50 (#101 as 2fbe3b8). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 12:37. Fingerprint: 2fbe3b8; #114@b53c411,#113@f0f27cf,#112@0e837a1,#111@1881b8c,#110@2d2d13e,#109@ba09f25,#106@367a86d,#104@027acc2,#102@54dee1e,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@f7f3e11; ledger 99.
+Updated 13:10 UTC 2026-09-26 by coordinator (merge event: #114 warning-signs merged as bfd3813, 2 migrations applied as `warning_signs_pr114`, ledger 101 = plan 101, md5 verified). Earlier: (sweep 12:37: no merges, ledger 99 = plan 99; #114 warning-signs opened; docs batch 4fd62ac). Earlier: merge event 10:50 (#101 as 2fbe3b8). Setup check 2 (21:59): repo, state write, GitHub, Supabase ok; session tools absent in fired runs, so session starts and messages go through the dispatcher. Sweep cron `37 */2 * * *`. Last sweep: 12:37. Fingerprint: bfd3813; #113@f0f27cf,#112@0e837a1,#111@1881b8c,#110@2d2d13e,#109@ba09f25,#106@367a86d,#104@027acc2,#102@54dee1e,#100@6491d50,#98@bbebebb,#97@307961e,#96@420a386,#93@7ad5edf,#89@61cc5d9,#81@b08ee6b,#70@f7f3e11; ledger 101.
 
 ## IDs
 - Coordinator Routine: `trig_01SpUT9nZPtAH1FBGiQaCiwu` (fresh session per fire; cron `37 */2 * * *` = sweep).
@@ -11,11 +11,10 @@ Updated 12:40 UTC 2026-09-26 by coordinator (sweep 12:37: no merges, ledger 99 =
 - Supabase project `rlgufxmsrkhyeiabdeic`. Trigger.dev project `proj_aazrktvhdfmimvxwxsnq` (secret key on the owner's PC only).
 
 ## Ledger
-99 rows = plan 99 (03:10: #108 asking-price-index applied as `asking_price_index_pr108`, checksums and transcription md5 verified). Earlier: 97 rows = plan 97 (checked 00:40: #85 attribution, #99 noise-filter, #92 search-planner applied 00:39, transcriptions verified). Nothing pending.
+101 rows = plan 101 (13:10: #114 warning-signs applied as `warning_signs_pr114`, checksums and transcription md5 verified). Earlier: 99 rows = plan 99 (03:10: #108 asking-price-index applied as `asking_price_index_pr108`, checksums and transcription md5 verified). Earlier: 97 rows = plan 97 (checked 00:40: #85 attribution, #99 noise-filter, #92 search-planner applied 00:39, transcriptions verified). Nothing pending.
 
 ## Open PRs (sessions; details in docs/progress.md by grep)
 - #113 scripts: precheck counts only open PRs [cp 0] — coordinator 19 (branch claude/exciting-cray-42nw7p); unreviewed. Fixes the always-BUSY coordinator pre-check.
-- #114 warning-signs [cp 6]: opened ~12:17 by its queued session (`session_011Zj6qGMEBWqYF6Vr8fYKnJ`); unreviewed.
 - #111 asking-price-position [cp 6]: opened 08:53 by its queued session; unreviewed.
 - #112 W3 docs slimming (base claude/coordinator-16; #101 merged 10:4x, so retarget #112 to main): `session_01B5g9DjscTSFaP122ZnWuDn`.
 - #109 spec-match [cp 6]: last review (04:39, head 4944a85) approves; waits on CI (#110); head ba09f25 (timeout bump) since then unreviewed.
@@ -37,6 +36,7 @@ Updated 12:40 UTC 2026-09-26 by coordinator (sweep 12:37: no merges, ledger 99 =
 - pasted-link-lookup, inventory: stacked on #81; open their PRs after #81 merges.
 
 ## Next starts
+- scan-lookup [cp 1]: queued 03:10 (briefs/scan-lookup.md), no branch `task/w2-scan-lookup` or PR at 13:10; next sweep checks whether its session exists, else re-queue.
 - listing-search when #81 merges (stack on listing-card).
 - travel-time when #102 merges (`claude-haiku-4-5-20251001`, branch `task/w2-travel-time`).
 - L3 runbook and L4 local acceptance after L1 and L2 merge.
@@ -72,6 +72,7 @@ Notes: #107 was merged by a session (not a reviewer run) with its test job cance
 ## Messages to send
 
 ## Docs to record (the sweep writes these into docs/progress.md)
+- | Merge #114 warning-signs | done | 2026-09-26 | 13:10 UTC: merged (main bfd3813); 2 migrations applied as `warning_signs_pr114`, ledger 101 = plan 101, md5 verified. No newly READY module (scan-lookup queued 03:10). |
 
 ## Retired
 - Coordinator 16 `session_01VTx2FS552iCMDrFaiH9ods`, coordinator 17 `session_01DRRHh7vDk4PTJnPngeyXZ4`: sessions stay idle; do not wake them.
