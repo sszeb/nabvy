@@ -1,0 +1,390 @@
+{
+  "id": "620d6a51-ca2c-4e7a-9f82-23cbbf8c543f",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "search_planner.one_off_runs": {
+      "name": "one_off_runs",
+      "schema": "search_planner",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "purpose": {
+          "name": "purpose",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "input": {
+          "name": "input",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "approved_by": {
+          "name": "approved_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "one_off_runs_live_verification_idx": {
+          "name": "one_off_runs_live_verification_idx",
+          "columns": [
+            {
+              "expression": "centre_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"search_planner\".\"one_off_runs\".\"purpose\" = 'verification' and \"search_planner\".\"one_off_runs\".\"status\" in ('pending', 'submitted', 'completed')",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "one_off_runs_status_idx": {
+          "name": "one_off_runs_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "one_off_runs_purpose": {
+          "name": "one_off_runs_purpose",
+          "value": "\"search_planner\".\"one_off_runs\".\"purpose\" in ('verification', 'gap-fill', 'actor-test', 'fixture')"
+        },
+        "one_off_runs_status": {
+          "name": "one_off_runs_status",
+          "value": "\"search_planner\".\"one_off_runs\".\"status\" in ('pending', 'submitted', 'completed', 'failed', 'cancelled')"
+        },
+        "one_off_runs_approved": {
+          "name": "one_off_runs_approved",
+          "value": "\"search_planner\".\"one_off_runs\".\"purpose\" = 'verification' or \"search_planner\".\"one_off_runs\".\"approved_by\" is not null"
+        },
+        "one_off_runs_verification_centre": {
+          "name": "one_off_runs_verification_centre",
+          "value": "\"search_planner\".\"one_off_runs\".\"purpose\" <> 'verification' or \"search_planner\".\"one_off_runs\".\"centre_id\" is not null"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "search_planner.plan_terms": {
+      "name": "plan_terms",
+      "schema": "search_planner",
+      "columns": {
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "term": {
+          "name": "term",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "origin": {
+          "name": "origin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "class": {
+          "name": "class",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "want_count": {
+          "name": "want_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "paid_want_count": {
+          "name": "paid_want_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "in_budget": {
+          "name": "in_budget",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "rank": {
+          "name": "rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "plan_terms_centre_id_term_origin_pk": {
+          "name": "plan_terms_centre_id_term_origin_pk",
+          "columns": [
+            "centre_id",
+            "term",
+            "origin"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "plan_terms_class": {
+          "name": "plan_terms_class",
+          "value": "\"search_planner\".\"plan_terms\".\"class\" in ('narrow', 'broad')"
+        },
+        "plan_terms_origin": {
+          "name": "plan_terms_origin",
+          "value": "\"search_planner\".\"plan_terms\".\"origin\" in ('wants', 'pivot', 'admin-test')"
+        },
+        "plan_terms_term": {
+          "name": "plan_terms_term",
+          "value": "\"search_planner\".\"plan_terms\".\"term\" ~ '^[a-z0-9][a-z0-9 .+-]*$' and char_length(\"search_planner\".\"plan_terms\".\"term\") <= 100"
+        },
+        "plan_terms_counts": {
+          "name": "plan_terms_counts",
+          "value": "\"search_planner\".\"plan_terms\".\"want_count\" >= 0 and \"search_planner\".\"plan_terms\".\"paid_want_count\" >= 0 and \"search_planner\".\"plan_terms\".\"paid_want_count\" <= \"search_planner\".\"plan_terms\".\"want_count\""
+        },
+        "plan_terms_rank": {
+          "name": "plan_terms_rank",
+          "value": "(\"search_planner\".\"plan_terms\".\"in_budget\" and \"search_planner\".\"plan_terms\".\"rank\" >= 1) or (not \"search_planner\".\"plan_terms\".\"in_budget\" and \"search_planner\".\"plan_terms\".\"rank\" is null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "search_planner.plans": {
+      "name": "plans",
+      "schema": "search_planner",
+      "columns": {
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "search_planner": "search_planner"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {
+    "search_planner.v_one_off_runs": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "purpose": {
+          "name": "purpose",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "input": {
+          "name": "input",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "approved": {
+          "name": "approved",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_one_off_runs",
+      "schema": "search_planner",
+      "isExisting": true,
+      "materialized": false
+    },
+    "search_planner.v_plan": {
+      "columns": {
+        "centre_id": {
+          "name": "centre_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "term": {
+          "name": "term",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "class": {
+          "name": "class",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "origins": {
+          "name": "origins",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "want_count": {
+          "name": "want_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paid_want_count": {
+          "name": "paid_want_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rank": {
+          "name": "rank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "name": "v_plan",
+      "schema": "search_planner",
+      "isExisting": true,
+      "materialized": false
+    }
+  },
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

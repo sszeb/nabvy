@@ -1,10 +1,9 @@
-import { ChevronRightIcon, DownloadIcon } from 'lucide-react'
+import { ChevronRightIcon } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { AccountDataActions } from '@/components/account-data-actions'
 import { PageHeader } from '@/components/page-header'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
 import { getAccount } from '@/data'
 
 export const metadata: Metadata = { title: 'Account' }
@@ -15,7 +14,7 @@ export default async function AccountPage() {
   const account = await getAccount()
   const rows = [
     { label: 'Email', value: account.email },
-    { label: 'Home area', value: account.postcodeDistrict },
+    ...(account.homeArea ? [{ label: 'Home area', value: account.homeArea }] : []),
     {
       label: 'Sign-in',
       value: account.signInMethods.map((method) => methodLabel[method]).join(', '),
@@ -70,20 +69,8 @@ export default async function AccountPage() {
             Download everything we hold about you, or delete your account.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4">
-          <Button variant="outline" className="w-fit">
-            <DownloadIcon aria-hidden />
-            Export my data
-          </Button>
-          <Separator />
-          <div className="grid gap-2">
-            <p className="text-muted-foreground text-sm">
-              Deleting your account removes your hunts, alerts and inventory within 24 hours.
-            </p>
-            <Button variant="destructive" className="w-fit">
-              Delete account
-            </Button>
-          </div>
+        <CardContent>
+          <AccountDataActions />
         </CardContent>
       </Card>
     </div>

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import { closeBatch, handleFirstSeen, submitNext } from '../../src'
+import { closeBatch, enqueue, handleFirstSeen, submitNext } from '../../src'
 import {
   ALL_ON,
   createTestDatabase,
@@ -11,10 +11,13 @@ import {
   type TestDatabase,
 } from '../support/database'
 
-// Stage `first-seen`: `listing-ingest.first-seen` batches, replayed in any order, go to the queue
-// once per listing and are sent to Apify once. Each case is a list of steps: a first-seen batch,
-// a scheduler tick, or closing every open batch with full descriptions. Expected: each batch's
-// enqueue result, every run submitted (its IDs), and each item's final status.
+// Stage `first-seen`: `listing-ingest.first-seen` batches enqueue nothing themselves; only what
+// `details-selector` selects is queued, once per listing, and sent to Apify once, however the two
+// handlers and replays interleave. Each case is a list of steps: a first-seen batch (this module's
+// handler), a `selected` batch (the selector's own `enqueue()` call, exactly as its README
+// documents it: `new-listing`, `text`, `first-seen`, `requestedBy: 'details-selector'`), a
+// scheduler tick, or closing every open batch with full descriptions. Expected: each first-seen
+// and selected step's result in order, every run submitted (its IDs), and each item's final status.
 
 const Listing = z.strictObject({
   id: z.uuid(),
@@ -24,6 +27,7 @@ const Listing = z.strictObject({
 })
 const Step = z.union([
   z.strictObject({ firstSeen: z.union([z.literal('all'), z.array(z.uuid()).min(1)]) }),
+  z.strictObject({ selected: z.union([z.literal('all'), z.array(z.uuid()).min(1)]) }),
   z.strictObject({ submit: z.literal(true) }),
   z.strictObject({ closeAll: z.literal('full_verified') }),
 ])
@@ -70,6 +74,7 @@ describe('first-seen', () => {
   it.each(cases)('$id', async ({ input, expected }) => {
     const ports = fakePorts()
     let listingIds: string[]
+    const sourceIdOf = new Map<string, string>()
     if ('run' in input) {
       // The recorded run as a collected search job (job 1000, clear of the fake gateway's IDs).
       const dataset = loadDataset(input.run)
@@ -79,6 +84,7 @@ describe('first-seen', () => {
         (_, i) => `01930000-0000-7000-8000-${String(i + 1).padStart(12, '0')}`,
       )
       for (const [i, r] of listings.entries()) {
+        sourceIdOf.set(listingIds[i] as string, r.listingId as string)
         await t.listing({
           id: listingIds[i] as string,
           sourceListingId: r.listingId as string,
@@ -89,6 +95,7 @@ describe('first-seen', () => {
       }
     } else {
       for (const l of input.listings) {
+        sourceIdOf.set(l.id, l.sourceListingId)
         await t.listing({ ...l, tags: input.jobTags[String(l.jobId)] })
       }
       listingIds = input.listings.map((l) => l.id)
@@ -101,6 +108,20 @@ describe('first-seen', () => {
         const result = await t.db.transaction((q) => handleFirstSeen(q, batch))
         expect(result.ok).toBe(true)
         if (result.ok) results.push(result.value)
+      } else if ('selected' in step) {
+        const batch = step.selected === 'all' ? listingIds : step.selected
+        results.push(
+          await t.db.transaction((q) =>
+            enqueue(q, {
+              source: 'facebook',
+              sourceListingIds: batch.map((id) => sourceIdOf.get(id) as string),
+              priority: 'new-listing',
+              lane: 'text',
+              reason: 'first-seen',
+              requestedBy: 'details-selector',
+            }),
+          ),
+        )
       } else if ('submit' in step) {
         await t.db.transaction((q) => submitNext(q, { ports }))
       } else {

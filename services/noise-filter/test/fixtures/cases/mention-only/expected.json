@@ -1,0 +1,24 @@
+{
+  "listings": {
+    "1072745435569624": {
+      "reasons": ["mention_only"],
+      "terms": ["rtx 5080:mention"]
+    },
+    "1397200465308431": {
+      "reasons": [],
+      "terms": ["5080:mention", "gaming pc:generic"]
+    },
+    "1403975981250476": {
+      "reasons": ["keyword_stuffing"],
+      "terms": ["5080:tag_only"]
+    },
+    "1783301919382894": {
+      "reasons": [],
+      "terms": ["5080:absent"]
+    },
+    "2264485254402498": {
+      "reasons": [],
+      "terms": ["rtx 5080:offered"]
+    }
+  }
+}
