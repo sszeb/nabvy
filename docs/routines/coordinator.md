@@ -1,6 +1,6 @@
 # Coordinator run rules
 
-The fleet runs on stateless Routines (owner, 2026-09-25, 21:40 and 22:00; `docs/decisions.md` "Session and model economy", "Runtime architecture"). Each fire starts a fresh session that does one job and ends, so nothing accumulates context and nothing hands off.
+The fleet runs on stateless Routines (owner, 2026-09-25, 21:40 and 22:00; `docs/decisions.md` "Stateless coordinator"). Each fire starts a fresh session that does one job and ends, so nothing accumulates context and nothing hands off.
 
 | Routine | ID | Fires | Job |
 |---|---|---|---|
@@ -67,7 +67,7 @@ If the Supabase tools are missing from the run, apply nothing: leave the lines p
 
 ## Build-session brief (queued for the dispatcher)
 
-Write the brief to `briefs/<module>.md` on the state branch, and add a line under "## Sessions to start": `- <module>: model <model id>; branch task/<id>-<slug>; base <revision, usually main>; brief briefs/<module>.md`. Model by job (`docs/decisions.md` "Session and model economy"): `claude-haiku-4-5-20251001` for code (build and fix), `claude-sonnet-5` for docs, CRUD and UI. The brief states, in this order:
+Write the brief to `briefs/<module>.md` on the state branch, and add a line under "## Sessions to start": `- <module>: model <model id>; branch task/<id>-<slug>; base <revision, usually main>; brief briefs/<module>.md`. Model by job (`docs/decisions.md` "Model by job, revised"): `claude-haiku-4-5-20251001` for code (build and fix), `claude-sonnet-5` for docs, CRUD and UI. The brief states, in this order:
 
 1. "Run at medium effort." The module and its critical-path priority `[cp N]`.
 2. The job in at most four numbered steps.
