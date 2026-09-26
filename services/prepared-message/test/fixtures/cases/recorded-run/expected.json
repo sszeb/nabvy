@@ -1,0 +1,32 @@
+{
+  "messages": {
+    "1756692548940192": {
+      "asks": ["ram_size", "storage_size"],
+      "checks": ["gpu:GTX+1660", "cpu:Ryzen+7+2700X"]
+    },
+    "1123980543398026": {
+      "asks": ["cpu", "ram_size", "storage_size"],
+      "checks": ["gpu:GTX 1080"]
+    },
+    "1639721697586478": {
+      "asks": ["gpu", "cpu", "ram_size", "storage_size"],
+      "checks": []
+    },
+    "1083674317719227": {
+      "asks": ["storage_size"],
+      "checks": [
+        "gpu:Geforce RTX graphics card",
+        "cpu:~3900Mhz AMD64 processor",
+        "ram_size:16GB RAM"
+      ]
+    },
+    "2537899006714740": {
+      "asks": ["gpu", "cpu", "ram_size", "storage_size"],
+      "checks": []
+    },
+    "1380502417485603": {
+      "asks": ["gpu", "cpu", "ram_size", "storage_size"],
+      "checks": []
+    }
+  }
+}
