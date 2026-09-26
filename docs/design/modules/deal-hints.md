@@ -5,12 +5,12 @@
 ### `deal-hints`
 - **Purpose:** choose at most 3 listings just beyond a user's radius where the ask gap outweighs the extra trip.
 - **Does / does not:** gates a candidate on band (beyond r, within r + clamp(r/2, 5, 15) mi), comparables at n≥10, not suspected (or a confirmed gem), collectable, clean, located and not across a ferry crossing, and already held (never starts a collection run). A candidate becomes a hint when the ask gap minus the extra trip cost is at least max(£10, 5% of the comparable median). Runs once per filter; later pages add none. Starts in shadow mode, logging candidates through `product-events`, until the owner approves it live (decisions question 54: no hint shown). Never says "worth" or "fair", and shows only asks, never a sale price.
-- **Inputs:** computed on read from `listing-search.candidatesInBand()`, `asking-price-position`, `suspected-labels`, `travel-cost.tripCost()`, `travel-time.roadTimes()` (soft).
+- **Inputs:** computed on read from `listing-search.candidatesInBand()`, `asking-price-position`, `suspected-labels`, `location.distanceKm()`, `travel-time.roadTimes()` (soft). `travel-cost.tripCost()` was dropped by the owner on 2026-09-25: the gap is weighed against distance in miles and rough time, never a trip cost.
 - **Outputs:** `hintsFor(userId, filter)`; candidates and impressions logged via `product-events.track()`.
 - **Owns:** `hint_rules` (versioned parameter sets: band, margin, traffic factor).
 - **Views:** none.
 - **Contracts:** `HintCandidate`, `HintResult`, `HintRules`.
-- **Depends on:** `switches`, `listing-search`, `asking-price-position`, `suspected-labels`, `travel-cost`, `location`, `product-events`, `travel-time` (soft).
+- **Depends on:** `switches`, `listing-search`, `asking-price-position`, `suspected-labels`, `location`, `product-events`, `travel-time` (soft).
 - **When off:** the hint strip and dashed map pills disappear; the feed is unaffected.
 - **Tests and fixtures:** each gate individually (n<10, suspected, the 60% floor, not collectable, noise, approximate, ferry, outside band); a confirmed gem below 60% of median is hinted, an unconfirmed one is not; at most 3 per search; shadow mode shows nothing.
 - **Priority and phase:** MVP, shadow-first (search-map-routes draft, task 4.1j); ships and stays in shadow (decisions question 54: no hint shown).
