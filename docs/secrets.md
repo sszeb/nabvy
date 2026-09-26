@@ -45,5 +45,9 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `POSTHOG_KEY`, `POSTHOG_HOST` | web app and server (`eu.i.posthog.com`) | PostHog project, EU cloud |
 | `TOKEN_ENCRYPTION_KEY` | inventory-resale | Generated once; encrypts eBay refresh tokens at rest |
 | `FB_DAILY_CAP_MINOR`, `GUMTREE_DAILY_CAP_MINOR`, `SCAN_SPEND_CAP_MINOR` | crawl-planner, recognition | Config: defaults 1000, 500, 5 |
+| `REVIEW_FIRE_TOKEN` | CI (`notify-review` job, `.github/workflows/ci.yml`) | A per-Routine API token for the reviewer Routine, generated once in the Routines app; stored as a GitHub repository secret, never in code, commits or chat |
+| `FIX_FIRE_TOKEN` | CI (`notify-fix` job, `.github/workflows/ci.yml`) | Same as `REVIEW_FIRE_TOKEN`, for the Fixer Routine |
+
+These two are GitHub Actions repository secrets, not application config: they never reach `packages/config` or `.env`, and only the two CI jobs above read them (to `POST` a Routine fire, per `docs/routines/daisy-chain.md`).
 
 Accounts a human must create before Phase 1: Apify (with the Nabvy actor deployed), Anthropic, Trigger.dev, Telegram bot. Before Phase 2: eBay developer keyset. Before Phase 3: eBay Sell API consent flow (RuName) and Sandbox seller. Before Phase 4: Stripe (products created per `docs/billing.md`, Stripe Tax enabled, legal entity set), Resend with `mail.nabvy.com` and `news.nabvy.com` verified, PostHog Workflows enabled with an email sender on `news.nabvy.com`, VAPID keys, Sentry, PostHog, Cloudflare Turnstile, Google OAuth client. Before launch: ICO registration, legal documents, external security scan, Dub workspace with the Partners programme configured per `docs/affiliates.md` and `nabvy.link` connected.
