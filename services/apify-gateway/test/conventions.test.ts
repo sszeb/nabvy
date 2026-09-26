@@ -67,8 +67,9 @@ describe('who may reach the gateway', () => {
       /apify_gateway\s*\.\s*(enqueue_run|jobs|items|settings|claim_next_job)\b|from\s+['"]@nabvy\/db\/schema\/apify-gateway['"]/
     // Readers' test support (listing-ingest, detail-evidence, run-coverage, relist-merge,
     // listing-suppression, parts-rules, copy-advert, listing-lifecycle, details-selector, parts-ai,
-<<<<<<< HEAD
-    // parts-record, listing-assessment, noise-filter, price-drop-watch, spec-match) seeds collected jobs into
+    // parts-record, listing-assessment, noise-filter, price-drop-watch, spec-match, asking-price-position,
+    // demand-signals, search-planner, attribution, check-scheduler, listing-card, prepared-message,
+    // router-gateway, seller-reply-reports, warning-signs, pickup-routes) seeds collected jobs into
     // the gateway's tables in PGlite (never a live database), so their fixtures read the real views.
     const seeders = [
       'services/listing-ingest/test/support/',
@@ -84,9 +85,19 @@ describe('who may reach the gateway', () => {
       'services/parts-record/test/support/',
       'services/listing-assessment/test/support/',
       'services/noise-filter/test/support/',
-<<<<<<< HEAD
       'services/price-drop-watch/test/support/',
       'services/spec-match/test/support/',
+      'services/asking-price-position/test/support/',
+      'services/demand-signals/test/support/',
+      'services/search-planner/test/support/',
+      'services/attribution/test/support/',
+      'services/check-scheduler/test/support/',
+      'services/listing-card/test/support/',
+      'services/prepared-message/test/support/',
+      'services/router-gateway/test/support/',
+      'services/seller-reply-reports/test/support/',
+      'services/warning-signs/test/support/',
+      'services/pickup-routes/test/support/',
     ]
     const found = offenders(
       pattern,
