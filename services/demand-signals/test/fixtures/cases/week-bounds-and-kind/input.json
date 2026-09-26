@@ -1,0 +1,54 @@
+{
+  "synthetic": true,
+  "builtFrom": "docs/design/modules/demand-signals.md (cells under 10 suppressed; a wanted advert posted in many towns counts once per cell and week) and the input views as want-manager, listing-assessment, city-pages and copy-advert publish them",
+  "now": "2026-09-25T00:00:00Z",
+  "weekStart": "2026-09-14",
+  "wants": [],
+  "adverts": [
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-14T00:00:00Z",
+      "repeat": 1
+    },
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-20T23:59:59Z",
+      "repeat": 1
+    },
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": null,
+      "firstFetchedAt": "2026-09-16T08:00:00Z",
+      "repeat": 8
+    },
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-21T00:00:00Z",
+      "repeat": 1
+    },
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-13T23:59:59Z",
+      "repeat": 1
+    },
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-15T10:00:00Z",
+      "kind": "pc",
+      "repeat": 3
+    },
+    {
+      "centre": "A",
+      "catalogueIds": ["rtx-3090"],
+      "listedAt": "2026-09-15T10:00:00Z",
+      "kind": "laptop",
+      "repeat": 1
+    }
+  ]
+}
