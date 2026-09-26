@@ -1,0 +1,5 @@
+{
+  "module": "scan-lookup",
+  "schema": "scan_lookup",
+  "dependsOn": ["core", "switches", "scan-recognition", "asking-price-index"]
+}
