@@ -260,7 +260,8 @@ function writeMain(mode, positional, flags) {
   const [n, sha, ...rest] = positional
   const status = mode === 'claim' ? 'claimed' : rest.shift()
   const rootDir = rest[0] ?? process.cwd()
-  const okStatus = mode === 'claim' || ['approved', 'merged', 'changes', 'released'].includes(status)
+  const okStatus =
+    mode === 'claim' || ['approved', 'merged', 'changes', 'released'].includes(status)
   if (!/^\d+$/.test(n ?? '') || !/^[0-9a-f]{7,40}$/.test(sha ?? '') || !okStatus) {
     console.error(
       'usage: node scripts/precheck.mjs claim <pr> <head> [rootDir] | record <pr> <head> approved|merged|changes|released [rootDir]',
