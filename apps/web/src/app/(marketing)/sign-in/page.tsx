@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Sign in' }
 
 export default function SignInPage() {
   // Not a secret (Cloudflare's Turnstile docs: only the secret key must stay server-side), but
-  // still read only through @nabvy/config, never process.env, per CLAUDE.md.
+  // still read only through @nabvy/config, never the environment directly, per CLAUDE.md.
   const captcha = safeLoadEnv(['captcha'])
   const siteKey = captcha.success ? captcha.data.TURNSTILE_SITE_KEY : null
   return (

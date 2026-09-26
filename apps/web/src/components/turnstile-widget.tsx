@@ -20,7 +20,7 @@ declare global {
  * refuses `/sign-in/magic-link` and `/sign-in/social` with no `x-captcha-response` token —
  * services/auth/README.md, "Mounting in apps/web"). `siteKey` is not a secret (Cloudflare's own
  * docs: only the secret key must stay server-side), so it is passed down as a prop from a server
- * component that reads it through `@nabvy/config`, rather than read from `process.env` here.
+ * component that reads it through `@nabvy/config`, rather than read from the environment here.
  */
 export function TurnstileWidget({
   siteKey,
