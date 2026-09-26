@@ -1,0 +1,33 @@
+{
+  "wants": {
+    "16gb-and-rtx-5060": {
+      "1072745435569624": {
+        "verdict": "not_stated",
+        "insidePc": true,
+        "criteria": [
+          "ram:match:named:description+title",
+          "gpu:not_stated:partial_text:description+title",
+          "distance:match:within_radius"
+        ]
+      },
+      "1123980543398026": {
+        "verdict": "no_match",
+        "insidePc": true,
+        "criteria": [
+          "ram:match:named:description",
+          "gpu:no_match:excluded:description",
+          "distance:match:within_radius"
+        ]
+      },
+      "2264485254402498": {
+        "verdict": "not_stated",
+        "insidePc": true,
+        "criteria": [
+          "ram:match:named:description",
+          "gpu:not_stated:not_named",
+          "distance:match:within_radius"
+        ]
+      }
+    }
+  }
+}

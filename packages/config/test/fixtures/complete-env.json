@@ -68,6 +68,7 @@
     "POSTHOG_KEY": "placeholder-posthog-key",
     "POSTHOG_HOST": "https://eu.i.posthog.com",
     "TOKEN_ENCRYPTION_KEY": "placeholder-token-encryption-key",
+    "PICKUPS_DATA_KEY": "0000000000000000000000000000000000000000000000000000000000000000",
     "FB_DAILY_CAP_MINOR": "1000",
     "GUMTREE_DAILY_CAP_MINOR": "500",
     "SCAN_SPEND_CAP_MINOR": "5"

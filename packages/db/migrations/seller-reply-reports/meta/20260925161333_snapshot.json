@@ -1,0 +1,1152 @@
+{
+  "id": "03e534d4-8ff6-438c-91eb-cd07cdad960a",
+  "prevId": "a45c2af1-f033-4e66-bc5c-03a33a3a3cd0",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "seller_reply_reports.holds": {
+      "name": "holds",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope_key": {
+          "name": "scope_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "opened_at": {
+          "name": "opened_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "released_at": {
+          "name": "released_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "released_by": {
+          "name": "released_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "audit_id": {
+          "name": "audit_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "holds_identity_idx": {
+          "name": "holds_identity_idx",
+          "columns": [
+            {
+              "expression": "scope_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "opened_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "holds_open_idx": {
+          "name": "holds_open_idx",
+          "columns": [
+            {
+              "expression": "scope_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "reason",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "released_at is null",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "holds_reason": {
+          "name": "holds_reason",
+          "value": "\"seller_reply_reports\".\"holds\".\"reason\" in ('burst', 'gem_burst', 'counter_report')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "seller_reply_reports.listing_evidence": {
+      "name": "listing_evidence",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "persons": {
+          "name": "persons",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weight_sum": {
+          "name": "weight_sum",
+          "type": "numeric(8, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "counter_weight": {
+          "name": "counter_weight",
+          "type": "numeric(8, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "level": {
+          "name": "level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "place_id": {
+          "name": "place_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "distance_band": {
+          "name": "distance_band",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "held": {
+          "name": "held",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "hold_reason": {
+          "name": "hold_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "carried_from_relist": {
+          "name": "carried_from_relist",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "inputs_hash": {
+          "name": "inputs_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "as_of": {
+          "name": "as_of",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "t1_fetched_at": {
+          "name": "t1_fetched_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "done_at": {
+          "name": "done_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "listing_evidence_identity_idx": {
+          "name": "listing_evidence_identity_idx",
+          "columns": [
+            {
+              "expression": "source",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "family",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "scope",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "rule_version",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "listing_evidence_listing_idx": {
+          "name": "listing_evidence_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "listing_evidence_family": {
+          "name": "listing_evidence_family",
+          "value": "family in ('location', 'handover', 'payment', 'link', 'item')"
+        },
+        "listing_evidence_scope": {
+          "name": "listing_evidence_scope",
+          "value": "\"seller_reply_reports\".\"listing_evidence\".\"scope\" in ('own', 'copy')"
+        },
+        "listing_evidence_level": {
+          "name": "listing_evidence_level",
+          "value": "\"seller_reply_reports\".\"listing_evidence\".\"level\" in ('none', 'single', 'multiple')"
+        },
+        "listing_evidence_band": {
+          "name": "listing_evidence_band",
+          "value": "distance_band is null or distance_band in ('lt_10', '10_25', '25_50', '50_100', '100_plus', 'unknown')"
+        },
+        "listing_evidence_hold": {
+          "name": "listing_evidence_hold",
+          "value": "(\"seller_reply_reports\".\"listing_evidence\".\"held\" and \"seller_reply_reports\".\"listing_evidence\".\"hold_reason\" in ('burst', 'gem_burst', 'counter_report')) or (not \"seller_reply_reports\".\"listing_evidence\".\"held\" and \"seller_reply_reports\".\"listing_evidence\".\"hold_reason\" is null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "seller_reply_reports.report_reasons": {
+      "name": "report_reasons",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "report_id": {
+          "name": "report_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "detail": {
+          "name": "detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "second_answer": {
+          "name": "second_answer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reported_place_id": {
+          "name": "reported_place_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "distance_band": {
+          "name": "distance_band",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "counts": {
+          "name": "counts",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "report_reasons_identity_idx": {
+          "name": "report_reasons_identity_idx",
+          "columns": [
+            {
+              "expression": "report_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "reason",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "report_reasons_report_id_reports_id_fk": {
+          "name": "report_reasons_report_id_reports_id_fk",
+          "tableFrom": "report_reasons",
+          "columnsFrom": [
+            "report_id"
+          ],
+          "tableTo": "reports",
+          "schemaTo": "seller_reply_reports",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "report_reasons_reason": {
+          "name": "report_reasons_reason",
+          "value": "reason in ('collection_elsewhere', 'postage_only', 'payment_first', 'link_or_fb_delivery', 'not_as_described', 'other', 'as_listed')"
+        },
+        "report_reasons_band": {
+          "name": "report_reasons_band",
+          "value": "distance_band is null or distance_band in ('lt_10', '10_25', '25_50', '50_100', '100_plus', 'unknown')"
+        },
+        "report_reasons_counts": {
+          "name": "report_reasons_counts",
+          "value": "\"seller_reply_reports\".\"report_reasons\".\"counts\" is null or \"seller_reply_reports\".\"report_reasons\".\"counts\" in ('any_path', 'path_b_only', 'none')"
+        },
+        "report_reasons_place": {
+          "name": "report_reasons_place",
+          "value": "\"seller_reply_reports\".\"report_reasons\".\"reported_place_id\" is null or \"seller_reply_reports\".\"report_reasons\".\"reason\" = 'collection_elsewhere'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "seller_reply_reports.reporter_stats": {
+      "name": "reporter_stats",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "upheld": {
+          "name": "upheld",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "not_upheld": {
+          "name": "not_upheld",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "voided": {
+          "name": "voided",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "last_report_at": {
+          "name": "last_report_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "reporter_stats_nonnegative": {
+          "name": "reporter_stats_nonnegative",
+          "value": "\"seller_reply_reports\".\"reporter_stats\".\"upheld\" >= 0 and \"seller_reply_reports\".\"reporter_stats\".\"not_upheld\" >= 0 and \"seller_reply_reports\".\"reporter_stats\".\"voided\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "seller_reply_reports.reports": {
+      "name": "reports",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "nabvy_core.uuidv7()"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reporter_user_id": {
+          "name": "reporter_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "card_hash": {
+          "name": "card_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "evidence_hash": {
+          "name": "evidence_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "open_via": {
+          "name": "open_via",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "first_opened_at": {
+          "name": "first_opened_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "eligibility": {
+          "name": "eligibility",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "weight_at_submit": {
+          "name": "weight_at_submit",
+          "type": "numeric(3, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weight": {
+          "name": "weight",
+          "type": "numeric(3, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'saved'"
+        },
+        "outcome": {
+          "name": "outcome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outcome_by": {
+          "name": "outcome_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listing_shipping_offered": {
+          "name": "listing_shipping_offered",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listing_checkout_enabled": {
+          "name": "listing_checkout_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listing_messaging_enabled": {
+          "name": "listing_messaging_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note_text": {
+          "name": "note_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tester": {
+          "name": "tester",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "withdrawn_at": {
+          "name": "withdrawn_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "reports_identity_idx": {
+          "name": "reports_identity_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "reporter_user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "reports_reporter_idx": {
+          "name": "reports_reporter_idx",
+          "columns": [
+            {
+              "expression": "reporter_user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "reports_listing_idx": {
+          "name": "reports_listing_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "reports_eligibility": {
+          "name": "reports_eligibility",
+          "value": "\"seller_reply_reports\".\"reports\".\"eligibility\" in ('pending', 'eligible', 'no_open', 'too_soon', 'too_late', 'email_unverified', 'not_active', 'too_new', 'rate_limited', 'burst_hold', 'tester', 'messaging_off', 'noise', 'suppressed')"
+        },
+        "reports_status": {
+          "name": "reports_status",
+          "value": "\"seller_reply_reports\".\"reports\".\"status\" in ('saved', 'helping_warn', 'not_shown', 'removed_after_check', 'withdrawn')"
+        },
+        "reports_outcome": {
+          "name": "reports_outcome",
+          "value": "\"seller_reply_reports\".\"reports\".\"outcome\" is null or \"seller_reply_reports\".\"reports\".\"outcome\" in ('upheld', 'not_upheld', 'void', 'unknown')"
+        },
+        "reports_outcome_by": {
+          "name": "reports_outcome_by",
+          "value": "\"seller_reply_reports\".\"reports\".\"outcome_by\" is null or \"seller_reply_reports\".\"reports\".\"outcome_by\" in ('review', 'corroboration', 'correction', 'report_then_buy', 'ban')"
+        },
+        "reports_weights": {
+          "name": "reports_weights",
+          "value": "\"seller_reply_reports\".\"reports\".\"weight\" between 0 and 1 and coalesce(\"seller_reply_reports\".\"reports\".\"weight_at_submit\", 0) between 0 and 1"
+        },
+        "reports_no_note": {
+          "name": "reports_no_note",
+          "value": "\"seller_reply_reports\".\"reports\".\"note_text\" is null"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "seller_reply_reports.testers": {
+      "name": "testers",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "added_by": {
+          "name": "added_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "audit_id": {
+          "name": "audit_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "added_at": {
+          "name": "added_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "seller_reply_reports": "seller_reply_reports"
+  },
+  "views": {
+    "seller_reply_reports.v_listing_evidence": {
+      "name": "v_listing_evidence",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "family": {
+          "name": "family",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "persons_band": {
+          "name": "persons_band",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "persons_exact": {
+          "name": "persons_exact",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "level": {
+          "name": "level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "place_id": {
+          "name": "place_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "distance_band": {
+          "name": "distance_band",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "held": {
+          "name": "held",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hold_reason": {
+          "name": "hold_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "carried_from_relist": {
+          "name": "carried_from_relist",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rule_version": {
+          "name": "rule_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "as_of": {
+          "name": "as_of",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "seller_reply_reports.v_reporter_signals": {
+      "name": "v_reporter_signals",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reports_24h": {
+          "name": "reports_24h",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reports_30d": {
+          "name": "reports_30d",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "not_upheld": {
+          "name": "not_upheld",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "voided": {
+          "name": "voided",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "over_limit": {
+          "name": "over_limit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "burst_involvement": {
+          "name": "burst_involvement",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "seller_reply_reports.v_review_items": {
+      "name": "v_review_items",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "report_id": {
+          "name": "report_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reasons": {
+          "name": "reasons",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "details": {
+          "name": "details",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "second_answers": {
+          "name": "second_answers",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "note_text": {
+          "name": "note_text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "eligibility": {
+          "name": "eligibility",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weight": {
+          "name": "weight",
+          "type": "numeric(3, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "app.v_seller_reply_reports_mine": {
+      "name": "v_seller_reply_reports_mine",
+      "schema": "app",
+      "columns": {
+        "report_id": {
+          "name": "report_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "listing_id": {
+          "name": "listing_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reasons": {
+          "name": "reasons",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp (3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "withdrawable": {
+          "name": "withdrawable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    },
+    "seller_reply_reports.v_shadow_metrics": {
+      "name": "v_shadow_metrics",
+      "schema": "seller_reply_reports",
+      "columns": {
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reports": {
+          "name": "reports",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eligible": {
+          "name": "eligible",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "counter_reports": {
+          "name": "counter_reports",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "withdrawn": {
+          "name": "withdrawn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rate_limited": {
+          "name": "rate_limited",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "held_listings": {
+          "name": "held_listings",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "materialized": false,
+      "isExisting": true
+    }
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

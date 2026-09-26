@@ -1,0 +1,47 @@
+{
+  "synthetic": true,
+  "kind": "route",
+  "input": {
+    "points": [
+      {
+        "lon": -0.7792,
+        "lat": 50.8365
+      },
+      {
+        "lon": -1.0873,
+        "lat": 50.8198
+      },
+      {
+        "lon": -0.1372,
+        "lat": 50.8225
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "routes": [
+        {
+          "summary": {
+            "distance": 71234.5,
+            "duration": 4012.7
+          },
+          "bbox": [-1.08, 50.81, -0.13, 50.83],
+          "way_points": [0, 40, 90]
+        }
+      ],
+      "bbox": [-1.08, 50.81, -0.13, 50.83],
+      "metadata": {
+        "attribution": "openrouteservice.org | OpenStreetMap contributors",
+        "service": "routing",
+        "timestamp": 1790370000000,
+        "engine": {
+          "version": "9.3.0",
+          "build_date": "2025-06-01T10:00:00Z",
+          "graph_date": "2026-09-20T02:00:00Z",
+          "osm_date": "2026-09-15T20:21:03Z"
+        }
+      }
+    }
+  }
+}

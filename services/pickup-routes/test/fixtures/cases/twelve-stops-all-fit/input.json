@@ -1,0 +1,148 @@
+{
+  "synthetic": true,
+  "day": "2026-09-26",
+  "start": {
+    "lat": 50.8365,
+    "lng": -0.7792
+  },
+  "end": {
+    "lat": 50.8365,
+    "lng": -0.7792
+  },
+  "startTime": "08:00",
+  "latestFinish": "20:00",
+  "stops": [
+    {
+      "id": "bognor",
+      "point": {
+        "lat": 50.7825,
+        "lng": -0.6746
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "portsmouth",
+      "point": {
+        "lat": 50.7989,
+        "lng": -1.0912
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "pulborough",
+      "point": {
+        "lat": 50.9573,
+        "lng": -0.5133
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "emsworth",
+      "point": {
+        "lat": 50.8801,
+        "lng": -0.9058
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "littlehampton",
+      "point": {
+        "lat": 50.8095,
+        "lng": -0.5405
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "midhurst",
+      "point": {
+        "lat": 50.9848,
+        "lng": -0.7364
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "worthing",
+      "point": {
+        "lat": 50.8179,
+        "lng": -0.3729
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "havant",
+      "point": {
+        "lat": 50.8517,
+        "lng": -0.9817
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "petersfield",
+      "point": {
+        "lat": 51.0034,
+        "lng": -0.9371
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "arundel",
+      "point": {
+        "lat": 50.8543,
+        "lng": -0.5537
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "selsey",
+      "point": {
+        "lat": 50.7355,
+        "lng": -0.7893
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    },
+    {
+      "id": "horsham",
+      "point": {
+        "lat": 51.0629,
+        "lng": -0.3259
+      },
+      "window": {
+        "kind": "unagreed"
+      },
+      "serviceMinutes": 5
+    }
+  ]
+}

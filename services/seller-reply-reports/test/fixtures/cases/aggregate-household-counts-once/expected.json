@@ -1,0 +1,12 @@
+{
+  "evidence": [
+    {
+      "listing": "l",
+      "family": "payment",
+      "scope": "own",
+      "level": "single",
+      "persons": 1,
+      "holdReason": null
+    }
+  ]
+}

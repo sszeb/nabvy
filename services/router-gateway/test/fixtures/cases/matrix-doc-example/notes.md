@@ -1,0 +1,1 @@
+Durations are the Matrix V2 documentation's own example (docs/api-reference/endpoints/matrix, sources 0,1 to destinations 2,3); distances and engine metadata are synthetic in the documented shape (EngineInfo: version, build_date, graph_date, osm_date). Expect metres and seconds as sent, and the OSM date as the build.

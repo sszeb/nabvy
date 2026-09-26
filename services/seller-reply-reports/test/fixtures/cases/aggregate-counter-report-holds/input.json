@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "listings": { "l": {} },
+  "reporters": { "a": { "ageDays": 90 }, "seller-sock": { "ageDays": 200 } },
+  "reports": [
+    {
+      "listing": "l",
+      "reporter": "a",
+      "hoursAgo": 40,
+      "reasons": [{ "reason": "link_or_fb_delivery", "detail": "facebook_delivery" }]
+    },
+    {
+      "listing": "l",
+      "reporter": "seller-sock",
+      "hoursAgo": 10,
+      "reasons": [{ "reason": "as_listed" }]
+    }
+  ]
+}

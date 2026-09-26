@@ -1,0 +1,8 @@
+{
+  "messages": {
+    "28242423458759795": {
+      "asks": ["gpu"],
+      "checks": ["ram_size:16GB"]
+    }
+  }
+}

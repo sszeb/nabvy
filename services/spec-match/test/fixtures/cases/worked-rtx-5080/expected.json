@@ -1,0 +1,70 @@
+{
+  "wants": {
+    "rtx-5080": {
+      "2756686961383848": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description", "distance:match:within_radius"]
+      }
+    },
+    "rtx-5080-family": {
+      "2756686961383848": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description", "distance:match:within_radius"]
+      }
+    },
+    "rtx-5080-under-3000-gbp": {
+      "2756686961383848": {
+        "verdict": "match",
+        "insidePc": true,
+        "criteria": [
+          "gpu:match:named:description",
+          "price:match:within_cap",
+          "distance:match:within_radius"
+        ]
+      }
+    },
+    "rtx-5080-under-2000-gbp": {
+      "2756686961383848": {
+        "verdict": "no_match",
+        "insidePc": true,
+        "criteria": [
+          "gpu:match:named:description",
+          "price:no_match:over_cap",
+          "distance:match:within_radius"
+        ]
+      }
+    },
+    "rtx-5080-under-3000-eur": {
+      "2756686961383848": {
+        "verdict": "not_stated",
+        "insidePc": true,
+        "criteria": [
+          "gpu:match:named:description",
+          "price:not_stated:other_currency",
+          "distance:match:within_radius"
+        ]
+      }
+    },
+    "rtx-5080-10km-from-london": {
+      "2756686961383848": {
+        "verdict": "no_match",
+        "insidePc": true,
+        "criteria": ["gpu:match:named:description", "distance:no_match:beyond_radius"]
+      }
+    },
+    "32gb-ddr5-and-rtx-4080": {
+      "2756686961383848": {
+        "verdict": "no_match",
+        "insidePc": true,
+        "criteria": [
+          "ram:match:named:description",
+          "gpu:no_match:different:description",
+          "distance:match:within_radius"
+        ]
+      }
+    },
+    "rtx-3090": {}
+  }
+}

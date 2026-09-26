@@ -1,0 +1,14 @@
+{
+  "positions": {
+    "ask-0@gpu:rtx-3090|standalone|used_good": {
+      "rank": 1,
+      "n": 9,
+      "percentile": 5.6
+    }
+  },
+  "recorded": 9,
+  "shown": 0,
+  "shownFor": {
+    "ask-0": 0
+  }
+}

@@ -44,6 +44,7 @@ Secrets come from a human and live in platform vaults (Supabase, Trigger.dev, Ve
 | `SENTRY_DSN` | all | Sentry project |
 | `POSTHOG_KEY`, `POSTHOG_HOST` | web app and server (`eu.i.posthog.com`) | PostHog project, EU cloud |
 | `TOKEN_ENCRYPTION_KEY` | inventory-resale | Generated once; encrypts eBay refresh tokens at rest |
+| `PICKUPS_DATA_KEY` | pickup-routes | Generated once per environment (32 random bytes, hex or base64); encrypts pickup addresses, notes and points at rest (AES-256-GCM). The module does not ship until it exists |
 | `FB_DAILY_CAP_MINOR`, `GUMTREE_DAILY_CAP_MINOR`, `SCAN_SPEND_CAP_MINOR` | crawl-planner, recognition | Config: defaults 1000, 500, 5 |
 **`REVIEW_FIRE_TOKEN` and `FIX_FIRE_TOKEN`** (not in the table above: they are GitHub Actions repository secrets, not application config, so they never reach `packages/config` or `.env`, and the variable-inventory test in `packages/config` doesn't expect them). Each is a per-Routine API token — one for the reviewer Routine, one for the Fixer — generated once in the Routines app and stored as a GitHub repository secret, never in code, commits or chat. The plan is for a CI job on each PR event to `POST` to `https://api.anthropic.com/v1/claude_code/routines/<id>/fire` with the matching token, so a run on a green or failed head can wake the reviewer or Fixer Routine without a human or a long-lived session in the loop; that job is not in `.github/workflows/ci.yml` yet, so for now this paragraph only reserves the names and the intended use.
 
