@@ -4,15 +4,15 @@
 
 ### `travel-time`
 - **Purpose:** road distance and time from an origin cell to places, for display and hints.
-- **Does / does not:** caches OSRM road times per origin cell (origin rounded to 0.01°, about 1.1×0.7 km) and place, keyed to the current OSM build; detects ferry crossings from `location.landmassFor()` plus OSRM's own ferry legs. Holds no user ID and never caches a pickup point — pickup routing calls `router-gateway` directly with no caching. Falls back to straight line × 1.3, labelled "estimate", whenever `router-gateway` is off or the VM is down.
+- **Does / does not:** caches the provider's road times (through `router-gateway`) per origin cell (origin rounded to 0.01°, about 1.1×0.7 km) and place, keyed to the current provider build; detects ferry crossings from `location.landmassFor()` plus the provider's own ferry legs. Holds no user ID and never caches a pickup point — pickup routing calls `router-gateway` directly with no caching. Falls back to straight line × 1.3, labelled "estimate", whenever `router-gateway` is off, over quota or the provider is down.
 - **Inputs:** `router.build-changed` (invalidates the cache); `location.landmassFor()`.
-- **Outputs:** `roadTimes(originCell, placeIds[])` — one batched OSRM table call for missing cells.
+- **Outputs:** `roadTimes(originCell, placeIds[])` — one batched `table` call for missing cells.
 - **Owns:** `road_times` (origin_cell, place_id, osm_build, metres, seconds, crossing, computed_at).
 - **Views:** none; the cache is read only through the exported function.
 - **Contracts:** `RoadTimeResult`.
 - **Depends on:** `switches`, `router-gateway`, `location`.
 - **When off:** straight line × 1.3, labelled "estimate".
-- **Tests and fixtures:** recorded OSRM table responses; the Ryde (Isle of Wight) ferry case; cache invalidation on a new OSM build; the fallback label.
-- **Priority and phase:** After MVP (search-map-routes draft, task 4.1i); follows `router-gateway`.
+- **Tests and fixtures:** recorded provider table responses; the Ryde (Isle of Wight) ferry case; cache invalidation on a new OSM build; the fallback label.
+- **Priority and phase:** MVP (owner, 2026-09-25); follows `router-gateway`; task 4.1j.
 - **Sources:** `search-map-routes.md` §4.1, §7.6, §11 task 4.1i.
 - **Open questions:** none beyond the routing decisions (search-map-routes.md §10 rows 1–2).

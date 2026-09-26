@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "source": "card test: a plan from synthetic want counts; want-manager v_want_terms_by_centre shape",
+  "wantTerms": [
+    { "centreId": "1001", "family": "RTX 3090", "wantCount": 3, "paidWantCount": 1 },
+    { "centreId": "1001", "family": "RTX 4090", "wantCount": 1, "paidWantCount": 1 },
+    { "centreId": "2002", "family": "Ryzen 7 5800X3D", "wantCount": 2, "paidWantCount": 0 }
+  ],
+  "adminPairs": [],
+  "centres": [
+    { "cityPageId": "1001", "active": true, "verified": true },
+    { "cityPageId": "2002", "active": true, "verified": true }
+  ],
+  "dropAdminTest": false
+}

@@ -4,6 +4,7 @@ import {
   HouseIcon,
   InboxIcon,
   type LucideIcon,
+  PowerIcon,
   ScanLineIcon,
   SettingsIcon,
   ShieldCheckIcon,
@@ -53,6 +54,7 @@ export const adminNav: NavSection[] = [
     items: [
       { href: '/admin', label: 'Overview', icon: SettingsIcon, mobile: true, exact: true },
       { href: '/admin/review', label: 'Review console', icon: ShieldCheckIcon, mobile: true },
+      { href: '/admin/switches', label: 'Switches & spend', icon: PowerIcon, mobile: true },
       { href: '/app', label: 'Back to app', icon: InboxIcon, mobile: true, exact: true },
     ],
   },

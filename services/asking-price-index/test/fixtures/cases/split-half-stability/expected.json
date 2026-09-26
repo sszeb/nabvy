@@ -1,0 +1,33 @@
+{
+  "groups": {
+    "gpu:rtx-3090|standalone|used_good|GB|GBP|30d": {
+      "n": 12,
+      "median": 60500,
+      "mad": 3000,
+      "p25": 57750,
+      "p75": 63250,
+      "min": 55000,
+      "max": 66000,
+      "thin": false,
+      "copy_collapse": true
+    }
+  },
+  "members": {
+    "ask-00@standalone|used_good|GB": "counted",
+    "ask-01@standalone|used_good|GB": "counted",
+    "ask-02@standalone|used_good|GB": "counted",
+    "ask-03@standalone|used_good|GB": "counted",
+    "ask-04@standalone|used_good|GB": "counted",
+    "ask-05@standalone|used_good|GB": "counted",
+    "ask-06@standalone|used_good|GB": "counted",
+    "ask-07@standalone|used_good|GB": "counted",
+    "ask-08@standalone|used_good|GB": "counted",
+    "ask-09@standalone|used_good|GB": "counted",
+    "ask-10@standalone|used_good|GB": "counted",
+    "ask-11@standalone|used_good|GB": "counted",
+    "outlier@standalone|used_good|GB": "outlier"
+  },
+  "stable": {
+    "gpu:rtx-3090|standalone|used_good|GB|GBP|30d": true
+  }
+}

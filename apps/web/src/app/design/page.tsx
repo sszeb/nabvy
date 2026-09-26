@@ -213,7 +213,8 @@ export default async function DesignPage() {
             ).map(([caption, deal]) => (
               <div key={caption} className="grid gap-3 rounded-2xl border bg-card p-5">
                 <p className="text-muted-foreground text-xs">{caption}</p>
-                <PricePosition position={deal.position} />
+                {/* This design-only fixture set always carries a position. */}
+                <PricePosition position={deal.position as NonNullable<typeof deal.position>} />
               </div>
             ))}
           </div>

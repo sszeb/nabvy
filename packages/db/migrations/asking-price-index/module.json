@@ -1,0 +1,18 @@
+{
+  "module": "asking-price-index",
+  "schema": "asking_price_index",
+  "dependsOn": [
+    "core",
+    "switches",
+    "listing-ingest",
+    "detail-evidence",
+    "parts-record",
+    "listing-assessment",
+    "relist-merge",
+    "copy-advert",
+    "noise-filter",
+    "city-pages",
+    "product-catalogue",
+    "listing-suppression"
+  ]
+}

@@ -12,6 +12,9 @@
       "firstSeen": "all"
     },
     {
+      "selected": "all"
+    },
+    {
       "submit": true
     }
   ]

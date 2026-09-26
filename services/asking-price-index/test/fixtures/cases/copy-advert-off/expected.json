@@ -1,0 +1,19 @@
+{
+  "groups": {
+    "gpu:rtx-3090|standalone|used_good|GB|GBP|30d": {
+      "n": 2,
+      "median": 61000,
+      "mad": 0,
+      "p25": 61000,
+      "p75": 61000,
+      "min": 61000,
+      "max": 61000,
+      "thin": false,
+      "copy_collapse": false
+    }
+  },
+  "members": {
+    "copy-a@standalone|used_good|GB": "counted",
+    "copy-b@standalone|used_good|GB": "counted"
+  }
+}

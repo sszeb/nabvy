@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "source": "card: an admin-test pair left after want-manager is on fails a test; the team's rtx3090 want at Chichester",
+  "wantTerms": [
+    { "centreId": "115935195086622", "family": "RTX 3090", "wantCount": 1, "paidWantCount": 0 }
+  ],
+  "adminPairs": [{ "centreId": "115935195086622", "term": "rtx3090" }],
+  "centres": [{ "cityPageId": "115935195086622", "active": true, "verified": true }],
+  "dropAdminTest": true
+}
